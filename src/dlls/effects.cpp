@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -38,7 +38,7 @@ public:
 	void	Spawn( void );
 	void	Precache( void );
 	void	KeyValue( KeyValueData *pkvd );
-	
+
 	void	EXPORT FizzThink( void );
 	void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 
@@ -55,7 +55,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( env_bubbles, CBubbling );
 
-TYPEDESCRIPTION	CBubbling::m_SaveData[] = 
+TYPEDESCRIPTION	CBubbling::m_SaveData[] =
 {
 	DEFINE_FIELD( CBubbling, m_density, FIELD_INTEGER ),
 	DEFINE_FIELD( CBubbling, m_frequency, FIELD_INTEGER ),
@@ -87,11 +87,11 @@ void CBubbling::Spawn( void )
 
 	if ( !(pev->spawnflags & SF_BUBBLES_STARTOFF) )
 	{
-		SetThink( FizzThink );
+		SetThink( &CBubbling::FizzThink );
 		pev->nextthink = gpGlobals->time + 2.0;
 		m_state = 1;
 	}
-	else 
+	else
 		m_state = 0;
 }
 
@@ -108,7 +108,7 @@ void CBubbling::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 
 	if ( m_state )
 	{
-		SetThink( FizzThink );
+		SetThink( &CBubbling::FizzThink );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 	else
@@ -157,7 +157,7 @@ void CBubbling::FizzThink( void )
 }
 
 // --------------------------------------------------
-// 
+//
 // Beams
 //
 // --------------------------------------------------
@@ -178,15 +178,15 @@ void CBeam::Precache( void )
 		SetEndEntity( ENTINDEX( pev->aiment ) );
 }
 
-void CBeam::SetStartEntity( int entityIndex ) 
-{ 
-	pev->sequence = (entityIndex & 0x0FFF) | ((pev->sequence&0xF000)<<12); 
+void CBeam::SetStartEntity( int entityIndex )
+{
+	pev->sequence = (entityIndex & 0x0FFF) | ((pev->sequence&0xF000)<<12);
 	pev->owner = g_engfuncs.pfnPEntityOfEntIndex( entityIndex );
 }
 
-void CBeam::SetEndEntity( int entityIndex ) 
-{ 
-	pev->skin = (entityIndex & 0x0FFF) | ((pev->skin&0xF000)<<12); 
+void CBeam::SetEndEntity( int entityIndex )
+{
+	pev->skin = (entityIndex & 0x0FFF) | ((pev->skin&0xF000)<<12);
 	pev->aiment = g_engfuncs.pfnPEntityOfEntIndex( entityIndex );
 }
 
@@ -383,7 +383,7 @@ public:
 	void	Zap( const Vector &vecSrc, const Vector &vecDest );
 	void	EXPORT StrikeUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	void	EXPORT ToggleUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
-	
+
 	inline BOOL ServerSide( void )
 	{
 		if ( m_life == 0 && !(pev->spawnflags & SF_BEAM_RING) )
@@ -427,7 +427,7 @@ LINK_ENTITY_TO_CLASS( trip_beam, CTripBeam );
 void CTripBeam::Spawn( void )
 {
 	CLightning::Spawn();
-	SetTouch( TriggerTouch );
+	SetTouch( &CBeam::TriggerTouch );
 	pev->solid = SOLID_TRIGGER;
 	RelinkBeam();
 }
@@ -435,7 +435,7 @@ void CTripBeam::Spawn( void )
 
 
 
-TYPEDESCRIPTION	CLightning::m_SaveData[] = 
+TYPEDESCRIPTION	CLightning::m_SaveData[] =
 {
 	DEFINE_FIELD( CLightning, m_active, FIELD_INTEGER ),
 	DEFINE_FIELD( CLightning, m_iszStartEntity, FIELD_STRING ),
@@ -459,7 +459,7 @@ void CLightning::Spawn( void )
 {
 	if ( FStringNull( m_iszSpriteName ) )
 	{
-		SetThink( SUB_Remove );
+		SetThink( &CBaseEntity::SUB_Remove );
 		return;
 	}
 	pev->solid = SOLID_NOT;							// Remove model & collisions
@@ -472,7 +472,7 @@ void CLightning::Spawn( void )
 		SetThink( NULL );
 		if ( pev->dmg > 0 )
 		{
-			SetThink( DamageThink );
+			SetThink( &CLightning::DamageThink );
 			pev->nextthink = gpGlobals->time + 0.1;
 		}
 		if ( pev->targetname )
@@ -485,8 +485,8 @@ void CLightning::Spawn( void )
 			}
 			else
 				m_active = 1;
-		
-			SetUse( ToggleUse );
+
+			SetUse( &CLightning::ToggleUse );
 		}
 	}
 	else
@@ -494,11 +494,11 @@ void CLightning::Spawn( void )
 		m_active = 0;
 		if ( !FStringNull(pev->targetname) )
 		{
-			SetUse( StrikeUse );
+			SetUse( &CLightning::StrikeUse );
 		}
 		if ( FStringNull(pev->targetname) || FBitSet(pev->spawnflags, SF_BEAM_STARTON) )
 		{
-			SetThink( StrikeThink );
+			SetThink( &CLightning::StrikeThink );
 			pev->nextthink = gpGlobals->time + 1.0;
 		}
 	}
@@ -616,7 +616,7 @@ void CLightning::StrikeUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_T
 	}
 	else
 	{
-		SetThink( StrikeThink );
+		SetThink( &CLightning::StrikeThink );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 
@@ -948,7 +948,7 @@ void CLightning::BeamUpdateVars( void )
 
 LINK_ENTITY_TO_CLASS( env_laser, CLaser );
 
-TYPEDESCRIPTION	CLaser::m_SaveData[] = 
+TYPEDESCRIPTION	CLaser::m_SaveData[] =
 {
 	DEFINE_FIELD( CLaser, m_pSprite, FIELD_CLASSPTR ),
 	DEFINE_FIELD( CLaser, m_iszSpriteName, FIELD_STRING ),
@@ -961,13 +961,13 @@ void CLaser::Spawn( void )
 {
 	if ( FStringNull( pev->model ) )
 	{
-		SetThink( SUB_Remove );
+		SetThink( &CBaseEntity::SUB_Remove );
 		return;
 	}
 	pev->solid = SOLID_NOT;							// Remove model & collisions
 	Precache( );
 
-	SetThink( StrikeThink );
+	SetThink( &CLaser::StrikeThink );
 	pev->flags |= FL_CUSTOMENTITY;
 
 	PointsInit( pev->origin, pev->origin );
@@ -1127,7 +1127,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( env_glow, CGlow );
 
-TYPEDESCRIPTION	CGlow::m_SaveData[] = 
+TYPEDESCRIPTION	CGlow::m_SaveData[] =
 {
 	DEFINE_FIELD( CGlow, m_lastTime, FIELD_TIME ),
 	DEFINE_FIELD( CGlow, m_maxFrame, FIELD_FLOAT ),
@@ -1163,7 +1163,7 @@ void CGlow::Think( void )
 
 
 void CGlow::Animate( float frames )
-{ 
+{
 	if ( m_maxFrame > 0 )
 		pev->frame = fmod( pev->frame + frames, m_maxFrame );
 }
@@ -1171,7 +1171,7 @@ void CGlow::Animate( float frames )
 
 LINK_ENTITY_TO_CLASS( env_sprite, CSprite );
 
-TYPEDESCRIPTION	CSprite::m_SaveData[] = 
+TYPEDESCRIPTION	CSprite::m_SaveData[] =
 {
 	DEFINE_FIELD( CSprite, m_lastTime, FIELD_TIME ),
 	DEFINE_FIELD( CSprite, m_maxFrame, FIELD_FLOAT ),
@@ -1194,7 +1194,7 @@ void CSprite::Spawn( void )
 		TurnOff();
 	else
 		TurnOn();
-	
+
 	// Worldcraft only sets y rotation, copy to Z
 	if ( pev->angles.y != 0 && pev->angles.z == 0 )
 	{
@@ -1264,7 +1264,7 @@ void CSprite::Expand( float scaleSpeed, float fadeSpeed )
 {
 	pev->speed = scaleSpeed;
 	pev->health = fadeSpeed;
-	SetThink( ExpandThink );
+	SetThink( &CSprite::ExpandThink );
 
 	pev->nextthink	= gpGlobals->time;
 	m_lastTime		= gpGlobals->time;
@@ -1290,7 +1290,7 @@ void CSprite::ExpandThink( void )
 
 
 void CSprite::Animate( float frames )
-{ 
+{
 	pev->frame += frames;
 	if ( pev->frame > m_maxFrame )
 	{
@@ -1319,7 +1319,7 @@ void CSprite::TurnOn( void )
 	pev->effects = 0;
 	if ( (pev->framerate && m_maxFrame > 1.0) || (pev->spawnflags & SF_SPRITE_ONCE) )
 	{
-		SetThink( AnimateThink );
+		SetThink( &CSprite::AnimateThink );
 		pev->nextthink = gpGlobals->time;
 		m_lastTime = gpGlobals->time;
 	}
@@ -1426,7 +1426,7 @@ void CGibShooter::KeyValue( KeyValueData *pkvd )
 
 void CGibShooter::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	SetThink( ShootThink );
+	SetThink( &CGibShooter::ShootThink );
 	pev->nextthink = gpGlobals->time;
 }
 
@@ -1486,12 +1486,12 @@ void CGibShooter :: ShootThink ( void )
 
 	vecShootDir = vecShootDir.Normalize();
 	CGib *pGib = CreateGib();
-	
+
 	if ( pGib )
 	{
 		pGib->pev->origin = pev->origin;
 		pGib->pev->velocity = vecShootDir * m_flGibVelocity;
-	
+
 		pGib->pev->avelocity.x = RANDOM_FLOAT ( 100, 200 );
 		pGib->pev->avelocity.y = RANDOM_FLOAT ( 100, 300 );
 
@@ -1503,7 +1503,7 @@ void CGibShooter :: ShootThink ( void )
 			pGib->pev->nextthink = gpGlobals->time + pGib->m_lifeTime;
 			pGib->m_lifeTime = 0;
 		}
-		
+
 	}
 
 	if ( --m_iGibs <= 0 )
@@ -1516,7 +1516,7 @@ void CGibShooter :: ShootThink ( void )
 		}
 		else
 		{
-			SetThink ( SUB_Remove );
+			SetThink ( &CBaseEntity::SUB_Remove );
 			pev->nextthink = gpGlobals->time;
 		}
 	}
@@ -1561,7 +1561,7 @@ void CEnvShooter :: KeyValue( KeyValueData *pkvd )
 		case 4:
 			m_iGibMaterial = matRocks;
 			break;
-		
+
 		default:
 		case -1:
 			m_iGibMaterial = matNone;
@@ -1587,7 +1587,7 @@ CGib *CEnvShooter :: CreateGib ( void )
 	CGib *pGib = GetClassPtr( (CGib *)NULL );
 
 	pGib->Spawn( STRING(pev->model) );
-	
+
 	int bodyPart = 0;
 
 	if ( pev->body > 1 )
@@ -1660,7 +1660,7 @@ void CTestEffect::TestThink( void )
 		pbeam->SetColor( 255, 180, 100 );
 		pbeam->SetWidth( 100 );
 		pbeam->SetScrollRate( 12 );
-		
+
 		m_flBeamTime[m_iBeam] = gpGlobals->time;
 		m_pBeam[m_iBeam] = pbeam;
 		m_iBeam++;
@@ -1708,7 +1708,7 @@ void CTestEffect::TestThink( void )
 
 void CTestEffect::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	SetThink( TestThink );
+	SetThink( &CTestEffect::TestThink );
 	pev->nextthink = gpGlobals->time + 0.1;
 	m_flStartTime = gpGlobals->time;
 }
@@ -1728,7 +1728,7 @@ public:
 
 	inline	void SetColor( int color ) { pev->impulse = color; }
 	inline	void SetBloodAmount( float amount ) { pev->dmg = amount; }
-	
+
 	Vector	Direction( void );
 	Vector	BloodPosition( CBaseEntity *pActivator );
 
@@ -1785,7 +1785,7 @@ Vector CBlood::Direction( void )
 {
 	if ( pev->spawnflags & SF_BLOOD_RANDOM )
 		return UTIL_RandomBloodVector();
-	
+
 	return pev->movedir;
 }
 
@@ -1871,7 +1871,7 @@ void CShake::Spawn( void )
 	pev->movetype		= MOVETYPE_NONE;
 	pev->effects		= 0;
 	pev->frame			= 0;
-	
+
 	if ( pev->spawnflags & SF_SHAKE_EVERYONE )
 		pev->dmg = 0;
 }
@@ -1962,7 +1962,7 @@ void CFade::KeyValue( KeyValueData *pkvd )
 void CFade::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
 	int fadeFlags = 0;
-	
+
 	if ( !(pev->spawnflags & SF_FADE_IN) )
 		fadeFlags |= FFADE_OUT;
 
@@ -2009,7 +2009,7 @@ void CMessage::Spawn( void )
 	case 1: // Medium radius
 		pev->speed = ATTN_STATIC;
 		break;
-	
+
 	case 2:	// Large radius
 		pev->speed = ATTN_NORM;
 		break;
@@ -2017,7 +2017,7 @@ void CMessage::Spawn( void )
 	case 3:	//EVERYWHERE
 		pev->speed = ATTN_NONE;
 		break;
-	
+
 	default:
 	case 0: // Small radius
 		pev->speed = ATTN_IDLE;
@@ -2129,7 +2129,7 @@ void CEnvFunnel::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE us
 
 	MESSAGE_END();
 
-	SetThink( SUB_Remove );
+	SetThink( &CBaseEntity::SUB_Remove );
 	pev->nextthink = gpGlobals->time;
 }
 
@@ -2142,7 +2142,7 @@ void CEnvFunnel::Spawn( void )
 
 //=========================================================
 // Beverage Dispenser
-// overloaded pev->frags, is now a flag for whether or not a can is stuck in the dispenser. 
+// overloaded pev->frags, is now a flag for whether or not a can is stuck in the dispenser.
 // overloaded pev->health, is now how many cans remain in the machine.
 //=========================================================
 class CEnvBeverage : public CBaseDelay
@@ -2169,7 +2169,7 @@ void CEnvBeverage::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 		return;
 	}
 
-	CBaseEntity *pCan = CBaseEntity::Create( "item_sodacan", pev->origin, pev->angles, edict() );	
+	CBaseEntity *pCan = CBaseEntity::Create( "item_sodacan", pev->origin, pev->angles, edict() );
 
 	if ( pev->skin == 6 )
 	{
@@ -2227,8 +2227,8 @@ void CItemSoda::Spawn( void )
 
 	SET_MODEL ( ENT(pev), "models/can.mdl" );
 	UTIL_SetSize ( pev, Vector ( 0, 0, 0 ), Vector ( 0, 0, 0 ) );
-	
-	SetThink (CanThink);
+
+	SetThink (&CItemSoda::CanThink);
 	pev->nextthink = gpGlobals->time + 0.5;
 }
 
@@ -2239,7 +2239,7 @@ void CItemSoda::CanThink ( void )
 	pev->solid = SOLID_TRIGGER;
 	UTIL_SetSize ( pev, Vector ( -8, -8, 0 ), Vector ( 8, 8, 8 ) );
 	SetThink ( NULL );
-	SetTouch ( CanTouch );
+	SetTouch ( &CItemSoda::CanTouch );
 }
 
 void CItemSoda::CanTouch ( CBaseEntity *pOther )
@@ -2263,6 +2263,6 @@ void CItemSoda::CanTouch ( CBaseEntity *pOther )
 	pev->movetype = MOVETYPE_NONE;
 	pev->effects = EF_NODRAW;
 	SetTouch ( NULL );
-	SetThink ( SUB_Remove );
+	SetThink ( &CBaseEntity::SUB_Remove );
 	pev->nextthink = gpGlobals->time;
 }

@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -16,7 +16,7 @@
 
 ===== mortar.cpp ========================================================
 
-  the "LaBuznik" mortar device              
+  the "LaBuznik" mortar device
 
 */
 
@@ -55,7 +55,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( func_mortar_field, CFuncMortarField );
 
-TYPEDESCRIPTION	CFuncMortarField::m_SaveData[] = 
+TYPEDESCRIPTION	CFuncMortarField::m_SaveData[] =
 {
 	DEFINE_FIELD( CFuncMortarField, m_iszXController, FIELD_STRING ),
 	DEFINE_FIELD( CFuncMortarField, m_iszYController, FIELD_STRING ),
@@ -105,7 +105,7 @@ void CFuncMortarField :: Spawn( void )
 	SET_MODEL(ENT(pev), STRING(pev->model));    // set size and link into world
 	pev->movetype = MOVETYPE_NONE;
 	SetBits( pev->effects, EF_NODRAW );
-	SetUse( FieldUse );
+	SetUse( &CFuncMortarField::FieldUse );
 	Precache();
 }
 
@@ -164,7 +164,7 @@ void CFuncMortarField :: FieldUse( CBaseEntity *pActivator, CBaseEntity *pCaller
 
 	int pitch = RANDOM_LONG(95,124);
 
-	EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "weapons/mortar.wav", 1.0, ATTN_NONE, 0, pitch);	
+	EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "weapons/mortar.wav", 1.0, ATTN_NONE, 0, pitch);
 
 	float t = 2.5;
 int i;	for ( i = 0; i < m_iCount; i++)
@@ -209,7 +209,7 @@ void CMortar::Spawn( )
 
 	pev->dmg		= 200;
 
-	SetThink( MortarExplode );
+	SetThink( &CMortar::MortarExplode );
 	pev->nextthink = 0;
 
 	Precache( );

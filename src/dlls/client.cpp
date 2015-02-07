@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -12,7 +12,7 @@
 *   without written permission from Valve LLC.
 *
 ****/
-// Robin, 4-22-98: Moved set_suicide_frame() here from player.cpp to allow us to 
+// Robin, 4-22-98: Moved set_suicide_frame() here from player.cpp to allow us to
 //				   have one without a hardcoded player.mdl in tf_client.cpp
 
 /*
@@ -57,7 +57,7 @@ void LinkUserMessages( void );
  * ROBIN: Moved here from player.cpp, to allow multiple player models
  */
 void set_suicide_frame(entvars_t* pev)
-{       
+{
 	if (!FStrEq(STRING(pev->model), "models/player.mdl"))
 		return; // allready gibbed
 
@@ -77,7 +77,7 @@ called when a player connects to a server
 ============
 */
 BOOL ClientConnect( edict_t *pEntity, const char *pszName, const char *pszAddress, char szRejectReason[ 128 ]  )
-{	
+{
 	return g_pGameRules->ClientConnected( pEntity, pszName, pszAddress, szRejectReason );
 
 // a client connecting during an intermission can cause problems
@@ -111,7 +111,7 @@ void ClientDisconnect( edict_t *pEntity )
 	CSound *pSound;
 	pSound = CSoundEnt::SoundPointerForIndex( CSoundEnt::ClientSoundIndex( pEntity ) );
 	{
-		// since this client isn't around to think anymore, reset their sound. 
+		// since this client isn't around to think anymore, reset their sound.
 		if ( pSound )
 		{
 			pSound->Reset();
@@ -264,7 +264,8 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	}
 
 // make sure the text has content
-	for ( char *pc = p; pc != NULL && *pc != 0; pc++ )
+	char *pc;
+	for ( pc = p; pc != NULL && *pc != 0; pc++ )
 	{
 		if ( !isspace( *pc ) )
 		{
@@ -297,11 +298,11 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	// so check it, or it will infinite loop
 
 	client = NULL;
-	while ( ((client = (CBasePlayer*)UTIL_FindEntityByClassname( client, "player" )) != NULL) && (!FNullEnt(client->edict())) ) 
+	while ( ((client = (CBasePlayer*)UTIL_FindEntityByClassname( client, "player" )) != NULL) && (!FNullEnt(client->edict())) )
 	{
 		if ( !client->pev )
 			continue;
-		
+
 		if ( client->edict() == pEntity )
 			continue;
 
@@ -336,12 +337,12 @@ void Host_Say( edict_t *pEntity, int teamonly )
 		temp = "say_team";
 	else
 		temp = "say";
-	
+
 	// team match?
 	if ( g_teamplay )
 	{
-		UTIL_LogPrintf( "\"%s<%i><%s><%s>\" %s \"%s\"\n", 
-			STRING( pEntity->v.netname ), 
+		UTIL_LogPrintf( "\"%s<%i><%s><%s>\" %s \"%s\"\n",
+			STRING( pEntity->v.netname ),
 			GETPLAYERUSERID( pEntity ),
 			GETPLAYERAUTHID( pEntity ),
 			g_engfuncs.pfnInfoKeyValue( g_engfuncs.pfnGetInfoKeyBuffer( pEntity ), "model" ),
@@ -350,8 +351,8 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	}
 	else
 	{
-		UTIL_LogPrintf( "\"%s<%i><%s><%i>\" %s \"%s\"\n", 
-			STRING( pEntity->v.netname ), 
+		UTIL_LogPrintf( "\"%s<%i><%s><%i>\" %s \"%s\"\n",
+			STRING( pEntity->v.netname ),
 			GETPLAYERUSERID( pEntity ),
 			GETPLAYERAUTHID( pEntity ),
 			GETPLAYERUSERID( pEntity ),
@@ -391,7 +392,7 @@ void ClientCommand( edict_t *pEntity )
 	}
 	else if ( FStrEq(pcmd, "fullupdate" ) )
 	{
-		GetClassPtr((CBasePlayer *)pev)->ForceClientDllUpdate(); 
+		GetClassPtr((CBasePlayer *)pev)->ForceClientDllUpdate();
 	}
 	else if ( FStrEq(pcmd, "give" ) )
 	{
@@ -434,7 +435,7 @@ void ClientCommand( edict_t *pEntity )
 	}
 	else if ( FStrEq(pcmd, "drop" ) )
 	{
-		// player is dropping an item. 
+		// player is dropping an item.
 		GetClassPtr((CBasePlayer *)pev)->DropPlayerItem((char *)CMD_ARGV(1));
 	}
 	else if ( FStrEq(pcmd, "fov" ) )
@@ -536,20 +537,20 @@ void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer )
 		// team match?
 		if ( g_teamplay )
 		{
-			UTIL_LogPrintf( "\"%s<%i><%s><%s>\" changed name to \"%s\"\n", 
-				STRING( pEntity->v.netname ), 
-				GETPLAYERUSERID( pEntity ), 
+			UTIL_LogPrintf( "\"%s<%i><%s><%s>\" changed name to \"%s\"\n",
+				STRING( pEntity->v.netname ),
+				GETPLAYERUSERID( pEntity ),
 				GETPLAYERAUTHID( pEntity ),
-				g_engfuncs.pfnInfoKeyValue( infobuffer, "model" ), 
+				g_engfuncs.pfnInfoKeyValue( infobuffer, "model" ),
 				g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
 		}
 		else
 		{
-			UTIL_LogPrintf( "\"%s<%i><%s><%i>\" changed name to \"%s\"\n", 
-				STRING( pEntity->v.netname ), 
-				GETPLAYERUSERID( pEntity ), 
+			UTIL_LogPrintf( "\"%s<%i><%s><%i>\" changed name to \"%s\"\n",
+				STRING( pEntity->v.netname ),
+				GETPLAYERUSERID( pEntity ),
 				GETPLAYERAUTHID( pEntity ),
-				GETPLAYERUSERID( pEntity ), 
+				GETPLAYERUSERID( pEntity ),
 				g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
 		}
 	}
@@ -564,7 +565,7 @@ void ServerDeactivate( void )
 //	ALERT( at_console, "ServerDeactivate()\n" );
 
 	// It's possible that the engine will call this function more times than is necessary
-	//  Therefore, only run it one time for each call to ServerActivate 
+	//  Therefore, only run it one time for each call to ServerActivate
 	if ( g_serveractive != 1 )
 	{
 		return;
@@ -591,7 +592,7 @@ void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 	{
 		if ( pEdictList[i].free )
 			continue;
-		
+
 		// Clients aren't necessarily initialized until ClientPutInServer()
 		if ( i < clientMax || !pEdictList[i].pvPrivateData )
 			continue;
@@ -688,12 +689,12 @@ void ClientPrecache( void )
 {
 	// setup precaches always needed
 	PRECACHE_SOUND("player/sprayer.wav");			// spray paint sound for PreAlpha
-	
+
 	// PRECACHE_SOUND("player/pl_jumpland2.wav");		// UNDONE: play 2x step sound
-	
-	PRECACHE_SOUND("player/pl_fallpain2.wav");		
-	PRECACHE_SOUND("player/pl_fallpain3.wav");		
-	
+
+	PRECACHE_SOUND("player/pl_fallpain2.wav");
+	PRECACHE_SOUND("player/pl_fallpain3.wav");
+
 	PRECACHE_SOUND("player/pl_step1.wav");		// walk on concrete
 	PRECACHE_SOUND("player/pl_step2.wav");
 	PRECACHE_SOUND("player/pl_step3.wav");
@@ -766,7 +767,7 @@ void ClientPrecache( void )
 	PRECACHE_SOUND( SOUND_FLASHLIGHT_OFF );
 
 // player gib sounds
-	PRECACHE_SOUND("common/bodysplat.wav");		               
+	PRECACHE_SOUND("common/bodysplat.wav");
 
 // player pain sounds
 	PRECACHE_SOUND("player/pl_pain2.wav");
@@ -1029,7 +1030,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 		if ( ( hostflags & 1 ) && ( ent->v.owner == host ) )
 			return 0;
 	}
-	
+
 	if ( host->v.groupinfo )
 	{
 		UTIL_SetGroupTrace( host->v.groupinfo, GROUP_OP_AND );
@@ -1058,14 +1059,14 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	//  delta from it.
 	state->number	  = e;
 	state->entityType = ENTITY_NORMAL;
-	
+
 	// Flag custom entities.
 	if ( ent->v.flags & FL_CUSTOMENTITY )
 	{
 		state->entityType = ENTITY_BEAM;
 	}
 
-	// 
+	//
 	// Copy state data
 	//
 
@@ -1085,7 +1086,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	state->starttime = ent->v.starttime;
 
 	state->modelindex = ent->v.modelindex;
-		
+
 	state->frame      = ent->v.frame;
 
 	state->skin       = ent->v.skin;
@@ -1095,8 +1096,8 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	//  make sure that we interpolate it's position on the client if it moves
 	if ( !player &&
 		 ent->v.animtime &&
-		 ent->v.velocity[ 0 ] == 0 && 
-		 ent->v.velocity[ 1 ] == 0 && 
+		 ent->v.velocity[ 0 ] == 0 &&
+		 ent->v.velocity[ 1 ] == 0 &&
 		 ent->v.velocity[ 2 ] == 0 )
 	{
 		state->eflags |= EFLAG_SLERP;
@@ -1122,7 +1123,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	}
 
 	state->rendermode    = ent->v.rendermode;
-	state->renderamt     = ent->v.renderamt; 
+	state->renderamt     = ent->v.renderamt;
 	state->renderfx      = ent->v.renderfx;
 	state->rendercolor.r = ent->v.rendercolor.x;
 	state->rendercolor.g = ent->v.rendercolor.y;
@@ -1138,11 +1139,11 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	if ( ent->v.owner )
 	{
 		int owner = ENTINDEX( ent->v.owner );
-		
+
 		// Only care if owned by a player
 		if ( owner >= 1 && owner <= gpGlobals->maxClients )
 		{
-			state->owner = owner;	
+			state->owner = owner;
 		}
 	}
 
@@ -1171,7 +1172,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 
 		state->gravity      = ent->v.gravity;
 //		state->team			= ent->v.team;
-//		
+//
 		state->usehull      = ( ent->v.flags & FL_DUCKING ) ? 1 : 0;
 		state->health		= ent->v.health;
 	}
@@ -1273,7 +1274,7 @@ void Entity_FieldInit( struct delta_s *pFields )
 ==================
 Entity_Encode
 
-Callback for sending entity_state_t info over network. 
+Callback for sending entity_state_t info over network.
 FIXME:  Move to script
 ==================
 */
@@ -1345,7 +1346,7 @@ void Player_FieldInit( struct delta_s *pFields )
 ==================
 Player_Encode
 
-Callback for sending entity_state_t for players info over network. 
+Callback for sending entity_state_t for players info over network.
 ==================
 */
 void Player_Encode( struct delta_s *pFields, const unsigned char *from, const unsigned char *to )
@@ -1427,7 +1428,7 @@ void Custom_Entity_FieldInit( struct delta_s *pFields )
 ==================
 Custom_Encode
 
-Callback for sending entity_state_t info ( for custom entities ) over network. 
+Callback for sending entity_state_t info ( for custom entities ) over network.
 FIXME:  Move to script
 ==================
 */
@@ -1447,7 +1448,7 @@ void Custom_Encode( struct delta_s *pFields, const unsigned char *from, const un
 	t = (entity_state_t *)to;
 
 	beamType = t->rendermode & 0x0f;
-		
+
 	if ( beamType != BEAM_POINTS && beamType != BEAM_ENTPOINT )
 	{
 		DELTA_UNSETBYINDEX( pFields, custom_entity_field_alias[ CUSTOMFIELD_ORIGIN0 ].field );
@@ -1498,7 +1499,7 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 	entvars_t *pev = &player->v;
 	CBasePlayer *pl = ( CBasePlayer *) CBasePlayer::Instance( pev );
 	CBasePlayerWeapon *gun;
-	
+
 	ItemInfo II;
 
 	memset( info, 0, 32 * sizeof( weapon_data_t ) );
@@ -1526,7 +1527,7 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 					if ( II.iId >= 0 && II.iId < 32 )
 					{
 						item = &info[ II.iId ];
-					 	
+
 						item->m_iId						= II.iId;
 						item->m_iClip					= gun->m_iClip;
 
@@ -1541,8 +1542,8 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 						item->iuser1					= gun->m_chargeReady;
 						item->iuser2					= gun->m_fInAttack;
 						item->iuser3					= gun->m_fireState;
-						
-											
+
+
 //						item->m_flPumpTime				= max( gun->m_flPumpTime, -0.001 );
 					}
 				}
@@ -1614,7 +1615,7 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 			cd->ammo_rockets	= pl->ammo_rockets;
 			cd->ammo_cells		= pl->ammo_uranium;
 			cd->vuser2.x		= pl->ammo_hornets;
-			
+
 
 			if ( pl->m_pActiveItem )
 			{
@@ -1632,7 +1633,7 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 					cd->vuser4.x	= gun->m_iPrimaryAmmoType;
 					cd->vuser4.y	= pl->m_rgAmmo[gun->m_iPrimaryAmmoType];
 					cd->vuser4.z	= pl->m_rgAmmo[gun->m_iSecondaryAmmoType];
-					
+
 					if ( pl->m_pActiveItem->m_iId == WEAPON_RPG )
 					{
 						cd->vuser2.y = ( ( CRpg * )pl->m_pActiveItem)->m_fSpotActive;
@@ -1794,7 +1795,7 @@ AllowLagCompensation
  The game .dll should return 1 if lag compensation should be allowed ( could also just set
   the sv_unlag cvar.
  Most games right now should return 0, until client-side weapon prediction code is written
-  and tested for them ( note you can predict weapons, but not do lag compensation, too, 
+  and tested for them ( note you can predict weapons, but not do lag compensation, too,
   if you want.
 ================================
 */

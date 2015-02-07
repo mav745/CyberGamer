@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -103,7 +103,7 @@ public:
 	void MakeVectors( void );
 	void RecalculateWaterlevel( void );
 	void SwitchLeechState( void );
-	
+
 	// Base entity functions
 	void HandleAnimEvent( MonsterEvent_t *pEvent );
 	int	BloodColor( void ) { return DONT_BLEED; }
@@ -145,7 +145,7 @@ private:
 
 LINK_ENTITY_TO_CLASS( monster_leech, CLeech );
 
-TYPEDESCRIPTION	CLeech::m_SaveData[] = 
+TYPEDESCRIPTION	CLeech::m_SaveData[] =
 {
 	DEFINE_FIELD( CLeech, m_flTurning, FIELD_FLOAT ),
 	DEFINE_FIELD( CLeech, m_fPathBlocked, FIELD_BOOLEAN ),
@@ -184,7 +184,7 @@ void CLeech::Spawn( void )
 	SET_MODEL(ENT(pev), "models/leech.mdl");
 	// Just for fun
 	//	SET_MODEL(ENT(pev), "models/icky.mdl");
-	
+
 //	UTIL_SetSize( pev, g_vecZero, g_vecZero );
 	UTIL_SetSize( pev, Vector(-1,-1,0), Vector(1,1,2));
 	// Don't push the minz down too much or the water check will fail because this entity is really point-sized
@@ -196,7 +196,7 @@ void CLeech::Spawn( void )
 	m_flFieldOfView		= -0.5;	// 180 degree FOV
 	m_flDistLook		= 750;
 	MonsterInit();
-	SetThink( SwimThink );
+	SetThink( &CLeech::SwimThink );
 	SetUse( NULL );
 	SetTouch( NULL );
 	pev->view_ofs = g_vecZero;
@@ -338,17 +338,17 @@ void CLeech::HandleAnimEvent( MonsterEvent_t *pEvent )
 			dir = dir.Normalize();
 			face = face.Normalize();
 
-			
+
 			if ( DotProduct(dir, face) > 0.9 )		// Only take damage if the leech is facing the prey
 				pEnemy->TakeDamage( pev, pev, gSkillData.leechDmgBite, DMG_SLASH );
 		}
 		m_stateTime -= 2;
 		break;
-	
+
 	case LEECH_AE_FLOP:
 		// Play flop sound
 		break;
-	
+
 	default:
 		CBaseMonster::HandleAnimEvent( pEvent );
 		break;
@@ -461,12 +461,12 @@ void CLeech::UpdateMotion( void )
 	float flapspeed = (pev->speed - m_flAccelerate) / LEECH_ACCELERATE;
 	m_flAccelerate = m_flAccelerate * 0.8 + pev->speed * 0.2;
 
-	if (flapspeed < 0) 
+	if (flapspeed < 0)
 		flapspeed = -flapspeed;
 	flapspeed += 1.0;
-	if (flapspeed < 0.5) 
+	if (flapspeed < 0.5)
 		flapspeed = 0.5;
-	if (flapspeed > 1.9) 
+	if (flapspeed > 1.9)
 		flapspeed = 1.9;
 
 	pev->framerate = flapspeed;
@@ -714,10 +714,10 @@ void CLeech::Killed(entvars_t *pevAttacker, int iGib)
 	}
 	else
 		SetActivity( ACT_DIEFORWARD );
-	
+
 	pev->movetype = MOVETYPE_TOSS;
 	pev->takedamage = DAMAGE_NO;
-	SetThink( DeadThink );
+	SetThink( &CLeech::DeadThink );
 }
 
 

@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -31,9 +31,9 @@ class CHealthKit : public CItem
 	BOOL MyTouch( CBasePlayer *pPlayer );
 
 /*
-	virtual int		Save( CSave &save ); 
+	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
-	
+
 	static	TYPEDESCRIPTION m_SaveData[];
 */
 
@@ -43,7 +43,7 @@ class CHealthKit : public CItem
 LINK_ENTITY_TO_CLASS( item_healthkit, CHealthKit );
 
 /*
-TYPEDESCRIPTION	CHealthKit::m_SaveData[] = 
+TYPEDESCRIPTION	CHealthKit::m_SaveData[] =
 {
 
 };
@@ -87,7 +87,7 @@ BOOL CHealthKit::MyTouch( CBasePlayer *pPlayer )
 		}
 		else
 		{
-			UTIL_Remove(this);	
+			UTIL_Remove(this);
 		}
 
 		return TRUE;
@@ -116,7 +116,7 @@ public:
 
 	static	TYPEDESCRIPTION m_SaveData[];
 
-	float m_flNextCharge; 
+	float m_flNextCharge;
 	int		m_iReactivate ; // DeathMatch Delay until reactvated
 	int		m_iJuice;
 	int		m_iOn;			// 0 = off, 1 = startup, 2 = going
@@ -167,7 +167,7 @@ void CWallHealth::Spawn()
 	UTIL_SetSize(pev, pev->mins, pev->maxs);
 	SET_MODEL(ENT(pev), STRING(pev->model) );
 	m_iJuice = gSkillData.healthchargerCapacity;
-	pev->frame = 0;			
+	pev->frame = 0;
 
 }
 
@@ -180,7 +180,7 @@ void CWallHealth::Precache()
 
 
 void CWallHealth::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
-{ 
+{
 	// Make sure that we have a caller
 	if (!pActivator)
 		return;
@@ -191,7 +191,7 @@ void CWallHealth::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE u
 	// if there is no juice left, turn it off
 	if (m_iJuice <= 0)
 	{
-		pev->frame = 1;			
+		pev->frame = 1;
 		Off();
 	}
 
@@ -207,7 +207,7 @@ void CWallHealth::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE u
 	}
 
 	pev->nextthink = pev->ltime + 0.25;
-	SetThink(Off);
+	SetThink(&CWallHealth::Off);
 
 	// Time to recharge yet?
 
@@ -242,8 +242,8 @@ void CWallHealth::Recharge(void)
 {
 		EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/medshot4.wav", 1.0, ATTN_NORM );
 	m_iJuice = gSkillData.healthchargerCapacity;
-	pev->frame = 0;			
-	SetThink( SUB_DoNothing );
+	pev->frame = 0;
+	SetThink( &CBaseEntity::SUB_DoNothing );
 }
 
 void CWallHealth::Off(void)
@@ -257,8 +257,8 @@ void CWallHealth::Off(void)
 	if ((!m_iJuice) &&  ( ( m_iReactivate = g_pGameRules->FlHealthChargerRechargeTime() ) > 0) )
 	{
 		pev->nextthink = pev->ltime + m_iReactivate;
-		SetThink(Recharge);
+		SetThink(&CWallHealth::Recharge);
 	}
 	else
-		SetThink( SUB_DoNothing );
+		SetThink( &CBaseEntity::SUB_DoNothing );
 }

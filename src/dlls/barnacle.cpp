@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -24,7 +24,7 @@
 
 #define	BARNACLE_BODY_HEIGHT	44 // how 'tall' the barnacle's model is.
 #define BARNACLE_PULL_SPEED		8
-#define BARNACLE_KILL_VICTIM_DELAY	5 // how many seconds after pulling prey in to gib them. 
+#define BARNACLE_KILL_VICTIM_DELAY	5 // how many seconds after pulling prey in to gib them.
 
 //=========================================================
 // Monster's Anim Events Go Here
@@ -67,7 +67,7 @@ public:
 };
 LINK_ENTITY_TO_CLASS( monster_barnacle, CBarnacle );
 
-TYPEDESCRIPTION	CBarnacle::m_SaveData[] = 
+TYPEDESCRIPTION	CBarnacle::m_SaveData[] =
 {
 	DEFINE_FIELD( CBarnacle, m_flAltitude, FIELD_FLOAT ),
 	DEFINE_FIELD( CBarnacle, m_flKillVictimTime, FIELD_TIME ),
@@ -82,7 +82,7 @@ IMPLEMENT_SAVERESTORE( CBarnacle, CBaseMonster );
 
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CBarnacle :: Classify ( void )
@@ -101,7 +101,7 @@ void CBarnacle :: HandleAnimEvent( MonsterEvent_t *pEvent )
 	switch( pEvent->event )
 	{
 	case BARNACLE_AE_PUKEGIB:
-		CGib::SpawnRandomGibs( pev, 1, 1 );	
+		CGib::SpawnRandomGibs( pev, 1, 1 );
 		break;
 	default:
 		CBaseMonster::HandleAnimEvent( pEvent );
@@ -123,7 +123,7 @@ void CBarnacle :: Spawn()
 	pev->movetype		= MOVETYPE_NONE;
 	pev->takedamage		= DAMAGE_AIM;
 	m_bloodColor		= BLOOD_COLOR_RED;
-	pev->effects		= EF_INVLIGHT; // take light from the ceiling 
+	pev->effects		= EF_INVLIGHT; // take light from the ceiling
 	pev->health			= 25;
 	m_flFieldOfView		= 0.5;// indicates the width of this monster's forward view cone ( as a dotproduct result )
 	m_MonsterState		= MONSTERSTATE_NONE;
@@ -137,7 +137,7 @@ void CBarnacle :: Spawn()
 
 	SetActivity ( ACT_IDLE );
 
-	SetThink ( BarnacleThink );
+	SetThink ( &CBarnacle::BarnacleThink );
 	pev->nextthink = gpGlobals->time + 0.5;
 
 	UTIL_SetOrigin ( pev, pev->origin );
@@ -199,7 +199,7 @@ void CBarnacle :: BarnacleThink ( void )
 			vecNewEnemyOrigin.y = pev->origin.y;
 
 			// guess as to where their neck is
-			vecNewEnemyOrigin.x -= 6 * cos(m_hEnemy->pev->angles.y * M_PI/180.0);	
+			vecNewEnemyOrigin.x -= 6 * cos(m_hEnemy->pev->angles.y * M_PI/180.0);
 			vecNewEnemyOrigin.y -= 6 * sin(m_hEnemy->pev->angles.y * M_PI/180.0);
 
 			m_flAltitude -= BARNACLE_PULL_SPEED;
@@ -210,7 +210,7 @@ void CBarnacle :: BarnacleThink ( void )
 		// prey has just been lifted into position ( if the victim origin + eye height + 8 is higher than the bottom of the barnacle, it is assumed that the head is within barnacle's body )
 				m_fLiftingPrey = FALSE;
 
-				EMIT_SOUND( ENT(pev), CHAN_WEAPON, "barnacle/bcl_bite3.wav", 1, ATTN_NORM );	
+				EMIT_SOUND( ENT(pev), CHAN_WEAPON, "barnacle/bcl_bite3.wav", 1, ATTN_NORM );
 
 				pVictim = m_hEnemy->MyMonsterPointer();
 
@@ -293,7 +293,7 @@ void CBarnacle :: BarnacleThink ( void )
 			// tongue is fully extended, and is touching someone.
 			if ( pTouchEnt->FBecomeProne() )
 			{
-				EMIT_SOUND( ENT(pev), CHAN_WEAPON, "barnacle/bcl_alert2.wav", 1, ATTN_NORM );	
+				EMIT_SOUND( ENT(pev), CHAN_WEAPON, "barnacle/bcl_alert2.wav", 1, ATTN_NORM );
 
 				SetSequenceByName ( "attack1" );
 				m_flTongueAdj = -20;
@@ -314,7 +314,7 @@ void CBarnacle :: BarnacleThink ( void )
 		}
 		else
 		{
-			// calculate a new length for the tongue to be clear of anything else that moves under it. 
+			// calculate a new length for the tongue to be clear of anything else that moves under it.
 			if ( m_flAltitude < flLength )
 			{
 				// if tongue is higher than is should be, lower it kind of slowly.
@@ -363,14 +363,14 @@ void CBarnacle :: Killed( entvars_t *pevAttacker, int iGib )
 	case 0:	EMIT_SOUND( ENT(pev), CHAN_WEAPON, "barnacle/bcl_die1.wav", 1, ATTN_NORM );	break;
 	case 1:	EMIT_SOUND( ENT(pev), CHAN_WEAPON, "barnacle/bcl_die3.wav", 1, ATTN_NORM );	break;
 	}
-	
+
 	SetActivity ( ACT_DIESIMPLE );
 	SetBoneController( 0, 0 );
 
 	StudioFrameAdvance( 0.1 );
 
 	pev->nextthink = gpGlobals->time + 0.1;
-	SetThink ( WaitTillDead );
+	SetThink ( &CBarnacle::WaitTillDead );
 }
 
 //=========================================================
@@ -384,7 +384,7 @@ void CBarnacle :: WaitTillDead ( void )
 
 	if ( m_fSequenceFinished )
 	{
-		// death anim finished. 
+		// death anim finished.
 		StopAnimation();
 		SetThink ( NULL );
 	}
@@ -404,7 +404,7 @@ void CBarnacle :: Precache()
 	PRECACHE_SOUND("barnacle/bcl_chew3.wav");
 	PRECACHE_SOUND("barnacle/bcl_die1.wav" );
 	PRECACHE_SOUND("barnacle/bcl_die3.wav" );
-}	
+}
 
 //=========================================================
 // TongueTouchEnt - does a trace along the barnacle's tongue

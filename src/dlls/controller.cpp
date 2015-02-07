@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -103,7 +103,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( monster_alien_controller, CController );
 
-TYPEDESCRIPTION	CController::m_SaveData[] = 
+TYPEDESCRIPTION	CController::m_SaveData[] =
 {
 	DEFINE_ARRAY( CController, m_pBall, FIELD_CLASSPTR, 2 ),
 	DEFINE_ARRAY( CController, m_iBall, FIELD_INTEGER, 2 ),
@@ -114,14 +114,14 @@ TYPEDESCRIPTION	CController::m_SaveData[] =
 IMPLEMENT_SAVERESTORE( CController, CSquadMonster );
 
 
-const char *CController::pAttackSounds[] = 
+const char *CController::pAttackSounds[] =
 {
 	"controller/con_attack1.wav",
 	"controller/con_attack2.wav",
 	"controller/con_attack3.wav",
 };
 
-const char *CController::pIdleSounds[] = 
+const char *CController::pIdleSounds[] =
 {
 	"controller/con_idle1.wav",
 	"controller/con_idle2.wav",
@@ -130,21 +130,21 @@ const char *CController::pIdleSounds[] =
 	"controller/con_idle5.wav",
 };
 
-const char *CController::pAlertSounds[] = 
+const char *CController::pAlertSounds[] =
 {
 	"controller/con_alert1.wav",
 	"controller/con_alert2.wav",
 	"controller/con_alert3.wav",
 };
 
-const char *CController::pPainSounds[] = 
+const char *CController::pPainSounds[] =
 {
 	"controller/con_pain1.wav",
 	"controller/con_pain2.wav",
 	"controller/con_pain3.wav",
 };
 
-const char *CController::pDeathSounds[] = 
+const char *CController::pDeathSounds[] =
 {
 	"controller/con_die1.wav",
 	"controller/con_die2.wav",
@@ -152,7 +152,7 @@ const char *CController::pDeathSounds[] =
 
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CController :: Classify ( void )
@@ -236,27 +236,27 @@ void CController::GibMonster( void )
 void CController :: PainSound( void )
 {
 	if (RANDOM_LONG(0,5) < 2)
-		EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pPainSounds ); 
-}	
+		EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pPainSounds );
+}
 
 void CController :: AlertSound( void )
 {
-	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pAlertSounds ); 
+	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pAlertSounds );
 }
 
 void CController :: IdleSound( void )
 {
-	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pIdleSounds ); 
+	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pIdleSounds );
 }
 
 void CController :: AttackSound( void )
 {
-	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pAttackSounds ); 
+	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pAttackSounds );
 }
 
 void CController :: DeathSound( void )
 {
-	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pDeathSounds ); 
+	EMIT_SOUND_ARRAY_DYN( CHAN_VOICE, pDeathSounds );
 }
 
 //=========================================================
@@ -270,9 +270,9 @@ void CController :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		case CONTROLLER_AE_HEAD_OPEN:
 		{
 			Vector vecStart, angleGun;
-			
+
 			GetAttachment( 0, vecStart, angleGun );
-			
+
 			MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
 				WRITE_BYTE( TE_ELIGHT );
 				WRITE_SHORT( entindex( ) + 0x1000 );		// entity, attachment
@@ -298,7 +298,7 @@ void CController :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		case CONTROLLER_AE_BALL_SHOOT:
 		{
 			Vector vecStart, angleGun;
-			
+
 			GetAttachment( 0, vecStart, angleGun );
 
 			MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
@@ -393,7 +393,7 @@ void CController :: Precache()
 
 	UTIL_PrecacheOther( "controller_energy_ball" );
 	UTIL_PrecacheOther( "controller_head_ball" );
-}	
+}
 
 //=========================================================
 // AI Schedules Specific to this monster
@@ -401,7 +401,7 @@ void CController :: Precache()
 
 
 // Chase enemy schedule
-Task_t tlControllerChaseEnemy[] = 
+Task_t tlControllerChaseEnemy[] =
 {
 	{ TASK_GET_PATH_TO_ENEMY,	(float)128		},
 	{ TASK_WAIT_FOR_MOVEMENT,	(float)0		},
@@ -410,7 +410,7 @@ Task_t tlControllerChaseEnemy[] =
 
 Schedule_t slControllerChaseEnemy[] =
 {
-	{ 
+	{
 		tlControllerChaseEnemy,
 		VARRAYSIZE ( tlControllerChaseEnemy ),
 		bits_COND_NEW_ENEMY			|
@@ -432,9 +432,9 @@ Task_t	tlControllerStrafe[] =
 
 Schedule_t	slControllerStrafe[] =
 {
-	{ 
+	{
 		tlControllerStrafe,
-		VARRAYSIZE ( tlControllerStrafe ), 
+		VARRAYSIZE ( tlControllerStrafe ),
 		bits_COND_NEW_ENEMY,
 		0,
 		"ControllerStrafe"
@@ -452,9 +452,9 @@ Task_t	tlControllerTakeCover[] =
 
 Schedule_t	slControllerTakeCover[] =
 {
-	{ 
+	{
 		tlControllerTakeCover,
-		VARRAYSIZE ( tlControllerTakeCover ), 
+		VARRAYSIZE ( tlControllerTakeCover ),
 		bits_COND_NEW_ENEMY,
 		0,
 		"ControllerTakeCover"
@@ -623,7 +623,7 @@ int CController::LookupFloat( )
 
 
 //=========================================================
-// RunTask 
+// RunTask
 //=========================================================
 void CController :: RunTask ( Task_t *pTask )
 {
@@ -631,14 +631,14 @@ void CController :: RunTask ( Task_t *pTask )
 	if (m_flShootEnd > gpGlobals->time)
 	{
 		Vector vecHand, vecAngle;
-		
+
 		GetAttachment( 2, vecHand, vecAngle );
-	
+
 		while (m_flShootTime < m_flShootEnd && m_flShootTime < gpGlobals->time)
 		{
 			Vector vecSrc = vecHand + pev->velocity * (m_flShootTime - gpGlobals->time);
 			Vector vecDir;
-			
+
 			if (m_hEnemy != NULL)
 			{
 				if (HasConditions( bits_COND_SEE_ENEMY ))
@@ -714,7 +714,7 @@ void CController :: RunTask ( Task_t *pTask )
 			}
 		}
 		break;
-	default: 
+	default:
 		CSquadMonster :: RunTask ( pTask );
 		break;
 	}
@@ -761,7 +761,7 @@ Schedule_t *CController :: GetSchedule ( void )
 
 //=========================================================
 //=========================================================
-Schedule_t* CController :: GetScheduleOfType ( int Type ) 
+Schedule_t* CController :: GetScheduleOfType ( int Type )
 {
 	// ALERT( at_console, "%d\n", m_iFrustration );
 	switch	( Type )
@@ -866,7 +866,7 @@ int i;	for ( i = 0; i < 2; i++)
 
 		GetAttachment( i + 2, vecStart, angleGun );
 		UTIL_SetOrigin( m_pBall[i]->pev, vecStart );
-		
+
 		MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
 			WRITE_BYTE( TE_ELIGHT );
 			WRITE_SHORT( entindex( ) + 0x1000 * (i + 3) );		// entity, attachment
@@ -886,14 +886,14 @@ int i;	for ( i = 0; i < 2; i++)
 
 extern void DrawRoute( entvars_t *pev, WayPoint_t *m_Route, int m_iRouteIndex, int r, int g, int b );
 
-void CController::Stop( void ) 
-{ 
-	m_IdealActivity = GetStoppedActivity(); 
+void CController::Stop( void )
+{
+	m_IdealActivity = GetStoppedActivity();
 }
 
 
 #define DIST_TO_CHECK	200
-void CController :: Move ( float flInterval ) 
+void CController :: Move ( float flInterval )
 {
 	float		flWaypointDist;
 	float		flCheckDist;
@@ -910,7 +910,7 @@ void CController :: Move ( float flInterval )
 		TaskFail();
 		return;
 	}
-	
+
 	if ( m_flMoveWaitFinished > gpGlobals->time )
 		return;
 
@@ -943,12 +943,12 @@ void CController :: Move ( float flInterval )
 
 	flMoveDist = m_flGroundSpeed * flInterval;
 
-	do 
+	do
 	{
 		// local move to waypoint.
 		vecDir = ( m_Route[ m_iRouteIndex ].vecLocation - pev->origin ).Normalize();
 		flWaypointDist = ( m_Route[ m_iRouteIndex ].vecLocation - pev->origin ).Length();
-		
+
 		// MakeIdealYaw ( m_Route[ m_iRouteIndex ].vecLocation );
 		// ChangeYaw ( pev->yaw_speed );
 
@@ -961,7 +961,7 @@ void CController :: Move ( float flInterval )
 		{
 			flCheckDist = DIST_TO_CHECK;
 		}
-		
+
 		if ( (m_Route[ m_iRouteIndex ].iType & (~bits_MF_NOT_TO_MASK)) == bits_MF_TO_ENEMY )
 		{
 			// only on a PURE move to enemy ( i.e., ONLY MF_TO_ENEMY set, not MF_TO_ENEMY and DETOUR )
@@ -999,7 +999,7 @@ void CController :: Move ( float flInterval )
 					return;
 				}
 			}
-			else 
+			else
 			{
 				// try to triangulate around whatever is in the way.
 				if ( FTriangulate( pev->origin, m_Route[ m_iRouteIndex ].vecLocation, flDist, pTargetEnt, &vecApex ) )
@@ -1009,7 +1009,7 @@ void CController :: Move ( float flInterval )
 				}
 				else
 				{
-	 			    ALERT ( at_aiconsole, "Couldn't Triangulate\n" );
+					ALERT ( at_aiconsole, "Couldn't Triangulate\n" );
 					Stop();
 					if ( m_moveWaitTime > 0 )
 					{
@@ -1125,7 +1125,7 @@ void CController::MoveExecute( CBaseEntity *pTargetEnt, const Vector &vecDir, fl
 	m_velocity = m_velocity * 0.8 + m_flGroundSpeed * vecDir * 0.2;
 
 	UTIL_MoveToOrigin ( ENT(pev), pev->origin + m_velocity, m_velocity.Length() * flInterval, MOVE_STRAFE );
-	
+
 }
 
 
@@ -1170,8 +1170,8 @@ void CControllerHeadBall :: Spawn( void )
 	UTIL_SetSize(pev, Vector( 0, 0, 0), Vector(0, 0, 0));
 	UTIL_SetOrigin( pev, pev->origin );
 
-	SetThink( HuntThink );
-	SetTouch( BounceTouch );
+	SetThink( &CControllerHeadBall::HuntThink );
+	SetTouch( &CControllerHeadBall::BounceTouch );
 
 	m_vecIdeal = Vector( 0, 0, 0 );
 
@@ -1257,7 +1257,7 @@ void CControllerHeadBall :: HuntThink( void  )
 
 		m_flNextAttack = gpGlobals->time + 3.0;
 
-		SetThink( DieThink );
+		SetThink( &CControllerHeadBall::DieThink );
 		pev->nextthink = gpGlobals->time + 0.3;
 	}
 
@@ -1364,8 +1364,8 @@ void CControllerZapBall :: Spawn( void )
 	UTIL_SetSize(pev, Vector( 0, 0, 0), Vector(0, 0, 0));
 	UTIL_SetOrigin( pev, pev->origin );
 
-	SetThink( AnimateThink );
-	SetTouch( ExplodeTouch );
+	SetThink( &CControllerZapBall::AnimateThink );
+	SetTouch( &CControllerZapBall::ExplodeTouch );
 
 	m_hOwner = Instance( pev->owner );
 	pev->dmgtime = gpGlobals->time; // keep track of when ball spawned
@@ -1384,7 +1384,7 @@ void CControllerZapBall :: Precache( void )
 void CControllerZapBall :: AnimateThink( void  )
 {
 	pev->nextthink = gpGlobals->time + 0.1;
-	
+
 	pev->frame = ((int)pev->frame + 1) % 11;
 
 	if (gpGlobals->time - pev->dmgtime > 5 || pev->velocity.Length() < 10)
@@ -1412,7 +1412,7 @@ void CControllerZapBall::ExplodeTouch( CBaseEntity *pOther )
 		}
 
 		ClearMultiDamage( );
-		pOther->TraceAttack(pevOwner, gSkillData.controllerDmgBall, pev->velocity.Normalize(), &tr, DMG_ENERGYBEAM ); 
+		pOther->TraceAttack(pevOwner, gSkillData.controllerDmgBall, pev->velocity.Normalize(), &tr, DMG_ENERGYBEAM );
 		ApplyMultiDamage( pevOwner, pevOwner );
 
 		UTIL_EmitAmbientSound( ENT(pev), tr.vecEndPos, "weapons/electro4.wav", 0.3, ATTN_NORM, 0, RANDOM_LONG( 90, 99 ) );

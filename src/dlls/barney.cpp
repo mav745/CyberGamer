@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -51,13 +51,13 @@ public:
 	void AlertSound( void );
 	int  Classify ( void );
 	void HandleAnimEvent( MonsterEvent_t *pEvent );
-	
+
 	void RunTask( Task_t *pTask );
 	void StartTask( Task_t *pTask );
 	virtual int	ObjectCaps( void ) { return CTalkMonster :: ObjectCaps() | FCAP_IMPULSE_USE; }
 	int TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType);
 	BOOL CheckRangeAttack1 ( float flDot, float flDist );
-	
+
 	void DeclineFollowing( void );
 
 	// Override these to set behavior
@@ -67,12 +67,12 @@ public:
 
 	void DeathSound( void );
 	void PainSound( void );
-	
+
 	void TalkInit( void );
 
 	void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType);
 	void Killed( entvars_t *pevAttacker, int iGib );
-	
+
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
 	static	TYPEDESCRIPTION m_SaveData[];
@@ -90,7 +90,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( monster_barney, CBarney );
 
-TYPEDESCRIPTION	CBarney::m_SaveData[] = 
+TYPEDESCRIPTION	CBarney::m_SaveData[] =
 {
 	DEFINE_FIELD( CBarney, m_fGunDrawn, FIELD_BOOLEAN ),
 	DEFINE_FIELD( CBarney, m_painTime, FIELD_TIME ),
@@ -136,7 +136,7 @@ Task_t	tlBarneyEnemyDraw[] =
 	{ TASK_PLAY_SEQUENCE_FACE_ENEMY,	(float) ACT_ARM },
 };
 
-Schedule_t slBarneyEnemyDraw[] = 
+Schedule_t slBarneyEnemyDraw[] =
 {
 	{
 		tlBarneyEnemyDraw,
@@ -182,9 +182,9 @@ Task_t	tlIdleBaStand[] =
 
 Schedule_t	slIdleBaStand[] =
 {
-	{ 
+	{
 		tlIdleBaStand,
-		VARRAYSIZE ( tlIdleBaStand ), 
+		VARRAYSIZE ( tlIdleBaStand ),
 		bits_COND_NEW_ENEMY		|
 		bits_COND_LIGHT_DAMAGE	|
 		bits_COND_HEAVY_DAMAGE	|
@@ -195,7 +195,7 @@ Schedule_t	slIdleBaStand[] =
 		bits_SOUND_COMBAT		|// sound flags - change these, and you'll break the talking code.
 		//bits_SOUND_PLAYER		|
 		//bits_SOUND_WORLD		|
-		
+
 		bits_SOUND_DANGER		|
 		bits_SOUND_MEAT			|// scents
 		bits_SOUND_CARCASS		|
@@ -217,7 +217,7 @@ IMPLEMENT_CUSTOM_SCHEDULES( CBarney, CTalkMonster );
 
 void CBarney :: StartTask( Task_t *pTask )
 {
-	CTalkMonster::StartTask( pTask );	
+	CTalkMonster::StartTask( pTask );
 }
 
 void CBarney :: RunTask( Task_t *pTask )
@@ -242,9 +242,9 @@ void CBarney :: RunTask( Task_t *pTask )
 
 //=========================================================
 // ISoundMask - returns a bit mask indicating which types
-// of sounds this monster regards. 
+// of sounds this monster regards.
 //=========================================================
-int CBarney :: ISoundMask ( void) 
+int CBarney :: ISoundMask ( void)
 {
 	return	bits_SOUND_WORLD	|
 			bits_SOUND_COMBAT	|
@@ -256,7 +256,7 @@ int CBarney :: ISoundMask ( void)
 }
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CBarney :: Classify ( void )
@@ -290,7 +290,7 @@ void CBarney :: SetYawSpeed ( void )
 
 	switch ( m_Activity )
 	{
-	case ACT_IDLE:		
+	case ACT_IDLE:
 		ys = 70;
 		break;
 	case ACT_WALK:
@@ -318,7 +318,7 @@ BOOL CBarney :: CheckRangeAttack1 ( float flDot, float flDist )
 		if ( gpGlobals->time > m_checkAttackTime )
 		{
 			TraceResult tr;
-			
+
 			Vector shootOrigin = pev->origin + Vector( 0, 0, 55 );
 			CBaseEntity *pEnemy = m_hEnemy;
 			Vector shootTarget = ( (pEnemy->BodyTarget( shootOrigin ) - pEnemy->pev->origin) + m_vecEnemyLKP );
@@ -353,9 +353,9 @@ void CBarney :: BarneyFirePistol ( void )
 	pev->effects = EF_MUZZLEFLASH;
 
 	FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_2DEGREES, 1024, BULLET_MONSTER_9MM );
-	
+
 	int pitchShift = RANDOM_LONG( 0, 20 );
-	
+
 	// Only shift about half the time
 	if ( pitchShift > 10 )
 		pitchShift = 0;
@@ -368,7 +368,7 @@ void CBarney :: BarneyFirePistol ( void )
 	// UNDONE: Reload?
 	m_cAmmoLoaded--;// take away a bullet!
 }
-		
+
 //=========================================================
 // HandleAnimEvent - catches the monster-specific messages
 // that occur when tagged animation frames are played.
@@ -424,7 +424,7 @@ void CBarney :: Spawn()
 	m_afCapability		= bits_CAP_HEAR | bits_CAP_TURN_HEAD | bits_CAP_DOORS_GROUP;
 
 	MonsterInit();
-	SetUse( FollowerUse );
+	SetUse( &CTalkMonster::FollowerUse );
 }
 
 //=========================================================
@@ -444,17 +444,17 @@ void CBarney :: Precache()
 	PRECACHE_SOUND("barney/ba_die1.wav");
 	PRECACHE_SOUND("barney/ba_die2.wav");
 	PRECACHE_SOUND("barney/ba_die3.wav");
-	
+
 	// every new barney must call this, otherwise
 	// when a level is loaded, nobody will talk (time is reset to 0)
 	TalkInit();
 	CTalkMonster::Precache();
-}	
+}
 
 // Init talk data
 void CBarney :: TalkInit()
 {
-	
+
 	CTalkMonster::TalkInit();
 
 	// scientists speach group names (group names are in sentences.txt)
@@ -471,7 +471,7 @@ void CBarney :: TalkInit()
 	m_szGrp[TLK_HELLO] =	"BA_HELLO";
 
 	m_szGrp[TLK_PLHURT1] =	"!BA_CUREA";
-	m_szGrp[TLK_PLHURT2] =	"!BA_CUREB"; 
+	m_szGrp[TLK_PLHURT2] =	"!BA_CUREB";
 	m_szGrp[TLK_PLHURT3] =	"!BA_CUREC";
 
 	m_szGrp[TLK_PHELLO] =	NULL;	//"BA_PHELLO";		// UNDONE
@@ -479,7 +479,7 @@ void CBarney :: TalkInit()
 	m_szGrp[TLK_PQUESTION] = "BA_PQUEST";		// UNDONE
 
 	m_szGrp[TLK_SMELL] =	"BA_SMELL";
-	
+
 	m_szGrp[TLK_WOUND] =	"BA_WOUND";
 	m_szGrp[TLK_MORTAL] =	"BA_MORTAL";
 
@@ -546,7 +546,7 @@ int CBarney :: TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, floa
 	return ret;
 }
 
-	
+
 //=========================================================
 // PainSound
 //=========================================================
@@ -554,7 +554,7 @@ void CBarney :: PainSound ( void )
 {
 	if (gpGlobals->time < m_painTime)
 		return;
-	
+
 	m_painTime = gpGlobals->time + RANDOM_FLOAT(0.5, 0.75);
 
 	switch (RANDOM_LONG(0,2))
@@ -566,7 +566,7 @@ void CBarney :: PainSound ( void )
 }
 
 //=========================================================
-// DeathSound 
+// DeathSound
 //=========================================================
 void CBarney :: DeathSound ( void )
 {
@@ -619,11 +619,11 @@ void CBarney::Killed( entvars_t *pevAttacker, int iGib )
 		pev->body = BARNEY_BODY_GUNGONE;
 
 		GetAttachment( 0, vecGunPos, vecGunAngles );
-		
+
 		CBaseEntity *pGun = DropItem( "weapon_9mmhandgun", vecGunPos, vecGunAngles );
 	}
 
-	SetUse( NULL );	
+	SetUse( NULL );
 	CTalkMonster::Killed( pevAttacker, iGib );
 }
 
@@ -648,7 +648,7 @@ Schedule_t* CBarney :: GetScheduleOfType ( int Type )
 	// Hook these to make a looping schedule
 	case SCHED_TARGET_FACE:
 		// call base class default so that barney will talk
-		// when 'used' 
+		// when 'used'
 		psched = CTalkMonster::GetScheduleOfType(Type);
 
 		if (psched == slIdleStand)
@@ -670,7 +670,7 @@ Schedule_t* CBarney :: GetScheduleOfType ( int Type )
 			return slIdleBaStand;
 		}
 		else
-			return psched;	
+			return psched;
 	}
 
 	return CTalkMonster::GetScheduleOfType( Type );
@@ -712,7 +712,7 @@ Schedule_t *CBarney :: GetSchedule ( void )
 			// always act surprized with a new enemy
 			if ( HasConditions( bits_COND_NEW_ENEMY ) && HasConditions( bits_COND_LIGHT_DAMAGE) )
 				return GetScheduleOfType( SCHED_SMALL_FLINCH );
-				
+
 			// wait for one schedule to draw gun
 			if (!m_fGunDrawn )
 				return GetScheduleOfType( SCHED_ARM_WEAPON );
@@ -722,7 +722,7 @@ Schedule_t *CBarney :: GetSchedule ( void )
 		}
 		break;
 
-	case MONSTERSTATE_ALERT:	
+	case MONSTERSTATE_ALERT:
 	case MONSTERSTATE_IDLE:
 		if ( HasConditions(bits_COND_LIGHT_DAMAGE | bits_COND_HEAVY_DAMAGE))
 		{
@@ -757,7 +757,7 @@ Schedule_t *CBarney :: GetSchedule ( void )
 		TrySmellTalk();
 		break;
 	}
-	
+
 	return CTalkMonster::GetSchedule();
 }
 
@@ -808,7 +808,7 @@ void CDeadBarney::KeyValue( KeyValueData *pkvd )
 		m_iPose = atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
-	else 
+	else
 		CBaseMonster::KeyValue( pkvd );
 }
 

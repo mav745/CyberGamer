@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -68,7 +68,7 @@ void CFuncWall :: Spawn( void )
 	pev->movetype	= MOVETYPE_PUSH;  // so it doesn't get pushed by anything
 	pev->solid		= SOLID_BSP;
 	SET_MODEL( ENT(pev), STRING(pev->model) );
-	
+
 	// If it can't move/go away, it's really part of the world
 	pev->flags |= FL_WORLDBRUSH;
 }
@@ -193,7 +193,7 @@ void CFuncConveyor :: UpdateSpeed( float speed )
 
 void CFuncConveyor :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-    pev->speed = -pev->speed;
+	pev->speed = -pev->speed;
 	UpdateSpeed( pev->speed );
 }
 
@@ -205,7 +205,7 @@ void CFuncConveyor :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TY
 /*QUAKED func_illusionary (0 .5 .8) ?
 A simple entity that looks solid but lets you walk through it.
 */
-class CFuncIllusionary : public CBaseToggle 
+class CFuncIllusionary : public CBaseToggle
 {
 public:
 	void Spawn( void );
@@ -230,10 +230,10 @@ void CFuncIllusionary :: KeyValue( KeyValueData *pkvd )
 void CFuncIllusionary :: Spawn( void )
 {
 	pev->angles = g_vecZero;
-	pev->movetype = MOVETYPE_NONE;  
-	pev->solid = SOLID_NOT;// always solid_not 
+	pev->movetype = MOVETYPE_NONE;
+	pev->solid = SOLID_NOT;// always solid_not
 	SET_MODEL( ENT(pev), STRING(pev->model) );
-	
+
 	// I'd rather eat the network bandwidth of this than figure out how to save/restore
 	// these entities after they have been moved to the client, or respawn them ala Quake
 	// Perhaps we can do this in deathmatch only.
@@ -244,11 +244,11 @@ void CFuncIllusionary :: Spawn( void )
 // -------------------------------------------------------------------------------
 //
 // Monster only clip brush
-// 
+//
 // This brush will be solid for any entity who has the FL_MONSTERCLIP flag set
 // in pev->flags
 //
-// otherwise it will be invisible and not solid.  This can be used to keep 
+// otherwise it will be invisible and not solid.  This can be used to keep
 // specific monsters out of certain areas
 //
 // -------------------------------------------------------------------------------
@@ -288,7 +288,7 @@ public:
 	virtual int	ObjectCaps( void ) { return CBaseEntity :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
-	
+
 	static	TYPEDESCRIPTION m_SaveData[];
 
 	float m_flFanFriction;
@@ -298,7 +298,7 @@ public:
 	int	  m_sounds;
 };
 
-TYPEDESCRIPTION	CFuncRotating::m_SaveData[] = 
+TYPEDESCRIPTION	CFuncRotating::m_SaveData[] =
 {
 	DEFINE_FIELD( CFuncRotating, m_flFanFriction, FIELD_FLOAT ),
 	DEFINE_FIELD( CFuncRotating, m_flAttenuation, FIELD_FLOAT ),
@@ -341,14 +341,14 @@ void CFuncRotating :: KeyValue( KeyValueData* pkvd)
 		m_sounds = atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
-	else 
+	else
 		CBaseEntity::KeyValue( pkvd );
 }
 
 /*QUAKED func_rotating (0 .5 .8) ? START_ON REVERSE X_AXIS Y_AXIS
-You need to have an origin brush as part of this entity.  The  
+You need to have an origin brush as part of this entity.  The
 center of that brush will be
-the point around which it is rotated. It will rotate around the Z  
+the point around which it is rotated. It will rotate around the Z
 axis by default.  You can
 check either the X_AXIS or Y_AXIS box to change that.
 
@@ -372,7 +372,7 @@ void CFuncRotating :: Spawn( )
 
 	// if the designer didn't set a sound attenuation, default to one.
 	m_flAttenuation = ATTN_NORM;
-	
+
 	if ( FBitSet ( pev->spawnflags, SF_BRUSH_ROTATE_SMALLRADIUS) )
 	{
 		m_flAttenuation = ATTN_IDLE;
@@ -391,12 +391,12 @@ void CFuncRotating :: Spawn( )
 	{
 		m_flFanFriction = 1;
 	}
-	
+
 	if ( FBitSet(pev->spawnflags, SF_BRUSH_ROTATE_Z_AXIS) )
 		pev->movedir = Vector(0,0,1);
 	else if ( FBitSet(pev->spawnflags, SF_BRUSH_ROTATE_X_AXIS) )
 		pev->movedir = Vector(1,0,0);
-	else 
+	else
 		pev->movedir = Vector(0,1,0);	// y-axis
 
 	// check for reverse rotation
@@ -419,7 +419,7 @@ void CFuncRotating :: Spawn( )
 	UTIL_SetOrigin(pev, pev->origin);
 	SET_MODEL( ENT(pev), STRING(pev->model) );
 
-	SetUse( RotatingUse );
+	SetUse( &CFuncRotating::RotatingUse );
 	// did level designer forget to assign speed?
 	if (pev->speed <= 0)
 		pev->speed = 0;
@@ -430,16 +430,16 @@ void CFuncRotating :: Spawn( )
 
 	// instant-use brush?
 	if ( FBitSet( pev->spawnflags, SF_BRUSH_ROTATE_INSTANT) )
-	{		
-		SetThink( SUB_CallUseToggle );
+	{
+		SetThink( &CBaseEntity::SUB_CallUseToggle );
 		pev->nextthink = pev->ltime + 1.5;	// leave a magic delay for client to start up
-	}	
+	}
 	// can this brush inflict pain?
 	if ( FBitSet (pev->spawnflags, SF_BRUSH_HURT) )
 	{
-		SetTouch( HurtTouch );
+		SetTouch( &CFuncRotating::HurtTouch );
 	}
-	
+
 	Precache( );
 }
 
@@ -455,7 +455,7 @@ void CFuncRotating :: Precache( void )
 		// if a path is set for a wave, use it
 
 		PRECACHE_SOUND(szSoundFile);
-			
+
 		pev->noiseRunning = ALLOC_STRING(szSoundFile);
 	} else
 	{
@@ -488,7 +488,7 @@ void CFuncRotating :: Precache( void )
 			if (!FStringNull( pev->message ) && strlen( szSoundFile ) > 0)
 			{
 				PRECACHE_SOUND(szSoundFile);
-				
+
 				pev->noiseRunning = ALLOC_STRING(szSoundFile);
 				break;
 			} else
@@ -498,13 +498,13 @@ void CFuncRotating :: Precache( void )
 			}
 		}
 	}
-	
+
 	if (pev->avelocity != g_vecZero )
 	{
 		// if fan was spinning, and we went through transition or save/restore,
 		// make sure we restart the sound.  1.5 sec delay is magic number. KDB
 
-		SetThink ( SpinUp );
+		SetThink ( &CFuncRotating::SpinUp );
 		pev->nextthink = pev->ltime + 1.5;
 	}
 }
@@ -526,7 +526,7 @@ void CFuncRotating :: HurtTouch ( CBaseEntity *pOther )
 	pev->dmg = pev->avelocity.Length() / 10;
 
 	pOther->TakeDamage( pev, pev, pev->dmg, DMG_CRUSH);
-	
+
 	pevOther->velocity = (pevOther->origin - VecBModelOrigin(pev) ).Normalize() * pev->dmg;
 }
 
@@ -547,11 +547,11 @@ void CFuncRotating :: RampPitchVol (int fUp)
 	float fvol;
 	float fpitch;
 	int pitch;
-	
+
 	// get current angular velocity
 
 	vecCur = abs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
-	
+
 	// get target angular velocity
 
 	vecFinal = (pev->movedir.x != 0 ? pev->movedir.x : (pev->movedir.y != 0 ? pev->movedir.y : pev->movedir.z));
@@ -566,15 +566,15 @@ void CFuncRotating :: RampPitchVol (int fUp)
 //	else
 		fvol = m_flVolume * fpct;			  // slowdown volume ramps down to 0
 
-	fpitch = FANPITCHMIN + (FANPITCHMAX - FANPITCHMIN) * fpct;	
-	
+	fpitch = FANPITCHMIN + (FANPITCHMAX - FANPITCHMIN) * fpct;
+
 	pitch = (int) fpitch;
 	if (pitch == PITCH_NORM)
 		pitch = PITCH_NORM-1;
 
 	// change the fan's vol and pitch
 
-	EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning), 
+	EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning),
 		fvol, m_flAttenuation, SND_CHANGE_PITCH | SND_CHANGE_VOL, pitch);
 
 }
@@ -597,12 +597,12 @@ void CFuncRotating :: SpinUp( void )
 			abs(vecAVel.z) >= abs(pev->movedir.z * pev->speed) )
 	{
 		pev->avelocity = pev->movedir * pev->speed;// set speed in case we overshot
-		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning), 
+		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning),
 			m_flVolume, m_flAttenuation, SND_CHANGE_PITCH | SND_CHANGE_VOL, FANPITCHMAX);
-		
-		SetThink( Rotate );
+
+		SetThink( &CFuncRotating::Rotate );
 		Rotate();
-	} 
+	}
 	else
 	{
 		RampPitchVol(TRUE);
@@ -632,18 +632,18 @@ void CFuncRotating :: SpinDown( void )
 
 	// if we've met or exceeded target speed, set target speed and stop thinking
 	// (note: must check for movedir > 0 or < 0)
-	if (((vecdir > 0) && (vecAVel.x <= 0 && vecAVel.y <= 0 && vecAVel.z <= 0)) || 
+	if (((vecdir > 0) && (vecAVel.x <= 0 && vecAVel.y <= 0 && vecAVel.z <= 0)) ||
 		((vecdir < 0) && (vecAVel.x >= 0 && vecAVel.y >= 0 && vecAVel.z >= 0)))
 	{
 		pev->avelocity = g_vecZero;// set speed in case we overshot
-		
+
 		// stop sound, we're done
-		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning /* Stop */), 
+		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning /* Stop */),
 				0, 0, SND_STOP, m_pitch);
 
-		SetThink( Rotate );
+		SetThink( &CFuncRotating::Rotate );
 		Rotate();
-	} 
+	}
 	else
 	{
 		RampPitchVol(FALSE);
@@ -666,16 +666,16 @@ void CFuncRotating :: RotatingUse( CBaseEntity *pActivator, CBaseEntity *pCaller
 		// fan is spinning, so stop it.
 		if ( pev->avelocity != g_vecZero )
 		{
-			SetThink ( SpinDown );
-			//EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, (char *)STRING(pev->noiseStop), 
+			SetThink ( &CFuncRotating::SpinDown );
+			//EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, (char *)STRING(pev->noiseStop),
 			//	m_flVolume, m_flAttenuation, 0, m_pitch);
 
 			pev->nextthink = pev->ltime + 0.1;
 		}
 		else// fan is not moving, so start it
 		{
-			SetThink ( SpinUp );
-			EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning), 
+			SetThink ( &CFuncRotating::SpinUp );
+			EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning),
 				0.01, m_flAttenuation, 0, FANPITCHMIN);
 
 			pev->nextthink = pev->ltime + 0.1;
@@ -686,21 +686,21 @@ void CFuncRotating :: RotatingUse( CBaseEntity *pActivator, CBaseEntity *pCaller
 		if ( pev->avelocity != g_vecZero )
 		{
 			// play stopping sound here
-			SetThink ( SpinDown );
+			SetThink ( &CFuncRotating::SpinDown );
 
-			// EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, (char *)STRING(pev->noiseStop), 
+			// EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, (char *)STRING(pev->noiseStop),
 			//	m_flVolume, m_flAttenuation, 0, m_pitch);
-			
+
 			pev->nextthink = pev->ltime + 0.1;
 			// pev->avelocity = g_vecZero;
 		}
 		else
 		{
-			EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning), 
+			EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning),
 				m_flVolume, m_flAttenuation, 0, FANPITCHMAX);
 			pev->avelocity = pev->movedir * pev->speed;
 
-			SetThink( Rotate );
+			SetThink( &CFuncRotating::Rotate );
 			Rotate();
 		}
 	}
@@ -740,9 +740,9 @@ public:
 	void	Blocked( CBaseEntity *pOther );
 
 	static	TYPEDESCRIPTION m_SaveData[];
-	
+
 	float	m_accel;			// Acceleration
-	float	m_distance;			// 
+	float	m_distance;			//
 	float	m_time;
 	float	m_damp;
 	float	m_maxSpeed;
@@ -753,7 +753,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( func_pendulum, CPendulum );
 
-TYPEDESCRIPTION	CPendulum::m_SaveData[] = 
+TYPEDESCRIPTION	CPendulum::m_SaveData[] =
 {
 	DEFINE_FIELD( CPendulum, m_accel, FIELD_FLOAT ),
 	DEFINE_FIELD( CPendulum, m_distance, FIELD_FLOAT ),
@@ -781,7 +781,7 @@ void CPendulum :: KeyValue( KeyValueData *pkvd )
 		m_damp = atof(pkvd->szValue) * 0.001;
 		pkvd->fHandled = TRUE;
 	}
-	else 
+	else
 		CBaseEntity::KeyValue( pkvd );
 }
 
@@ -811,16 +811,16 @@ void CPendulum :: Spawn( void )
 	m_center = pev->angles + (m_distance * 0.5) * pev->movedir;
 
 	if ( FBitSet( pev->spawnflags, SF_BRUSH_ROTATE_INSTANT) )
-	{		
-		SetThink( SUB_CallUseToggle );
+	{
+		SetThink( &CBaseEntity::SUB_CallUseToggle );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 	pev->speed = 0;
-	SetUse( PendulumUse );
+	SetUse( &CPendulum::PendulumUse );
 
 	if ( FBitSet( pev->spawnflags, SF_PENDULUM_SWING ) )
 	{
-		SetTouch ( RopeTouch );
+		SetTouch ( &CPendulum::RopeTouch );
 	}
 }
 
@@ -830,14 +830,14 @@ void CPendulum :: PendulumUse( CBaseEntity *pActivator, CBaseEntity *pCaller, US
 	if ( pev->speed )		// Pendulum is moving, stop it and auto-return if necessary
 	{
 		if ( FBitSet( pev->spawnflags, SF_PENDULUM_AUTO_RETURN ) )
-		{		
+		{
 			float	delta;
 
 			delta = CBaseToggle :: AxisDelta( pev->spawnflags, pev->angles, m_start );
 
 			pev->avelocity = m_maxSpeed * pev->movedir;
 			pev->nextthink = pev->ltime + (delta / m_maxSpeed);
-			SetThink( Stop );
+			SetThink( &CPendulum::Stop );
 		}
 		else
 		{
@@ -850,7 +850,7 @@ void CPendulum :: PendulumUse( CBaseEntity *pActivator, CBaseEntity *pCaller, US
 	{
 		pev->nextthink = pev->ltime + 0.1;		// Start the pendulum moving
 		m_time = gpGlobals->time;		// Save time to calculate dt
-		SetThink( Swing );
+		SetThink( &CPendulum::Swing );
 		m_dampSpeed = m_maxSpeed;
 	}
 }
@@ -874,14 +874,14 @@ void CPendulum::Blocked( CBaseEntity *pOther )
 void CPendulum :: Swing( void )
 {
 	float delta, dt;
-	
+
 	delta = CBaseToggle :: AxisDelta( pev->spawnflags, pev->angles, m_center );
 	dt = gpGlobals->time - m_time;	// How much time has passed?
 	m_time = gpGlobals->time;		// Remember the last time called
 
 	if ( delta > 0 && m_accel > 0 )
 		pev->speed -= m_accel * dt;	// Integrate velocity
-	else 
+	else
 		pev->speed += m_accel * dt;
 
 	if ( pev->speed > m_maxSpeed )
@@ -931,7 +931,7 @@ void CPendulum :: Touch ( CBaseEntity *pOther )
 		damage = -damage;
 
 	pOther->TakeDamage( pev, pev, damage, DMG_CRUSH );
-	
+
 	pevOther->velocity = (pevOther->origin - VecBModelOrigin(pev) ).Normalize() * damage;
 }
 

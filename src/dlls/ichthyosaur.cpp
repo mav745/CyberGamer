@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -59,7 +59,7 @@ public:
 	void  HandleAnimEvent( MonsterEvent_t *pEvent );
 	CUSTOM_SCHEDULES;
 
-	int	Save( CSave &save ); 
+	int	Save( CSave &save );
 	int Restore( CRestore &restore );
 	static TYPEDESCRIPTION m_SaveData[];
 
@@ -125,7 +125,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( monster_ichthyosaur, CIchthyosaur );
 
-TYPEDESCRIPTION	CIchthyosaur::m_SaveData[] = 
+TYPEDESCRIPTION	CIchthyosaur::m_SaveData[] =
 {
 	DEFINE_FIELD( CIchthyosaur, m_SaveVelocity, FIELD_VECTOR ),
 	DEFINE_FIELD( CIchthyosaur, m_idealDist, FIELD_FLOAT ),
@@ -141,7 +141,7 @@ TYPEDESCRIPTION	CIchthyosaur::m_SaveData[] =
 IMPLEMENT_SAVERESTORE( CIchthyosaur, CFlyingMonster );
 
 
-const char *CIchthyosaur::pIdleSounds[] = 
+const char *CIchthyosaur::pIdleSounds[] =
 {
 	"ichy/ichy_idle1.wav",
 	"ichy/ichy_idle2.wav",
@@ -149,75 +149,75 @@ const char *CIchthyosaur::pIdleSounds[] =
 	"ichy/ichy_idle4.wav",
 };
 
-const char *CIchthyosaur::pAlertSounds[] = 
+const char *CIchthyosaur::pAlertSounds[] =
 {
 	"ichy/ichy_alert2.wav",
 	"ichy/ichy_alert3.wav",
 };
 
-const char *CIchthyosaur::pAttackSounds[] = 
+const char *CIchthyosaur::pAttackSounds[] =
 {
 	"ichy/ichy_attack1.wav",
 	"ichy/ichy_attack2.wav",
 };
 
-const char *CIchthyosaur::pBiteSounds[] = 
+const char *CIchthyosaur::pBiteSounds[] =
 {
 	"ichy/ichy_bite1.wav",
 	"ichy/ichy_bite2.wav",
 };
 
-const char *CIchthyosaur::pPainSounds[] = 
+const char *CIchthyosaur::pPainSounds[] =
 {
 	"ichy/ichy_pain2.wav",
 	"ichy/ichy_pain3.wav",
 	"ichy/ichy_pain5.wav",
 };
 
-const char *CIchthyosaur::pDieSounds[] = 
+const char *CIchthyosaur::pDieSounds[] =
 {
 	"ichy/ichy_die2.wav",
 	"ichy/ichy_die4.wav",
 };
 
 #define EMIT_ICKY_SOUND( chan, array ) \
-	EMIT_SOUND_DYN ( ENT(pev), chan , array [ RANDOM_LONG(0,VARRAYSIZE( array )-1) ], 1.0, 0.6, 0, RANDOM_LONG(95,105) ); 
+	EMIT_SOUND_DYN ( ENT(pev), chan , array [ RANDOM_LONG(0,VARRAYSIZE( array )-1) ], 1.0, 0.6, 0, RANDOM_LONG(95,105) );
 
 
-void CIchthyosaur :: IdleSound( void )	
-{ 
-	EMIT_ICKY_SOUND( CHAN_VOICE, pIdleSounds ); 
+void CIchthyosaur :: IdleSound( void )
+{
+	EMIT_ICKY_SOUND( CHAN_VOICE, pIdleSounds );
 }
 
-void CIchthyosaur :: AlertSound( void ) 
-{ 
-	EMIT_ICKY_SOUND( CHAN_VOICE, pAlertSounds ); 
+void CIchthyosaur :: AlertSound( void )
+{
+	EMIT_ICKY_SOUND( CHAN_VOICE, pAlertSounds );
 }
 
-void CIchthyosaur :: AttackSound( void ) 
-{ 
+void CIchthyosaur :: AttackSound( void )
+{
 	EMIT_ICKY_SOUND( CHAN_VOICE, pAttackSounds );
 }
 
-void CIchthyosaur :: BiteSound( void ) 
-{ 
+void CIchthyosaur :: BiteSound( void )
+{
 	EMIT_ICKY_SOUND( CHAN_WEAPON, pBiteSounds );
 }
 
-void CIchthyosaur :: DeathSound( void ) 
-{ 
-	EMIT_ICKY_SOUND( CHAN_VOICE, pDieSounds ); 
+void CIchthyosaur :: DeathSound( void )
+{
+	EMIT_ICKY_SOUND( CHAN_VOICE, pDieSounds );
 }
 
-void CIchthyosaur :: PainSound( void )	
-{ 
-	EMIT_ICKY_SOUND( CHAN_VOICE, pPainSounds ); 
+void CIchthyosaur :: PainSound( void )
+{
+	EMIT_ICKY_SOUND( CHAN_VOICE, pPainSounds );
 }
 
 //=========================================================
 // monster-specific tasks and states
 //=========================================================
-enum 
+enum
 {
 	TASK_ICHTHYOSAUR_CIRCLE_ENEMY = LAST_COMMON_TASK + 1,
 	TASK_ICHTHYOSAUR_SWIM,
@@ -236,9 +236,9 @@ static Task_t	tlSwimAround[] =
 
 static Schedule_t	slSwimAround[] =
 {
-	{ 
+	{
 		tlSwimAround,
-		VARRAYSIZE(tlSwimAround), 
+		VARRAYSIZE(tlSwimAround),
 		bits_COND_LIGHT_DAMAGE	|
 		bits_COND_HEAVY_DAMAGE	|
 		bits_COND_SEE_ENEMY		|
@@ -259,11 +259,11 @@ static Task_t	tlSwimAgitated[] =
 
 static Schedule_t	slSwimAgitated[] =
 {
-	{ 
+	{
 		tlSwimAgitated,
-		VARRAYSIZE(tlSwimAgitated), 
-		0, 
-		0, 
+		VARRAYSIZE(tlSwimAgitated),
+		0,
+		0,
 		"SwimAgitated"
 	},
 };
@@ -277,9 +277,9 @@ static Task_t	tlCircleEnemy[] =
 
 static Schedule_t	slCircleEnemy[] =
 {
-	{ 
+	{
 		tlCircleEnemy,
-		VARRAYSIZE(tlCircleEnemy), 
+		VARRAYSIZE(tlCircleEnemy),
 		bits_COND_NEW_ENEMY		|
 		bits_COND_LIGHT_DAMAGE	|
 		bits_COND_HEAVY_DAMAGE	|
@@ -313,7 +313,7 @@ Schedule_t slTwitchDie[] =
 
 DEFINE_CUSTOM_SCHEDULES(CIchthyosaur)
 {
-    slSwimAround,
+	slSwimAround,
 	slSwimAgitated,
 	slCircleEnemy,
 	slTwitchDie,
@@ -321,7 +321,7 @@ DEFINE_CUSTOM_SCHEDULES(CIchthyosaur)
 IMPLEMENT_CUSTOM_SCHEDULES(CIchthyosaur, CFlyingMonster);
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CIchthyosaur :: Classify ( void )
@@ -345,7 +345,7 @@ BOOL CIchthyosaur :: CheckMeleeAttack1 ( float flDot, float flDist )
 void CIchthyosaur::BiteTouch( CBaseEntity *pOther )
 {
 	// bite if we hit who we want to eat
-	if ( pOther == m_hEnemy ) 
+	if ( pOther == m_hEnemy )
 	{
 		m_flEnemyTouched = gpGlobals->time;
 		m_bOnAttack = TRUE;
@@ -405,7 +405,7 @@ void CIchthyosaur::BecomeDead( void )
 {
 	pev->takedamage = DAMAGE_YES;// don't let autoaim aim at corpses.
 
-	// give the corpse half of the monster's original maximum health. 
+	// give the corpse half of the monster's original maximum health.
 	pev->health = pev->max_health / 2;
 	pev->max_health = 5; // max_health now becomes a counter for how many blood decals the corpse can place.
 }
@@ -494,8 +494,8 @@ void CIchthyosaur :: Spawn()
 
 	MonsterInit();
 
-	SetTouch( BiteTouch );
-	SetUse( CombatUse );
+	SetTouch( &CIchthyosaur::BiteTouch );
+	SetUse( &CIchthyosaur::CombatUse );
 
 	m_idealDist = 384;
 	m_flMinSpeed = 80;
@@ -569,7 +569,7 @@ Schedule_t* CIchthyosaur::GetSchedule()
 
 //=========================================================
 //=========================================================
-Schedule_t* CIchthyosaur :: GetScheduleOfType ( int Type ) 
+Schedule_t* CIchthyosaur :: GetScheduleOfType ( int Type )
 {
 	// ALERT( at_console, "GetScheduleOfType( %d ) %d\n", Type, m_bOnAttack );
 	switch	( Type )
@@ -643,7 +643,7 @@ void CIchthyosaur :: RunTask ( Task_t *pTask )
 
 			Vector vecDelta = (pev->origin - vecFrom).Normalize( );
 			Vector vecSwim = CrossProduct( vecDelta, Vector( 0, 0, 1 ) ).Normalize( );
-			
+
 			if (DotProduct( vecSwim, m_SaveVelocity ) < 0)
 				vecSwim = vecSwim * -1.0;
 
@@ -652,7 +652,7 @@ void CIchthyosaur :: RunTask ( Task_t *pTask )
 			// ALERT( at_console, "vecPos %.0f %.0f %.0f\n", vecPos.x, vecPos.y, vecPos.z );
 
 			TraceResult tr;
-		
+
 			UTIL_TraceHull( vecFrom, vecPos, ignore_monsters, large_hull, m_hEnemy->edict(), &tr );
 
 			if (tr.flFraction > 0.5)
@@ -683,7 +683,7 @@ void CIchthyosaur :: RunTask ( Task_t *pTask )
 					m_flMinSpeed += 0.5;
 				}
 			}
-			else 
+			else
 			{
 				m_flNextAlert += 0.1;
 
@@ -733,14 +733,14 @@ void CIchthyosaur :: RunTask ( Task_t *pTask )
 		{
 			pev->velocity.z += 8;
 		}
-		else 
+		else
 		{
 			pev->velocity.z -= 8;
 		}
 		// ALERT( at_console, "%f\n", pev->velocity.z );
 		break;
 
-	default: 
+	default:
 		CFlyingMonster :: RunTask ( pTask );
 		break;
 	}
@@ -787,7 +787,7 @@ float CIchthyosaur::FlPitchDiff( void )
 		if (flPitchDiff >= 180)
 			flPitchDiff = flPitchDiff - 360;
 	}
-	else 
+	else
 	{
 		if (flPitchDiff <= -180)
 			flPitchDiff = flPitchDiff + 360;
@@ -834,7 +834,7 @@ float CIchthyosaur::ChangeYaw( int speed )
 
 
 Activity CIchthyosaur:: GetStoppedActivity( void )
-{ 
+{
 	if ( pev->movetype != MOVETYPE_FLY )		// UNDONE: Ground idle here, IDLE may be something else
 		return ACT_IDLE;
 	return ACT_WALK;
@@ -873,7 +873,7 @@ void CIchthyosaur::MonsterThink ( void )
 	}
 }
 
-void CIchthyosaur :: Stop( void ) 
+void CIchthyosaur :: Stop( void )
 {
 	if (!m_bOnAttack)
 		m_flightSpeed = 80.0;
@@ -971,7 +971,7 @@ void CIchthyosaur::Swim( )
 */
 
 	// ALERT( at_console, "speed %f\n", m_flightSpeed );
-	
+
 	Angles = UTIL_VecToAngles( m_SaveVelocity );
 
 	// Smooth Pitch
@@ -1099,7 +1099,7 @@ Vector CIchthyosaur::DoProbe(const Vector &Probe)
 			SteeringForce = -SteeringForce;
 		}
 		SteeringVector = SteeringForce * SteeringVector.Normalize();
-		
+
 		return SteeringVector;
 	}
 	return Vector(0, 0, 0);

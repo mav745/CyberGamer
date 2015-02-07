@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -65,7 +65,7 @@ public:
 private:
 };
 
-// These are the new entry points to entities. 
+// These are the new entry points to entities.
 LINK_ENTITY_TO_CLASS(info_player_deathmatch,CBaseDMStart);
 LINK_ENTITY_TO_CLASS(info_player_start,CPointEntity);
 LINK_ENTITY_TO_CLASS(info_landmark,CPointEntity);
@@ -132,7 +132,7 @@ void CBaseEntity :: SUB_DoNothing( void )
 
 
 // Global Savedata for Delay
-TYPEDESCRIPTION	CBaseDelay::m_SaveData[] = 
+TYPEDESCRIPTION	CBaseDelay::m_SaveData[] =
 {
 	DEFINE_FIELD( CBaseDelay, m_flDelay, FIELD_FLOAT ),
 	DEFINE_FIELD( CBaseDelay, m_iszKillTarget, FIELD_STRING ),
@@ -231,8 +231,8 @@ void CBaseDelay :: SUB_UseTargets( CBaseEntity *pActivator, USE_TYPE useType, fl
 
 		pTemp->pev->nextthink = gpGlobals->time + m_flDelay;
 
-		pTemp->SetThink( DelayThink );
-		
+		pTemp->SetThink( &CBaseDelay::DelayThink );
+
 		// Save the useType
 		pTemp->pev->button = (int)useType;
 		pTemp->m_iszKillTarget = m_iszKillTarget;
@@ -273,7 +273,7 @@ void CBaseDelay :: SUB_UseTargets( CBaseEntity *pActivator, USE_TYPE useType, fl
 			pentKillTarget = FIND_ENTITY_BY_TARGETNAME( pentKillTarget, STRING(m_iszKillTarget) );
 		}
 	}
-	
+
 	//
 	// fire targets
 	//
@@ -310,7 +310,7 @@ void SetMovedir( entvars_t *pev )
 		UTIL_MakeVectors(pev->angles);
 		pev->movedir = gpGlobals->v_forward;
 	}
-	
+
 	pev->angles = g_vecZero;
 }
 
@@ -323,7 +323,7 @@ void CBaseDelay::DelayThink( void )
 
 	if ( pev->owner != NULL )		// A player activated this on delay
 	{
-		pActivator = CBaseEntity::Instance( pev->owner );	
+		pActivator = CBaseEntity::Instance( pev->owner );
 	}
 	// The use type is cached (and stashed) in pev->button
 	SUB_UseTargets( pActivator, (USE_TYPE)pev->button, 0 );
@@ -332,7 +332,7 @@ void CBaseDelay::DelayThink( void )
 
 
 // Global Savedata for Toggle
-TYPEDESCRIPTION	CBaseToggle::m_SaveData[] = 
+TYPEDESCRIPTION	CBaseToggle::m_SaveData[] =
 {
 	DEFINE_FIELD( CBaseToggle, m_toggle_state, FIELD_INTEGER ),
 	DEFINE_FIELD( CBaseToggle, m_flActivateFinished, FIELD_TIME ),
@@ -395,7 +395,7 @@ void CBaseToggle ::  LinearMove( Vector	vecDest, float flSpeed )
 {
 	ASSERTSZ(flSpeed != 0, "LinearMove:  no speed is defined!");
 //	ASSERTSZ(m_pfnCallWhenMoveDone != NULL, "LinearMove: no post-move function defined");
-	
+
 	m_vecFinalDest = vecDest;
 
 	// Already there?
@@ -404,16 +404,16 @@ void CBaseToggle ::  LinearMove( Vector	vecDest, float flSpeed )
 		LinearMoveDone();
 		return;
 	}
-		
+
 	// set destdelta to the vector needed to move
 	Vector vecDestDelta = vecDest - pev->origin;
-	
+
 	// divide vector length by speed to get time to reach dest
 	float flTravelTime = vecDestDelta.Length() / flSpeed;
 
 	// set nextthink to trigger a call to LinearMoveDone when dest is reached
 	pev->nextthink = pev->ltime + flTravelTime;
-	SetThink( LinearMoveDone );
+	SetThink( &CBaseToggle::LinearMoveDone );
 
 	// scale the destdelta vector by the time spent traveling to get velocity
 	pev->velocity = vecDestDelta / flTravelTime;
@@ -455,7 +455,7 @@ void CBaseToggle :: AngularMove( Vector vecDestAngle, float flSpeed )
 {
 	ASSERTSZ(flSpeed != 0, "AngularMove:  no speed is defined!");
 //	ASSERTSZ(m_pfnCallWhenMoveDone != NULL, "AngularMove: no post-move function defined");
-	
+
 	m_vecFinalAngle = vecDestAngle;
 
 	// Already there?
@@ -464,16 +464,16 @@ void CBaseToggle :: AngularMove( Vector vecDestAngle, float flSpeed )
 		AngularMoveDone();
 		return;
 	}
-	
+
 	// set destdelta to the vector needed to move
 	Vector vecDestDelta = vecDestAngle - pev->angles;
-	
+
 	// divide by speed to get time to reach dest
 	float flTravelTime = vecDestDelta.Length() / flSpeed;
 
 	// set nextthink to trigger a call to AngularMoveDone when dest is reached
 	pev->nextthink = pev->ltime + flTravelTime;
-	SetThink( AngularMoveDone );
+	SetThink( &CBaseToggle::AngularMoveDone );
 
 	// scale the destdelta vector by the time spent traveling to get velocity
 	pev->avelocity = vecDestDelta / flTravelTime;
@@ -521,7 +521,7 @@ float CBaseToggle :: AxisDelta( int flags, const Vector &angle1, const Vector &a
 {
 	if ( FBitSet (flags, SF_DOOR_ROTATE_Z) )
 		return angle1.z - angle2.z;
-	
+
 	if ( FBitSet (flags, SF_DOOR_ROTATE_X) )
 		return angle1.x - angle2.x;
 
@@ -546,7 +546,7 @@ FEntIsVisible(
 	TraceResult tr;
 
 	UTIL_TraceLine(vecSpot1, vecSpot2, ignore_monsters, ENT(pev), &tr);
-	
+
 	if (tr.fInOpen && tr.fInWater)
 		return FALSE;                   // sight line crossed contents
 

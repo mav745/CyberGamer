@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -42,7 +42,7 @@ public:
 
 	static	TYPEDESCRIPTION m_SaveData[];
 
-	float m_flNextCharge; 
+	float m_flNextCharge;
 	int		m_iReactivate ; // DeathMatch Delay until reactvated
 	int		m_iJuice;
 	int		m_iOn;			// 0 = off, 1 = startup, 2 = going
@@ -93,7 +93,7 @@ void CRecharge::Spawn()
 	UTIL_SetSize(pev, pev->mins, pev->maxs);
 	SET_MODEL(ENT(pev), STRING(pev->model) );
 	m_iJuice = gSkillData.suitchargerCapacity;
-	pev->frame = 0;			
+	pev->frame = 0;
 }
 
 void CRecharge::Precache()
@@ -105,7 +105,7 @@ void CRecharge::Precache()
 
 
 void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
-{ 
+{
 	// if it's not a player, ignore
 	if (!FClassnameIs(pActivator->pev, "player"))
 		return;
@@ -113,7 +113,7 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	// if there is no juice left, turn it off
 	if (m_iJuice <= 0)
 	{
-		pev->frame = 1;			
+		pev->frame = 1;
 		Off();
 	}
 
@@ -129,7 +129,7 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	}
 
 	pev->nextthink = pev->ltime + 0.25;
-	SetThink(Off);
+	SetThink(&CRecharge::Off);
 
 	// Time to recharge yet?
 
@@ -146,7 +146,7 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 
 	if (!m_hActivator->IsPlayer() )
 		return;
-	
+
 	// Play the on sound or the looping charging sound
 	if (!m_iOn)
 	{
@@ -178,8 +178,8 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 void CRecharge::Recharge(void)
 {
 	m_iJuice = gSkillData.suitchargerCapacity;
-	pev->frame = 0;			
-	SetThink( SUB_DoNothing );
+	pev->frame = 0;
+	SetThink( &CBaseEntity::SUB_DoNothing );
 }
 
 void CRecharge::Off(void)
@@ -193,8 +193,8 @@ void CRecharge::Off(void)
 	if ((!m_iJuice) &&  ( ( m_iReactivate = g_pGameRules->FlHEVChargerRechargeTime() ) > 0) )
 	{
 		pev->nextthink = pev->ltime + m_iReactivate;
-		SetThink(Recharge);
+		SetThink(&CRecharge::Recharge);
 	}
 	else
-		SetThink( SUB_DoNothing );
+		SetThink( &CBaseEntity::SUB_DoNothing );
 }

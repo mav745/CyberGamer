@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -22,7 +22,7 @@
 #include "effects.h"
 #include "customentity.h"
 
-typedef struct 
+typedef struct
 {
 	int isValid;
 	EHANDLE hGrunt;
@@ -44,7 +44,7 @@ public:
 	int		Restore( CRestore &restore );
 	static	TYPEDESCRIPTION m_SaveData[];
 	int		ObjectCaps( void ) { return CBaseMonster :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION; }
-	
+
 	void Spawn( void );
 	void Precache( void );
 	int  Classify( void ) { return CLASS_MACHINE; };
@@ -107,7 +107,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( monster_osprey, COsprey );
 
-TYPEDESCRIPTION	COsprey::m_SaveData[] = 
+TYPEDESCRIPTION	COsprey::m_SaveData[] =
 {
 	DEFINE_FIELD( COsprey, m_pGoalEnt, FIELD_CLASSPTR ),
 	DEFINE_FIELD( COsprey, m_vel1, FIELD_VECTOR ),
@@ -167,8 +167,8 @@ void COsprey :: Spawn( void )
 
 	InitBoneControllers();
 
-	SetThink( FindAllThink );
-	SetUse( CommandUse );
+	SetThink( &COsprey::FindAllThink );
+	SetUse( &COsprey::CommandUse );
 
 	if (!(pev->spawnflags & SF_WAITFORTRIGGER))
 	{
@@ -225,7 +225,7 @@ void COsprey :: FindAllThink( void )
 		UTIL_Remove( this );
 		return;
 	}
-	SetThink( FlyThink );
+	SetThink( &COsprey::FlyThink );
 	pev->nextthink = gpGlobals->time + 0.1;
 	m_startTime = gpGlobals->time;
 }
@@ -257,7 +257,7 @@ void COsprey :: DeployThink( void )
 	vecSrc = pev->origin + vecForward * -64 + vecRight * -100 + vecUp * -96;
 	m_hRepel[3] = MakeGrunt( vecSrc );
 
-	SetThink( HoverThink );
+	SetThink( &COsprey::HoverThink );
 	pev->nextthink = gpGlobals->time + 0.1;
 }
 
@@ -287,7 +287,7 @@ CBaseMonster *COsprey :: MakeGrunt( Vector vecSrc )
 
 	TraceResult tr;
 	UTIL_TraceLine( vecSrc, vecSrc + Vector( 0, 0, -4096.0), dont_ignore_monsters, ENT(pev), &tr);
-	if ( tr.pHit && Instance( tr.pHit )->pev->solid != SOLID_BSP) 
+	if ( tr.pHit && Instance( tr.pHit )->pev->solid != SOLID_BSP)
 		return NULL;
 
 int i;	for ( i = 0; i < m_iUnits; i++)
@@ -308,10 +308,10 @@ int i;	for ( i = 0; i < m_iUnits; i++)
 			pBeam->PointEntInit( vecSrc + Vector(0,0,112), pGrunt->entindex() );
 			pBeam->SetFlags( BEAM_FSOLID );
 			pBeam->SetColor( 255, 255, 255 );
-			pBeam->SetThink( SUB_Remove );
+			pBeam->SetThink( &CBaseEntity::SUB_Remove );
 			pBeam->pev->nextthink = gpGlobals->time + -4096.0 * tr.flFraction / pGrunt->pev->velocity.z + 0.5;
 
-			// ALERT( at_console, "%d at %.0f %.0f %.0f\n", i, m_vecOrigin[i].x, m_vecOrigin[i].y, m_vecOrigin[i].z );  
+			// ALERT( at_console, "%d at %.0f %.0f %.0f\n", i, m_vecOrigin[i].x, m_vecOrigin[i].y, m_vecOrigin[i].z );
 			pGrunt->m_vecLastPosition = m_vecOrigin[i];
 			m_hGrunt[i] = pGrunt;
 			return pGrunt;
@@ -336,7 +336,7 @@ void COsprey :: HoverThink( void )
 	if (i == 4)
 	{
 		m_startTime = gpGlobals->time;
-		SetThink( FlyThink );
+		SetThink( &COsprey::FlyThink );
 	}
 
 	pev->nextthink = gpGlobals->time + 0.1;
@@ -396,7 +396,7 @@ void COsprey::FlyThink( void )
 	{
 		if (m_pGoalEnt->pev->speed == 0)
 		{
-			SetThink( DeployThink );
+			SetThink( &COsprey::DeployThink );
 		}
 		do {
 			m_pGoalEnt = CBaseEntity::Instance( FIND_ENTITY_BY_TARGETNAME ( NULL, STRING( m_pGoalEnt->pev->target ) ) );
@@ -413,7 +413,7 @@ void COsprey::Flight( )
 {
 	float t = (gpGlobals->time - m_startTime);
 	float scale = 1.0 / m_dTime;
-	
+
 	float f = UTIL_SplineFraction( t * scale, 1.0 );
 
 	Vector pos = (m_pos1 + m_vel1 * t) * (1.0 - f) + (m_pos2 - m_vel2 * (m_dTime - t)) * f;
@@ -457,14 +457,14 @@ void COsprey::Flight( )
 		CBaseEntity *pPlayer = NULL;
 
 		pPlayer = UTIL_FindEntityByClassname( NULL, "player" );
-		// UNDONE: this needs to send different sounds to every player for multiplayer.	
+		// UNDONE: this needs to send different sounds to every player for multiplayer.
 		if (pPlayer)
 		{
 			float pitch = DotProduct( m_velocity - pPlayer->pev->velocity, (pPlayer->pev->origin - pev->origin).Normalize() );
 
 			pitch = (int)(100 + pitch / 75.0);
 
-			if (pitch > 250) 
+			if (pitch > 250)
 				pitch = 250;
 			if (pitch < 50)
 				pitch = 50;
@@ -518,8 +518,8 @@ void COsprey :: Killed( entvars_t *pevAttacker, int iGib )
 	STOP_SOUND( ENT(pev), CHAN_STATIC, "apache/ap_rotor4.wav" );
 
 	UTIL_SetSize( pev, Vector( -32, -32, -64), Vector( 32, 32, 0) );
-	SetThink( DyingThink );
-	SetTouch( CrashTouch );
+	SetThink( &COsprey::DyingThink );
+	SetTouch( &COsprey::CrashTouch );
 	pev->nextthink = gpGlobals->time + 0.1;
 	pev->health = 0;
 	pev->takedamage = DAMAGE_NO;
@@ -530,7 +530,7 @@ void COsprey :: Killed( entvars_t *pevAttacker, int iGib )
 void COsprey::CrashTouch( CBaseEntity *pOther )
 {
 	// only crash if we hit something solid
-	if ( pOther->pev->solid == SOLID_BSP) 
+	if ( pOther->pev->solid == SOLID_BSP)
 	{
 		SetTouch( NULL );
 		m_startTime = gpGlobals->time;
@@ -594,12 +594,12 @@ void COsprey :: DyingThink( void )
 			WRITE_COORD( 132 );
 
 			// velocity
-			WRITE_COORD( pev->velocity.x ); 
+			WRITE_COORD( pev->velocity.x );
 			WRITE_COORD( pev->velocity.y );
 			WRITE_COORD( pev->velocity.z );
 
 			// randomization
-			WRITE_BYTE( 50 ); 
+			WRITE_BYTE( 50 );
 
 			// Model
 			WRITE_SHORT( m_iTailGibs );	//model id#
@@ -703,12 +703,12 @@ void COsprey :: DyingThink( void )
 			WRITE_COORD( 128 );
 
 			// velocity
-			WRITE_COORD( m_velocity.x ); 
+			WRITE_COORD( m_velocity.x );
 			WRITE_COORD( m_velocity.y );
 			WRITE_COORD( fabs( m_velocity.z ) * 0.25 );
 
 			// randomization
-			WRITE_BYTE( 40 ); 
+			WRITE_BYTE( 40 );
 
 			// Model
 			WRITE_SHORT( m_iBodyGibs );	//model id#

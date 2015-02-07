@@ -7,11 +7,11 @@ TEMPLATE = lib
 TARGET = client
 CONFIG += create_prl link_prl c++11 plugin
 
-debug:DESTDIR = $$PWD/../../build_d/valve/cl_dlls
-else:DESTDIR = $$PWD/../../build/valve/cl_dlls
+debug:DESTDIR = $$PWD/../../build_d/valve/cl_dll
+else:DESTDIR = $$PWD/../../build/valve/cl_dll
 
-debug:DLLDESTDIR = $$PWD/../../build_d/valve/cl_dlls
-else:DLLDESTDIR = $$PWD/../../build/valve/cl_dlls
+debug:DLLDESTDIR = $$PWD/../../build_d/valve/cl_dll
+else:DLLDESTDIR = $$PWD/../../build/valve/cl_dll
 
 debug:DEFINES += _DEBUG _MBCS _WINDOWS WIN32 CLIENT_DLL CLIENT_WEAPONS
 else:DEFINES += NDEBUG _WINDOWS WIN32 CLIENT_DLL CLIENT_WEAPONS
@@ -67,16 +67,16 @@ HEADERS += \
 	vgui_TeamFortressViewport.h \
 	view.h \
 	wrect.h \
-	..\common\itrackeruser.h \
-	..\pm_shared\pm_debug.h \
-	..\pm_shared\pm_defs.h \
-	..\pm_shared\pm_info.h \
-	..\pm_shared\pm_materials.h \
-	..\pm_shared\pm_movevars.h \
-	..\pm_shared\pm_shared.h \
-	..\game_shared\voice_banmgr.h \
-	..\game_shared\voice_status.h \
-	..\game_shared\voice_vgui_tweakdlg.h \
+	../common\itrackeruser.h \
+	../pm_shared/pm_debug.h \
+	../pm_shared/pm_defs.h \
+	../pm_shared/pm_info.h \
+	../pm_shared/pm_materials.h \
+	../pm_shared/pm_movevars.h \
+	../pm_shared/pm_shared.h \
+	../game_shared/voice_banmgr.h \
+	../game_shared/voice_status.h \
+	../game_shared/voice_vgui_tweakdlg.h \
 	../game_shared/vgui_scrollbar2.h \
 	../game_shared/vgui_slider2.h
 
@@ -138,27 +138,27 @@ SOURCES += \
 	vgui_TeamFortressViewport.cpp \
 	vgui_teammenu.cpp \
 	view.cpp \
-	..\dlls\glock.cpp \
-	..\dlls\hornetgun.cpp \
-	..\dlls\mp5.cpp \
-	..\dlls\python.cpp \
-	..\dlls\rpg.cpp \
-	..\dlls\satchel.cpp \
-	..\dlls\shotgun.cpp \
-	..\dlls\squeakgrenade.cpp \
-	..\dlls\tripmine.cpp \
-	..\game_shared\vgui_scrollbar2.cpp \
-	..\game_shared\vgui_slider2.cpp \
-	..\game_shared\voice_banmgr.cpp \
-	..\game_shared\voice_status.cpp \
-	..\pm_shared\pm_debug.c \
-	..\pm_shared\pm_math.c \
-	..\pm_shared\pm_shared.c \
-	..\game_shared\vgui_checkbutton2.cpp \
-	..\game_shared\vgui_grid.cpp \
-	..\game_shared\vgui_helpers.cpp \
-	..\game_shared\vgui_listbox.cpp \
-	..\game_shared\vgui_loadtga.cpp \
+	../dlls/glock.cpp \
+	../dlls/hornetgun.cpp \
+	../dlls/mp5.cpp \
+	../dlls/python.cpp \
+	../dlls/rpg.cpp \
+	../dlls/satchel.cpp \
+	../dlls/shotgun.cpp \
+	../dlls/squeakgrenade.cpp \
+	../dlls/tripmine.cpp \
+	../game_shared/vgui_scrollbar2.cpp \
+	../game_shared/vgui_slider2.cpp \
+	../game_shared/voice_banmgr.cpp \
+	../game_shared/voice_status.cpp \
+	../pm_shared/pm_debug.c \
+	../pm_shared/pm_math.c \
+	../pm_shared/pm_shared.c \
+	../game_shared/vgui_checkbutton2.cpp \
+	../game_shared/vgui_grid.cpp \
+	../game_shared/vgui_helpers.cpp \
+	../game_shared/vgui_listbox.cpp \
+	../game_shared/vgui_loadtga.cpp \
 	../dlls/crossbow.cpp \
 	../dlls/crowbar.cpp \
 	../dlls/egon.cpp \

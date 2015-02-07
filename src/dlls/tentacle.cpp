@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -121,13 +121,13 @@ LINK_ENTITY_TO_CLASS( monster_tentacle, CTentacle );
 #define TE_DIRT 1
 #define TE_WATER 2
 
-const char *CTentacle::pHitSilo[] = 
+const char *CTentacle::pHitSilo[] =
 {
 	"tentacle/te_strike1.wav",
 	"tentacle/te_strike2.wav",
 };
 
-const char *CTentacle::pHitDirt[] = 
+const char *CTentacle::pHitDirt[] =
 {
 	"player/pl_dirt1.wav",
 	"player/pl_dirt2.wav",
@@ -135,7 +135,7 @@ const char *CTentacle::pHitDirt[] =
 	"player/pl_dirt4.wav",
 };
 
-const char *CTentacle::pHitWater[] = 
+const char *CTentacle::pHitWater[] =
 {
 	"player/pl_slosh1.wav",
 	"player/pl_slosh2.wav",
@@ -144,7 +144,7 @@ const char *CTentacle::pHitWater[] =
 };
 
 
-TYPEDESCRIPTION	CTentacle::m_SaveData[] = 
+TYPEDESCRIPTION	CTentacle::m_SaveData[] =
 {
 	DEFINE_FIELD( CTentacle, m_flInitialYaw, FIELD_FLOAT ),
 	DEFINE_FIELD( CTentacle, m_iGoalAnim, FIELD_INTEGER ),
@@ -167,7 +167,7 @@ TYPEDESCRIPTION	CTentacle::m_SaveData[] =
 IMPLEMENT_SAVERESTORE( CTentacle, CBaseMonster );
 
 
-// animation sequence aliases 
+// animation sequence aliases
 typedef enum
 {
 	TENTACLE_ANIM_Pit_Idle,
@@ -236,7 +236,7 @@ typedef enum
 
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CTentacle :: Classify ( void )
@@ -262,12 +262,12 @@ void CTentacle :: Spawn( )
 
 	pev->takedamage		= DAMAGE_AIM;
 	pev->flags			|= FL_MONSTER;
-	
+
 	m_bloodColor		= BLOOD_COLOR_GREEN;
 
-	SetThink( Start );
-	SetTouch( HitTouch );
-	SetUse( CommandUse );
+	SetThink( &CTentacle::Start );
+	SetTouch( &CTentacle::HitTouch );
+	SetUse( &CTentacle::CommandUse );
 
 	pev->nextthink = gpGlobals->time + 0.2;
 
@@ -378,7 +378,7 @@ int CTentacle :: MyLevel( )
 {
 	switch( pev->sequence )
 	{
-	case TENTACLE_ANIM_Pit_Idle: 
+	case TENTACLE_ANIM_Pit_Idle:
 		return -1;
 
 	case TENTACLE_ANIM_rise_to_Temp1:
@@ -466,7 +466,7 @@ void CTentacle :: Cycle( void )
 	if (m_MonsterState == MONSTERSTATE_SCRIPT || m_IdealMonsterState == MONSTERSTATE_SCRIPT)
 	{
 		pev->angles.y = m_flInitialYaw;
-		pev->ideal_yaw = m_flInitialYaw;	
+		pev->ideal_yaw = m_flInitialYaw;
 		ClearConditions( IgnoreConditions() );
 		MonsterThink( );
 		m_iGoalAnim = TENTACLE_ANIM_Pit_Idle;
@@ -515,7 +515,7 @@ void CTentacle :: Cycle( void )
 		if (m_flSoundTime < gpGlobals->time)
 		{
 			// play "I hear new something" sound
-			char *sound;	
+			char *sound;
 
 			switch( RANDOM_LONG(0,1) )
 			{
@@ -571,7 +571,7 @@ void CTentacle :: Cycle( void )
 				// strike
 				m_iGoalAnim = LookupActivity( ACT_T_STRIKE + m_iSoundLevel );
 			}
-			else if (m_flSoundYaw >= -m_flMaxYaw * 2 && m_flSoundYaw <= m_flMaxYaw * 2) 
+			else if (m_flSoundYaw >= -m_flMaxYaw * 2 && m_flSoundYaw <= m_flMaxYaw * 2)
 			{
 				// tap
 				m_iGoalAnim = LookupActivity( ACT_T_TAP + m_iSoundLevel );
@@ -611,7 +611,7 @@ void CTentacle :: Cycle( void )
 				if (m_flNextSong < gpGlobals->time)
 				{
 					// play "I hear new something" sound
-					char *sound;	
+					char *sound;
 
 					switch( RANDOM_LONG(0,1) )
 					{
@@ -709,12 +709,12 @@ void CTentacle :: Cycle( void )
 
 void CTentacle::CommandUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	// ALERT( at_console, "%s triggered %d\n", STRING( pev->targetname ), useType ); 
+	// ALERT( at_console, "%s triggered %d\n", STRING( pev->targetname ), useType );
 	switch( useType )
 	{
 	case USE_OFF:
 		pev->takedamage = DAMAGE_NO;
-		SetThink( DieThink );
+		SetThink( &CTentacle::DieThink );
 		m_iGoalAnim = TENTACLE_ANIM_Engine_Death1;
 		break;
 	case USE_ON:
@@ -728,7 +728,7 @@ void CTentacle::CommandUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_T
 		break;
 	case USE_TOGGLE:
 		pev->takedamage = DAMAGE_NO;
-		SetThink( DieThink );
+		SetThink( &CTentacle::DieThink );
 		m_iGoalAnim = TENTACLE_ANIM_Engine_Idle;
 		break;
 	}
@@ -817,7 +817,7 @@ void CTentacle :: HandleAnimEvent( MonsterEvent_t *pEvent )
 
 	switch( pEvent->event )
 	{
-	case 1:	// bang 
+	case 1:	// bang
 		{
 			Vector vecSrc, vecAngles;
 			GetAttachment( 0, vecSrc, vecAngles );
@@ -840,7 +840,7 @@ void CTentacle :: HandleAnimEvent( MonsterEvent_t *pEvent )
 				UTIL_EmitAmbientSound(ENT(pev), vecSrc, RANDOM_SOUND_ARRAY( pHitWater ), 1.0, ATTN_NORM, 0, 100);
 				break;
 			}
-          gpGlobals->force_retouch++;
+		  gpGlobals->force_retouch++;
 		}
 		break;
 
@@ -926,7 +926,7 @@ void CTentacle :: HandleAnimEvent( MonsterEvent_t *pEvent )
 // void CTentacle :: Start( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 void CTentacle :: Start( void )
 {
-	SetThink( Cycle );
+	SetThink( &CTentacle::Cycle );
 
 	if ( !g_fFlySound )
 	{
@@ -939,7 +939,7 @@ void CTentacle :: Start( void )
 		EMIT_SOUND (ENT(pev), CHAN_BODY, "ambience/squirm2.wav", 1, ATTN_NORM );
 		g_fSquirmSound = TRUE;
 	}
-	
+
 	pev->nextthink = gpGlobals->time + 0.1;
 }
 
@@ -1031,7 +1031,7 @@ void CTentacleMaw :: Spawn( )
 	pev->health			= 75;
 	pev->yaw_speed		= 8;
 	pev->sequence		= 0;
-	
+
 	pev->angles.x		= 90;
 	// ResetSequenceInfo( );
 }

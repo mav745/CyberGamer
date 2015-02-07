@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -28,7 +28,7 @@
 #define BOLT_WATER_VELOCITY	1000
 
 // UNDONE: Save/restore this?  Don't forget to set classname and LINK_ENTITY_TO_CLASS()
-// 
+//
 // OVERLOADS SOME ENTVARS:
 //
 // speed - the ideal magnitude of my velocity
@@ -71,8 +71,8 @@ void CCrossbowBolt::Spawn( )
 	UTIL_SetOrigin( pev, pev->origin );
 	UTIL_SetSize(pev, Vector(0, 0, 0), Vector(0, 0, 0));
 
-	SetTouch( BoltTouch );
-	SetThink( BubbleThink );
+	SetTouch( &CCrossbowBolt::BoltTouch );
+	SetThink( &CCrossbowBolt::BubbleThink );
 	pev->nextthink = gpGlobals->time + 0.2;
 }
 
@@ -111,11 +111,11 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 
 		if ( pOther->IsPlayer() )
 		{
-			pOther->TraceAttack(pevOwner, gSkillData.plrDmgCrossbowClient, pev->velocity.Normalize(), &tr, DMG_NEVERGIB ); 
+			pOther->TraceAttack(pevOwner, gSkillData.plrDmgCrossbowClient, pev->velocity.Normalize(), &tr, DMG_NEVERGIB );
 		}
 		else
 		{
-			pOther->TraceAttack(pevOwner, gSkillData.plrDmgCrossbowMonster, pev->velocity.Normalize(), &tr, DMG_BULLET | DMG_NEVERGIB ); 
+			pOther->TraceAttack(pevOwner, gSkillData.plrDmgCrossbowMonster, pev->velocity.Normalize(), &tr, DMG_BULLET | DMG_NEVERGIB );
 		}
 
 		ApplyMultiDamage( pev, pevOwner );
@@ -139,7 +139,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 	{
 		EMIT_SOUND_DYN(ENT(pev), CHAN_BODY, "weapons/xbow_hit1.wav", RANDOM_FLOAT(0.95, 1.0), ATTN_NORM, 0, 98 + RANDOM_LONG(0,7));
 
-		SetThink( SUB_Remove );
+		SetThink( &CBaseEntity::SUB_Remove );
 		pev->nextthink = gpGlobals->time;// this will get changed below if the bolt is allowed to stick in what it hit.
 
 		if ( FClassnameIs( pOther->pev, "worldspawn" ) )
@@ -164,7 +164,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			pev->velocity = Vector( 0, 0, 0 );
 			pev->avelocity.z = 0;
 			pev->angles.z = RANDOM_LONG(0,360);
-			pev->nextthink = gpGlobals->time + 10.0;			
+			pev->nextthink = gpGlobals->time + 10.0;
 
 			// g-cont. Setup movewith feature
 			pev->movetype = MOVETYPE_COMPOUND;	// set movewith type
@@ -179,7 +179,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 
 	if ( g_pGameRules->IsMultiplayer() )
 	{
-		SetThink( ExplodeThink );
+		SetThink( &CCrossbowBolt::ExplodeThink );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 }
@@ -198,12 +198,12 @@ void CCrossbowBolt::ExplodeThink( void )
 {
 	int iContents = UTIL_PointContents ( pev->origin );
 	int iScale;
-	
+
 	pev->dmg = 40;
 	iScale = 10;
 
 	MESSAGE_BEGIN( MSG_PVS, SVC_TEMPENTITY, pev->origin );
-		WRITE_BYTE( TE_EXPLOSION);		
+		WRITE_BYTE( TE_EXPLOSION);
 		WRITE_COORD( pev->origin.x );
 		WRITE_COORD( pev->origin.y );
 		WRITE_COORD( pev->origin.z );
@@ -374,7 +374,7 @@ void CCrossbow::FireSniperBolt()
 
 	// player "shoot" animation
 	m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
-	
+
 	Vector anglesAim = m_pPlayer->pev->v_angle + m_pPlayer->pev->punchangle;
 	UTIL_MakeVectors( anglesAim );
 	Vector vecSrc = m_pPlayer->GetGunPosition( ) - gpGlobals->v_up * 2;
@@ -386,7 +386,7 @@ void CCrossbow::FireSniperBolt()
 	if ( tr.pHit->v.takedamage )
 	{
 		ClearMultiDamage( );
-		CBaseEntity::Instance(tr.pHit)->TraceAttack(m_pPlayer->pev, 120, vecDir, &tr, DMG_BULLET | DMG_NEVERGIB ); 
+		CBaseEntity::Instance(tr.pHit)->TraceAttack(m_pPlayer->pev, 120, vecDir, &tr, DMG_BULLET | DMG_NEVERGIB );
 		ApplyMultiDamage( pev, m_pPlayer->pev );
 	}
 #endif
@@ -420,7 +420,7 @@ void CCrossbow::FireBolt()
 
 	Vector anglesAim = m_pPlayer->pev->v_angle + m_pPlayer->pev->punchangle;
 	UTIL_MakeVectors( anglesAim );
-	
+
 	anglesAim.x		= -anglesAim.x;
 	Vector vecSrc	 = m_pPlayer->GetGunPosition( ) - gpGlobals->v_up * 2;
 	Vector vecDir	 = gpGlobals->v_forward;
@@ -471,7 +471,7 @@ void CCrossbow::SecondaryAttack()
 		m_pPlayer->pev->fov = m_pPlayer->m_iFOV = 20;
 		m_fInZoom = 1;
 	}
-	
+
 	pev->nextthink = UTIL_WeaponTimeBase() + 0.1;
 	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0;
 }
@@ -499,7 +499,7 @@ void CCrossbow::WeaponIdle( void )
 	m_pPlayer->GetAutoaimVector( AUTOAIM_2DEGREES );  // get the autoaim vector but ignore it;  used for autoaim crosshair in DM
 
 	ResetEmptySound( );
-	
+
 	if ( m_flTimeWeaponIdle < UTIL_WeaponTimeBase() )
 	{
 		float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0, 1 );
@@ -537,7 +537,7 @@ void CCrossbow::WeaponIdle( void )
 class CCrossbowAmmo : public CBasePlayerAmmo
 {
 	void Spawn( void )
-	{ 
+	{
 		Precache( );
 		SET_MODEL(ENT(pev), "models/w_crossbow_clip.mdl");
 		CBasePlayerAmmo::Spawn( );
@@ -547,8 +547,8 @@ class CCrossbowAmmo : public CBasePlayerAmmo
 		PRECACHE_MODEL ("models/w_crossbow_clip.mdl");
 		PRECACHE_SOUND("items/9mmclip1.wav");
 	}
-	BOOL AddAmmo( CBaseEntity *pOther ) 
-	{ 
+	BOOL AddAmmo( CBaseEntity *pOther )
+	{
 		if (pOther->GiveAmmo( AMMO_CROSSBOWCLIP_GIVE, "bolts", BOLT_MAX_CARRY ) != -1)
 		{
 			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM);

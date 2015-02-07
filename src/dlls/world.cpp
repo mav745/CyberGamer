@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -49,7 +49,7 @@ extern void W_Precache(void);
 // This must match the list in util.h
 //
 DLL_DECALLIST gDecals[] = {
-	{ "{shot1",	0 },		// DECAL_GUNSHOT1 
+	{ "{shot1",	0 },		// DECAL_GUNSHOT1
 	{ "{shot2",	0 },		// DECAL_GUNSHOT2
 	{ "{shot3",0 },			// DECAL_GUNSHOT3
 	{ "{shot4",	0 },		// DECAL_GUNSHOT4
@@ -125,15 +125,15 @@ void CDecal :: Spawn( void )
 
 	if ( FStringNull ( pev->targetname ) )
 	{
-		SetThink( StaticDecal );
+		SetThink( &CDecal::StaticDecal );
 		// if there's no targetname, the decal will spray itself on as soon as the world is done spawning.
 		pev->nextthink = gpGlobals->time;
 	}
 	else
 	{
 		// if there IS a targetname, the decal sprays itself on when it is triggered.
-		SetThink ( SUB_DoNothing );
-		SetUse(TriggerDecal);
+		SetThink ( &CBaseEntity::SUB_DoNothing );
+		SetUse(&CDecal::TriggerDecal);
 	}
 }
 
@@ -158,7 +158,7 @@ void CDecal :: TriggerDecal ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE
 			WRITE_SHORT( (int)VARS(trace.pHit)->modelindex );
 	MESSAGE_END();
 
-	SetThink( SUB_Remove );
+	SetThink( &CBaseEntity::SUB_Remove );
 	pev->nextthink = gpGlobals->time + 0.1;
 }
 
@@ -187,7 +187,7 @@ void CDecal :: KeyValue( KeyValueData *pkvd )
 	if (FStrEq(pkvd->szKeyName, "texture"))
 	{
 		pev->skin = DECAL_INDEX( pkvd->szValue );
-		
+
 		// Found
 		if ( pev->skin >= 0 )
 			return;
@@ -201,7 +201,7 @@ void CDecal :: KeyValue( KeyValueData *pkvd )
 // Body queue class here.... It's really just CBaseEntity
 class CCorpse : public CBaseEntity
 {
-	virtual int ObjectCaps( void ) { return FCAP_DONT_SAVE; }	
+	virtual int ObjectCaps( void ) { return FCAP_DONT_SAVE; }
 };
 
 LINK_ENTITY_TO_CLASS( bodyque, CCorpse );
@@ -212,7 +212,7 @@ static void InitBodyQue(void)
 
 	g_pBodyQueueHead = CREATE_NAMED_ENTITY( istrClassname );
 	entvars_t *pev = VARS(g_pBodyQueueHead);
-	
+
 	// Reserve 3 more slots for dead bodies
 	int i;
 	for ( i = 0; i < 3; i++ )
@@ -220,7 +220,7 @@ static void InitBodyQue(void)
 		pev->owner = CREATE_NAMED_ENTITY( istrClassname );
 		pev = VARS(pev->owner);
 	}
-	
+
 	pev->owner = g_pBodyQueueHead;
 }
 
@@ -230,7 +230,7 @@ static void InitBodyQue(void)
 //
 // GLOBALS ASSUMED SET:  g_eoBodyQueueHead
 //
-void CopyToBodyQue(entvars_t *pev) 
+void CopyToBodyQue(entvars_t *pev)
 {
 	if (pev->effects & EF_NODRAW)
 		return;
@@ -253,7 +253,7 @@ void CopyToBodyQue(entvars_t *pev)
 	//pevHead->goalstarttime = pev->goalstarttime;
 	//pevHead->goalframe	= pev->goalframe;
 	//pevHead->goalendtime = pev->goalendtime ;
-	
+
 	pevHead->sequence = pev->sequence;
 	pevHead->animtime = pev->animtime;
 
@@ -270,7 +270,7 @@ CGlobalState::CGlobalState( void )
 
 void CGlobalState::Reset( void )
 {
-	m_pList = NULL; 
+	m_pList = NULL;
 	m_listCount = 0;
 }
 
@@ -282,13 +282,13 @@ globalentity_t *CGlobalState :: Find( string_t globalname )
 	globalentity_t *pTest;
 	const char *pEntityName = STRING(globalname);
 
-	
+
 	pTest = m_pList;
 	while ( pTest )
 	{
 		if ( FStrEq( pEntityName, pTest->name ) )
 			break;
-	
+
 		pTest = pTest->pNext;
 	}
 
@@ -357,13 +357,13 @@ GLOBALESTATE CGlobalState :: EntityGetState( string_t globalname )
 
 
 // Global Savedata for Delay
-TYPEDESCRIPTION	CGlobalState::m_SaveData[] = 
+TYPEDESCRIPTION	CGlobalState::m_SaveData[] =
 {
 	DEFINE_FIELD( CGlobalState, m_listCount, FIELD_INTEGER ),
 };
 
 // Global Savedata for Delay
-TYPEDESCRIPTION	gGlobalEntitySaveData[] = 
+TYPEDESCRIPTION	gGlobalEntitySaveData[] =
 {
 	DEFINE_ARRAY( globalentity_t, name, FIELD_CHARACTER, 64 ),
 	DEFINE_ARRAY( globalentity_t, levelName, FIELD_CHARACTER, 32 ),
@@ -378,7 +378,7 @@ int CGlobalState::Save( CSave &save )
 
 	if ( !save.WriteFields( "GLOBAL", this, m_SaveData, VARRAYSIZE(m_SaveData) ) )
 		return 0;
-	
+
 	pEntity = m_pList;
 	for ( i = 0; i < m_listCount && pEntity; i++ )
 	{
@@ -387,7 +387,7 @@ int CGlobalState::Save( CSave &save )
 
 		pEntity = pEntity->pNext;
 	}
-	
+
 	return 1;
 }
 
@@ -400,7 +400,7 @@ int CGlobalState::Restore( CRestore &restore )
 	ClearStates();
 	if ( !restore.ReadFields( "GLOBAL", this, m_SaveData, VARRAYSIZE(m_SaveData) ) )
 		return 0;
-	
+
 	listCount = m_listCount;	// Get new list count
 	m_listCount = 0;				// Clear loaded data
 
@@ -469,7 +469,7 @@ LINK_ENTITY_TO_CLASS( worldspawn, CWorld );
 #define SF_WORLD_FORCETEAM	0x0004		// Force teams
 
 extern DLL_GLOBAL BOOL		g_fGameOver;
-float g_flWeaponCheat; 
+float g_flWeaponCheat;
 
 void CWorld :: Spawn( void )
 {
@@ -480,7 +480,7 @@ void CWorld :: Spawn( void )
 void CWorld :: Precache( void )
 {
 	g_pLastSpawn = NULL;
-	
+
 #if 1
 	CVAR_SET_STRING("sv_gravity", "800"); // 67ft/sec
 	CVAR_SET_STRING("sv_stepsize", "18");
@@ -499,7 +499,7 @@ void CWorld :: Precache( void )
 
 	g_pGameRules = InstallGameRules( );
 
-	//!!!UNDONE why is there so much Spawn code in the Precache function? I'll just keep it here 
+	//!!!UNDONE why is there so much Spawn code in the Precache function? I'll just keep it here
 
 	///!!!LATER - do we want a sound ent in deathmatch? (sjb)
 	//pSoundEnt = CBaseEntity::Create( "soundent", g_vecZero, g_vecZero, edict() );
@@ -512,7 +512,7 @@ void CWorld :: Precache( void )
 	}
 
 	InitBodyQue();
-	
+
 // init sentence group playback stuff from sentences.txt.
 // ok to call this multiple times, calls after first are ignored.
 
@@ -525,7 +525,7 @@ void CWorld :: Precache( void )
 
 // the area based ambient sounds MUST be the first precache_sounds
 
-// player precaches     
+// player precaches
 	W_Precache ();									// get weapon precaches
 
 	ClientPrecache();
@@ -538,7 +538,7 @@ void CWorld :: Precache( void )
 
 	PRECACHE_SOUND( "common/bodydrop3.wav" );// dead bodies hitting the ground (animation events)
 	PRECACHE_SOUND( "common/bodydrop4.wav" );
-	
+
 	g_Language = (int)CVAR_GET_FLOAT( "sv_language" );
 	if ( g_Language == LANGUAGE_GERMAN )
 	{
@@ -561,45 +561,45 @@ void CWorld :: Precache( void )
 
 	// 0 normal
 	LIGHT_STYLE(0, "m");
-	
+
 	// 1 FLICKER (first variety)
 	LIGHT_STYLE(1, "mmnmmommommnonmmonqnmmo");
-	
+
 	// 2 SLOW STRONG PULSE
 	LIGHT_STYLE(2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
-	
+
 	// 3 CANDLE (first variety)
 	LIGHT_STYLE(3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
-	
+
 	// 4 FAST STROBE
 	LIGHT_STYLE(4, "mamamamamama");
-	
+
 	// 5 GENTLE PULSE 1
 	LIGHT_STYLE(5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj");
-	
+
 	// 6 FLICKER (second variety)
 	LIGHT_STYLE(6, "nmonqnmomnmomomno");
-	
+
 	// 7 CANDLE (second variety)
 	LIGHT_STYLE(7, "mmmaaaabcdefgmmmmaaaammmaamm");
-	
+
 	// 8 CANDLE (third variety)
 	LIGHT_STYLE(8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
-	
+
 	// 9 SLOW STROBE (fourth variety)
 	LIGHT_STYLE(9, "aaaaaaaazzzzzzzz");
-	
+
 	// 10 FLUORESCENT FLICKER
 	LIGHT_STYLE(10, "mmamammmmammamamaaamammma");
 
 	// 11 SLOW PULSE NOT FADE TO BLACK
 	LIGHT_STYLE(11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
-	
+
 	// 12 UNDERWATER LIGHT MUTATION
 	// this light only distorts the lightmap - no contribution
 	// is made to the brightness of affected surfaces
 	LIGHT_STYLE(12, "mmnnmmnnnmmnn");
-	
+
 	// styles 32-62 are assigned by the light program for switchable lights
 
 	// 63 testing
@@ -644,7 +644,7 @@ void CWorld :: Precache( void )
 		CBaseEntity *pEntity = CBaseEntity::Create( "env_message", g_vecZero, g_vecZero, NULL );
 		if ( pEntity )
 		{
-			pEntity->SetThink( SUB_CallUseToggle );
+			pEntity->SetThink( &CBaseEntity::SUB_CallUseToggle );
 			pEntity->pev->message = pev->netname;
 			pev->netname = 0;
 			pEntity->pev->nextthink = gpGlobals->time + 0.3;
@@ -658,14 +658,14 @@ void CWorld :: Precache( void )
 		CVAR_SET_FLOAT( "v_dark", 0.0 );
 
 	pev->spawnflags &= ~SF_WORLD_DARK;		// g-cont. don't apply fade after save\restore
-	
+
 	if ( pev->spawnflags & SF_WORLD_TITLE )
 		gDisplayTitle = TRUE;		// display the game title if this key is set
 	else
 		gDisplayTitle = FALSE;
 
 	pev->spawnflags &= ~SF_WORLD_TITLE;		// g-cont. don't show logo after save\restore
-	
+
 	if ( pev->spawnflags & SF_WORLD_FORCETEAM )
 	{
 		CVAR_SET_FLOAT( "mp_defaultteam", 1 );
@@ -784,7 +784,7 @@ int DispatchCreateEntity( edict_t *pent, const char *szName )
 			SpawnEdict( &pent->v );
 			return 0;	// handled
 		}
-	}		
+	}
 #endif
 */
 	return -1;
@@ -800,7 +800,7 @@ int DispatchPhysicsEntity( edict_t *pEdict )
 
 	if( !pEntity )
 	{
-//		ALERT( at_console, "skip %s [%i] without private data\n", STRING( pEdict->v.classname ), ENTINDEX( pEdict )); 
+//		ALERT( at_console, "skip %s [%i] without private data\n", STRING( pEdict->v.classname ), ENTINDEX( pEdict ));
 		return 0;	// not initialized
 	}
 
@@ -815,7 +815,7 @@ int DispatchPhysicsEntity( edict_t *pEdict )
 		thinktime = pEntity->pev->nextthink;
 		if( thinktime <= 0.0f || thinktime > PHYSICS_TIME() + gpGlobals->frametime )
 			return 1;
-		
+
 		if( thinktime < PHYSICS_TIME( ))
 			thinktime = PHYSICS_TIME();	// don't let things stay in the past.
 						// it is possible to start that way
@@ -837,8 +837,8 @@ int DispatchPhysicsEntity( edict_t *pEdict )
 */
 	return 0;
 }
-	
-static physics_interface_t gPhysicsInterface = 
+
+static physics_interface_t gPhysicsInterface =
 {
 	SV_PHYSICS_INTERFACE_VERSION,
 	DispatchCreateEntity,

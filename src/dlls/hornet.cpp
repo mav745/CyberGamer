@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -34,7 +34,7 @@ LINK_ENTITY_TO_CLASS( hornet, CHornet );
 //=========================================================
 // Save/Restore
 //=========================================================
-TYPEDESCRIPTION	CHornet::m_SaveData[] = 
+TYPEDESCRIPTION	CHornet::m_SaveData[] =
 {
 	DEFINE_FIELD( CHornet, m_flStopAttack, FIELD_TIME ),
 	DEFINE_FIELD( CHornet, m_iHornetType, FIELD_INTEGER ),
@@ -66,7 +66,7 @@ void CHornet :: Spawn( void )
 	pev->takedamage = DAMAGE_YES;
 	pev->flags		|= FL_MONSTER;
 	pev->health		= 1;// weak!
-	
+
 	if ( g_pGameRules->IsMultiplayer() )
 	{
 		// hornets don't live as long in multiplayer
@@ -93,8 +93,8 @@ void CHornet :: Spawn( void )
 	SET_MODEL(ENT( pev ), "models/hornet.mdl");
 	UTIL_SetSize( pev, Vector( -4, -4, -4 ), Vector( 4, 4, 4 ) );
 
-	SetTouch( DieTouch );
-	SetThink( StartTrack );
+	SetTouch( &CHornet::DieTouch );
+	SetThink( &CHornet::StartTrack );
 
 	edict_t *pSoundEnt = pev->owner;
 	if ( !pSoundEnt )
@@ -106,10 +106,10 @@ void CHornet :: Spawn( void )
 	}
 	else
 	{
-		// no real owner, or owner isn't a client. 
+		// no real owner, or owner isn't a client.
 		pev->dmg = gSkillData.monDmgHornet;
 	}
-	
+
 	pev->nextthink = gpGlobals->time + 0.1;
 	ResetSequenceInfo( );
 }
@@ -133,7 +133,7 @@ void CHornet :: Precache()
 
 	iHornetPuff = PRECACHE_MODEL( "sprites/muz1.spr" );
 	iHornetTrail = PRECACHE_MODEL("sprites/laserbeam.spr");
-}	
+}
 
 //=========================================================
 // hornets will never get mad at each other, no matter who the owner is.
@@ -169,8 +169,8 @@ void CHornet :: StartTrack ( void )
 {
 	IgniteTrail();
 
-	SetTouch( TrackTouch );
-	SetThink( TrackTarget );
+	SetTouch( &CHornet::TrackTouch );
+	SetThink( &CHornet::TrackTarget );
 
 	pev->nextthink = gpGlobals->time + 0.1;
 }
@@ -182,9 +182,9 @@ void CHornet :: StartDart ( void )
 {
 	IgniteTrail();
 
-	SetTouch( DartTouch );
+	SetTouch( &CHornet::DartTouch );
 
-	SetThink( SUB_Remove );
+	SetThink( &CBaseEntity::SUB_Remove );
 	pev->nextthink = gpGlobals->time + 4;
 }
 
@@ -213,7 +213,7 @@ old colors
 			WRITE_BYTE( 100 );   // r, g, b
 			WRITE_BYTE( 255 );   // r, g, b
 			break;
-	
+
 */
 
 	// trail
@@ -223,7 +223,7 @@ old colors
 		WRITE_SHORT( iHornetTrail );	// model
 		WRITE_BYTE( 10 ); // life
 		WRITE_BYTE( 2 );  // width
-		
+
 		switch ( m_iHornetType )
 		{
 		case HORNET_TYPE_RED:
@@ -257,7 +257,7 @@ void CHornet :: TrackTarget ( void )
 	if (gpGlobals->time > m_flStopAttack)
 	{
 		SetTouch( NULL );
-		SetThink( SUB_Remove );
+		SetThink( &CBaseEntity::SUB_Remove );
 		pev->nextthink = gpGlobals->time + 0.1;
 		return;
 	}
@@ -268,7 +268,7 @@ void CHornet :: TrackTarget ( void )
 		Look( 512 );
 		m_hEnemy = BestVisibleEnemy( );
 	}
-	
+
 	if ( m_hEnemy != NULL && FVisible( m_hEnemy ))
 	{
 		m_vecEnemyLKP = m_hEnemy->BodyTarget( pev->origin );
@@ -282,12 +282,12 @@ void CHornet :: TrackTarget ( void )
 
 	if (pev->velocity.Length() < 0.1)
 		vecFlightDir = vecDirToEnemy;
-	else 
+	else
 		vecFlightDir = pev->velocity.Normalize();
 
 	// measure how far the turn is, the wider the turn, the slow we'll go this time.
 	flDelta = DotProduct ( vecFlightDir, vecDirToEnemy );
-	
+
 	if ( flDelta < 0.5 )
 	{// hafta turn wide again. play sound
 		switch (RANDOM_LONG(0,2))
@@ -307,13 +307,13 @@ void CHornet :: TrackTarget ( void )
 
 	if ( pev->owner && (pev->owner->v.flags & FL_MONSTER) )
 	{
-		// random pattern only applies to hornets fired by monsters, not players. 
+		// random pattern only applies to hornets fired by monsters, not players.
 
 		pev->velocity.x += RANDOM_FLOAT ( -0.10, 0.10 );// scramble the flight dir a bit.
 		pev->velocity.y += RANDOM_FLOAT ( -0.10, 0.10 );
 		pev->velocity.z += RANDOM_FLOAT ( -0.10, 0.10 );
 	}
-	
+
 	switch ( m_iHornetType )
 	{
 		case HORNET_TYPE_RED:
@@ -406,14 +406,14 @@ void CHornet::DieTouch ( CBaseEntity *pOther )
 			case 1:	EMIT_SOUND( ENT(pev), CHAN_VOICE, "hornet/ag_hornethit2.wav", 1, ATTN_NORM);	break;
 			case 2:	EMIT_SOUND( ENT(pev), CHAN_VOICE, "hornet/ag_hornethit3.wav", 1, ATTN_NORM);	break;
 		}
-			
+
 		pOther->TakeDamage( pev, VARS( pev->owner ), pev->dmg, DMG_BULLET );
 	}
 
 	pev->modelindex = 0;// so will disappear for the 0.1 secs we wait until NEXTTHINK gets rid
 	pev->solid = SOLID_NOT;
 
-	SetThink ( SUB_Remove );
+	SetThink ( &CBaseEntity::SUB_Remove );
 	pev->nextthink = gpGlobals->time + 1;// stick around long enough for the sound to finish!
 }
 

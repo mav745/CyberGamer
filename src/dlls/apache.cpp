@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -57,7 +57,7 @@ class CApache : public CBaseMonster
 	void Flight( void );
 	void FireRocket( void );
 	BOOL FireGun( void );
-	
+
 	int  TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, float flDamage, int bitsDamageType );
 	void TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType);
 
@@ -90,7 +90,7 @@ class CApache : public CBaseMonster
 };
 LINK_ENTITY_TO_CLASS( monster_apache, CApache );
 
-TYPEDESCRIPTION	CApache::m_SaveData[] = 
+TYPEDESCRIPTION	CApache::m_SaveData[] =
 {
 	DEFINE_FIELD( CApache, m_iRockets, FIELD_INTEGER ),
 	DEFINE_FIELD( CApache, m_flForce, FIELD_FLOAT ),
@@ -139,12 +139,12 @@ void CApache :: Spawn( void )
 
 	if (pev->spawnflags & SF_WAITFORTRIGGER)
 	{
-		SetUse( StartupUse );
+		SetUse( &CApache::StartupUse );
 	}
 	else
 	{
-		SetThink( HuntThink );
-		SetTouch( FlyTouch );
+		SetThink( &CApache::HuntThink );
+		SetTouch( &CApache::FlyTouch );
 		pev->nextthink = gpGlobals->time + 1.0;
 	}
 
@@ -186,8 +186,8 @@ void CApache::NullThink( void )
 
 void CApache::StartupUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	SetThink( HuntThink );
-	SetTouch( FlyTouch );
+	SetThink( &CApache::HuntThink );
+	SetTouch( &CApache::FlyTouch );
 	pev->nextthink = gpGlobals->time + 0.1;
 	SetUse( NULL );
 }
@@ -200,8 +200,8 @@ void CApache :: Killed( entvars_t *pevAttacker, int iGib )
 	STOP_SOUND( ENT(pev), CHAN_STATIC, "apache/ap_rotor2.wav" );
 
 	UTIL_SetSize( pev, Vector( -32, -32, -64), Vector( 32, 32, 0) );
-	SetThink( DyingThink );
-	SetTouch( CrashTouch );
+	SetThink( &CApache::DyingThink );
+	SetTouch( &CApache::CrashTouch );
 	pev->nextthink = gpGlobals->time + 0.1;
 	pev->health = 0;
 	pev->takedamage = DAMAGE_NO;
@@ -264,12 +264,12 @@ void CApache :: DyingThink( void )
 			WRITE_COORD( 132 );
 
 			// velocity
-			WRITE_COORD( pev->velocity.x ); 
+			WRITE_COORD( pev->velocity.x );
 			WRITE_COORD( pev->velocity.y );
 			WRITE_COORD( pev->velocity.z );
 
 			// randomization
-			WRITE_BYTE( 50 ); 
+			WRITE_BYTE( 50 );
 
 			// Model
 			WRITE_SHORT( m_iBodyGibs );	//model id#
@@ -316,7 +316,7 @@ void CApache :: DyingThink( void )
 			WRITE_BYTE( 120 ); // scale * 10
 			WRITE_BYTE( 255 ); // brightness
 		MESSAGE_END();
-		
+
 		// big smoke
 		MESSAGE_BEGIN( MSG_PVS, SVC_TEMPENTITY, vecSpot );
 			WRITE_BYTE( TE_SMOKE );
@@ -381,12 +381,12 @@ void CApache :: DyingThink( void )
 			WRITE_COORD( 128 );
 
 			// velocity
-			WRITE_COORD( 0 ); 
+			WRITE_COORD( 0 );
 			WRITE_COORD( 0 );
 			WRITE_COORD( 200 );
 
 			// randomization
-			WRITE_BYTE( 30 ); 
+			WRITE_BYTE( 30 );
 
 			// Model
 			WRITE_SHORT( m_iBodyGibs );	//model id#
@@ -402,7 +402,7 @@ void CApache :: DyingThink( void )
 			WRITE_BYTE( BREAK_METAL );
 		MESSAGE_END();
 
-		SetThink( SUB_Remove );
+		SetThink( &CBaseEntity::SUB_Remove );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 }
@@ -411,7 +411,7 @@ void CApache :: DyingThink( void )
 void CApache::FlyTouch( CBaseEntity *pOther )
 {
 	// bounce if we hit something solid
-	if ( pOther->pev->solid == SOLID_BSP) 
+	if ( pOther->pev->solid == SOLID_BSP)
 	{
 		TraceResult tr = UTIL_GetGlobalTrace( );
 
@@ -424,7 +424,7 @@ void CApache::FlyTouch( CBaseEntity *pOther )
 void CApache::CrashTouch( CBaseEntity *pOther )
 {
 	// only crash if we hit something solid
-	if ( pOther->pev->solid == SOLID_BSP) 
+	if ( pOther->pev->solid == SOLID_BSP)
 	{
 		SetTouch( NULL );
 		m_flNextRocket = gpGlobals->time;
@@ -436,7 +436,7 @@ void CApache::CrashTouch( CBaseEntity *pOther )
 
 void CApache :: GibMonster( void )
 {
-	// EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "common/bodysplat.wav", 0.75, ATTN_NORM, 0, 200);		
+	// EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "common/bodysplat.wav", 0.75, ATTN_NORM, 0, 200);
 }
 
 
@@ -568,7 +568,7 @@ void CApache :: HuntThink( void )
 				if (DotProduct( m_vecTarget, vecEst) > .965)
 				{
 					TraceResult tr;
-					
+
 					UTIL_TraceLine( pev->origin, pev->origin + vecEst * 4096, ignore_monsters, edict(), &tr );
 					if ((tr.vecEndPos - m_posTarget).Length() < 512)
 						FireRocket( );
@@ -577,7 +577,7 @@ void CApache :: HuntThink( void )
 			else
 			{
 				TraceResult tr;
-				
+
 				UTIL_TraceLine( pev->origin, pev->origin + vecEst * 4096, dont_ignore_monsters, edict(), &tr );
 				// just fire when close
 				if ((tr.vecEndPos - m_posTarget).Length() < 512)
@@ -597,7 +597,7 @@ void CApache :: Flight( void )
 	UTIL_MakeAimVectors( pev->angles + pev->avelocity * 2 + vecAdj);
 	// Vector vecEst1 = pev->origin + pev->velocity + gpGlobals->v_up * m_flForce - Vector( 0, 0, 384 );
 	// float flSide = DotProduct( m_posDesired - vecEst1, gpGlobals->v_right );
-	
+
 	float flSide = DotProduct( m_vecDesired, gpGlobals->v_right );
 
 	if (flSide < 0)
@@ -663,15 +663,15 @@ void CApache :: Flight( void )
 
 	// general drag
 	pev->velocity = pev->velocity * 0.995;
-	
+
 	// apply power to stay correct height
-	if (m_flForce < 80 && vecEst.z < m_posDesired.z) 
+	if (m_flForce < 80 && vecEst.z < m_posDesired.z)
 	{
 		m_flForce += 12;
 	}
 	else if (m_flForce > 30)
 	{
-		if (vecEst.z > m_posDesired.z) 
+		if (vecEst.z > m_posDesired.z)
 			m_flForce -= 8;
 	}
 
@@ -699,8 +699,8 @@ void CApache :: Flight( void )
 		pev->avelocity.x += 4.0;
 	}
 
-	// ALERT( at_console, "%.0f %.0f : %.0f %.0f : %.0f %.0f : %.0f\n", pev->origin.x, pev->velocity.x, flDist, flSpeed, pev->angles.x, pev->avelocity.x, m_flForce ); 
-	// ALERT( at_console, "%.0f %.0f : %.0f %0.f : %.0f\n", pev->origin.z, pev->velocity.z, vecEst.z, m_posDesired.z, m_flForce ); 
+	// ALERT( at_console, "%.0f %.0f : %.0f %.0f : %.0f %.0f : %.0f\n", pev->origin.x, pev->velocity.x, flDist, flSpeed, pev->angles.x, pev->avelocity.x, m_flForce );
+	// ALERT( at_console, "%.0f %.0f : %.0f %0.f : %.0f\n", pev->origin.z, pev->velocity.z, vecEst.z, m_posDesired.z, m_flForce );
 
 	// make rotor, engine sounds
 	if (m_iSoundState == 0)
@@ -715,7 +715,7 @@ void CApache :: Flight( void )
 		CBaseEntity *pPlayer = NULL;
 
 		pPlayer = UTIL_FindEntityByClassname( NULL, "player" );
-		// UNDONE: this needs to send different sounds to every player for multiplayer.	
+		// UNDONE: this needs to send different sounds to every player for multiplayer.
 		if (pPlayer)
 		{
 
@@ -723,7 +723,7 @@ void CApache :: Flight( void )
 
 			pitch = (int)(100 + pitch / 50.0);
 
-			if (pitch > 250) 
+			if (pitch > 250)
 				pitch = 250;
 			if (pitch < 50)
 				pitch = 50;
@@ -731,13 +731,13 @@ void CApache :: Flight( void )
 				pitch = 101;
 
 			float flVol = (m_flForce / 100.0) + .1;
-			if (flVol > 1.0) 
+			if (flVol > 1.0)
 				flVol = 1.0;
 
 			EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_rotor2.wav", 1.0, 0.3, SND_CHANGE_PITCH | SND_CHANGE_VOL, pitch);
 		}
 		// EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_whine1.wav", flVol, 0.2, SND_CHANGE_PITCH | SND_CHANGE_VOL, pitch);
-	
+
 		// ALERT( at_console, "%.0f %.2f\n", pitch, flVol );
 	}
 }
@@ -787,7 +787,7 @@ void CApache :: FireRocket( void )
 BOOL CApache :: FireGun( )
 {
 	UTIL_MakeAimVectors( pev->angles );
-		
+
 	Vector posGun, angGun;
 	GetAttachment( 1, posGun, angGun );
 
@@ -953,7 +953,7 @@ class CApacheHVR : public CGrenade
 };
 LINK_ENTITY_TO_CLASS( hvr_rocket, CApacheHVR );
 
-TYPEDESCRIPTION	CApacheHVR::m_SaveData[] = 
+TYPEDESCRIPTION	CApacheHVR::m_SaveData[] =
 {
 //	DEFINE_FIELD( CApacheHVR, m_iTrail, FIELD_INTEGER ),	// Dont' save, precache
 	DEFINE_FIELD( CApacheHVR, m_vecForward, FIELD_VECTOR ),
@@ -972,8 +972,8 @@ void CApacheHVR :: Spawn( void )
 	UTIL_SetSize(pev, Vector( 0, 0, 0), Vector(0, 0, 0));
 	UTIL_SetOrigin( pev, pev->origin );
 
-	SetThink( IgniteThink );
-	SetTouch( ExplodeTouch );
+	SetThink( &CApacheHVR::IgniteThink );
+	SetTouch( &CApacheHVR::ExplodeTouch );
 
 	UTIL_MakeAimVectors( pev->angles );
 	m_vecForward = gpGlobals->v_forward;
@@ -1019,7 +1019,7 @@ void CApacheHVR :: IgniteThink( void  )
 	MESSAGE_END();  // move PHS/PVS data sending into here (SEND_ALL, SEND_PVS, SEND_PHS)
 
 	// set to accelerate
-	SetThink( AccelerateThink );
+	SetThink( &CApacheHVR::AccelerateThink );
 	pev->nextthink = gpGlobals->time + 0.1;
 }
 

@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -34,7 +34,7 @@ extern int gmsgItemPickup;
 class CWorldItem : public CBaseEntity
 {
 public:
-	void	KeyValue(KeyValueData *pkvd ); 
+	void	KeyValue(KeyValueData *pkvd );
 	void	Spawn( void );
 	int		m_iType;
 };
@@ -56,7 +56,7 @@ void CWorldItem::Spawn( void )
 {
 	CBaseEntity *pEntity = NULL;
 
-	switch (m_iType) 
+	switch (m_iType)
 	{
 	case 44: // ITEM_BATTERY:
 		pEntity = CBaseEntity::Create( "item_battery", pev->origin, pev->angles );
@@ -93,7 +93,7 @@ void CItem::Spawn( void )
 	pev->solid = SOLID_TRIGGER;
 	UTIL_SetOrigin( pev, pev->origin );
 	UTIL_SetSize(pev, Vector(-16, -16, 0), Vector(16, 16, 16));
-	SetTouch(ItemTouch);
+	SetTouch(&CItem::ItemTouch);
 
 	if (DROP_TO_FLOOR(ENT(pev)) == 0)
 	{
@@ -126,12 +126,12 @@ void CItem::ItemTouch( CBaseEntity *pOther )
 	{
 		SUB_UseTargets( pOther, USE_TOGGLE, 0 );
 		SetTouch( NULL );
-		
-		// player grabbed the item. 
+
+		// player grabbed the item.
 		g_pGameRules->PlayerGotItem( pPlayer, this );
 		if ( g_pGameRules->ItemShouldRespawn( this ) == GR_ITEM_RESPAWN_YES )
 		{
-			Respawn(); 
+			Respawn();
 		}
 		else
 		{
@@ -151,8 +151,8 @@ CBaseEntity* CItem::Respawn( void )
 
 	UTIL_SetOrigin( pev, g_pGameRules->VecItemRespawnSpot( this ) );// blip to whereever you should respawn.
 
-	SetThink ( Materialize );
-	pev->nextthink = g_pGameRules->FlItemRespawnTime( this ); 
+	SetThink ( &CItem::Materialize );
+	pev->nextthink = g_pGameRules->FlItemRespawnTime( this );
 	return this;
 }
 
@@ -166,7 +166,7 @@ void CItem::Materialize( void )
 		pev->effects |= EF_MUZZLEFLASH;
 	}
 
-	SetTouch( ItemTouch );
+	SetTouch( &CItem::ItemTouch );
 }
 
 #define SF_SUIT_SHORTLOGON		0x0001
@@ -174,7 +174,7 @@ void CItem::Materialize( void )
 class CItemSuit : public CItem
 {
 	void Spawn( void )
-	{ 
+	{
 		Precache( );
 		SET_MODEL(ENT(pev), "models/w_suit.mdl");
 		CItem::Spawn( );
@@ -205,7 +205,7 @@ LINK_ENTITY_TO_CLASS(item_suit, CItemSuit);
 class CItemBattery : public CItem
 {
 	void Spawn( void )
-	{ 
+	{
 		Precache( );
 		SET_MODEL(ENT(pev), "models/w_battery.mdl");
 		CItem::Spawn( );
@@ -237,19 +237,19 @@ class CItemBattery : public CItem
 				WRITE_STRING( STRING(pev->classname) );
 			MESSAGE_END();
 
-			
+
 			// Suit reports new power level
 			// For some reason this wasn't working in release build -- round it.
 			pct = (int)( (float)(pPlayer->pev->armorvalue * 100.0) * (1.0/MAX_NORMAL_BATTERY) + 0.5);
 			pct = (pct / 5);
 			if (pct > 0)
 				pct--;
-		
+
 			sprintf( szcharge,"!HEV_%1dP", pct );
-			
+
 			//EMIT_SOUND_SUIT(ENT(pev), szcharge);
 			pPlayer->SetSuitUpdate(szcharge, FALSE, SUIT_NEXT_IN_30SEC);
-			return TRUE;		
+			return TRUE;
 		}
 		return FALSE;
 	}
@@ -261,7 +261,7 @@ LINK_ENTITY_TO_CLASS(item_battery, CItemBattery);
 class CItemAntidote : public CItem
 {
 	void Spawn( void )
-	{ 
+	{
 		Precache( );
 		SET_MODEL(ENT(pev), "models/w_antidote.mdl");
 		CItem::Spawn( );
@@ -273,7 +273,7 @@ class CItemAntidote : public CItem
 	BOOL MyTouch( CBasePlayer *pPlayer )
 	{
 		pPlayer->SetSuitUpdate("!HEV_DET4", FALSE, SUIT_NEXT_IN_1MIN);
-		
+
 		pPlayer->m_rgItems[ITEM_ANTIDOTE] += 1;
 		return TRUE;
 	}
@@ -285,7 +285,7 @@ LINK_ENTITY_TO_CLASS(item_antidote, CItemAntidote);
 class CItemSecurity : public CItem
 {
 	void Spawn( void )
-	{ 
+	{
 		Precache( );
 		SET_MODEL(ENT(pev), "models/w_security.mdl");
 		CItem::Spawn( );
@@ -306,7 +306,7 @@ LINK_ENTITY_TO_CLASS(item_security, CItemSecurity);
 class CItemLongJump : public CItem
 {
 	void Spawn( void )
-	{ 
+	{
 		Precache( );
 		SET_MODEL(ENT(pev), "models/w_longjump.mdl");
 		CItem::Spawn( );
@@ -333,7 +333,7 @@ class CItemLongJump : public CItem
 			MESSAGE_END();
 
 			EMIT_SOUND_SUIT( pPlayer->edict(), "!HEV_A1" );	// Play the longjump sound UNDONE: Kelly? correct sound?
-			return TRUE;		
+			return TRUE;
 		}
 		return FALSE;
 	}

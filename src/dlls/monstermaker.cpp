@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -47,12 +47,12 @@ public:
 	virtual int		Restore( CRestore &restore );
 
 	static	TYPEDESCRIPTION m_SaveData[];
-	
+
 	string_t m_iszMonsterClassname;// classname of the monster(s) that will be created.
-	
+
 	int	 m_cNumMonsters;// max number of monsters this ent can create
 
-	
+
 	int  m_cLiveChildren;// how many monsters made by this monster maker that are currently alive
 	int	 m_iMaxLiveChildren;// max number of monsters that this maker may have out at one time.
 
@@ -64,7 +64,7 @@ public:
 
 LINK_ENTITY_TO_CLASS( monstermaker, CMonsterMaker );
 
-TYPEDESCRIPTION	CMonsterMaker::m_SaveData[] = 
+TYPEDESCRIPTION	CMonsterMaker::m_SaveData[] =
 {
 	DEFINE_FIELD( CMonsterMaker, m_iszMonsterClassname, FIELD_STRING ),
 	DEFINE_FIELD( CMonsterMaker, m_cNumMonsters, FIELD_INTEGER ),
@@ -80,7 +80,7 @@ IMPLEMENT_SAVERESTORE( CMonsterMaker, CBaseMonster );
 
 void CMonsterMaker :: KeyValue( KeyValueData *pkvd )
 {
-	
+
 	if ( FStrEq(pkvd->szKeyName, "monstercount") )
 	{
 		m_cNumMonsters = atoi(pkvd->szValue);
@@ -111,29 +111,29 @@ void CMonsterMaker :: Spawn( )
 	{
 		if ( pev->spawnflags & SF_MONSTERMAKER_CYCLIC )
 		{
-			SetUse ( CyclicUse );// drop one monster each time we fire
+			SetUse ( &CMonsterMaker::CyclicUse );// drop one monster each time we fire
 		}
 		else
 		{
-			SetUse ( ToggleUse );// so can be turned on/off
+			SetUse ( &CMonsterMaker::ToggleUse );// so can be turned on/off
 		}
 
 		if ( FBitSet ( pev->spawnflags, SF_MONSTERMAKER_START_ON ) )
 		{// start making monsters as soon as monstermaker spawns
 			m_fActive = TRUE;
-			SetThink ( MakerThink );
+			SetThink ( &CMonsterMaker::MakerThink );
 		}
 		else
 		{// wait to be activated.
 			m_fActive = FALSE;
-			SetThink ( SUB_DoNothing );
+			SetThink ( &CBaseEntity::SUB_DoNothing );
 		}
 	}
 	else
 	{// no targetname, just start.
 			pev->nextthink = gpGlobals->time + m_flDelay;
 			m_fActive = TRUE;
-			SetThink ( MakerThink );
+			SetThink ( &CMonsterMaker::MakerThink );
 	}
 
 	if ( m_cNumMonsters == 1 )
@@ -170,7 +170,7 @@ void CMonsterMaker::MakeMonster( void )
 
 	if ( !m_flGround )
 	{
-		// set altitude. Now that I'm activated, any breakables, etc should be out from under me. 
+		// set altitude. Now that I'm activated, any breakables, etc should be out from under me.
 		TraceResult tr;
 
 		UTIL_TraceLine ( pev->origin, pev->origin - Vector ( 0, 0, 2048 ), ignore_monsters, ENT(pev), &tr );
@@ -197,7 +197,7 @@ void CMonsterMaker::MakeMonster( void )
 		ALERT ( at_console, "NULL Ent in MonsterMaker!\n" );
 		return;
 	}
-	
+
 	// If I have a target, fire!
 	if ( !FStringNull ( pev->target ) )
 	{
@@ -259,7 +259,7 @@ void CMonsterMaker :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCaller,
 	else
 	{
 		m_fActive = TRUE;
-		SetThink ( MakerThink );
+		SetThink ( &CMonsterMaker::MakerThink );
 	}
 
 	pev->nextthink = gpGlobals->time;

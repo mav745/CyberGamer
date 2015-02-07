@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -40,9 +40,9 @@ Task_t	tlHCRangeAttack1[] =
 
 Schedule_t	slHCRangeAttack1[] =
 {
-	{ 
+	{
 		tlHCRangeAttack1,
-		VARRAYSIZE ( tlHCRangeAttack1 ), 
+		VARRAYSIZE ( tlHCRangeAttack1 ),
 		bits_COND_ENEMY_OCCLUDED	|
 		bits_COND_NO_AMMO_LOADED,
 		0,
@@ -60,9 +60,9 @@ Task_t	tlHCRangeAttack1Fast[] =
 
 Schedule_t	slHCRangeAttack1Fast[] =
 {
-	{ 
+	{
 		tlHCRangeAttack1Fast,
-		VARRAYSIZE ( tlHCRangeAttack1Fast ), 
+		VARRAYSIZE ( tlHCRangeAttack1Fast ),
 		bits_COND_ENEMY_OCCLUDED	|
 		bits_COND_NO_AMMO_LOADED,
 		0,
@@ -116,42 +116,42 @@ DEFINE_CUSTOM_SCHEDULES( CHeadCrab )
 
 IMPLEMENT_CUSTOM_SCHEDULES( CHeadCrab, CBaseMonster );
 
-const char *CHeadCrab::pIdleSounds[] = 
+const char *CHeadCrab::pIdleSounds[] =
 {
 	"headcrab/hc_idle1.wav",
 	"headcrab/hc_idle2.wav",
 	"headcrab/hc_idle3.wav",
 };
-const char *CHeadCrab::pAlertSounds[] = 
+const char *CHeadCrab::pAlertSounds[] =
 {
 	"headcrab/hc_alert1.wav",
 };
-const char *CHeadCrab::pPainSounds[] = 
+const char *CHeadCrab::pPainSounds[] =
 {
 	"headcrab/hc_pain1.wav",
 	"headcrab/hc_pain2.wav",
 	"headcrab/hc_pain3.wav",
 };
-const char *CHeadCrab::pAttackSounds[] = 
+const char *CHeadCrab::pAttackSounds[] =
 {
 	"headcrab/hc_attack1.wav",
 	"headcrab/hc_attack2.wav",
 	"headcrab/hc_attack3.wav",
 };
 
-const char *CHeadCrab::pDeathSounds[] = 
+const char *CHeadCrab::pDeathSounds[] =
 {
 	"headcrab/hc_die1.wav",
 	"headcrab/hc_die2.wav",
 };
 
-const char *CHeadCrab::pBiteSounds[] = 
+const char *CHeadCrab::pBiteSounds[] =
 {
 	"headcrab/hc_headbite.wav",
 };
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CHeadCrab :: Classify ( void )
@@ -160,8 +160,8 @@ int	CHeadCrab :: Classify ( void )
 }
 
 //=========================================================
-// Center - returns the real center of the headcrab.  The 
-// bounding box is much larger than the actual creature so 
+// Center - returns the real center of the headcrab.  The
+// bounding box is much larger than the actual creature so
 // this is needed for targeting
 //=========================================================
 Vector CHeadCrab :: Center ( void )
@@ -170,8 +170,8 @@ Vector CHeadCrab :: Center ( void )
 }
 
 
-Vector CHeadCrab :: BodyTarget( const Vector &posSrc ) 
-{ 
+Vector CHeadCrab :: BodyTarget( const Vector &posSrc )
+{
 	return Center( );
 }
 
@@ -185,18 +185,18 @@ void CHeadCrab :: SetYawSpeed ( void )
 
 	switch ( m_Activity )
 	{
-	case ACT_IDLE:			
+	case ACT_IDLE:
 		ys = 30;
 		break;
-	case ACT_RUN:			
-	case ACT_WALK:			
+	case ACT_RUN:
+	case ACT_WALK:
 		ys = 20;
 		break;
 	case ACT_TURN_LEFT:
 	case ACT_TURN_RIGHT:
 		ys = 60;
 		break;
-	case ACT_RANGE_ATTACK1:	
+	case ACT_RANGE_ATTACK1:
 		ys = 30;
 		break;
 	default:
@@ -219,7 +219,7 @@ void CHeadCrab :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		{
 			ClearBits( pev->flags, FL_ONGROUND );
 
-			UTIL_SetOrigin (pev, pev->origin + Vector ( 0 , 0 , 1) );// take him off ground so engine doesn't instantly reset onground 
+			UTIL_SetOrigin (pev, pev->origin + Vector ( 0 , 0 , 1) );// take him off ground so engine doesn't instantly reset onground
 			UTIL_MakeVectors ( pev->angles );
 
 			Vector vecJumpDir;
@@ -245,7 +245,7 @@ void CHeadCrab :: HandleAnimEvent( MonsterEvent_t *pEvent )
 
 				// Don't jump too far/fast
 				float distance = vecJumpDir.Length();
-				
+
 				if (distance > 650)
 				{
 					vecJumpDir = vecJumpDir * ( 650.0 / distance );
@@ -308,11 +308,11 @@ void CHeadCrab :: Precache()
 	PRECACHE_SOUND_ARRAY(pBiteSounds);
 
 	PRECACHE_MODEL("models/headcrab.mdl");
-}	
+}
 
 
 //=========================================================
-// RunTask 
+// RunTask
 //=========================================================
 void CHeadCrab :: RunTask ( Task_t *pTask )
 {
@@ -356,7 +356,7 @@ void CHeadCrab :: LeapTouch ( CBaseEntity *pOther )
 	if ( !FBitSet( pev->flags, FL_ONGROUND ) )
 	{
 		EMIT_SOUND_DYN( edict(), CHAN_WEAPON, RANDOM_SOUND_ARRAY(pBiteSounds), GetSoundVolue(), ATTN_IDLE, 0, GetVoicePitch() );
-		
+
 		pOther->TakeDamage( pev, pev, GetDamageAmount(), DMG_SLASH );
 	}
 
@@ -385,7 +385,7 @@ void CHeadCrab :: StartTask ( Task_t *pTask )
 		{
 			EMIT_SOUND_DYN( edict(), CHAN_WEAPON, pAttackSounds[0], GetSoundVolue(), ATTN_IDLE, 0, GetVoicePitch() );
 			m_IdealActivity = ACT_RANGE_ATTACK1;
-			SetTouch ( LeapTouch );
+			SetTouch ( &CHeadCrab::LeapTouch );
 			break;
 		}
 	default:
@@ -443,7 +443,7 @@ void CHeadCrab :: IdleSound ( void )
 }
 
 //=========================================================
-// AlertSound 
+// AlertSound
 //=========================================================
 void CHeadCrab :: AlertSound ( void )
 {
@@ -451,7 +451,7 @@ void CHeadCrab :: AlertSound ( void )
 }
 
 //=========================================================
-// AlertSound 
+// AlertSound
 //=========================================================
 void CHeadCrab :: PainSound ( void )
 {
@@ -459,7 +459,7 @@ void CHeadCrab :: PainSound ( void )
 }
 
 //=========================================================
-// DeathSound 
+// DeathSound
 //=========================================================
 void CHeadCrab :: DeathSound ( void )
 {
@@ -502,7 +502,7 @@ void CBabyCrab :: Spawn( void )
 	pev->rendermode = kRenderTransTexture;
 	pev->renderamt = 192;
 	UTIL_SetSize(pev, Vector(-12, -12, 0), Vector(12, 12, 24));
-	
+
 	pev->health	= gSkillData.headcrabHealth * 0.25;	// less health than full grown
 }
 

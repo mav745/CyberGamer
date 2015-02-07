@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -113,8 +113,8 @@ void CLegacyCineMonster :: CineSpawn( char *szModel )
 	pev->effects		= 0;
 	pev->health			= 1;
 	pev->yaw_speed		= 10;
-	
-	// ugly alpha hack, can't set ints from the bsp.	
+
+	// ugly alpha hack, can't set ints from the bsp.
 	pev->sequence		= (int)pev->impulse;
 	ResetSequenceInfo( );
 	pev->framerate = 0.0;
@@ -122,9 +122,9 @@ void CLegacyCineMonster :: CineSpawn( char *szModel )
 	m_bloodColor = BLOOD_COLOR_RED;
 
 	// if no targetname, start now
-	if ( FStringNull(pev->targetname) )	
+	if ( FStringNull(pev->targetname) )
 	{
-		SetThink( CineThink );
+		SetThink( &CLegacyCineMonster::CineThink );
 		pev->nextthink += 1.0;
 	}
 }
@@ -136,7 +136,7 @@ void CLegacyCineMonster :: CineSpawn( char *szModel )
 void CLegacyCineMonster :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
 	pev->animtime = 0;	// reset the sequence
-	SetThink( CineThink );
+	SetThink( &CLegacyCineMonster::CineThink );
 	pev->nextthink = gpGlobals->time;
 }
 
@@ -145,7 +145,7 @@ void CLegacyCineMonster :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, U
 //
 void CLegacyCineMonster :: Die( void )
 {
-	SetThink( SUB_Remove );
+	SetThink( &CBaseEntity::SUB_Remove );
 }
 
 //
@@ -159,7 +159,7 @@ void CLegacyCineMonster :: Pain( void )
 void CLegacyCineMonster :: CineThink( void )
 {
 	// DBG_CheckMonsterData(pev);
-	
+
 	// Emit particles from origin (double check animator's placement of model)
 	// THIS is a test feature
 	//UTIL_ParticleEffect(pev->origin, g_vecZero, 255, 20);
@@ -181,7 +181,7 @@ void CLegacyCineMonster :: CineThink( void )
 //
 // cine_blood
 //
-// e3/prealpha only. 
+// e3/prealpha only.
 class CCineBlood : public CBaseEntity
 {
 public:
@@ -228,14 +228,14 @@ void CCineBlood :: BloodGush ( void )
 
 void CCineBlood :: BloodStart ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	SetThink( BloodGush );
+	SetThink( &CCineBlood::BloodGush );
 	pev->nextthink = gpGlobals->time;// now!
 }
 
 void CCineBlood :: Spawn ( void )
 {
 	pev->solid = SOLID_NOT;
-	SetUse ( BloodStart );
+	SetUse ( &CCineBlood::BloodStart );
 	pev->health = 20;//hacked health to count iterations
 }
 

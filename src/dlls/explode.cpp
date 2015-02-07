@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -94,10 +94,10 @@ public:
 	static	TYPEDESCRIPTION m_SaveData[];
 
 	int m_iMagnitude;// how large is the fireball? how much damage?
-	int m_spriteScale; // what's the exact fireball sprite scale? 
+	int m_spriteScale; // what's the exact fireball sprite scale?
 };
 
-TYPEDESCRIPTION	CEnvExplosion::m_SaveData[] = 
+TYPEDESCRIPTION	CEnvExplosion::m_SaveData[] =
 {
 	DEFINE_FIELD( CEnvExplosion, m_iMagnitude, FIELD_INTEGER ),
 	DEFINE_FIELD( CEnvExplosion, m_spriteScale, FIELD_INTEGER ),
@@ -118,7 +118,7 @@ void CEnvExplosion::KeyValue( KeyValueData *pkvd )
 }
 
 void CEnvExplosion::Spawn( void )
-{ 
+{
 	pev->solid = SOLID_NOT;
 	pev->effects = EF_NODRAW;
 
@@ -132,7 +132,7 @@ void CEnvExplosion::Spawn( void )
 
 	float flSpriteScale;
 	flSpriteScale = ( m_iMagnitude - 50) * 0.6;
-	
+
 	/*
 	if ( flSpriteScale > 50 )
 	{
@@ -148,7 +148,7 @@ void CEnvExplosion::Spawn( void )
 }
 
 void CEnvExplosion::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
-{ 
+{
 	TraceResult tr;
 
 	pev->model = iStringNull;//invisible
@@ -157,9 +157,9 @@ void CEnvExplosion::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE
 	Vector		vecSpot;// trace starts here!
 
 	vecSpot = pev->origin + Vector ( 0 , 0 , 8 );
-	
+
 	UTIL_TraceLine ( vecSpot, vecSpot + Vector ( 0, 0, -40 ),  ignore_monsters, ENT(pev), & tr);
-	
+
 	// Pull out of the wall a bit
 	if ( tr.flFraction != 1.0 )
 	{
@@ -217,7 +217,7 @@ void CEnvExplosion::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE
 		RadiusDamage ( pev, pev, m_iMagnitude, CLASS_NONE, DMG_BLAST );
 	}
 
-	SetThink( Smoke );
+	SetThink( &CEnvExplosion::Smoke );
 	pev->nextthink = gpGlobals->time + 0.3;
 
 	// draw sparks
@@ -246,7 +246,7 @@ void CEnvExplosion::Smoke( void )
 			WRITE_BYTE( 12  ); // framerate
 		MESSAGE_END();
 	}
-	
+
 	if ( !(pev->spawnflags & SF_ENVEXPLOSION_REPEATABLE) )
 	{
 		UTIL_Remove( this );
