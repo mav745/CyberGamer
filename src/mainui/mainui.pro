@@ -4,7 +4,7 @@ else: CONFIG -= debug
 QT -= core gui
 
 TEMPLATE = lib
-TARGET = mainui
+TARGET = menu
 CONFIG += create_prl link_prl c++11 plugin
 
 debug:DESTDIR = $$PWD/../../build_d/
@@ -16,6 +16,8 @@ else:DLLDESTDIR = $$PWD/../../build/
 debug:DEFINES += _DEBUG _MBCS _WINDOWS WIN32 _USRDLL PLATFORM_EXPORTS
 else:DEFINES += NDEBUG _MBCS _WINDOWS WIN32 _USRDLL PLATFORM_EXPORTS
 DEFINES -= UNICODE
+
+QMAKE_LFLAGS += /def:"$$PWD/../mainui/mainui.def"
 
 INCLUDEPATH += \
 	$$PWD/../common \

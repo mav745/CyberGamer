@@ -23,6 +23,13 @@
 
 */
 
+// Silence certain warnings
+#pragma warning(disable : 4244)		// int or float down-conversion
+#pragma warning(disable : 4305)		// int or float data truncation
+#pragma warning(disable : 4201)		// nameless struct/union
+#pragma warning(disable : 4514)		// unreferenced inline function removed
+#pragma warning(disable : 4100)		// unreferenced formal parameter
+
 #include "extdll.h"
 #include "util.h"
 #include "cbase.h"
@@ -38,6 +45,8 @@
 #include "weaponinfo.h"
 #include "usercmd.h"
 #include "netadr.h"
+
+
 
 extern DLL_GLOBAL ULONG		g_ulModelIndexPlayer;
 extern DLL_GLOBAL BOOL		g_fGameOver;

@@ -17,6 +17,8 @@ debug:DEFINES += _DEBUG _MBCS _WINDOWS WIN32 QUIVER VOXEL QUAKE2 VALVE_DLL CLIEN
 else:DEFINES += NDEBUG _WINDOWS WIN32 QUIVER VOXEL QUAKE2 VALVE_DLL CLIENT_WEAPONS
 DEFINES -= UNICODE
 
+QMAKE_LFLAGS += /def:"$$PWD/../dlls/hl.def"
+
 INCLUDEPATH += \
 	$$PWD/../dlls \
 	$$PWD/../common \
@@ -177,4 +179,4 @@ SOURCES += \
 	weapons.cpp \
 	world.cpp \
 	xen.cpp \
-	zombie.cpp \
+	zombie.cpp

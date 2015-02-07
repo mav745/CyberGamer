@@ -31,6 +31,8 @@
 #pragma warning(disable : 4201)		// nameless struct/union
 #pragma warning(disable : 4514)		// unreferenced inline function removed
 #pragma warning(disable : 4100)		// unreferenced formal parameter
+#pragma warning(disable : 4189)
+#pragma warning(disable : 4996)
 
 // Prevent tons of unused windows definitions
 #ifdef _WIN32

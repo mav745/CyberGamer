@@ -773,17 +773,18 @@ void *Com_LoadLibraryExt( const char *dllname, int build_ordinals_table, qboolea
 	hInst = FS_FindLibrary( dllname, directpath );
 	if( !hInst ) return NULL; // nothing to load
 
-	if( hInst->custom_loader )
+	/*if( hInst->custom_loader )
 	{
-			if( hInst->encrypted )
+		if( hInst->encrypted )
 		{
 			MsgDev( D_ERROR, "Sys_LoadLibrary: couldn't load encrypted library %s\n", dllname );
 			return NULL;
 		}
-
+		
 		hInst->hInstance = MemoryLoadLibrary( hInst->fullPath );
 	}
-	else hInst->hInstance = LoadLibrary( hInst->fullPath );
+	else */
+	hInst->hInstance = LoadLibrary( hInst->fullPath );
 
 	if( !hInst->hInstance )
 	{
@@ -820,8 +821,8 @@ void *Com_GetProcAddress( void *hInstance, const char *name )
 	if( !hInst || !hInst->hInstance )
 		return NULL;
 
-	if( hInst->custom_loader )
-		return (void *)MemoryGetProcAddress( hInst->hInstance, name );
+	//if( hInst->custom_loader )
+	//	return (void *)MemoryGetProcAddress( hInst->hInstance, name );
 	return (void *)GetProcAddress( hInst->hInstance, name );
 }
 

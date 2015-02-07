@@ -34,6 +34,7 @@ LIBS += -L$$PWD/../utils/vgui/lib/win32_vc6 -L$$PWD/common/soundlib
 LIBS += -lvgui -lmpeg
 
 QMAKE_LFLAGS_DEBUG += /NODEFAULTLIB:libc
+QMAKE_LFLAGS_RELEASE += /NODEFAULTLIB:libc
 
 LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 \
 		-ladvapi32 -lshell32 -lole32 -loleaut32 \

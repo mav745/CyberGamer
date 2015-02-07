@@ -12,6 +12,12 @@
 *   without written permission from Valve LLC.
 *
 ****/
+
+// Silence certain warnings
+#pragma warning(disable : 4189)
+#pragma warning(disable : 4996)
+#pragma warning(disable : 4100)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
