@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -90,7 +90,7 @@ static void UI_EndGameDialog( void )
 {
 	// toggle main menu between active\inactive
 	// show\hide delete dialog
-	uiCustomGame.load.generic.flags ^= QMF_INACTIVE; 
+	uiCustomGame.load.generic.flags ^= QMF_INACTIVE;
 	uiCustomGame.go2url.generic.flags ^= QMF_INACTIVE;
 	uiCustomGame.done.generic.flags ^= QMF_INACTIVE;
 	uiCustomGame.modList.generic.flags ^= QMF_INACTIVE;
@@ -128,8 +128,8 @@ static void UI_CustomGame_GetModList( void )
 	GAMEINFO	**games;
 
 	games = GET_GAMES_LIST( &numGames );
-
-	for( int i = 0; i < numGames; i++ )
+	int i;
+	for( i = 0; i < numGames; i++ )
 	{
 		strncpy( uiCustomGame.modsDir[i], games[i]->gamefolder, sizeof( uiCustomGame.modsDir[i] ));
 		strncpy( uiCustomGame.modsWebSites[i], games[i]->game_url, sizeof( uiCustomGame.modsWebSites[i] ));
@@ -150,7 +150,7 @@ static void UI_CustomGame_GetModList( void )
 		StringConcat( uiCustomGame.modsDescription[i], uiEmptyString, VER_LENGTH );
 		if( strlen( games[i]->size ))
 			StringConcat( uiCustomGame.modsDescription[i], games[i]->size, SIZE_LENGTH );
-		else StringConcat( uiCustomGame.modsDescription[i], "0.0 Mb", SIZE_LENGTH );     
+		else StringConcat( uiCustomGame.modsDescription[i], "0.0 Mb", SIZE_LENGTH );
 		StringConcat( uiCustomGame.modsDescription[i], uiEmptyString, SIZE_LENGTH );
 		uiCustomGame.modsDescriptionPtr[i] = uiCustomGame.modsDescription[i];
 
@@ -382,7 +382,7 @@ void UI_CustomGame_Menu( void )
 	// current instance is not support game change
 	if( !CVAR_GET_FLOAT( "host_allow_changegame" ))
 		return;
-	
+
 	UI_CustomGame_Precache();
 	UI_CustomGame_Init();
 

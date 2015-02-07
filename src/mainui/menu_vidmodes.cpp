@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -90,7 +90,8 @@ UI_VidModes_GetModesList
 */
 static void UI_VidModes_GetConfig( void )
 {
-	for( int i = 0; i < MAX_VIDMODES-1; i++ )
+	int i;
+	for( i = 0; i < MAX_VIDMODES-1; i++ )
 		uiVidModes.videoModesPtr[i] = uiVideoModes[i];
 	uiVidModes.videoModesPtr[i] = NULL;	// terminator
 
@@ -176,7 +177,7 @@ static void UI_VidModes_Init( void )
 	memset( &uiVidModes, 0, sizeof( uiVidModes_t ));
 
 	uiVidModes.menu.vidInitFunc = UI_VidModes_Init;
-	
+
 	uiVidModes.background.generic.id = ID_BACKGROUND;
 	uiVidModes.background.generic.type = QMTYPE_BITMAP;
 	uiVidModes.background.generic.flags = QMF_INACTIVE;
