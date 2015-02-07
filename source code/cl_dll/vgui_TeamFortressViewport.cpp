@@ -217,7 +217,7 @@ void CCommandMenu::AddButton( CommandButton *pButton )
 bool CCommandMenu::KeyInput( int keyNum )
 {
 	// loop through all our buttons looking for one bound to keyNum
-	for ( int i = 0; i < m_iButtons; i++ )
+int i;	for (  i = 0; i < m_iButtons; i++ )
 	{
 		if ( !m_aButtons[i]->IsNotValid() )
 		{
@@ -249,7 +249,7 @@ bool CCommandMenu::KeyInput( int keyNum )
 //-----------------------------------------------------------------------------
 void CCommandMenu::ClearButtonsOfArmedState( void )
 {
-	for ( int i = 0; i < GetNumButtons(); i++ )
+int i;	for (  i = 0; i < GetNumButtons(); i++ )
 	{
 		m_aButtons[i]->setArmed( false );
 
@@ -267,7 +267,7 @@ void CCommandMenu::ClearButtonsOfArmedState( void )
 //-----------------------------------------------------------------------------
 CommandButton *CCommandMenu::FindButtonWithSubmenu( CCommandMenu *pSubMenu )
 {
-	for ( int i = 0; i < GetNumButtons(); i++ )
+int i;	for (  i = 0; i < GetNumButtons(); i++ )
 	{
 		if ( m_aButtons[i]->GetSubMenu() == pSubMenu )
 			return m_aButtons[i];
@@ -906,7 +906,7 @@ CCommandMenu *TeamFortressViewport::CreateDisguiseSubmenu( CommandButton *pButto
 	m_iNumMenus++;
 
 	// create the class choice buttons
-	for ( int i = PC_SCOUT; i <= PC_ENGINEER; i++ )
+int i;	for (  i = PC_SCOUT; i <= PC_ENGINEER; i++ )
 	{
 		CommandButton *pDisguiseButton = new CommandButton( CHudTextMessage::BufferedLocaliseTextString( sLocalisedClasses[i] ), 0, BUTTON_SIZE_Y, CMENU_SIZE_X, BUTTON_SIZE_Y );
 		
@@ -1060,7 +1060,7 @@ CommandButton *TeamFortressViewport::CreateCustomButton( char *pButtonText, char
 		m_iNumMenus++;
 
 		// Disguise Enemy submenu buttons
-		for ( int i = 1; i <= 4; i++ )
+int i;		for (  i = 1; i <= 4; i++ )
 		{
 			// only show the 4th disguise button if we have 4 teams
 			m_pDisguiseButtons[i] = new DisguiseButton( ((i < 4) ? DISGUISE_TEAM3 : 0) | DISGUISE_TEAM4, "Disguise", 0, BUTTON_SIZE_Y, CMENU_SIZE_X, BUTTON_SIZE_Y);
@@ -1228,7 +1228,7 @@ void TeamFortressViewport::ShowCommandMenu(int menuIndex)
 	UpdateCursorState();
 
 	// get command menu parameters
-	for ( int i = 2; i < gEngfuncs.Cmd_Argc(); i++ )
+int i;	for (  i = 2; i < gEngfuncs.Cmd_Argc(); i++ )
 	{
 		const char *param = gEngfuncs.Cmd_Argv( i - 1 );
 		if ( param )
@@ -1921,7 +1921,7 @@ void TeamFortressViewport::UpdateHighlights()
 
 void TeamFortressViewport::GetAllPlayersInfo( void )
 {
-	for ( int i = 1; i < MAX_PLAYERS; i++ )
+int i;	for (  i = 1; i < MAX_PLAYERS; i++ )
 	{
 		GetPlayerInfo( i, &g_PlayerInfoList[i] );
 
@@ -2293,7 +2293,7 @@ int TeamFortressViewport::MsgFunc_TeamScore( const char *pszName, int iSize, voi
 	char *TeamName = READ_STRING();
 
 	// find the team matching the name
-	for ( int i = 1; i <= m_pScoreBoard->m_iNumTeams; i++ )
+int i;	for (  i = 1; i <= m_pScoreBoard->m_iNumTeams; i++ )
 	{
 		if ( !stricmp( TeamName, g_TeamInfo[i].name ) )
 			break;

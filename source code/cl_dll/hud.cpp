@@ -386,7 +386,7 @@ CHud :: ~CHud()
 int CHud :: GetSpriteIndex( const char *SpriteName )
 {
 	// look through the loaded sprite name list for SpriteName
-	for ( int i = 0; i < m_iSpriteCount; i++ )
+int i;	for (  i = 0; i < m_iSpriteCount; i++ )
 	{
 		if ( strncmp( SpriteName, m_rgszSpriteNames + (i * MAX_SPRITE_NAME_LENGTH), MAX_SPRITE_NAME_LENGTH ) == 0 )
 			return i;

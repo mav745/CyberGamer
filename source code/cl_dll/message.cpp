@@ -523,7 +523,7 @@ void CHudMessage::MessageAdd(client_textmessage_t * newMessage )
 	if ( !(m_iFlags & HUD_ACTIVE) )
 		m_iFlags |= HUD_ACTIVE;
 	
-	for ( int i = 0; i < maxHUDMessages; i++ )
+int i;	for (  i = 0; i < maxHUDMessages; i++ )
 	{
 		if ( !m_pMessages[i] )
 		{

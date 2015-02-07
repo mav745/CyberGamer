@@ -839,7 +839,7 @@ void V_SmoothInterpolateAngles( float * startAngle, float * endAngle, float * fi
 	NormalizeAngles( startAngle );
 	NormalizeAngles( endAngle );
 
-	for ( int i = 0 ; i < 3 ; i++ )
+int i;	for (  i = 0 ; i < 3 ; i++ )
 	{
 		d = endAngle[i] - startAngle[i];
 
@@ -1067,7 +1067,7 @@ float MaxAngleBetweenAngles(  float * a1, float * a2 )
 	NormalizeAngles( a1 );
 	NormalizeAngles( a2 );
 
-	for ( int i = 0 ; i < 3 ; i++ )
+int i;	for (  i = 0 ; i < 3 ; i++ )
 	{
 		d = a2[i] - a1[i];
 		if ( d > 180 )

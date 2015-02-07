@@ -60,7 +60,7 @@ int CHudStatusIcons::Draw( float flTime )
 	int y = ScreenHeight / 2;
 	
 	// loop through icon list, and draw any valid icons drawing up from the middle of screen
-	for ( int i = 0; i < MAX_ICONSPRITES; i++ )
+int i;	for (  i = 0; i < MAX_ICONSPRITES; i++ )
 	{
 		if ( m_IconList[i].spr )
 		{
@@ -107,7 +107,7 @@ int CHudStatusIcons::MsgFunc_StatusIcon( const char *pszName, int iSize, void *p
 void CHudStatusIcons::EnableIcon( char *pszIconName, unsigned char red, unsigned char green, unsigned char blue )
 {
 	// check to see if the sprite is in the current list
-	for ( int i = 0; i < MAX_ICONSPRITES; i++ )
+int i;	for (  i = 0; i < MAX_ICONSPRITES; i++ )
 	{
 		if ( !stricmp( m_IconList[i].szSpriteName, pszIconName ) )
 			break;
@@ -150,7 +150,7 @@ void CHudStatusIcons::EnableIcon( char *pszIconName, unsigned char red, unsigned
 void CHudStatusIcons::DisableIcon( char *pszIconName )
 {
 	// find the sprite is in the current list
-	for ( int i = 0; i < MAX_ICONSPRITES; i++ )
+int i;	for (  i = 0; i < MAX_ICONSPRITES; i++ )
 	{
 		if ( !stricmp( m_IconList[i].szSpriteName, pszIconName ) )
 		{

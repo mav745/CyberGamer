@@ -1415,7 +1415,7 @@ void CHudSpectator::CheckOverviewEntities()
 	double time = gEngfuncs.GetClientTime();
 
 	// removes old entities from list
-	for ( int i = 0; i< MAX_OVERVIEW_ENTITIES; i++ )
+int i;	for (  i = 0; i< MAX_OVERVIEW_ENTITIES; i++ )
 	{
 		// remove entity from list if it is too old
 		if ( m_OverviewEntities[i].killTime < time )
@@ -1469,7 +1469,7 @@ void CHudSpectator::DeathMessage(int victim)
 
 bool CHudSpectator::AddOverviewEntityToList(HSPRITE sprite, cl_entity_t *ent, double killTime)
 {
-	for ( int i = 0; i< MAX_OVERVIEW_ENTITIES; i++ )
+int i;	for (  i = 0; i< MAX_OVERVIEW_ENTITIES; i++ )
 	{
 		// find empty entity slot
 		if ( m_OverviewEntities[i].entity == NULL)

@@ -93,7 +93,7 @@ void HistoryResource :: AddToHistory( int iType, const char *szName, int iCount 
 
 void HistoryResource :: CheckClearHistory( void )
 {
-	for ( int i = 0; i < MAX_HISTORY; i++ )
+int i;	for (  i = 0; i < MAX_HISTORY; i++ )
 	{
 		if ( rgAmmoHistory[i].type )
 			return;
@@ -107,7 +107,7 @@ void HistoryResource :: CheckClearHistory( void )
 //
 int HistoryResource :: DrawAmmoHistory( float flTime )
 {
-	for ( int i = 0; i < MAX_HISTORY; i++ )
+int i;	for (  i = 0; i < MAX_HISTORY; i++ )
 	{
 		if ( rgAmmoHistory[i].type )
 		{

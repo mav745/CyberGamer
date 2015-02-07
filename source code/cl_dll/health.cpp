@@ -79,7 +79,7 @@ void CHudHealth::Reset( void )
 
 	// force all the flashing damage icons to expire
 	m_bitsDamage = 0;
-	for ( int i = 0; i < NUM_DMG_TYPES; i++ )
+int i;	for (  i = 0; i < NUM_DMG_TYPES; i++ )
 	{
 		m_dmg[i].fExpire = 0;
 	}
@@ -126,7 +126,7 @@ int CHudHealth:: MsgFunc_Damage(const char *pszName,  int iSize, void *pbuf )
 
 	vec3_t vecFrom;
 
-	for ( int i = 0 ; i < 3 ; i++)
+int i;	for (  i = 0 ; i < 3 ; i++)
 		vecFrom[i] = READ_COORD();
 
 	UpdateTiles(gHUD.m_flTime, bitsDamage);

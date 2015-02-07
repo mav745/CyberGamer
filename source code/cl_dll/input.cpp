@@ -483,9 +483,13 @@ void IN_DuckDown(void)
 {
 	KeyDown(&in_duck);
 	gHUD.m_Spectator.HandleButtonsDown( IN_DUCK );
-
+	gEngfuncs.Con_Printf("+duck\n");
 }
-void IN_DuckUp(void) {KeyUp(&in_duck);}
+void IN_DuckUp(void)
+{
+	KeyUp(&in_duck);
+	gEngfuncs.Con_Printf("-duck\n");
+}
 void IN_ReloadDown(void) {KeyDown(&in_reload);}
 void IN_ReloadUp(void) {KeyUp(&in_reload);}
 void IN_Alt1Down(void) {KeyDown(&in_alt1);}

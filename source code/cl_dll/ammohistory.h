@@ -65,7 +65,7 @@ public:
 
 	void DropAllWeapons( void )
 	{
-		for ( int i = 0; i < MAX_WEAPONS; i++ )
+int i;		for (i = 0; i < MAX_WEAPONS; i++ )
 		{
 			if ( rgWeapons[i].iId )
 				DropWeapon( &rgWeapons[i] );

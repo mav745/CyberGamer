@@ -176,7 +176,7 @@ int CHudStatusBar :: Draw( float fTime )
 {
 	if ( m_bReparseString )
 	{
-		for ( int i = 0; i < MAX_STATUSBAR_LINES; i++ )
+int i;		for (  i = 0; i < MAX_STATUSBAR_LINES; i++ )
 		{
 			m_pflNameColors[i] = g_ColorYellow;
 			ParseStatusString( i );
@@ -187,7 +187,7 @@ int CHudStatusBar :: Draw( float fTime )
 	int Y_START = ScreenHeight - YRES(32 + 4);
 
 	// Draw the status bar lines
-	for ( int i = 0; i < MAX_STATUSBAR_LINES; i++ )
+int i;	for (  i = 0; i < MAX_STATUSBAR_LINES; i++ )
 	{
 		int TextHeight, TextWidth;
 		GetConsoleStringSize( m_szStatusBar[i], &TextWidth, &TextHeight );

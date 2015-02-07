@@ -303,7 +303,7 @@ void ScorePanel::Update()
 void ScorePanel::SortTeams()
 {
 	// clear out team scores
-	for ( int i = 1; i <= m_iNumTeams; i++ )
+int i;	for (  i = 1; i <= m_iNumTeams; i++ )
 	{
 		if ( !g_TeamInfo[i].scores_overriden )
 			g_TeamInfo[i].frags = g_TeamInfo[i].deaths = 0;
@@ -413,7 +413,7 @@ void ScorePanel::SortPlayers( int iTeam, char *team )
 		int best_player;
 		best_player = 0;
 
-		for ( int i = 1; i < MAX_PLAYERS; i++ )
+int i;		for (  i = 1; i < MAX_PLAYERS; i++ )
 		{
 			if ( m_bHasBeenSorted[i] == false && g_PlayerInfoList[i].name && g_PlayerExtraInfo[i].frags >= highest_frags )
 			{
@@ -462,7 +462,7 @@ void ScorePanel::SortPlayers( int iTeam, char *team )
 void ScorePanel::RebuildTeams()
 {
 	// clear out player counts from teams
-	for ( int i = 1; i <= m_iNumTeams; i++ )
+int i;	for (  i = 1; i <= m_iNumTeams; i++ )
 	{
 		g_TeamInfo[i].players = 0;
 	}

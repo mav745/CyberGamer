@@ -396,7 +396,7 @@ void CHudAmmo::Think(void)
 
 HSPRITE* WeaponsResource :: GetAmmoPicFromWeapon( int iAmmoId, wrect_t& rect )
 {
-	for ( int i = 0; i < MAX_WEAPONS; i++ )
+	int i;for ( i = 0; i < MAX_WEAPONS; i++ )
 	{
 		if ( rgWeapons[i].iAmmoType == iAmmoId )
 		{

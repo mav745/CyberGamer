@@ -35,7 +35,7 @@ int CHudAmmoSecondary :: Init( void )
 	gHUD.AddHudElem(this);
 	m_HUD_ammoicon = 0;
 
-	for ( int i = 0; i < MAX_SEC_AMMO_VALUES; i++ )
+int i;	for (  i = 0; i < MAX_SEC_AMMO_VALUES; i++ )
 		m_iAmmoAmounts[i] = -1;  // -1 means don't draw this value
 
 	Reset();
@@ -87,7 +87,7 @@ int CHudAmmoSecondary :: Draw(float flTime)
 	}
 
 	// draw the ammo counts, in reverse order, from right to left
-	for ( int i = MAX_SEC_AMMO_VALUES-1; i >= 0; i-- )
+int i;	for ( i = MAX_SEC_AMMO_VALUES-1; i >= 0; i-- )
 	{
 		if ( m_iAmmoAmounts[i] < 0 )
 			continue; // negative ammo amounts imply that they shouldn't be drawn
@@ -139,7 +139,7 @@ int CHudAmmoSecondary :: MsgFunc_SecAmmoVal( const char *pszName, int iSize, voi
 
 	// check to see if there is anything left to draw
 	int count = 0;
-	for ( int i = 0; i < MAX_SEC_AMMO_VALUES; i++ )
+int i;	for (  i = 0; i < MAX_SEC_AMMO_VALUES; i++ )
 	{
 		count += max( 0, m_iAmmoAmounts[i] );
 	}

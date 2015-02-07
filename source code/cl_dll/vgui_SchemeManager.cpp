@@ -369,7 +369,7 @@ buildDefaultFont:
 	memcpy( m_pSchemeList, tmpSchemes, sizeof(CScheme) * m_iNumSchemes );
 
 	// create the fonts
-	for ( int i = 0; i < m_iNumSchemes; i++ )
+int i;	for (  i = 0; i < m_iNumSchemes; i++ )
 	{
 		m_pSchemeList[i].font = NULL;
 
@@ -444,7 +444,7 @@ CSchemeManager::~CSchemeManager()
 SchemeHandle_t CSchemeManager::getSchemeHandle( const char *schemeName )
 {
 	// iterate through the list
-	for ( int i = 0; i < m_iNumSchemes; i++ )
+int i;	for (  i = 0; i < m_iNumSchemes; i++ )
 	{
 		if ( !stricmp(schemeName, m_pSchemeList[i].schemeName) )
 			return i;
