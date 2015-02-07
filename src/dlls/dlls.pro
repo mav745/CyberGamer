@@ -44,7 +44,7 @@ HEADERS += \
 	defaultai.h \
 	doors.h \
 	effects.h \
-	.engine/eiface.h \
+	../engine/eiface.h \
 	enginecallback.h \
 	explode.h \
 	extdll.h \
@@ -180,4 +180,4 @@ SOURCES += \
 	weapons.cpp \
 	world.cpp \
 	xen.cpp \
-	zombie.cpp
+	zombie.cpp \
