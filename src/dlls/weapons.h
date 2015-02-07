@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -223,7 +223,7 @@ public:
 
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
-	
+
 	static	TYPEDESCRIPTION m_SaveData[];
 
 	virtual int AddToPlayer( CBasePlayer *pPlayer );	// return TRUE if the item you want the item added to the player inventory
@@ -283,13 +283,13 @@ public:
 };
 
 
-// inventory items that 
+// inventory items that
 class CBasePlayerWeapon : public CBasePlayerItem
 {
 public:
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
-	
+
 	static	TYPEDESCRIPTION m_SaveData[];
 
 	// generic weapon versions of CBasePlayerItem calls
@@ -331,9 +331,9 @@ public:
 	virtual BOOL ShouldWeaponIdle( void ) {return FALSE; };
 	virtual void Holster( int skiplocal = 0 );
 	virtual BOOL UseDecrement( void ) { return FALSE; };
-	
-	int	PrimaryAmmoIndex(); 
-	int	SecondaryAmmoIndex(); 
+
+	int	PrimaryAmmoIndex();
+	int	SecondaryAmmoIndex();
 
 	void PrintState( void );
 
@@ -388,7 +388,7 @@ extern void SpawnBlood(Vector vecSpot, int bloodColor, float flDamage);
 extern int DamageDecal( CBaseEntity *pEntity, int bitsDamageType );
 extern void RadiusDamage( Vector vecSrc, entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, float flRadius, int iClassIgnore, int bitsDamageType );
 
-typedef struct 
+typedef struct
 {
 	CBaseEntity		*pEntity;
 	float			amount;
@@ -427,7 +427,7 @@ extern MULTIDAMAGE gMultiDamage;
 
 //=========================================================
 // CWeaponBox - a single entity that can store weapons
-// and ammo. 
+// and ammo.
 //=========================================================
 class CWeaponBox : public CBaseEntity
 {
@@ -445,11 +445,11 @@ public:
 	int		Restore( CRestore &restore );
 	static	TYPEDESCRIPTION m_SaveData[];
 
-	HasWeapon( CBasePlayerItem *pCheckItem );
+	int HasWeapon( CBasePlayerItem *pCheckItem );
 	BOOL PackWeapon( CBasePlayerItem *pWeapon );
 	BOOL PackAmmo( int iszName, int iCount );
-	
-	CBasePlayerItem	*m_rgpPlayerItems[MAX_ITEM_TYPES];// one slot for each 
+
+	CBasePlayerItem	*m_rgpPlayerItems[MAX_ITEM_TYPES];// one slot for each
 
 	int m_rgiszAmmo[MAX_AMMO_SLOTS];// ammo names
 	int	m_rgAmmo[MAX_AMMO_SLOTS];// ammo quantities
@@ -478,7 +478,7 @@ public:
 	void WeaponIdle( void );
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -488,7 +488,7 @@ public:
 
 private:
 	int m_iShell;
-	
+
 
 	unsigned short m_usFireGlock1;
 	unsigned short m_usFireGlock2;
@@ -513,7 +513,7 @@ public:
 	TraceResult m_trHit;
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -540,10 +540,10 @@ public:
 	void WeaponIdle( void );
 	float m_flSoundDelay;
 
-	BOOL m_fInZoom;// don't save this. 
+	BOOL m_fInZoom;// don't save this.
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -574,7 +574,7 @@ public:
 	int m_iShell;
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -608,7 +608,7 @@ public:
 	int m_fInZoom; // don't save this
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -648,7 +648,7 @@ public:
 	int m_iShell;
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -671,7 +671,7 @@ class CLaserSpot : public CBaseEntity
 public:
 	void Suspend( float flSuspendTime );
 	void EXPORT Revive( void );
-	
+
 	static CLaserSpot *CreateSpot( void );
 };
 
@@ -708,7 +708,7 @@ public:
 	int m_cActiveRockets;// how many missiles in flight from this launcher right now?
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -736,7 +736,7 @@ public:
 
 	int m_iTrail;
 	float m_flIgniteTime;
-	CRpg *m_pLauncher;// pointer back to the launcher that fired me. 
+	CRpg *m_pLauncher;// pointer back to the launcher that fired me.
 };
 
 class CGauss : public CBasePlayerWeapon
@@ -761,7 +761,7 @@ public:
 	void PrimaryAttack( void );
 	void SecondaryAttack( void );
 	void WeaponIdle( void );
-	
+
 	void StartFire( void );
 	void Fire( Vector vecOrigSrc, Vector vecDirShooting, float flDamage );
 	float GetFullChargeTime( void );
@@ -771,11 +771,11 @@ public:
 	int m_iSoundState; // don't save this
 
 	// was this weapon just fired primary or secondary?
-	// we need to know so we can pick the right set of effects. 
+	// we need to know so we can pick the right set of effects.
 	BOOL m_fPrimaryFire;
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -826,7 +826,7 @@ public:
 	BOOL HasAmmo( void );
 
 	void UseAmmo( int count );
-	
+
 	enum EGON_FIREMODE { FIRE_NARROW, FIRE_WIDE};
 
 	CBeam				*m_pBeam;
@@ -834,7 +834,7 @@ public:
 	CSprite				*m_pSprite;
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -872,11 +872,11 @@ public:
 	float m_flNextAnimTime;
 
 	float m_flRechargeTime;
-	
+
 	int m_iFirePhase;// don't save me.
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -902,9 +902,9 @@ public:
 	BOOL CanHolster( void );
 	void Holster( int skiplocal = 0 );
 	void WeaponIdle( void );
-	
+
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -934,13 +934,13 @@ public:
 	BOOL CanDeploy( void );
 	BOOL Deploy( void );
 	BOOL IsUseable( void );
-	
+
 	void Holster( int skiplocal = 0 );
 	void WeaponIdle( void );
 	void Throw( void );
-	
+
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -961,7 +961,7 @@ public:
 	{
 		//!!!BUGBUG - fix the model!
 		pev->absmin = pev->origin + Vector(-16, -16, -5);
-		pev->absmax = pev->origin + Vector(16, 16, 28); 
+		pev->absmax = pev->origin + Vector(16, 16, 28);
 	}
 
 	void PrimaryAttack( void );
@@ -970,7 +970,7 @@ public:
 	void WeaponIdle( void );
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else
@@ -999,7 +999,7 @@ public:
 	int m_fJustThrown;
 
 	virtual BOOL UseDecrement( void )
-	{ 
+	{
 #if defined( CLIENT_WEAPONS )
 		return TRUE;
 #else

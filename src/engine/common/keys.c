@@ -731,8 +731,8 @@ void CL_CharEvent( int key )
 
 	if( cls.key_dest == key_console && !Con_Visible( ))
 	{
-		if((char)key == '∏' || (char)key == '®' )
-			return; // don't pass '∏' when we open the console 
+		if((char)key == '—ë' || (char)key == '–Å' )
+			return; // don't pass '—ë' when we open the console 
 	}
 
 	// distribute the key down event to the apropriate handler

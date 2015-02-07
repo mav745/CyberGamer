@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -37,11 +37,11 @@ public:
 	void Precache( void );
 
 	int		ObjectCaps( void )
-	{ 
+	{
 		int flags = 0;
 		if ( pev->spawnflags & SF_SPRITE_TEMPORARY )
 			flags = FCAP_DONT_SAVE;
-		return (CBaseEntity :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION) | flags; 
+		return (CBaseEntity :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION) | flags;
 	}
 	void EXPORT AnimateThink( void );
 	void EXPORT ExpandThink( void );
@@ -77,12 +77,12 @@ public:
 	inline void SetColor( int r, int g, int b ) { pev->rendercolor.x = r; pev->rendercolor.y = g; pev->rendercolor.z = b; }
 	inline void SetBrightness( int brightness ) { pev->renderamt = brightness; }
 
-	inline void AnimateAndDie( float framerate ) 
-	{ 
-		SetThink(AnimateUntilDead); 
+	inline void AnimateAndDie( float framerate )
+	{
+		SetThink(&CSprite::AnimateUntilDead);
 		pev->framerate = framerate;
-		pev->dmgtime = gpGlobals->time + (m_maxFrame / framerate); 
-		pev->nextthink = gpGlobals->time; 
+		pev->dmgtime = gpGlobals->time + (m_maxFrame / framerate);
+		pev->nextthink = gpGlobals->time;
 	}
 
 	void EXPORT AnimateUntilDead( void );
@@ -105,11 +105,11 @@ public:
 	void	Spawn( void );
 	void	Precache( void );
 	int		ObjectCaps( void )
-	{ 
+	{
 		int flags = 0;
 		if ( pev->spawnflags & SF_BEAM_TEMPORARY )
 			flags = FCAP_DONT_SAVE;
-		return (CBaseEntity :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION) | flags; 
+		return (CBaseEntity :: ObjectCaps() & ~FCAP_ACROSS_TRANSITION) | flags;
 	}
 
 	void EXPORT TriggerTouch( CBaseEntity *pOther );
@@ -168,12 +168,12 @@ public:
 
 	static CBeam *BeamCreate( const char *pSpriteName, int width );
 
-	inline void LiveForTime( float time ) { SetThink(SUB_Remove); pev->nextthink = gpGlobals->time + time; }
-	inline void	BeamDamageInstant( TraceResult *ptr, float damage ) 
-	{ 
-		pev->dmg = damage; 
+	inline void LiveForTime( float time ) { SetThink(&CBeam::SUB_Remove); pev->nextthink = gpGlobals->time + time; }
+	inline void	BeamDamageInstant( TraceResult *ptr, float damage )
+	{
+		pev->dmg = damage;
 		pev->dmgtime = gpGlobals->time - 1;
-		BeamDamage(ptr); 
+		BeamDamage(ptr);
 	}
 };
 

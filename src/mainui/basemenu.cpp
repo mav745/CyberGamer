@@ -266,9 +266,9 @@ void UI_DrawString( int x, int y, int w, int h, const char *string, const int co
 			ch = *l++;
 			ch &= 255;
 
-			// fix for letter ¸
-			if( ch == 0xB8 ) ch = (byte)'å';
-			if( ch == 0xA8 ) ch = (byte)'Å';
+			// fix for letter Ñ‘
+			if( ch == 0xB8 ) ch = (byte)'Ðµ';
+			if( ch == 0xA8 ) ch = (byte)'Ð•';
 
 			if( ch != ' ' )
 			{
