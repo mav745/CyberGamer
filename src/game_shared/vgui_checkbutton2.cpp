@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //=============================================================================
 
+#pragma warning(disable : 4996)
+
 #include <stdarg.h>
 #include <stdio.h>
 #include "vgui_checkbutton2.h"

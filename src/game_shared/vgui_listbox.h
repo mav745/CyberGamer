@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //=============================================================================
 
+#pragma warning(disable : 4100)
+
 #ifndef VOICE_LISTBOX_H
 #define VOICE_LISTBOX_H
 #ifdef _WIN32

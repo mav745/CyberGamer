@@ -18,6 +18,8 @@
 // implementation of CHudMessage class
 //
 
+#pragma warning(disable : 4996)
+
 #include "hud.h"
 #include "cl_util.h"
 #include <string.h>

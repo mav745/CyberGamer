@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //=============================================================================
 
+#pragma warning(disable : 4100)
+
 #include "vgui_listbox.h"
 
 

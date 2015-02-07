@@ -5,6 +5,8 @@
 // $NoKeywords: $
 //=============================================================================
 
+#pragma warning(disable : 4100)
+
 #include "../cl_dll/wrect.h"
 #include "../cl_dll/cl_dll.h"
 #include "vgui.h"
