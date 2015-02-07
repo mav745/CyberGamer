@@ -22,7 +22,7 @@ INCLUDEPATH += \
 	$$PWD/../engine \
 	$$PWD/../pm_shared
 
-QMAKE_LFLAGS += /NODEFAULTLIB:msvcrt
+#QMAKE_LFLAGS += /NODEFAULTLIB:msvcrt
 
 LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 \
 		-ladvapi32 -lshell32 -lole32 -loleaut32 \
