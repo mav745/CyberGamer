@@ -102,7 +102,7 @@ typedef enum
 	QMTYPE_FIELD,
 	QMTYPE_ACTION,
 	QMTYPE_BITMAP,
-	// CR: новый тип кнопки
+	// CR: РЅРѕРІС‹Р№ С‚РёРї РєРЅРѕРїРєРё
 	QMTYPE_BM_BUTTON
 } menuType_t;
 
