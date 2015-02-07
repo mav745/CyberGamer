@@ -103,7 +103,7 @@ CTeamMenuPanel::CTeamMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide,i
 	m_pBriefing->setText( gHUD.m_TextMessage.BufferedLocaliseTextString("#Map_Description_not_available") );
 	
 	// Team Menu buttons
-	for (int i = 1; i <= 5; i++)
+int i;	for ( i = 1; i <= 5; i++)
 	{
 		char sz[256]; 
 
@@ -172,7 +172,7 @@ void CTeamMenuPanel::Update( void )
 	int	 iYPos = TEAMMENU_TOPLEFT_BUTTON_Y;
 
 	// Set the team buttons
-	for (int i = 1; i <= 4; i++)
+int i;	for ( i = 1; i <= 4; i++)
 	{
 		if (m_pButtons[i])
 		{
@@ -370,7 +370,7 @@ void CTeamMenuPanel::SetActiveInfo( int iInput )
 {
 	// Remove all the Info panels and bring up the specified one
 	m_pSpectateButton->setArmed( false );
-	for (int i = 1; i <= 5; i++)
+int i;	for ( i = 1; i <= 5; i++)
 	{
 		m_pButtons[i]->setArmed( false );
 		m_pTeamInfoPanel[i]->setVisible( false );

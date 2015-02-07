@@ -152,7 +152,7 @@ void CSquadMonster :: SquadRemove( CSquadMonster *pRemove )
 	// If I'm the leader, get rid of my squad
 	if (pRemove == MySquadLeader())
 	{
-		for (int i = 0; i < MAX_SQUAD_MEMBERS-1;i++)
+int i;	for ( i = 0; i < MAX_SQUAD_MEMBERS-1;i++)
 		{
 			CSquadMonster *pMember = MySquadMember(i);
 			if (pMember)
@@ -167,7 +167,7 @@ void CSquadMonster :: SquadRemove( CSquadMonster *pRemove )
 		CSquadMonster *pSquadLeader = MySquadLeader();
 		if (pSquadLeader)
 		{
-			for (int i = 0; i < MAX_SQUAD_MEMBERS-1;i++)
+int i;		for ( i = 0; i < MAX_SQUAD_MEMBERS-1;i++)
 			{
 				if (pSquadLeader->m_hSquadMember[i] == this)
 				{
@@ -192,7 +192,7 @@ BOOL CSquadMonster :: SquadAdd( CSquadMonster *pAdd )
 	ASSERT( !pAdd->InSquad() );
 	ASSERT( this->IsLeader() );
 
-	for (int i = 0; i < MAX_SQUAD_MEMBERS-1; i++)
+int i;	for ( i = 0; i < MAX_SQUAD_MEMBERS-1; i++)
 	{
 		if (m_hSquadMember[i] == NULL)
 		{
@@ -253,7 +253,7 @@ void CSquadMonster :: SquadMakeEnemy ( CBaseEntity *pEnemy )
 	}
 
 	CSquadMonster *pSquadLeader = MySquadLeader( );
-	for (int i = 0; i < MAX_SQUAD_MEMBERS; i++)
+int i;	for ( i = 0; i < MAX_SQUAD_MEMBERS; i++)
 	{
 		CSquadMonster *pMember = pSquadLeader->MySquadMember(i);
 		if (pMember)
@@ -289,7 +289,7 @@ int CSquadMonster :: SquadCount( void )
 
 	CSquadMonster *pSquadLeader = MySquadLeader();
 	int squadCount = 0;
-	for (int i = 0; i < MAX_SQUAD_MEMBERS; i++)
+int i;	for ( i = 0; i < MAX_SQUAD_MEMBERS; i++)
 	{
 		if (pSquadLeader->MySquadMember(i) != NULL)
 			squadCount++;
@@ -494,7 +494,7 @@ BOOL CSquadMonster :: NoFriendlyFire( void )
 */
 
 	CSquadMonster *pSquadLeader = MySquadLeader();
-	for (int i = 0; i < MAX_SQUAD_MEMBERS; i++)
+int i;	for ( i = 0; i < MAX_SQUAD_MEMBERS; i++)
 	{
 		CSquadMonster *pMember = pSquadLeader->MySquadMember(i);
 		if (pMember && pMember != this)
@@ -571,7 +571,7 @@ BOOL CSquadMonster :: SquadEnemySplit ( void )
 	CSquadMonster	*pSquadLeader = MySquadLeader();
 	CBaseEntity		*pEnemy	= pSquadLeader->m_hEnemy;
 
-	for (int i = 0; i < MAX_SQUAD_MEMBERS; i++)
+int i;	for ( i = 0; i < MAX_SQUAD_MEMBERS; i++)
 	{
 		CSquadMonster *pMember = pSquadLeader->MySquadMember(i);
 		if (pMember != NULL && pMember->m_hEnemy != NULL && pMember->m_hEnemy != pEnemy)
@@ -594,7 +594,7 @@ BOOL CSquadMonster :: SquadMemberInRange ( const Vector &vecLocation, float flDi
 
 	CSquadMonster *pSquadLeader = MySquadLeader();
 
-	for (int i = 0; i < MAX_SQUAD_MEMBERS; i++)
+int i;	for ( i = 0; i < MAX_SQUAD_MEMBERS; i++)
 	{
 		CSquadMonster *pSquadMember = pSquadLeader->MySquadMember(i);
 		if (pSquadMember && (vecLocation - pSquadMember->pev->origin ).Length2D() <= flDist)

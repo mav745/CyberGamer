@@ -168,7 +168,7 @@ BOOL CHoundeye :: FCanActiveIdle ( void )
 	{
 		CSquadMonster *pSquadLeader = MySquadLeader();
 
-		for (int i = 0; i < MAX_SQUAD_MEMBERS;i++)
+int i;		for ( i = 0; i < MAX_SQUAD_MEMBERS;i++)
 		{
 			CSquadMonster *pMember = pSquadLeader->MySquadMember(i);
 			 
@@ -871,7 +871,7 @@ void CHoundeye::PrescheduleThink ( void )
 		CSquadMonster *pSquadMember;
 		int iSquadCount = 0;
 
-		for (int i = 0; i < MAX_SQUAD_MEMBERS; i++)
+int i;		for ( i = 0; i < MAX_SQUAD_MEMBERS; i++)
 		{
 			pSquadMember = MySquadMember(i);
 

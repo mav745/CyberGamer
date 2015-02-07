@@ -428,7 +428,7 @@ int CHudSpectator::Draw(float flTime)
 
 
 	// loop through all the players and draw additional infos to their sprites on the map
-	for (int i = 0; i < MAX_PLAYERS; i++)
+int i;	for ( i = 0; i < MAX_PLAYERS; i++)
 	{
 
 		if ( m_vPlayerPos[i][2]<0 )	// marked as invisible ?

@@ -54,7 +54,7 @@ BOOL FBoxVisible ( entvars_t *pevLooker, entvars_t *pevTarget, Vector &vecTarget
 
 	TraceResult tr;
 	Vector	vecLookerOrigin = pevLooker->origin + pevLooker->view_ofs;//look through the monster's 'eyes'
-	for (int i = 0; i < 5; i++)
+int i;	for ( i = 0; i < 5; i++)
 	{
 		Vector vecTarget = pevTarget->origin;
 		vecTarget.x += RANDOM_FLOAT( pevTarget->mins.x + flSize, pevTarget->maxs.x - flSize);

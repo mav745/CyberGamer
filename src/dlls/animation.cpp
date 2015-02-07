@@ -93,7 +93,7 @@ int LookupActivity( void *pmodel, entvars_t *pev, int activity )
 
 	int weighttotal = 0;
 	int seq = ACTIVITY_NOT_AVAILABLE;
-	for (int i = 0; i < pstudiohdr->numseq; i++)
+int i;	for ( i = 0; i < pstudiohdr->numseq; i++)
 	{
 		if (pseqdesc[i].activity == activity)
 		{
@@ -121,7 +121,7 @@ int LookupActivityHeaviest( void *pmodel, entvars_t *pev, int activity )
 
 	int weight = 0;
 	int seq = ACTIVITY_NOT_AVAILABLE;
-	for (int i = 0; i < pstudiohdr->numseq; i++)
+int i;	for ( i = 0; i < pstudiohdr->numseq; i++)
 	{
 		if (pseqdesc[i].activity == activity)
 		{
@@ -163,7 +163,7 @@ int LookupSequence( void *pmodel, const char *label )
 
 	pseqdesc = (mstudioseqdesc_t *)((byte *)pstudiohdr + pstudiohdr->seqindex);
 
-	for (int i = 0; i < pstudiohdr->numseq; i++)
+int i;	for ( i = 0; i < pstudiohdr->numseq; i++)
 	{
 		if (stricmp( pseqdesc[i].label, label ) == 0)
 			return i;
@@ -198,7 +198,7 @@ void SequencePrecache( void *pmodel, const char *pSequenceName )
 		pseqdesc = (mstudioseqdesc_t *)((byte *)pstudiohdr + pstudiohdr->seqindex) + index;
 		pevent = (mstudioevent_t *)((byte *)pstudiohdr + pseqdesc->eventindex);
 
-		for (int i = 0; i < pseqdesc->numevents; i++)
+int i;		for ( i = 0; i < pseqdesc->numevents; i++)
 		{
 			// Don't send client-side events to the server AI
 			if ( pevent[i].event >= EVENT_CLIENT )
@@ -327,7 +327,7 @@ float SetController( void *pmodel, entvars_t *pev, int iController, float flValu
 	mstudiobonecontroller_t	*pbonecontroller = (mstudiobonecontroller_t *)((byte *)pstudiohdr + pstudiohdr->bonecontrollerindex);
 
 	// find first controller that matches the index
-	for (int i = 0; i < pstudiohdr->numbonecontrollers; i++, pbonecontroller++)
+int i;	for ( i = 0; i < pstudiohdr->numbonecontrollers; i++, pbonecontroller++)
 	{
 		if (pbonecontroller->index == iController)
 			break;

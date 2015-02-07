@@ -731,7 +731,7 @@ void CISlave :: ArmBeam( int side )
 	UTIL_MakeAimVectors( pev->angles );
 	Vector vecSrc = pev->origin + gpGlobals->v_up * 36 + gpGlobals->v_right * side * 16 + gpGlobals->v_forward * 32;
 
-	for (int i = 0; i < 3; i++)
+int i;	for ( i = 0; i < 3; i++)
 	{
 		Vector vecAim = gpGlobals->v_right * side * RANDOM_FLOAT( 0, 1 ) + gpGlobals->v_up * RANDOM_FLOAT( -1, 1 );
 		TraceResult tr1;
@@ -772,7 +772,7 @@ void CISlave :: BeamGlow( )
 	if (b > 255)
 		b = 255;
 
-	for (int i = 0; i < m_iBeams; i++)
+int i;	for ( i = 0; i < m_iBeams; i++)
 	{
 		if (m_pBeam[i]->GetBrightness() != 255) 
 		{
@@ -851,7 +851,7 @@ void CISlave :: ZapBeam( int side )
 //=========================================================
 void CISlave :: ClearBeams( )
 {
-	for (int i = 0; i < ISLAVE_MAX_BEAMS; i++)
+int i;	for ( i = 0; i < ISLAVE_MAX_BEAMS; i++)
 	{
 		if (m_pBeam[i])
 		{

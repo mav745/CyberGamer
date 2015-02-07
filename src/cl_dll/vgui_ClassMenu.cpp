@@ -102,7 +102,7 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 	m_pScrollPanel->validate();
 
 	// Create the Class buttons
-	for (int i = 0; i <= PC_RANDOM; i++)
+int i;	for ( i = 0; i <= PC_RANDOM; i++)
 	{
 		char sz[256]; 
 		int iYPos = CLASSMENU_TOPLEFT_BUTTON_Y + ( (CLASSMENU_BUTTON_SIZE_Y + CLASSMENU_BUTTON_SPACER_Y) * i );
@@ -260,7 +260,7 @@ void CClassMenuPanel::Update()
 	int	 iYPos = CLASSMENU_TOPLEFT_BUTTON_Y;
 
 	// Cycle through the rest of the buttons
-	for (int i = 0; i <= PC_RANDOM; i++)
+int i;	for ( i = 0; i <= PC_RANDOM; i++)
 	{
 		bool bCivilian = (gViewPort->GetValidClasses(g_iTeamNumber) == -1);
 
@@ -413,7 +413,7 @@ void CClassMenuPanel::Initialize( void )
 void CClassMenuPanel::SetActiveInfo( int iInput )
 {
 	// Remove all the Info panels and bring up the specified one
-	for (int i = 0; i <= PC_RANDOM; i++)
+int i;	for ( i = 0; i <= PC_RANDOM; i++)
 	{
 		m_pButtons[i]->setArmed( false );
 		m_pClassInfoPanel[i]->setVisible( false );

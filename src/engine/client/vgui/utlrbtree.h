@@ -925,7 +925,7 @@ void CUtlRBTree<T, I>::RemoveAll()
 	// also, do it so the free list is pointing to stuff in order
 	// to get better cache coherence when re-adding stuff to this tree.
 	I prev = InvalidIndex();
-	for (int i = (int)m_TotalElements; --i >= 0; )
+int i;	for ( i = (int)m_TotalElements; --i >= 0; )
 	{
 		I idx = (I)i;
 		if (IsValidIndex(idx))

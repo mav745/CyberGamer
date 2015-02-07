@@ -1198,7 +1198,7 @@ void CBaseMonster :: PushEnemy( CBaseEntity *pEnemy, Vector &vecLastKnownPos )
 BOOL CBaseMonster :: PopEnemy( )
 {
 	// UNDONE: blah, this is bad, we should use a stack but I'm too lazy to code one.
-	for (int i = MAX_OLD_ENEMIES - 1; i >= 0; i--)
+int i;	for ( i = MAX_OLD_ENEMIES - 1; i >= 0; i--)
 	{
 		if (m_hOldEnemy[i] != NULL)
 		{

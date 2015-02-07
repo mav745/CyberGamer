@@ -909,7 +909,7 @@ void CGameStudioModelRenderer::StudioFxTransform( cl_entity_t *ent, float transf
 				if ( flTimeDelta <= 2.0 )
 					flScale = 1.0 - (flTimeDelta / 2.0);
 
-				for (int i = 0; i < 3; i++)
+int i;				for ( i = 0; i < 3; i++)
 				{
 					for (int j = 0; j < 3; j++)
 						transform[i][j] *= flScale;

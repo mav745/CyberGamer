@@ -41,7 +41,7 @@ int g_weaponselect = 0;
 
 void WeaponsResource :: LoadAllWeaponSprites( void )
 {
-	for (int i = 0; i < MAX_WEAPONS; i++)
+int i;	for ( i = 0; i < MAX_WEAPONS; i++)
 	{
 		if ( rgWeapons[i].iId )
 			LoadWeaponSprites( &rgWeapons[i] );
@@ -200,7 +200,7 @@ WEAPON *WeaponsResource :: GetFirstPos( int iSlot )
 {
 	WEAPON *pret = NULL;
 
-	for (int i = 0; i < MAX_WEAPON_POSITIONS; i++)
+int i;	for ( i = 0; i < MAX_WEAPON_POSITIONS; i++)
 	{
 		if ( rgSlots[iSlot][i] && HasAmmo( rgSlots[iSlot][i] ) )
 		{
@@ -355,7 +355,7 @@ void CHudAmmo::Think(void)
 	{
 		gWR.iOldWeaponBits = gHUD.m_iWeaponBits;
 
-		for (int i = MAX_WEAPONS-1; i > 0; i-- )
+int i;		for ( i = MAX_WEAPONS-1; i > 0; i-- )
 		{
 			WEAPON *p = gWR.GetWeapon(i);
 

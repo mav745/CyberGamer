@@ -844,7 +844,7 @@ void CController :: RunAI( void )
 	if ( HasMemory( bits_MEMORY_KILLED ) )
 		return;
 
-	for (int i = 0; i < 2; i++)
+int i;	for ( i = 0; i < 2; i++)
 	{
 		if (m_pBall[i] == NULL)
 		{

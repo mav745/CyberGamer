@@ -888,7 +888,7 @@ int	CGraph :: FindNearestNode ( const Vector &vecOrigin,  int afNodeTypes )
 	m_CheckedCounter++;
 	if (m_CheckedCounter == 0)
 	{
-		for (int i = 0; i < m_cNodes; i++)
+int i;		for ( i = 0; i < m_cNodes; i++)
 		{
 			m_di[i].m_CheckedEvent = 0;
 		}
@@ -2427,7 +2427,7 @@ int CGraph :: FLoadGraph ( char *szMapName )
 			goto NoMemory;
 		}
 		m_CheckedCounter = 0;
-		for (int i = 0; i < m_cNodes; i++)
+int i;		for ( i = 0; i < m_cNodes; i++)
 		{
 			m_di[i].m_CheckedEvent = 0;
 		}
@@ -2733,13 +2733,14 @@ void CGraph::HashChoosePrimes(int TableSize)
     // We divide this interval into 16 equal sized zones. We want to find
     // one prime number that best represents that zone.
     //
-    for (int iZone = 1, iPrime = 0; iPrime < 16; iZone += Spacing)
+int iZone;    for ( iZone = 1, iPrime = 0; iPrime < 16; iZone += Spacing)
     {
         // Search for a prime number that is less than the target zone
         // number given by iZone.
         //
         int Lower = Primes[0];
-        for (int jPrime = 0; Primes[jPrime] != 0; jPrime++)
+		int jPrime;  
+		for ( jPrime = 0; Primes[jPrime] != 0; jPrime++)
         {
             if (jPrime != 0 && TableSize % Primes[jPrime] == 0) continue;
             int Upper = Primes[jPrime];
@@ -2791,7 +2792,7 @@ void CGraph::SortNodes(void)
 	//
 	int iNodeCnt = 0;
 	m_pNodes[0].m_iPreviousNode = iNodeCnt++;
-	for (int i = 1; i < m_cNodes; i++)
+int i;	for ( i = 1; i < m_cNodes; i++)
 	{
 		m_pNodes[i].m_iPreviousNode = UNNUMBERED_NODE;
 	}
@@ -2800,7 +2801,7 @@ void CGraph::SortNodes(void)
 	{
 		// Run through all of this node's neighbors
 		//
-		for (int j = 0 ; j < m_pNodes[i].m_cNumLinks; j++ )
+int j;	for ( j = 0 ; j < m_pNodes[i].m_cNumLinks; j++ )
 		{
 			int iDestNode = INodeLink(i, j);
 			if (m_pNodes[iDestNode].m_iPreviousNode == UNNUMBERED_NODE)
@@ -2856,7 +2857,7 @@ void CGraph::BuildLinkLookups(void)
 		ALERT(at_aiconsole, "Couldn't allocated Link Lookup Table.\n");
 		return;
 	}
-	for (int i = 0; i < m_nHashLinks; i++)
+int i;	for ( i = 0; i < m_nHashLinks; i++)
 	{
 		m_pHashLinks[i] = ENTRY_STATE_EMPTY;
 	}
@@ -2896,7 +2897,7 @@ void CGraph::BuildRegionTables(void)
 	// Calculate regions for all the nodes.
 	//
 	//
-	for (int i = 0; i < 3; i++)
+int i;	for ( i = 0; i < 3; i++)
 	{
 		m_RegionMin[i] =  999999999.0; // just a big number out there;
 		m_RegionMax[i] = -999999999.0; // just a big number out there;
@@ -2926,7 +2927,8 @@ void CGraph::BuildRegionTables(void)
 
 	for (i = 0; i < 3; i++)
 	{
-		for (int j = 0; j < NUM_RANGES; j++)
+		int j;	
+		for ( j = 0; j < NUM_RANGES; j++)
 		{
 			m_RangeStart[i][j] = 255;
 			m_RangeEnd[i][j] = 0;
@@ -3041,9 +3043,9 @@ void CGraph :: ComputeStaticRoutingTables( void )
 	if (Routes && pMyPath && BestNextNodes && pRoute)
 	{
 		int nTotalCompressedSize = 0;
-		for (int iHull = 0; iHull < MAX_NODE_HULLS; iHull++)
+int iHull;		for ( iHull = 0; iHull < MAX_NODE_HULLS; iHull++)
 		{
-			for (int iCap = 0; iCap < 2; iCap++)
+int iCap;			for ( iCap = 0; iCap < 2; iCap++)
 			{
 				int iCapMask;
 				switch (iCap)
@@ -3060,9 +3062,9 @@ void CGraph :: ComputeStaticRoutingTables( void )
 
 				// Initialize Routing table to uncalculated.
 				//
-				for (int iFrom = 0; iFrom < m_cNodes; iFrom++)
+int iFrom;				for ( iFrom = 0; iFrom < m_cNodes; iFrom++)
 				{
-					for (int iTo = 0; iTo < m_cNodes; iTo++)
+int iTo;					for ( iTo = 0; iTo < m_cNodes; iTo++)
 					{
 						Routes[FROM_TO(iFrom, iTo)] = -1;
 					}
@@ -3070,7 +3072,7 @@ void CGraph :: ComputeStaticRoutingTables( void )
 
 				for (iFrom = 0; iFrom < m_cNodes; iFrom++)
 				{
-					for (int iTo = m_cNodes-1; iTo >= 0; iTo--)
+int iTo;					for ( iTo = m_cNodes-1; iTo >= 0; iTo--)
 					{
 						if (Routes[FROM_TO(iFrom, iTo)] != -1) continue;
 
@@ -3080,11 +3082,11 @@ void CGraph :: ComputeStaticRoutingTables( void )
 						//
 						if (cPathSize > 1)
 						{
-							for (int iNode = 0; iNode < cPathSize-1; iNode++)
+int iNode;					for ( iNode = 0; iNode < cPathSize-1; iNode++)
 							{
 								int iStart = pMyPath[iNode];
 								int iNext  = pMyPath[iNode+1];
-								for (int iNode1 = iNode+1; iNode1 < cPathSize; iNode1++)
+int iNode1;						for ( iNode1 = iNode+1; iNode1 < cPathSize; iNode1++)
 								{
 									int iEnd = pMyPath[iNode1];
 									Routes[FROM_TO(iStart, iEnd)] = iNext;
@@ -3100,7 +3102,7 @@ void CGraph :: ComputeStaticRoutingTables( void )
 							{
 								int iStart = pMyPath[iNode];
 								int iNext  = pMyPath[iNode-1];
-								for (int iNode1 = iNode-1; iNode1 >= 0; iNode1--)
+int iNode1;						for ( iNode1 = iNode-1; iNode1 >= 0; iNode1--)
 								{
 									int iEnd = pMyPath[iNode1];
 									Routes[FROM_TO(iStart, iEnd)] = iNext;
@@ -3116,9 +3118,9 @@ void CGraph :: ComputeStaticRoutingTables( void )
 					}
 				}
 
-				for (iFrom = 0; iFrom < m_cNodes; iFrom++)
+				for ( iFrom = 0; iFrom < m_cNodes; iFrom++ )
 				{
-					for (int iTo = 0; iTo < m_cNodes; iTo++)
+int iTo;			for ( iTo = 0; iTo < m_cNodes; iTo++ )
 					{
 						BestNextNodes[iTo] = Routes[FROM_TO(iFrom, iTo)];
 					}
@@ -3130,7 +3132,7 @@ void CGraph :: ComputeStaticRoutingTables( void )
 					int cRepeats = 0;
 					int CompressedSize = 0;
 					char *p = pRoute;
-					for (int i = 0; i < m_cNodes; i++)
+int i;				for ( i = 0; i < m_cNodes; i++)
 					{
 						BOOL CanRepeat = ((BestNextNodes[i] == iLastNode) && cRepeats < 127);
 						BOOL CanSequence = (BestNextNodes[i] == i && cSequence < 128);
@@ -3276,7 +3278,7 @@ void CGraph :: ComputeStaticRoutingTables( void )
 					int nRoute = p - pRoute;
 					if (m_pRouteInfo)
 					{
-						for (int i = 0; i < m_nRouteInfo - nRoute; i++)
+int i;					for ( i = 0; i < m_nRouteInfo - nRoute; i++)
 						{
 							if (memcmp(m_pRouteInfo + i, pRoute, nRoute) == 0)
 							{
@@ -3335,9 +3337,11 @@ void CGraph :: TestRoutingTables( void )
 	int *pMyPath2 = new int[m_cNodes];
 	if (pMyPath && pMyPath2)
 	{
-		for (int iHull = 0; iHull < MAX_NODE_HULLS; iHull++)
+		int iHull;	
+		for ( iHull = 0; iHull < MAX_NODE_HULLS; iHull++)
 		{
-			for (int iCap = 0; iCap < 2; iCap++)
+			int iCap;	
+			for ( iCap = 0; iCap < 2; iCap++)
 			{
 				int iCapMask;
 				switch (iCap)
@@ -3350,10 +3354,11 @@ void CGraph :: TestRoutingTables( void )
 					iCapMask = bits_CAP_OPEN_DOORS | bits_CAP_AUTO_DOORS | bits_CAP_USE;
 					break;
 				}
-
-				for (int iFrom = 0; iFrom < m_cNodes; iFrom++)
+				int iFrom;
+				for (iFrom = 0; iFrom < m_cNodes; iFrom++)
 				{
-					for (int iTo = 0; iTo < m_cNodes; iTo++)
+					int iTo;
+					for (iTo = 0; iTo < m_cNodes; iTo++)
 					{
 						m_fRoutingComplete = FALSE;
 						int cPathSize1 = FindShortestPath(pMyPath, iFrom, iTo, iHull, iCapMask);
@@ -3368,14 +3373,14 @@ void CGraph :: TestRoutingTables( void )
 						//
 #if 1
 						float flDistance1 = 0.0;
-						for (int i = 0; i < cPathSize1-1; i++)
+int i;					for (i = 0; i < cPathSize1-1; i++)
 						{
 							// Find the link from pMyPath[i] to pMyPath[i+1]
 							//
 							if (pMyPath[i] == pMyPath[i+1]) continue;
 							int iVisitNode;
 							BOOL bFound = FALSE;
-							for (int iLink = 0; iLink < m_pNodes[pMyPath[i]].m_cNumLinks; iLink++)
+int iLink;					for ( iLink = 0; iLink < m_pNodes[pMyPath[i]].m_cNumLinks; iLink++)
 							{
 								iVisitNode = INodeLink ( pMyPath[i], iLink );
 								if (iVisitNode == pMyPath[i+1])
@@ -3399,7 +3404,8 @@ void CGraph :: TestRoutingTables( void )
 							if (pMyPath2[i] == pMyPath2[i+1]) continue;
 							int iVisitNode;
 							BOOL bFound = FALSE;
-							for (int iLink = 0; iLink < m_pNodes[pMyPath2[i]].m_cNumLinks; iLink++)
+							int	iLink;
+							for ( iLink = 0; iLink < m_pNodes[pMyPath2[i]].m_cNumLinks; iLink++)
 							{
 								iVisitNode = INodeLink ( pMyPath2[i], iLink );
 								if (iVisitNode == pMyPath2[i+1])
@@ -3422,7 +3428,7 @@ void CGraph :: TestRoutingTables( void )
 #endif
 							ALERT(at_aiconsole, "Routing is inconsistent!!!\n");
 							ALERT(at_aiconsole, "(%d to %d |%d/%d)1:", iFrom, iTo, iHull, iCap);
-							for (int i = 0; i < cPathSize1; i++)
+int i;						for ( i = 0; i < cPathSize1; i++)
 							{
 								ALERT(at_aiconsole, "%d ", pMyPath[i]);
 							}
@@ -3533,7 +3539,7 @@ void CNodeViewer::Spawn( )
 
 	if (WorldGraph.m_cNodes < 128)
 	{
-		for (int i = 0; i < WorldGraph.m_cNodes; i++)
+int i;		for ( i = 0; i < WorldGraph.m_cNodes; i++)
 		{
 			AddNode( i, WorldGraph.NextNodeInRoute( i, m_iBaseNode, m_iHull, 0 ));
 		}
@@ -3586,7 +3592,7 @@ void CNodeViewer::AddNode( int iFrom, int iTo )
 		if (iFrom == iTo)
 			return;
 
-		for (int i = 0; i < m_nVisited; i++)
+int i;		for ( i = 0; i < m_nVisited; i++)
 		{
 			if (m_aFrom[i] == iFrom && m_aTo[i] == iTo)
 				return;
@@ -3604,7 +3610,7 @@ void CNodeViewer :: DrawThink( void )
 {
 	pev->nextthink = gpGlobals->time;
 
-	for (int i = 0; i < 10; i++)
+int i;	for ( i = 0; i < 10; i++)
 	{
 		if (m_iDraw == m_nVisited)
 		{

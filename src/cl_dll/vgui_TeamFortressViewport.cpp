@@ -389,7 +389,7 @@ void CCommandMenu::RecalculatePositions( int iYOffset )
 
 	// We need to force all menus below this one to update their positions now, because they
 	// might have submenus riding off buttons in this menu that have just shifted.
-	for (int i = 0; i < m_iButtons; i++)
+int i;	for ( i = 0; i < m_iButtons; i++)
 		m_aButtons[i]->UpdateSubMenus( iAdjust );
 }
 
@@ -399,7 +399,7 @@ void CCommandMenu::MakeVisible( CCommandMenu *pChildMenu )
 {
 /*
 	// Push down the button leading to the child menu
-	for (int i = 0; i < m_iButtons; i++)
+int i;	for ( i = 0; i < m_iButtons; i++)
 	{
 		if ( (pChildMenu != NULL) && (m_aButtons[i]->GetSubMenu() == pChildMenu) )
 		{
@@ -630,7 +630,7 @@ void TeamFortressViewport::Initialize( void )
 
 	strcpy(m_sMapName, "");
 	strcpy(m_szServerName, "");
-	for (int i = 0; i < 5; i++)
+int i;	for ( i = 0; i < 5; i++)
 	{
 		m_iValidClasses[i] = 0;
 		strcpy(m_sTeamNames[i], "");
@@ -749,7 +749,7 @@ try
 			else
 			{
 				// See if it's a Class
-				for (int i = 1; i <= PC_ENGINEER; i++)
+int i;				for ( i = 1; i <= PC_ENGINEER; i++)
 				{
 					if ( !strcmp(token, sTFClasses[i]) )
 					{
@@ -943,7 +943,7 @@ CommandButton *TeamFortressViewport::CreateCustomButton( char *pButtonText, char
 		m_iNumMenus++;
 
 		// ChangeTeam buttons
-		for (int i = 0; i < 4; i++)
+int i;		for ( i = 0; i < 4; i++)
 		{
 			char sz[256]; 
 			sprintf(sz, "jointeam %d", i+1);
@@ -973,7 +973,7 @@ CommandButton *TeamFortressViewport::CreateCustomButton( char *pButtonText, char
 		m_pCommandMenus[m_iNumMenus] = pMenu;
 		m_iNumMenus++;
 
-		for (int i = PC_SCOUT; i <= PC_RANDOM; i++ )
+int i;		for ( i = PC_SCOUT; i <= PC_RANDOM; i++ )
 		{
 			char sz[256]; 
 
@@ -1360,7 +1360,7 @@ void TeamFortressViewport::InputPlayerSpecial( void )
 // Set the submenu of the Command Menu
 void TeamFortressViewport::SetCurrentCommandMenu( CCommandMenu *pNewMenu )
 {
-	for (int i = 0; i < m_iNumMenus; i++)
+int i;	for ( i = 0; i < m_iNumMenus; i++)
 		m_pCommandMenus[i]->setVisible(false);
 
 	m_pCurrentCommandMenu = pNewMenu;
@@ -2054,7 +2054,7 @@ int	TeamFortressViewport::KeyInput( int down, int keynum, const char *pszCurrent
 				}
 			}
 
-			for (int i = '0'; i <= '9'; i++)
+int i;			for ( i = '0'; i <= '9'; i++)
 			{
 				if ( down && (keynum == i) )
 				{
@@ -2118,7 +2118,7 @@ int TeamFortressViewport::MsgFunc_ValClass(const char *pszName, int iSize, void 
 {
 	BEGIN_READ( pbuf, iSize );
 	
-	for (int i = 0; i < 5; i++)
+int i;	for ( i = 0; i < 5; i++)
 		m_iValidClasses[i] = READ_SHORT();
 
 	// Force the menu to update
@@ -2133,7 +2133,7 @@ int TeamFortressViewport::MsgFunc_TeamNames(const char *pszName, int iSize, void
 	
 	m_iNumberOfTeams = READ_BYTE();
 
-	for (int i = 0; i < m_iNumberOfTeams; i++)
+int i;	for ( i = 0; i < m_iNumberOfTeams; i++)
 	{
 		int teamNum = i + 1;
 

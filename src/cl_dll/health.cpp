@@ -379,7 +379,7 @@ int CHudHealth::DrawDamage(float flTime)
 	ScaleColors(r, g, b, a);
 
 	// Draw all the items
-	for (int i = 0; i < NUM_DMG_TYPES; i++)
+int i;	for ( i = 0; i < NUM_DMG_TYPES; i++)
 	{
 		if (m_bitsDamage & giDmgFlags[i])
 		{
@@ -408,7 +408,7 @@ int CHudHealth::DrawDamage(float flTime)
 				pdmg->x = pdmg->y = 0;
 
 				// move everyone above down
-				for (int j = 0; j < NUM_DMG_TYPES; j++)
+int j;			for ( j = 0; j < NUM_DMG_TYPES; j++)
 				{
 					pdmg = &m_dmg[j];
 					if ((pdmg->y) && (pdmg->y < y))
@@ -432,7 +432,7 @@ void CHudHealth::UpdateTiles(float flTime, long bitsDamage)
 	// Which types are new?
 	long bitsOn = ~m_bitsDamage & bitsDamage;
 	
-	for (int i = 0; i < NUM_DMG_TYPES; i++)
+int i;	for ( i = 0; i < NUM_DMG_TYPES; i++)
 	{
 		pdmg = &m_dmg[i];
 
@@ -453,7 +453,7 @@ void CHudHealth::UpdateTiles(float flTime, long bitsDamage)
 			pdmg->fExpire=flTime + DMG_IMAGE_LIFE;
 			
 			// move everyone else up
-			for (int j = 0; j < NUM_DMG_TYPES; j++)
+int j;		for ( j = 0; j < NUM_DMG_TYPES; j++)
 			{
 				if (j == i)
 					continue;

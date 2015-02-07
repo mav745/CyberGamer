@@ -269,7 +269,7 @@ void ScorePanel::Update()
 	gViewPort->GetAllPlayersInfo();
 
 	// Clear out sorts
-	for (int i = 0; i < NUM_ROWS; i++)
+int i;	for ( i = 0; i < NUM_ROWS; i++)
 	{
 		m_iSortedRows[i] = 0;
 		m_iIsATeam[i] = TEAM_NO;
@@ -899,7 +899,7 @@ void ScorePanel::cursorMoved(int x, int y, Panel *panel)
 	if (GetClientVoiceMgr()->IsInSquelchMode())
 	{
 		// look for which cell the mouse is currently over
-		for (int i = 0; i < NUM_ROWS; i++)
+int i;		for ( i = 0; i < NUM_ROWS; i++)
 		{
 			int row, col;
 			if (m_PlayerGrids[i].getCellAtPoint(x, y, row, col))

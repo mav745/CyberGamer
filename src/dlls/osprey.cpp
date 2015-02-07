@@ -265,7 +265,7 @@ void COsprey :: DeployThink( void )
 
 BOOL COsprey :: HasDead( )
 {
-	for (int i = 0; i < m_iUnits; i++)
+int i;	for ( i = 0; i < m_iUnits; i++)
 	{
 		if (m_hGrunt[i] == NULL || !m_hGrunt[i]->IsAlive())
 		{
@@ -290,7 +290,7 @@ CBaseMonster *COsprey :: MakeGrunt( Vector vecSrc )
 	if ( tr.pHit && Instance( tr.pHit )->pev->solid != SOLID_BSP) 
 		return NULL;
 
-	for (int i = 0; i < m_iUnits; i++)
+int i;	for ( i = 0; i < m_iUnits; i++)
 	{
 		if (m_hGrunt[i] == NULL || !m_hGrunt[i]->IsAlive())
 		{

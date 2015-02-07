@@ -1606,7 +1606,7 @@ char TEXTURETYPE_Find(char *name)
 {
 	// CONSIDER: pre-sort texture names and perform faster binary search here
 
-	for (int i = 0; i < gcTextures; i++)
+int i;	for ( i = 0; i < gcTextures; i++)
 	{
 		if (!strnicmp(name, &(grgszTextureName[i][0]), CBTEXTURENAMEMAX-1))
 			return (grgchTextureType[i]);

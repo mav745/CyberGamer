@@ -479,7 +479,7 @@ inline int CUtlVector<T>::InsertMultipleBefore( int elem, int num, const T *pToI
 	ShiftElementsRight(elem, num);
 
 	// Invoke default constructors
-	for (int i = 0; i < num; ++i)
+int i;	for ( i = 0; i < num; ++i)
 		Construct( &Element(elem+i) );
 
 	// Copy stuff in?
@@ -555,7 +555,7 @@ void CUtlVector<T>::RemoveMultiple( int elem, int num )
 	Assert( IsValidIndex(elem) );
 	Assert( elem + num <= Count() );
 
-	for (int i = elem + num; --i >= elem; )
+int i;	for ( i = elem + num; --i >= elem; )
 		Destruct(&Element(i));
 
 	ShiftElementsLeft(elem, num);
@@ -565,7 +565,7 @@ void CUtlVector<T>::RemoveMultiple( int elem, int num )
 template< class T >
 void CUtlVector<T>::RemoveAll()
 {
-	for (int i = m_Size; --i >= 0; )
+int i;	for ( i = m_Size; --i >= 0; )
 		Destruct(&Element(i));
 
 	m_Size = 0;

@@ -404,7 +404,7 @@ void CNihilanth::StartupThink( void )
 		m_flMaxZ = 4096;
 
 	m_hRecharger = this;
-	for (int i = 0; i < N_SPHERES; i++)
+int i;	for ( i = 0; i < N_SPHERES; i++)
 	{
 		EmitSphere( );
 	}
@@ -971,7 +971,7 @@ void CNihilanth :: Flight( void )
 
 BOOL CNihilanth :: AbsorbSphere( void )
 {
-	for (int i = 0; i < N_SPHERES; i++)
+int i;	for ( i = 0; i < N_SPHERES; i++)
 	{
 		if (m_hSphere[i] != NULL)
 		{
@@ -991,7 +991,7 @@ BOOL CNihilanth :: EmitSphere( void )
 	m_iActiveSpheres = 0;
 	int empty = 0;
 
-	for (int i = 0; i < N_SPHERES; i++)
+int i;	for ( i = 0; i < N_SPHERES; i++)
 	{
 		if (m_hSphere[i] != NULL)
 		{
@@ -1019,7 +1019,7 @@ BOOL CNihilanth :: EmitSphere( void )
 void CNihilanth :: 	TargetSphere( USE_TYPE useType, float value )
 {
 	CBaseMonster *pSphere;
-	for (int i = 0; i < N_SPHERES; i++)
+int i;	for ( i = 0; i < N_SPHERES; i++)
 	{
 		if (m_hSphere[i] != NULL)
 		{
@@ -1529,7 +1529,7 @@ void CNihilanthHVR::ZapTouch( CBaseEntity *pOther )
 	pev->velocity = pev->velocity * 0;
 
 	/*
-	for (int i = 0; i < 10; i++)
+int i;	for ( i = 0; i < 10; i++)
 	{
 		Crawl( );
 	}

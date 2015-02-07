@@ -507,7 +507,7 @@ int CBasePlayer :: TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, 
 	// reset damage time countdown for each type of time based damage player just sustained
 
 	{
-		for (int i = 0; i < CDMG_TIMEBASED; i++)
+int i;	for ( i = 0; i < CDMG_TIMEBASED; i++)
 			if (bitsDamageType & (DMG_PARALYZE << i))
 				m_rgbTimeBasedDamage[i] = 0;
 	}
@@ -1736,7 +1736,7 @@ void CBasePlayer::UpdateStatusBar()
 	}
 
 	// Check values and send if they don't match
-	for (int i = 1; i < SBAR_END; i++)
+int i;	for ( i = 1; i < SBAR_END; i++)
 	{
 		if ( newSBarState[i] != m_izSBarState[i] || bForceResend )
 		{
@@ -3038,7 +3038,7 @@ void CBasePlayer::SelectItem(const char *pstr)
 
 	CBasePlayerItem *pItem = NULL;
 
-	for (int i = 0; i < MAX_ITEM_TYPES; i++)
+int i;	for ( i = 0; i < MAX_ITEM_TYPES; i++)
 	{
 		if (m_rgpPlayerItems[i])
 		{
@@ -3834,7 +3834,7 @@ int CBasePlayer::GetAmmoIndex(const char *psz)
 // makes sure the client has all the necessary ammo info,  if values have changed
 void CBasePlayer::SendAmmoUpdate(void)
 {
-	for (int i=0; i < MAX_AMMO_SLOTS;i++)
+int i;	for ( i=0; i < MAX_AMMO_SLOTS;i++)
 	{
 		if (m_rgAmmo[i] != m_rgAmmoLast[i])
 		{
