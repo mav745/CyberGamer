@@ -1575,7 +1575,8 @@ void FixPlayerCrouchStuck( edict_t *pPlayer )
 	TraceResult trace;
 
 	// Move up as many as 18 pixels if the player is stuck.
-	for ( int i = 0; i < 18; i++ )
+	int i;
+	for ( i = 0; i < 18; i++ )
 	{
 		UTIL_TraceHull( pPlayer->v.origin, pPlayer->v.origin, dont_ignore_monsters, head_hull, pPlayer, &trace );
 		if ( trace.fStartSolid )
@@ -1637,8 +1638,8 @@ void CBasePlayer::AddPoints( int score, BOOL bAllowNegativeScore )
 void CBasePlayer::AddPointsToTeam( int score, BOOL bAllowNegativeScore )
 {
 	int index = entindex();
-
-	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+	int i;
+	for ( i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		CBaseEntity *pPlayer = UTIL_PlayerByIndex( i );
 
@@ -2570,7 +2571,8 @@ pt_end:
 #if defined( CLIENT_WEAPONS )
 		// Decay timers on weapons
 	// go through all of the weapons and make a list of the ones to pack
-	for ( int i = 0 ; i < MAX_ITEM_TYPES ; i++ )
+	int i;
+	for ( i = 0 ; i < MAX_ITEM_TYPES ; i++ )
 	{
 		if ( m_rgpPlayerItems[ i ] )
 		{
@@ -2691,7 +2693,8 @@ edict_t *EntSelectSpawnPoint( CBaseEntity *pPlayer )
 	{
 		pSpot = g_pLastSpawn;
 		// Randomize the start spot
-		for ( int i = RANDOM_LONG(1,5); i > 0; i-- )
+		int i;
+		for ( i = RANDOM_LONG(1,5); i > 0; i-- )
 			pSpot = UTIL_FindEntityByClassname( pSpot, "info_player_deathmatch" );
 		if ( FNullEnt( pSpot ) )  // skip over the null point
 			pSpot = UTIL_FindEntityByClassname( pSpot, "info_player_deathmatch" );
@@ -2838,7 +2841,8 @@ void CBasePlayer::Spawn( void )
 	m_iClientBattery = -1;
 
 	// reset all ammo values to 0
-	for ( int i = 0; i < MAX_AMMO_SLOTS; i++ )
+	int i;
+	for ( i = 0; i < MAX_AMMO_SLOTS; i++ )
 	{
 		m_rgAmmo[i] = 0;
 		m_rgAmmoLast[i] = 0;  // client ammo values also have to be reset  (the death hud clear messages does on the client side)
@@ -4069,7 +4073,8 @@ void CBasePlayer :: UpdateClientData( void )
 	SendAmmoUpdate();
 
 	// Update all the items
-	for ( int i = 0; i < MAX_ITEM_TYPES; i++ )
+	int i;
+	for ( i = 0; i < MAX_ITEM_TYPES; i++ )
 	{
 		if ( m_rgpPlayerItems[i] )  // each item updates it's successors
 			m_rgpPlayerItems[i]->UpdateClientData( this );
@@ -4282,8 +4287,8 @@ Vector CBasePlayer :: AutoaimDeflection( Vector &vecSrc, float flDist, float flD
 			return m_vecAutoAim;
 		}
 	}
-
-	for ( int i = 1; i < gpGlobals->maxEntities; i++, pEdict++ )
+	int i;
+	for ( i = 1; i < gpGlobals->maxEntities; i++, pEdict++ )
 	{
 		Vector center;
 		Vector dir;

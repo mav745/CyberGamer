@@ -152,7 +152,8 @@ void CBaseMonster :: Look ( int iDistance )
 
 	// Find only monsters/clients in box, NOT limited to PVS
 	int count = UTIL_EntitiesInBox( pList, 100, pev->origin - delta, pev->origin + delta, FL_CLIENT|FL_MONSTER );
-	for ( int i = 0; i < count; i++ )
+	int i;
+	for ( i = 0; i < count; i++ )
 	{
 		pSightEnt = pList[i];
 		if ( pSightEnt != this && pSightEnt->pev->health > 0 )

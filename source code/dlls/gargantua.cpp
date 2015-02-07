@@ -151,7 +151,8 @@ void CStomp::Think( void )
 	while ( gpGlobals->time - pev->dmgtime > STOMP_INTERVAL )
 	{
 		pev->origin = pev->origin + pev->movedir * pev->speed * STOMP_INTERVAL;
-		for ( int i = 0; i < 2; i++ )
+		int i;
+		for ( i = 0; i < 2; i++ )
 		{
 			CSprite *pSprite = CSprite::SpriteCreate( GARG_STOMP_SPRITE_NAME, pev->origin, TRUE );
 			if ( pSprite )

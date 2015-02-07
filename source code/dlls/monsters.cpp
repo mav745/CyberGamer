@@ -322,7 +322,8 @@ void CBaseMonster :: Look ( int iDistance )
 
 		// Find only monsters/clients in box, NOT limited to PVS
 		int count = UTIL_EntitiesInBox( pList, 100, pev->origin - delta, pev->origin + delta, FL_CLIENT|FL_MONSTER );
-		for ( int i = 0; i < count; i++ )
+		int i;
+		for ( i = 0; i < count; i++ )
 		{
 			pSightEnt = pList[i];
 			// !!!temporarily only considering other monsters and clients, don't see prisoners
@@ -1147,7 +1148,8 @@ int CBaseMonster :: CheckEnemy ( CBaseEntity *pEnemy )
 
 	if ( m_movementGoal == MOVEGOAL_ENEMY )
 	{
-		for ( int i = m_iRouteIndex; i < ROUTE_SIZE; i++ )
+		int i;
+		for ( i = m_iRouteIndex; i < ROUTE_SIZE; i++ )
 		{
 			if ( m_Route[ i ].iType == (bits_MF_IS_GOAL|bits_MF_TO_ENEMY) )
 			{

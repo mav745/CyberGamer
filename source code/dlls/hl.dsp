@@ -57,12 +57,13 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /dll /debug /machine:I386 /def:".\hl.def"
 # SUBTRACT LINK32 /profile /map
 # Begin Custom Build
-TargetDir=\Xash3D\src_main\temp\dlls\!release
-InputPath=\Xash3D\src_main\temp\dlls\!release\hl.dll
+OutDir=.\..\temp\dlls\!release
+TargetPath=\QtProjects\CyberGamerRep\source code\temp\dlls\!release\hl.dll
+InputPath=\QtProjects\CyberGamerRep\source code\temp\dlls\!release\hl.dll
 SOURCE="$(InputPath)"
 
-"D:\Xash3D\valve\dlls\hl.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(TargetDir)\hl.dll "D:\Xash3D\valve\dlls\hl.dll"
+"$(OutDir)" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(TargetPath)" "D:\SIERRA\Half-Life-Xash3D\valve\dlls"
 
 # End Custom Build
 
@@ -93,8 +94,8 @@ LINK32=link.exe
 # ADD LINK32 user32.lib advapi32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /def:".\hl.def"
 # SUBTRACT LINK32 /profile
 # Begin Custom Build
-TargetDir=\Xash3D\src_main\temp\dlls\!debug
-InputPath=\Xash3D\src_main\temp\dlls\!debug\hl.dll
+TargetDir=\QtProjects\CyberGamerRep\source code\temp\dlls\!debug
+InputPath=\QtProjects\CyberGamerRep\source code\temp\dlls\!debug\hl.dll
 SOURCE="$(InputPath)"
 
 "D:\Xash3D\valve\dlls\hl.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -131,8 +132,8 @@ LINK32=link.exe
 # SUBTRACT BASE LINK32 /profile
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /subsystem:windows /dll /profile /debug /machine:I386 /def:".\hl.def"
 # Begin Custom Build
-TargetDir=\Xash3D\src_main\temp\dlls\!profile
-InputPath=\Xash3D\src_main\temp\dlls\!profile\hl.dll
+TargetDir=\QtProjects\CyberGamerRep\source code\temp\dlls\!profile
+InputPath=\QtProjects\CyberGamerRep\source code\temp\dlls\!profile\hl.dll
 SOURCE="$(InputPath)"
 
 "D:\Xash3D\valve\dlls\hl.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"

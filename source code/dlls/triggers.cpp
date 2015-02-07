@@ -354,7 +354,8 @@ void CMultiManager :: Spawn( void )
 	while ( swapped )
 	{
 		swapped = 0;
-		for ( int i = 1; i < m_cTargets; i++ )
+		int i;
+		for ( i = 1; i < m_cTargets; i++ )
 		{
 			if ( m_flTargetDelay[i] < m_flTargetDelay[i-1] )
 			{
@@ -374,7 +375,8 @@ void CMultiManager :: Spawn( void )
 
 BOOL CMultiManager::HasTarget( string_t targetname )
 { 
-	for ( int i = 0; i < m_cTargets; i++ )
+	int i;
+	for ( i = 0; i < m_cTargets; i++ )
 		if ( FStrEq(STRING(targetname), STRING(m_iTargetName[i])) )
 			return TRUE;
 	

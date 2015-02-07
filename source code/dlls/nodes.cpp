@@ -655,7 +655,8 @@ int CGraph :: FindShortestPath ( int *piPath, int iStart, int iDest, int iHull, 
 
 		// Mark all the nodes as unvisited.
 		//
-		for ( int i = 0; i < m_cNodes; i++)
+		int i;
+		for ( i = 0; i < m_cNodes; i++)
 		{
 			m_pNodes[ i ].m_flClosestSoFar = -1.0;
 		}
@@ -736,8 +737,8 @@ int CGraph :: FindShortestPath ( int *piPath, int iStart, int iDest, int iHull, 
 	if (m_fRoutingComplete)
 	{
 		// This will draw the entire path that was generated for the monster.
-
-		for ( int i = 0 ; i < iNumPathNodes - 1 ; i++ )
+		int i;
+		for ( i = 0 ; i < iNumPathNodes - 1 ; i++ )
 		{
 			MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
 				WRITE_BYTE( TE_SHOWLINE);
@@ -3566,7 +3567,8 @@ void CNodeViewer::Spawn( )
 void CNodeViewer :: FindNodeConnections ( int iNode )
 {
 	AddNode( iNode, WorldGraph.NextNodeInRoute( iNode, m_iBaseNode, m_iHull, 0 ));
-	for ( int i = 0 ; i < WorldGraph.m_pNodes[ iNode ].m_cNumLinks ; i++ )
+	int i;
+	for ( i = 0 ; i < WorldGraph.m_pNodes[ iNode ].m_cNumLinks ; i++ )
 	{
 		CLink *pToLink = &WorldGraph.NodeLink( iNode, i);
 		AddNode( pToLink->m_iDestNode, WorldGraph.NextNodeInRoute( pToLink->m_iDestNode, m_iBaseNode, m_iHull, 0 ));

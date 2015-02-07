@@ -57,12 +57,13 @@ LINK32=link.exe
 # ADD LINK32 msvcrt.lib user32.lib gdi32.lib shell32.lib advapi32.lib winmm.lib mpeg.lib ../utils/vgui/lib/win32_vc6/vgui.lib /nologo /subsystem:windows /dll /pdb:none /machine:I386 /nodefaultlib:"libc" /out:"..\temp\engine\!release/xash.dll" /libpath:"./common/soundlib" /opt:nowin98
 # SUBTRACT LINK32 /debug /nodefaultlib
 # Begin Custom Build
-TargetDir=\Xash3D\src_main\temp\engine\!release
-InputPath=\Xash3D\src_main\temp\engine\!release\xash.dll
+OutDir=.\..\temp\engine\!release
+TargetPath=\QtProjects\CyberGamerRep\source code\temp\engine\!release\xash.dll
+InputPath=\QtProjects\CyberGamerRep\source code\temp\engine\!release\xash.dll
 SOURCE="$(InputPath)"
 
-"D:\Xash3D\xash.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(TargetDir)\xash.dll "D:\Xash3D\xash.dll"
+"$(OutDir)" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(TargetPath)" "D:\SIERRA\Half-Life-Xash3D"
 
 # End Custom Build
 
@@ -94,12 +95,13 @@ LINK32=link.exe
 # ADD LINK32 msvcrtd.lib user32.lib gdi32.lib shell32.lib advapi32.lib winmm.lib mpeg.lib ../utils/vgui/lib/win32_vc6/vgui.lib /nologo /subsystem:windows /dll /debug /machine:I386 /nodefaultlib:"libc.lib" /out:"..\temp\engine\!debug/xash.dll" /pdbtype:sept /libpath:"./common/soundlib"
 # SUBTRACT LINK32 /incremental:no /map /nodefaultlib
 # Begin Custom Build
-TargetDir=\Xash3D\src_main\temp\engine\!debug
-InputPath=\Xash3D\src_main\temp\engine\!debug\xash.dll
+OutDir=.\..\temp\engine\!debug
+TargetPath=\QtProjects\CyberGamerRep\source code\temp\engine\!debug\xash.dll
+InputPath=\QtProjects\CyberGamerRep\source code\temp\engine\!debug\xash.dll
 SOURCE="$(InputPath)"
 
-"D:\Xash3D\xash.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(TargetDir)\xash.dll "D:\Xash3D\xash.dll"
+"$(OutDir)" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(TargetPath)" "D:\SIERRA\Half-Life-Xash3D"
 
 # End Custom Build
 

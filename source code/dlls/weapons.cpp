@@ -64,7 +64,8 @@ MULTIDAMAGE gMultiDamage;
 //=========================================================
 int MaxAmmoCarry( int iszName )
 {
-	for ( int i = 0;  i < MAX_WEAPONS; i++ )
+	int i;
+	for ( i = 0;  i < MAX_WEAPONS; i++ )
 	{
 		if ( CBasePlayerItem::ItemInfoArray[i].pszAmmo1 && !strcmp( STRING(iszName), CBasePlayerItem::ItemInfoArray[i].pszAmmo1 ) )
 			return CBasePlayerItem::ItemInfoArray[i].iMaxAmmo1;
@@ -242,7 +243,8 @@ int giAmmoIndex = 0;
 void AddAmmoNameToAmmoRegistry( const char *szAmmoname )
 {
 	// make sure it's not already in the registry
-	for ( int i = 0; i < MAX_AMMO_SLOTS; i++ )
+	int i;
+	for ( i = 0; i < MAX_AMMO_SLOTS; i++ )
 	{
 		if ( !CBasePlayerItem::AmmoInfoArray[i].pszName)
 			continue;

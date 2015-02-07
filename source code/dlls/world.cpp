@@ -214,7 +214,8 @@ static void InitBodyQue(void)
 	entvars_t *pev = VARS(g_pBodyQueueHead);
 	
 	// Reserve 3 more slots for dead bodies
-	for ( int i = 0; i < 3; i++ )
+	int i;
+	for ( i = 0; i < 3; i++ )
 	{
 		pev->owner = CREATE_NAMED_ENTITY( istrClassname );
 		pev = VARS(pev->owner);
@@ -604,7 +605,8 @@ void CWorld :: Precache( void )
 	// 63 testing
 	LIGHT_STYLE(63, "a");
 
-	for ( int i = 0; i < ARRAYSIZE(gDecals); i++ )
+	int i;
+	for ( i = 0; i < ARRAYSIZE(gDecals); i++ )
 		gDecals[i].index = DECAL_INDEX( gDecals[i].name );
 
 // init the WorldGraph.

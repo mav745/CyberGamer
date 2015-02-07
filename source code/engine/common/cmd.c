@@ -153,6 +153,15 @@ void Cbuf_Execute( void )
 
 	while( cmd_text.cursize )
 	{
+		if( cmd_wait )
+		{
+			// skip out while text still remains in buffer,
+			// leaving it for next frame
+			//Sys_Print("waiting...\n\0");
+			cmd_wait = false;
+			break;
+		}
+
 		// find a \n or ; line break
 		text = (char *)cmd_text.data;
 
@@ -187,16 +196,12 @@ void Cbuf_Execute( void )
 			Q_memcpy( text, text + i, cmd_text.cursize );
 		}
 
+		
+		
+		//Sys_Print(line);
+		//Sys_Print("\n\0");
 		// execute the command line
 		Cmd_ExecuteString( line, src_command );
-
-		if( cmd_wait )
-		{
-			// skip out while text still remains in buffer,
-			// leaving it for next frame
-			cmd_wait = false;
-			break;
-		}
 	}
 }
 

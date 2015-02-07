@@ -1912,6 +1912,7 @@ void PM_UnDuck( void )
 	pmtrace_t trace;
 	vec3_t newOrigin;
 
+
 	VectorCopy( pmove->origin, newOrigin );
 
 	if ( pmove->onground != -1 )
@@ -1944,7 +1945,7 @@ void PM_UnDuck( void )
 		pmove->flDuckTime = 0;
 		
 		VectorCopy( newOrigin, pmove->origin );
-
+		pmove->Con_Printf("unduck..\n");
 		// Recatagorize position since ducking can change origin
 		PM_CatagorizePosition();
 	}
@@ -1982,7 +1983,7 @@ void PM_Duck( void )
 		return;
 	}
 
-	if ( pmove->flags & FL_DUCKING )
+	if ( !pmove->bInDuck && (pmove->flags & FL_DUCKING) )
 	{
 		pmove->cmd.forwardmove *= 0.333;
 		pmove->cmd.sidemove    *= 0.333;
@@ -1998,6 +1999,7 @@ void PM_Duck( void )
 				// Use 1 second so super long jump will work
 				pmove->flDuckTime = 1000;
 				pmove->bInDuck    = true;
+				pmove->Con_Printf("ducking..\n");
 			}
 
 			time = max( 0.0, ( 1.0 - (float)pmove->flDuckTime / 1000.0 ) );
@@ -2536,7 +2538,7 @@ void PM_Jump (void)
 	// Acclerate upward
 	// If we are ducking...
 	if ( ( pmove->bInDuck ) || ( pmove->flags & FL_DUCKING ) )
-	{
+	{ 
 		// Adjust for super long jump module
 		// UNDONE -- note this should be based on forward angles, not current velocity.
 		if ( cansuperjump &&

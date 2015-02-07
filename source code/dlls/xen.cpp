@@ -369,7 +369,8 @@ void CXenTree :: HandleAnimEvent( MonsterEvent_t *pEvent )
 
 			UTIL_MakeVectorsPrivate( pev->angles, forward, NULL, NULL );
 
-			for ( int i = 0; i < count; i++ )
+			int i;
+			for ( i = 0; i < count; i++ )
 			{
 				if ( pList[i] != this )
 				{
@@ -523,7 +524,8 @@ void CXenSporeLarge::Spawn( void )
 	UTIL_MakeVectorsPrivate( pev->angles, forward, right, NULL );
 
 	// Rotate the leg hulls into position
-	for ( int i = 0; i < ARRAYSIZE(m_hullSizes); i++ )
+	int i;
+	for ( i = 0; i < ARRAYSIZE(m_hullSizes); i++ )
 		CXenHull :: CreateHull( this, Vector(-12, -12, 0 ), Vector( 12, 12, 120 ), (m_hullSizes[i].x * forward) + (m_hullSizes[i].y * right) );
 }
 

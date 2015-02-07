@@ -229,7 +229,7 @@ int KEY_GetKey( const char *binding )
 	if ( !binding )
 		return -1;
 
-	for ( int i = 0; i < 256; i++ )
+int i;	for (  i = 0; i < 256; i++ )
 	{
 		b = KEY_GetBinding( i );
 		if( !b ) continue;

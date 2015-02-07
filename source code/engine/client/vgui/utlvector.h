@@ -500,7 +500,7 @@ inline int CUtlVector<T>::InsertMultipleBefore( int elem, int num, const T *pToI
 template< class T >
 int CUtlVector<T>::Find( T const& src ) const
 {
-	for ( int i = 0; i < Count(); ++i )
+int i;	for (  i = 0; i < Count(); ++i )
 	{
 		if (Element(i) == src)
 			return i;

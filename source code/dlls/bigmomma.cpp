@@ -260,13 +260,14 @@ public:
 	{ 
 		if ( m_crabTime < gpGlobals->time && m_crabCount < BIG_MAXCHILDREN )
 		{
+			int i;
 			// Don't spawn crabs inside each other
 			Vector mins = pev->origin - Vector( 32, 32, 0 );
 			Vector maxs = pev->origin + Vector( 32, 32, 0 );
 
 			CBaseEntity *pList[2];
 			int count = UTIL_EntitiesInBox( pList, 2, mins, maxs, FL_MONSTER );
-			for ( int i = 0; i < count; i++ )
+			for ( i = 0; i < count; i++ )
 			{
 				if ( pList[i] != this )	// Don't hurt yourself!
 					return FALSE;
@@ -442,6 +443,7 @@ void CBigMomma :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		case BIG_AE_MELEE_ATTACKBL:
 		case BIG_AE_MELEE_ATTACK1:
 		{
+			int i;
 			Vector forward, right;
 
 			UTIL_MakeVectorsPrivate( pev->angles, forward, right, NULL );
@@ -454,7 +456,7 @@ void CBigMomma :: HandleAnimEvent( MonsterEvent_t *pEvent )
 			int count = UTIL_EntitiesInBox( pList, 8, mins, maxs, FL_MONSTER|FL_CLIENT );
 			CBaseEntity *pHurt = NULL;
 
-			for ( int i = 0; i < count && !pHurt; i++ )
+			for ( i = 0; i < count && !pHurt; i++ )
 			{
 				if ( pList[i] != this )
 				{

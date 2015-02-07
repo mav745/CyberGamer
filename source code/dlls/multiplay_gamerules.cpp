@@ -234,7 +234,8 @@ void CHalfLifeMultiplay :: Think ( void )
 		int remain;
 
 		// check if any player is over the frag limit
-		for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+		int i;
+		for ( i = 1; i <= gpGlobals->maxClients; i++ )
 		{
 			CBaseEntity *pPlayer = UTIL_PlayerByIndex( i );
 
@@ -450,7 +451,8 @@ void CHalfLifeMultiplay :: InitHUD( CBasePlayer *pl )
 	SendMOTDToClient( pl->edict() );
 
 	// loop through all active players and send their score info to the new client
-	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+	int i;
+	for ( i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		// FIXME:  Probably don't need to cast this just to read m_iDeaths
 		CBasePlayer *plr = (CBasePlayer *)UTIL_PlayerByIndex( i );
@@ -959,7 +961,8 @@ BOOL CHalfLifeMultiplay::CanHavePlayerItem( CBasePlayer *pPlayer, CBasePlayerIte
 			return CGameRules::CanHavePlayerItem( pPlayer, pItem );
 
 		// check if the player already has this weapon
-		for ( int i = 0 ; i < MAX_ITEM_TYPES ; i++ )
+		int i;
+		for ( i = 0 ; i < MAX_ITEM_TYPES ; i++ )
 		{
 			CBasePlayerItem *it = pPlayer->m_rgpPlayerItems[i];
 
@@ -1445,8 +1448,8 @@ Determine the current # of active players on the server for map cycling logic
 int CountPlayers( void )
 {
 	int	num = 0;
-
-	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+	int i;
+	for ( i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		CBaseEntity *pEnt = UTIL_PlayerByIndex( i );
 

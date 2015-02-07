@@ -561,8 +561,8 @@ void CGamePlayerZone::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TY
 		return;
 
 	CBaseEntity *pPlayer = NULL;
-
-	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+	int i;
+	for ( i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		pPlayer = UTIL_PlayerByIndex( i );
 		if ( pPlayer )
@@ -793,7 +793,8 @@ void CGamePlayerEquip::KeyValue( KeyValueData *pkvd )
 
 	if ( !pkvd->fHandled )
 	{
-		for ( int i = 0; i < MAX_EQUIP; i++ )
+		int i;
+		for ( i = 0; i < MAX_EQUIP; i++ )
 		{
 			if ( !m_weaponNames[i] )
 			{
@@ -835,7 +836,8 @@ void CGamePlayerEquip::EquipPlayer( CBaseEntity *pEntity )
 	if ( !pPlayer )
 		return;
 
-	for ( int i = 0; i < MAX_EQUIP; i++ )
+	int i;
+	for ( i = 0; i < MAX_EQUIP; i++ )
 	{
 		if ( !m_weaponNames[i] )
 			break;

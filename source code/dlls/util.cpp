@@ -411,8 +411,8 @@ int UTIL_EntitiesInBox( CBaseEntity **pList, int listMax, const Vector &mins, co
 
 	if ( !pEdict )
 		return count;
-
-	for ( int i = 1; i < gpGlobals->maxEntities; i++, pEdict++ )
+	int i;
+	for ( i = 1; i < gpGlobals->maxEntities; i++, pEdict++ )
 	{
 		if ( pEdict->free )	// Not in use
 			continue;
@@ -456,7 +456,8 @@ int UTIL_MonstersInSphere( CBaseEntity **pList, int listMax, const Vector &cente
 	if ( !pEdict )
 		return count;
 
-	for ( int i = 1; i < gpGlobals->maxEntities; i++, pEdict++ )
+	int i;
+	for ( i = 1; i < gpGlobals->maxEntities; i++, pEdict++ )
 	{
 		if ( pEdict->free )	// Not in use
 			continue;
@@ -1806,8 +1807,8 @@ unsigned short CSaveRestoreBuffer :: TokenHash( const char *pszToken )
 	if ( !m_pdata->tokenCount || !m_pdata->pTokens )
 		ALERT( at_error, "No token table array in TokenHash()!" );
 #endif
-
-	for ( int i=0; i<m_pdata->tokenCount; i++ )
+	int i;
+	for ( i=0; i<m_pdata->tokenCount; i++ )
 	{
 #if _DEBUG
 		static qboolean beentheredonethat = FALSE;
@@ -2155,7 +2156,8 @@ void CSave :: BufferString( char *pdata, int len )
 
 int CSave :: DataEmpty( const char *pdata, int size )
 {
-	for ( int i = 0; i < size; i++ )
+	int i;
+	for ( i = 0; i < size; i++ )
 	{
 		if ( pdata[i] )
 			return 0;

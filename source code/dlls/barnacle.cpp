@@ -416,6 +416,7 @@ CBaseEntity *CBarnacle :: TongueTouchEnt ( float *pflLength )
 {
 	TraceResult	tr;
 	float		length;
+	int i;
 
 	// trace once to hit architecture and see if the tongue needs to change position.
 	UTIL_TraceLine ( pev->origin, pev->origin - Vector ( 0 , 0 , 2048 ), ignore_monsters, ENT(pev), &tr );
@@ -435,7 +436,7 @@ CBaseEntity *CBarnacle :: TongueTouchEnt ( float *pflLength )
 	int count = UTIL_EntitiesInBox( pList, 10, mins, maxs, (FL_CLIENT|FL_MONSTER) );
 	if ( count )
 	{
-		for ( int i = 0; i < count; i++ )
+		for ( i = 0; i < count; i++ )
 		{
 			// only clients and monsters
 			if ( pList[i] != this && IRelationship( pList[i] ) > R_NO && pList[ i ]->pev->deadflag == DEAD_NO )	// this ent is one of our enemies. Barnacle tries to eat it.

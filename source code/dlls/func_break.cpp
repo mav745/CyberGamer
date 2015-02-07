@@ -729,7 +729,8 @@ void CBreakable::Die( void )
 	int count = UTIL_EntitiesInBox( pList, 256, mins, maxs, FL_ONGROUND );
 	if ( count )
 	{
-		for ( int i = 0; i < count; i++ )
+		int i;
+		for ( i = 0; i < count; i++ )
 		{
 			ClearBits( pList[i]->pev->flags, FL_ONGROUND );
 			pList[i]->pev->groundentity = NULL;
@@ -846,7 +847,8 @@ void CPushable :: Spawn( void )
 
 void CPushable :: Precache( void )
 {
-	for ( int i = 0; i < 3; i++ )
+	int i;
+	for ( i = 0; i < 3; i++ )
 		PRECACHE_SOUND( m_soundNames[i] );
 
 	if ( pev->spawnflags & SF_PUSH_BREAKABLE )

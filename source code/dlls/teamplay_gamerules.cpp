@@ -105,7 +105,8 @@ void CHalfLifeTeamplay :: Think ( void )
 		int remain;
 
 		// check if any team is over the frag limit
-		for ( int i = 0; i < num_teams; i++ )
+		int i;
+		for ( i = 0; i < num_teams; i++ )
 		{
 			if ( team_scores[i] >= flFragLimit )
 			{
@@ -588,7 +589,8 @@ void CHalfLifeTeamplay::RecountTeams( bool bResendInfo )
 	memset( team_scores, 0, sizeof(team_scores) );
 
 	// loop through all clients
-	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
+	int i;
+	for ( i = 1; i <= gpGlobals->maxClients; i++ )
 	{
 		CBaseEntity *plr = UTIL_PlayerByIndex( i );
 
