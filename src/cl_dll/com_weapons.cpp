@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -33,7 +33,7 @@ int	g_runfuncs = 0;
 //  the final state passed into the postthink functionality.  We'll set this pointer and then
 //  reset it to NULL as appropriate
 struct local_state_s *g_finalstate = NULL;
-
+#pragma warning(disable : 4996)
 /*
 ====================
 COM_Log
@@ -47,7 +47,7 @@ void COM_Log( char *pszFile, char *fmt, ...)
 	char		string[1024];
 	FILE *fp;
 	char *pfilename;
-	
+
 	if ( !pszFile )
 	{
 		pfilename = "c:\\hllog.txt";
@@ -133,7 +133,7 @@ void HUD_PlaybackEvent( int flags, const edict_t *pInvoker, unsigned short event
 	vec3_t ang;
 
 	if ( !g_runfuncs || !g_finalstate )
-	     return;
+		 return;
 
 	// Weapon prediction events are assumed to occur at the player's origin
 	org			= g_finalstate->playerstate.origin;
@@ -165,7 +165,7 @@ float UTIL_WeaponTimeBase( void )
 	return 0.0;
 }
 
-static unsigned int glSeed = 0; 
+static unsigned int glSeed = 0;
 
 unsigned int seed_table[ 256 ] =
 {
@@ -187,13 +187,13 @@ unsigned int seed_table[ 256 ] =
 	25678, 18555, 13256, 23316, 22407, 16727, 991, 9236, 5373, 29402, 6117, 15241, 27715, 19291, 19888, 19847
 };
 
-unsigned int U_Random( void ) 
-{ 
-	glSeed *= 69069; 
+unsigned int U_Random( void )
+{
+	glSeed *= 69069;
 	glSeed += seed_table[ glSeed & 0xff ];
- 
-	return ( ++glSeed & 0x0fffffff ); 
-} 
+
+	return ( ++glSeed & 0x0fffffff );
+}
 
 void U_Srand( unsigned int seed )
 {

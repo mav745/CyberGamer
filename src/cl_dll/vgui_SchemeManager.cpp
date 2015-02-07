@@ -5,7 +5,7 @@
 // Valve, L.L.C., or in accordance with the terms and conditions stipulated in
 // the agreement/contract under which the contents have been supplied.
 //
-// Purpose: 
+// Purpose:
 //
 // $Workfile:     $
 // $Date:         $
@@ -39,12 +39,12 @@ void Scheme_Init()
 class CSchemeManager::CScheme
 {
 public:
-	enum { 
+	enum {
 		SCHEME_NAME_LENGTH = 32,
 		FONT_NAME_LENGTH = 48,
 		FONT_FILENAME_LENGTH = 64,
 	};
-	
+
 	// name
 	char schemeName[SCHEME_NAME_LENGTH];
 
@@ -61,7 +61,7 @@ public:
 	byte fgColor[4];
 	byte bgColor[4];
 	byte armedFgColor[4];
-	byte armedBgColor[4]; 
+	byte armedBgColor[4];
 	byte mousedownFgColor[4];
 	byte mousedownBgColor[4];
 	byte borderColor[4];
@@ -107,7 +107,7 @@ static int g_ResArray[] =
 	1600
 };
 static int g_NumReses = sizeof(g_ResArray) / sizeof(int);
-
+#pragma warning(disable : 4996)
 static byte *LoadFileByResolution( const char *filePrefix, int xRes, const char *filePostfix )
 {
 	// find our resolution in the res array
@@ -155,7 +155,7 @@ static void ParseRGBAFromString( byte colorArray[4], const char *colorVector )
 //-----------------------------------------------------------------------------
 // Purpose: initializes the scheme manager
 //			loading the scheme files for the current resolution
-// Input  : xRes - 
+// Input  : xRes -
 //			yRes - dimensions of output window
 //-----------------------------------------------------------------------------
 CSchemeManager::CSchemeManager( int xRes, int yRes )
@@ -170,7 +170,7 @@ CSchemeManager::CSchemeManager( int xRes, int yRes )
 	m_xRes = xRes;
 
 	char *pFileStart = pFile;
-	
+
 	byte *pFontData;
 	int fontFileLength;
 	char fontFilename[512];
@@ -227,7 +227,7 @@ CSchemeManager::CSchemeManager( int xRes, int yRes )
 		pFile = gEngfuncs.COM_ParseFile( pFile, token );
 		strncpy( paramValue, token, tokenSize );
 		paramValue[tokenSize-1] = 0; // ensure null termination
-		
+
 		// is this a new scheme?
 		if ( !stricmp(paramName, "SchemeName") )
 		{
@@ -316,7 +316,7 @@ CSchemeManager::CSchemeManager( int xRes, int yRes )
 		{
 			ParseRGBAFromString( pScheme->armedFgColor, paramValue );
 			hasArmedFgColor = true;
-		}	
+		}
 		else if ( !stricmp(paramName, "BgColorArmed") )
 		{
 			ParseRGBAFromString( pScheme->armedBgColor, paramValue );
@@ -377,7 +377,7 @@ int i;	for (  i = 0; i < m_iNumSchemes; i++ )
 		for ( int j = 0; j < i; j++ )
 		{
 			// check if the font name, size, and weight are the same
-			if ( !stricmp(m_pSchemeList[i].fontName, m_pSchemeList[j].fontName)  
+			if ( !stricmp(m_pSchemeList[i].fontName, m_pSchemeList[j].fontName)
 				&& m_pSchemeList[i].fontSize == m_pSchemeList[j].fontSize
 				&& m_pSchemeList[i].fontWeight == m_pSchemeList[j].fontWeight )
 			{
@@ -402,18 +402,18 @@ int i;	for (  i = 0; i < m_iNumSchemes; i++ )
 			}
 
 			m_pSchemeList[i].font = new vgui::Font(
-				m_pSchemeList[i].fontName, 
+				m_pSchemeList[i].fontName,
 				pFontData,
 				fontFileLength,
-				m_pSchemeList[i].fontSize, 
-				0, 
-				0, 
-				m_pSchemeList[i].fontWeight, 
-				false, 
-				false, 
-				false, 
+				m_pSchemeList[i].fontSize,
+				0,
+				0,
+				m_pSchemeList[i].fontWeight,
+				false,
+				false,
+				false,
 				false);
-			
+
 			m_pSchemeList[i].ownFontPointer = true;
 		}
 
@@ -455,7 +455,7 @@ int i;	for (  i = 0; i < m_iNumSchemes; i++ )
 
 //-----------------------------------------------------------------------------
 // Purpose: always returns a valid scheme handle
-// Input  : schemeHandle - 
+// Input  : schemeHandle -
 // Output : CScheme
 //-----------------------------------------------------------------------------
 CSchemeManager::CScheme *CSchemeManager::getSafeScheme( SchemeHandle_t schemeHandle )
@@ -469,7 +469,7 @@ CSchemeManager::CScheme *CSchemeManager::getSafeScheme( SchemeHandle_t schemeHan
 
 //-----------------------------------------------------------------------------
 // Purpose: Returns the schemes pointer to a font
-// Input  : schemeHandle - 
+// Input  : schemeHandle -
 // Output : vgui::Font
 //-----------------------------------------------------------------------------
 vgui::Font *CSchemeManager::getFont( SchemeHandle_t schemeHandle )

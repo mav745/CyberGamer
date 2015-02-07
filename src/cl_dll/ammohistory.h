@@ -89,7 +89,7 @@ int i;		for (i = 0; i < MAX_WEAPONS; i++ )
 
 	int CountAmmo( int iId );
 
-	HSPRITE* GetAmmoPicFromWeapon( int iAmmoId, wrect_t& rect );
+	VHSPRITE* GetAmmoPicFromWeapon( int iAmmoId, wrect_t& rect );
 };
 
 extern WeaponsResource gWR;

@@ -104,7 +104,7 @@ void CBreakable::KeyValue( KeyValueData* pkvd )
 	else if (FStrEq(pkvd->szKeyName, "spawnobject") )
 	{
 		int object = atoi( pkvd->szValue );
-		if ( object > 0 && object < ARRAYSIZE(pSpawnObjects) )
+		if ( object > 0 && object < VARRAYSIZE(pSpawnObjects) )
 			m_iszSpawnObject = MAKE_STRING( pSpawnObjects[object] );
 		pkvd->fHandled = TRUE;
 	}
@@ -221,28 +221,28 @@ const char **CBreakable::MaterialSoundList( Materials precacheMaterial, int &sou
 	{
 	case matWood:
 		pSoundList = pSoundsWood;
-		soundCount = ARRAYSIZE(pSoundsWood);
+		soundCount = VARRAYSIZE(pSoundsWood);
 		break;
 	case matFlesh:
 		pSoundList = pSoundsFlesh;
-		soundCount = ARRAYSIZE(pSoundsFlesh);
+		soundCount = VARRAYSIZE(pSoundsFlesh);
 		break;
 	case matComputer:
 	case matUnbreakableGlass:
 	case matGlass:
 		pSoundList = pSoundsGlass;
-		soundCount = ARRAYSIZE(pSoundsGlass);
+		soundCount = VARRAYSIZE(pSoundsGlass);
 		break;
 
 	case matMetal:
 		pSoundList = pSoundsMetal;
-		soundCount = ARRAYSIZE(pSoundsMetal);
+		soundCount = VARRAYSIZE(pSoundsMetal);
 		break;
 
 	case matCinderBlock:
 	case matRocks:
 		pSoundList = pSoundsConcrete;
-		soundCount = ARRAYSIZE(pSoundsConcrete);
+		soundCount = VARRAYSIZE(pSoundsConcrete);
 		break;
 	
 	

@@ -13,7 +13,7 @@
 #include<VGUI_MouseCode.h>
 
 using namespace vgui;
-
+#pragma warning(disable : 4100)
 namespace
 {
 class FooDefaultSliderSignal : public InputSignal
@@ -51,7 +51,7 @@ public:
 
 Slider2::Slider2(int x,int y,int wide,int tall,bool vertical) : Panel(x,y,wide,tall)
 {
-	_vertical=vertical;	
+	_vertical=vertical;
 	_dragging=false;
 	_value=0;
 	_range[0]=0;
@@ -87,7 +87,7 @@ void Slider2::setValue(int value)
 	{
 		value=_range[1];
 	}
-	
+
 	_value=value;
 	recomputeNobPosFromValue();
 
@@ -114,7 +114,7 @@ void Slider2::recomputeNobPosFromValue()
 	float fvalue=(float)(_value-_range[0]);
 	float fper=fvalue/frange;
 	float frangewindow=(float)(_rangeWindow);
-	
+
 	if(frangewindow<0)
 	{
 		frangewindow=0;
@@ -160,7 +160,7 @@ void Slider2::recomputeNobPosFromValue()
 			}
 		}
 	}
-	
+
 	repaint();
 }
 
@@ -246,14 +246,14 @@ bool Slider2::hasFullRange()
 
 	return false;
 }
-	
+
 void Slider2::addIntChangeSignal(IntChangeSignal* s)
 {
 	_intChangeSignalDar.putElement(s);
 }
 
 void Slider2::fireIntChangeSignal()
-{	
+{
 	for(int i=0;i<_intChangeSignalDar.getCount();i++)
 	{
 		_intChangeSignalDar[i]->intChanged(getValue(),this);
@@ -273,7 +273,7 @@ void Slider2::paintBackground()
 
 		// slider front
 		drawSetColor(0, 0, 0, 0);
-		drawFilledRect(0,_nobPos[0],wide,_nobPos[1]); 
+		drawFilledRect(0,_nobPos[0],wide,_nobPos[1]);
 
 		// slider border
 		drawSetColor(60, 60, 60, 0);
@@ -294,7 +294,7 @@ void Slider2::paintBackground()
 
 		drawSetColor(Scheme::sc_primary2);
 		drawFilledRect(_nobPos[0],0,_nobPos[1],tall);
-		
+
 		drawSetColor(Scheme::sc_black);
 		drawOutlinedRect(_nobPos[0],0,_nobPos[1],tall);
 	}
@@ -345,7 +345,7 @@ void Slider2::privateCursorMoved(int x,int y,Panel* panel)
 			_nobPos[0]=tall-(_nobPos[1]-_nobPos[0]);
 			_nobPos[1]=tall;
 		}
-		
+
 		if(_nobPos[0]<0)
 		{
 			_nobPos[1]=_nobPos[1]-_nobPos[0];
@@ -362,7 +362,7 @@ void Slider2::privateCursorMoved(int x,int y,Panel* panel)
 			_nobPos[0]=wide-(_nobPos[1]-_nobPos[0]);
 			_nobPos[1]=wide;
 		}
-		
+
 		if(_nobPos[0]<0)
 		{
 			_nobPos[1]=_nobPos[1]-_nobPos[0];

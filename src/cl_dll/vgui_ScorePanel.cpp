@@ -49,7 +49,7 @@ class SBColumnInfo
 public:
 	char				*m_pTitle;		// If null, ignore, if starts with #, it's localized, otherwise use the string directly.
 	int					m_Width;		// Based on 640 width. Scaled to fit other resolutions.
-	Label::Alignment	m_Alignment;	
+	Label::Alignment	m_Alignment;
 };
 
 // grid size is marked out for 640x480 screen
@@ -126,7 +126,7 @@ ScorePanel::ScorePanel(int x,int y,int wide,int tall) : Panel(x,y,wide,tall)
 	// Setup the header (labels like "name", "class", etc..).
 	m_HeaderGrid.SetDimensions(NUM_COLUMNS, 1);
 	m_HeaderGrid.SetSpacing(0, 0);
-	
+
 	for(int i=0; i < NUM_COLUMNS; i++)
 	{
 		if (g_ColumnInfo[i].m_pTitle && g_ColumnInfo[i].m_pTitle[0] == '#')
@@ -152,7 +152,7 @@ ScorePanel::ScorePanel(int x,int y,int wide,int tall) : Panel(x,y,wide,tall)
 				xwide -= 8;
 			}
 		}
-		
+
 		m_HeaderGrid.SetColumnWidth(i, xwide);
 		m_HeaderGrid.SetEntry(i, 0, &m_HeaderLabels[i]);
 
@@ -192,7 +192,7 @@ ScorePanel::ScorePanel(int x,int y,int wide,int tall) : Panel(x,y,wide,tall)
 		CGrid *pGridRow = &m_PlayerGrids[row];
 
 		pGridRow->SetDimensions(NUM_COLUMNS, 1);
-		
+
 		for(int col=0; col < NUM_COLUMNS; col++)
 		{
 			m_PlayerEntries[col][row].setContentFitted(false);
@@ -251,7 +251,7 @@ bool HACK_GetPlayerUniqueID( int iPlayer, char playerID[16] )
 {
 	return !!gEngfuncs.GetPlayerUniqueID( iPlayer, playerID );
 }
-		
+
 //-----------------------------------------------------------------------------
 // Purpose: Recalculate the internal scoreboard data
 //-----------------------------------------------------------------------------
@@ -291,7 +291,7 @@ int i;	for ( i = 0; i < NUM_ROWS; i++)
 	{
 		 m_pCloseButton->setVisible ( true );
 	}
-	else 
+	else
 	{
 		 m_pCloseButton->setVisible ( false );
 	}
@@ -320,7 +320,8 @@ int i;	for (  i = 1; i <= m_iNumTeams; i++ )
 			continue; // skip over players who are not in a team
 
 		// find what team this player is in
-		for ( int j = 1; j <= m_iNumTeams; j++ )
+		int j;
+		for ( j = 1; j <= m_iNumTeams; j++ )
 		{
 			if ( !stricmp( g_PlayerExtraInfo[i].teamname, g_TeamInfo[j].name ) )
 				break;
@@ -419,7 +420,7 @@ int i;		for (  i = 1; i < MAX_PLAYERS; i++ )
 			{
 				cl_entity_t *ent = gEngfuncs.GetEntityByIndex( i );
 
-				if ( ent && !(team && stricmp(g_PlayerExtraInfo[i].teamname, team)) )  
+				if ( ent && !(team && stricmp(g_PlayerExtraInfo[i].teamname, team)) )
 				{
 					extra_player_info_t *pl_info = &g_PlayerExtraInfo[i];
 					if ( pl_info->frags > highest_frags || pl_info->deaths < lowest_deaths )
@@ -479,7 +480,8 @@ int i;	for (  i = 1; i <= m_iNumTeams; i++ )
 			continue; // skip over players who are not in a team
 
 		// is this player in an existing team?
-		for ( int j = 1; j <= m_iNumTeams; j++ )
+		int j;
+		for ( j = 1; j <= m_iNumTeams; j++ )
 		{
 			if ( g_TeamInfo[j].name[0] == '\0' )
 				break;
@@ -540,8 +542,8 @@ void ScorePanel::FillGrid()
 	}
 
 	bool bNextRowIsGap = false;
-
-	for(int row=0; row < NUM_ROWS; row++)
+	int row;
+	for(row=0; row < NUM_ROWS; row++)
 	{
 		CGrid *pGridRow = &m_PlayerGrids[row];
 		pGridRow->SetRowUnderline(0, false, 0, 0, 0, 0, 0);
@@ -550,7 +552,7 @@ void ScorePanel::FillGrid()
 		{
 			for(int col=0; col < NUM_COLUMNS; col++)
 				m_PlayerEntries[col][row].setVisible(false);
-		
+
 			continue;
 		}
 
@@ -570,7 +572,7 @@ void ScorePanel::FillGrid()
 			pLabel->setImage(NULL);
 			pLabel->setFont(sfont);
 			pLabel->setTextOffset(0, 0);
-			
+
 			int rowheight = 13;
 			if (ScreenHeight > 480)
 			{
@@ -583,7 +585,7 @@ void ScorePanel::FillGrid()
 			}
 			pLabel->setSize(pLabel->getWide(), rowheight);
 			pLabel->setBgColor(0, 0, 0, 255);
-			
+
 			char sz[128];
 			hud_player_info_t *pl_info = NULL;
 			team_info_t *team_info = NULL;
@@ -663,9 +665,9 @@ void ScorePanel::FillGrid()
 					// Killer's name
 					pLabel->setBgColor( 255,0,0, 255 - ((float)15 * (float)(m_fLastKillTime - gHUD.m_flTime)) );
 				}
-			}				
+			}
 
-			// Align 
+			// Align
 			if (col == COLUMN_NAME || col == COLUMN_CLASS)
 			{
 				pLabel->setContentAlignment( vgui::Label::a_west );
@@ -913,8 +915,8 @@ int i;		for ( i = 0; i < NUM_ROWS; i++)
 
 //-----------------------------------------------------------------------------
 // Purpose: Handles mouse movement over a cell
-// Input  : row - 
-//			col - 
+// Input  : row -
+//			col -
 //-----------------------------------------------------------------------------
 void ScorePanel::MouseOverCell(int row, int col)
 {
@@ -963,7 +965,7 @@ void CLabelHeader::paintBackground()
 
 	setBgColor(oldBg);
 }
-		
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Label paint functions - take into account current highligh status
@@ -1029,7 +1031,7 @@ void CLabelHeader::calcAlignment(int iwide, int itall, int &x, int &y)
 			x = 0;
 			break;
 		}
-		
+
 		// center
 		case Label::a_north:
 		case Label::a_center:
@@ -1038,7 +1040,7 @@ void CLabelHeader::calcAlignment(int iwide, int itall, int &x, int &y)
 			x = (wide - iwide) / 2;
 			break;
 		}
-		
+
 		// right
 		case Label::a_northeast:
 		case Label::a_east:
@@ -1060,7 +1062,7 @@ void CLabelHeader::calcAlignment(int iwide, int itall, int &x, int &y)
 			y = 0;
 			break;
 		}
-		
+
 		// center
 		case Label::a_west:
 		case Label::a_center:
@@ -1069,7 +1071,7 @@ void CLabelHeader::calcAlignment(int iwide, int itall, int &x, int &y)
 			y = (tall - itall) / 2;
 			break;
 		}
-		
+
 		// south
 		case Label::a_southwest:
 		case Label::a_south:

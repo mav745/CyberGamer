@@ -832,16 +832,16 @@ void SV_SaveGameStateGlobals( SAVERESTOREDATA *pSaveData )
 	header.wateralpha = Cvar_VariableValue( "sv_wateralpha" );
 
 	pSaveData->time = 0.0f; // prohibits rebase of header.time (why not just save time as a field_float and ditch this hack?)
-	svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "Save Header", &header, gSaveHeader, ARRAYSIZE( gSaveHeader ));
+	svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "Save Header", &header, gSaveHeader, VARRAYSIZE( gSaveHeader ));
 	pSaveData->time = header.time;
 
 	// write entity table
 	for( i = 0; i < pSaveData->tableCount; i++ )
-		svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "ETABLE", pSaveData->pTable + i, gEntityTable, ARRAYSIZE( gEntityTable ));
+		svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "ETABLE", pSaveData->pTable + i, gEntityTable, VARRAYSIZE( gEntityTable ));
 
 	// write adjacency list
 	for( i = 0; i < pSaveData->connectionCount; i++ )
-		svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "ADJACENCY", pSaveData->levelList + i, gAdjacency, ARRAYSIZE( gAdjacency ));
+		svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "ADJACENCY", pSaveData->levelList + i, gAdjacency, VARRAYSIZE( gAdjacency ));
 
 	// write the lightstyles
 	for( i = 0; i < MAX_LIGHTSTYLES; i++ )
@@ -851,7 +851,7 @@ void SV_SaveGameStateGlobals( SAVERESTOREDATA *pSaveData )
 			light.index = i;
 			light.time = sv.lightstyles[i].time;
 			Q_strncpy( light.style, sv.lightstyles[i].pattern, sizeof( light.style ));
-			svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "LIGHTSTYLE", &light, gLightStyle, ARRAYSIZE( gLightStyle ));
+			svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "LIGHTSTYLE", &light, gLightStyle, VARRAYSIZE( gLightStyle ));
 		}
 	}
 }
@@ -947,7 +947,7 @@ void SV_ReadEntityTable( SAVERESTOREDATA *pSaveData )
 	SaveRestore_InitEntityTable( pSaveData, pEntityTable, pSaveData->tableCount );
 
 	for( i = 0; i < pSaveData->tableCount; i++ )
-		svgame.dllFuncs.pfnSaveReadFields( pSaveData, "ETABLE", pSaveData->pTable + i, gEntityTable, ARRAYSIZE( gEntityTable ));
+		svgame.dllFuncs.pfnSaveReadFields( pSaveData, "ETABLE", pSaveData->pTable + i, gEntityTable, VARRAYSIZE( gEntityTable ));
 }
 
 void SV_ParseSaveTables( SAVERESTOREDATA *pSaveData, SAVE_HEADER *pHeader, int setupLightstyles )
@@ -956,7 +956,7 @@ void SV_ParseSaveTables( SAVERESTOREDATA *pSaveData, SAVE_HEADER *pHeader, int s
 	int		i;
 
 	// process SAVE_HEADER
-	svgame.dllFuncs.pfnSaveReadFields( pSaveData, "Save Header", pHeader, gSaveHeader, ARRAYSIZE( gSaveHeader ));
+	svgame.dllFuncs.pfnSaveReadFields( pSaveData, "Save Header", pHeader, gSaveHeader, VARRAYSIZE( gSaveHeader ));
 
 	pSaveData->connectionCount = pHeader->connectionCount;
 	pSaveData->time = pHeader->time;
@@ -970,7 +970,7 @@ void SV_ParseSaveTables( SAVERESTOREDATA *pSaveData, SAVE_HEADER *pHeader, int s
 	for( i = 0; i < pSaveData->connectionCount; i++ )
 	{
 		LEVELLIST	*pList = &pSaveData->levelList[i];		
-		svgame.dllFuncs.pfnSaveReadFields( pSaveData, "ADJACENCY", pList, gAdjacency, ARRAYSIZE( gAdjacency ));
+		svgame.dllFuncs.pfnSaveReadFields( pSaveData, "ADJACENCY", pList, gAdjacency, VARRAYSIZE( gAdjacency ));
 	}
 
 	if( setupLightstyles )
@@ -978,7 +978,7 @@ void SV_ParseSaveTables( SAVERESTOREDATA *pSaveData, SAVE_HEADER *pHeader, int s
 
 	for( i = 0; i < pHeader->lightStyleCount; i++ )
 	{
-		svgame.dllFuncs.pfnSaveReadFields( pSaveData, "LIGHTSTYLE", &light, gLightStyle, ARRAYSIZE( gLightStyle ));
+		svgame.dllFuncs.pfnSaveReadFields( pSaveData, "LIGHTSTYLE", &light, gLightStyle, VARRAYSIZE( gLightStyle ));
 		if( setupLightstyles ) SV_SetLightStyle( light.index, light.style, light.time );
 	}
 }
@@ -1748,7 +1748,7 @@ int SV_CreateEntityTransitionList( SAVERESTOREDATA *pSaveData, int levelMask )
 
 				// NOTE: we need to update table pointer so decals on the global entities with brush models can be correctly moved
 				// found the classname and the globalname for our globalentity
-				svgame.dllFuncs.pfnSaveReadFields( pSaveData, "ENTVARS", &tmpVars, gEntvarsDescription, ARRAYSIZE( gEntvarsDescription ));
+				svgame.dllFuncs.pfnSaveReadFields( pSaveData, "ENTVARS", &tmpVars, gEntvarsDescription, VARRAYSIZE( gEntvarsDescription ));
 
 				// reset the save pointers, so dll can read this too
 				pSaveData->size = pSaveData->pTable[pSaveData->currentIndex].location;
@@ -1981,7 +1981,7 @@ int SV_SaveGameSlot( const char *pSaveName, const char *pSaveComment )
 	Q_strncpy( gameHeader.mapName, sv.name, sizeof( gameHeader.mapName ));
 	Q_strncpy( gameHeader.comment, pSaveComment, sizeof( gameHeader.comment ));
 
-	svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "GameHeader", &gameHeader, gGameHeader, ARRAYSIZE( gGameHeader ));
+	svgame.dllFuncs.pfnSaveWriteFields( pSaveData, "GameHeader", &gameHeader, gGameHeader, VARRAYSIZE( gGameHeader ));
 	svgame.dllFuncs.pfnSaveGlobalState( pSaveData );
 
 	// write entity string token table
@@ -2095,7 +2095,7 @@ int SV_SaveReadHeader( file_t *pFile, GAME_HEADER *pHeader, int readGlobalState 
 	if( readGlobalState )
 		svgame.dllFuncs.pfnResetGlobalState();
 
-	svgame.dllFuncs.pfnSaveReadFields( pSaveData, "GameHeader", pHeader, gGameHeader, ARRAYSIZE( gGameHeader ));	
+	svgame.dllFuncs.pfnSaveReadFields( pSaveData, "GameHeader", pHeader, gGameHeader, VARRAYSIZE( gGameHeader ));	
 
 	if( readGlobalState )
 		svgame.dllFuncs.pfnRestoreGlobalState( pSaveData );

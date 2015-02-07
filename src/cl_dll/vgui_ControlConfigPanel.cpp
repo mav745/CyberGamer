@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -17,7 +17,7 @@
 #include<VGUI_TextEntry.h>
 
 using namespace vgui;
-
+#pragma warning(disable : 4100)
 namespace
 {
 class FooTablePanel : public TablePanel
@@ -126,14 +126,14 @@ ControlConfigPanel::ControlConfigPanel(int x,int y,int wide,int tall) : Panel(x,
 	_alternateLabel=new Label("Alternate");
 	_alternateLabel->setBgColor(Scheme::sc_primary3);
 	_alternateLabel->setFgColor(Scheme::sc_primary3);
-	
+
 	_headerPanel=new HeaderPanel(0,0,wide,20);
 	_headerPanel->setParent(this);
 
 	_headerPanel->addSectionPanel(_actionLabel);
 	_headerPanel->addSectionPanel(_keyButtonLabel);
 	_headerPanel->addSectionPanel(_alternateLabel);
-	
+
 	_headerPanel->setSliderPos( 0, wide/2 );
 	_headerPanel->setSliderPos( 1, (wide/2) + (wide/4) );
 	_headerPanel->setSliderPos( 2, wide );
@@ -173,14 +173,14 @@ void ControlConfigPanel::GetCVar(int index,char* cvar,int cvarLen,char* desc,int
 	vgui_strcpy(cvar,cvarLen,_cvarDar[index]);
 	vgui_strcpy(desc,descLen,_descDar[index]);
 }
-
+#pragma warning(disable : 4996)
 void ControlConfigPanel::AddCVarFromInputStream(InputStream* is)
 {
 	if(is==null)
 	{
 		return;
 	}
-	
+
 	DataInputStream dis(is);
 
 	bool success;

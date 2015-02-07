@@ -23,8 +23,13 @@ INCLUDEPATH += \
 	$$PWD/../engine \
 	$$PWD/../utils/vgui/include
 
-#debug:LIBS += -L$$PWD/../../sdk/lib_d
-#else:LIBS += -L$$PWD/../../sdk/lib
+debug:LIBS += -L$$PWD/../utils/vgui/lib/win32_vc6
+else:LIBS += -L$$PWD/../utils/vgui/lib/win32_vc6
+
+LIBS += -lvgui
+LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 \
+		-ladvapi32 -lshell32 -lole32 -loleaut32 \
+		-lwinmm -lwsock32 -luuid -ladvapi32
 
 HEADERS += \
 	ammo.h \
@@ -37,7 +42,7 @@ HEADERS += \
 	ev_hldm.h \
 	eventscripts.h \
 	GameStudioModelRenderer.h \
-	GameStudioModelRenderer_Sample.h \
+	#GameStudioModelRenderer_Sample.h \
 	health.h \
 	hud.h \
 	hud_iface.h \
@@ -46,7 +51,7 @@ HEADERS += \
 	hud_spectator.h \
 	in_defs.h \
 	kbutton.h \
-	overview.h \
+	#overview.h \
 	parsemsg.h \
 	studio_util.h \
 	StudioModelRenderer.h \
@@ -71,7 +76,9 @@ HEADERS += \
 	..\pm_shared\pm_shared.h \
 	..\game_shared\voice_banmgr.h \
 	..\game_shared\voice_status.h \
-	..\game_shared\voice_vgui_tweakdlg.h
+	..\game_shared\voice_vgui_tweakdlg.h \
+	../game_shared/vgui_scrollbar2.h \
+	../game_shared/vgui_slider2.h
 
 SOURCES += \
 	ammo.cpp \
@@ -88,7 +95,7 @@ SOURCES += \
 	events.cpp \
 	flashlight.cpp \
 	GameStudioModelRenderer.cpp \
-	GameStudioModelRenderer_Sample.cpp \
+	#GameStudioModelRenderer_Sample.cpp \
 	geiger.cpp \
 	health.cpp \
 	hl/hl_baseentity.cpp \
@@ -106,10 +113,10 @@ SOURCES += \
 	inputw32.cpp \
 	menu.cpp \
 	message.cpp \
-	overview.cpp \
+	#overview.cpp \
 	parsemsg.cpp \
 	saytext.cpp \
-	soundsystem.cpp \
+	#soundsystem.cpp \
 	status_icons.cpp \
 	statusbar.cpp \
 	studio_util.cpp \
@@ -151,4 +158,9 @@ SOURCES += \
 	..\game_shared\vgui_grid.cpp \
 	..\game_shared\vgui_helpers.cpp \
 	..\game_shared\vgui_listbox.cpp \
-	..\game_shared\vgui_loadtga.cpp
+	..\game_shared\vgui_loadtga.cpp \
+	../dlls/crossbow.cpp \
+	../dlls/crowbar.cpp \
+	../dlls/egon.cpp \
+	../dlls/gauss.cpp \
+	../dlls/handgrenade.cpp

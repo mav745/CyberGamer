@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -23,11 +23,11 @@
 
 #define MAX_LOGO_FRAMES 56
 
-int grgLogoFrame[MAX_LOGO_FRAMES] = 
+int grgLogoFrame[MAX_LOGO_FRAMES] =
 {
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 13, 13, 13, 13, 13, 12, 11, 10, 9, 8, 14, 15,
-	16, 17, 18, 19, 20, 20, 20, 20, 20, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 
-	29, 29, 29, 29, 29, 28, 27, 26, 25, 24, 30, 31 
+	16, 17, 18, 19, 20, 20, 20, 20, 20, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+	29, 29, 29, 29, 29, 28, 27, 26, 25, 24, 30, 31
 };
 
 
@@ -64,12 +64,12 @@ void CHud::Think(void)
 
 	// Set a new sensitivity
 	if ( m_iFOV == default_fov->value )
-	{  
+	{
 		// reset to saved sensitivity
 		m_flMouseSensitivity = 0;
 	}
 	else
-	{  
+	{
 		// set a new sensitivity that is proportional to the change from the FOV default
 		m_flMouseSensitivity = sensitivity->value * ((float)newfov / (float)default_fov->value) * CVAR_GET_FLOAT("zoom_sensitivity_ratio");
 	}
@@ -77,7 +77,7 @@ void CHud::Think(void)
 	// think about default fov
 	if ( m_iFOV == 0 )
 	{  // only let players adjust up in fov,  and only if they are not overriden by something else
-		m_iFOV = max( default_fov->value, 90 );  
+		m_iFOV = max( default_fov->value, 90 );
 	}
 }
 
@@ -89,8 +89,8 @@ int CHud :: Redraw( float flTime, int intermission )
 	m_fOldTime = m_flTime;	// save time of previous redraw
 	m_flTime = flTime;
 	m_flTimeDelta = (double)m_flTime - m_fOldTime;
-	static m_flShotTime = 0;
-	
+	static int m_flShotTime = 0;
+
 	// Clock was reset, reset delta
 	if ( m_flTimeDelta < 0 )
 		m_flTimeDelta = 0;
@@ -130,7 +130,7 @@ int CHud :: Redraw( float flTime, int intermission )
 
 	// if no redrawing is necessary
 	// return 0;
-	
+
 	if ( m_pCvarDraw->value )
 	{
 		HUDLIST *pList = m_pHudList;
@@ -161,7 +161,7 @@ int CHud :: Redraw( float flTime, int intermission )
 			m_hsprLogo = LoadSprite("sprites/%d_logo.spr");
 
 		SPR_Set(m_hsprLogo, 250, 250, 250 );
-		
+
 		x = SPR_Width(m_hsprLogo, 0);
 		x = ScreenWidth - x;
 		y = SPR_Height(m_hsprLogo, 0)/2;
@@ -180,7 +180,7 @@ int CHud :: Redraw( float flTime, int intermission )
 		int mx, my;
 
 		IN_GetMousePos( &mx, &my );
-		
+
 		if (m_hsprCursor == 0)
 		{
 			char sz[256];
@@ -189,7 +189,7 @@ int CHud :: Redraw( float flTime, int intermission )
 		}
 
 		SPR_Set(m_hsprCursor, 250, 250, 250 );
-		
+
 		// Draw the logo at 20 fps
 		SPR_DrawAdditive( 0, mx, my, NULL );
 	}
@@ -216,7 +216,7 @@ int CHud :: DrawHudString(int xpos, int ypos, int iMaxX, char *szIt, int r, int 
 			return xpos;
 
 		TextMessageDrawChar( xpos, ypos, *szIt, r, g, b );
-		xpos = next;		
+		xpos = next;
 	}
 
 	return xpos;
@@ -234,12 +234,13 @@ int CHud :: DrawHudNumberString( int xpos, int ypos, int iMinX, int iNumber, int
 int CHud :: DrawHudStringReverse( int xpos, int ypos, int iMinX, char *szString, int r, int g, int b )
 {
 	// find the end of the string
-	for ( char *szIt = szString; *szIt != 0; szIt++ )
-	{ // we should count the length?		
+	char *szIt;
+	for ( szIt = szString; *szIt != 0; szIt++ )
+	{ // we should count the length?
 	}
 
 	// iterate throug the string in reverse
-	for ( szIt--;  szIt != (szString-1);  szIt-- )	
+	for ( szIt--;  szIt != (szString-1);  szIt-- )
 	{
 		int next = xpos - gHUD.m_scrinfo.charWidths[ *szIt ]; // variable-width fonts look cool
 		if ( next < iMinX )
@@ -256,7 +257,7 @@ int CHud :: DrawHudNumber( int x, int y, int iFlags, int iNumber, int r, int g, 
 {
 	int iWidth = GetSpriteRect(m_HUD_number_0).right - GetSpriteRect(m_HUD_number_0).left;
 	int k;
-	
+
 	if (iNumber > 0)
 	{
 		// SPR_Draw 100's
@@ -292,8 +293,8 @@ int CHud :: DrawHudNumber( int x, int y, int iFlags, int iNumber, int r, int g, 
 		SPR_Set(GetSprite(m_HUD_number_0 + k), r, g, b );
 		SPR_DrawAdditive(0,  x, y, &GetSpriteRect(m_HUD_number_0 + k));
 		x += iWidth;
-	} 
-	else if (iFlags & DHN_DRAWZERO) 
+	}
+	else if (iFlags & DHN_DRAWZERO)
 	{
 		SPR_Set(GetSprite(m_HUD_number_0), r, g, b );
 
@@ -311,7 +312,7 @@ int CHud :: DrawHudNumber( int x, int y, int iFlags, int iNumber, int r, int g, 
 		}
 
 		// SPR_Draw ones
-		
+
 		SPR_DrawAdditive( 0,  x, y, &GetSpriteRect(m_HUD_number_0));
 		x += iWidth;
 	}
@@ -344,6 +345,6 @@ int CHud::GetNumWidth( int iNumber, int iFlags )
 
 	return 3;
 
-}	
+}
 
 

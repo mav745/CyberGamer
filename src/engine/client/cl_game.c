@@ -1167,7 +1167,7 @@ pfnSPR_LoadExt
 
 =========
 */
-HSPRITE pfnSPR_LoadExt( const char *szPicName, uint texFlags )
+VHSPRITE pfnSPR_LoadExt( const char *szPicName, uint texFlags )
 {
 	char	name[64];
 	int	i;
@@ -1220,7 +1220,7 @@ pfnSPR_Load
 
 =========
 */
-HSPRITE pfnSPR_Load( const char *szPicName )
+VHSPRITE pfnSPR_Load( const char *szPicName )
 {
 	return pfnSPR_LoadExt( szPicName, 0 );
 }
@@ -1231,7 +1231,7 @@ CL_GetSpritePointer
 
 =============
 */
-const model_t *CL_GetSpritePointer( HSPRITE hSprite )
+const model_t *CL_GetSpritePointer( VHSPRITE hSprite )
 {
 	if( hSprite <= 0 || hSprite > ( MAX_IMAGES - 1 ))
 		return NULL; // bad image
@@ -1244,7 +1244,7 @@ pfnSPR_Frames
 
 =========
 */
-static int pfnSPR_Frames( HSPRITE hPic )
+static int pfnSPR_Frames( VHSPRITE hPic )
 {
 	int	numFrames;
 
@@ -1259,7 +1259,7 @@ pfnSPR_Height
 
 =========
 */
-static int pfnSPR_Height( HSPRITE hPic, int frame )
+static int pfnSPR_Height( VHSPRITE hPic, int frame )
 {
 	int	sprHeight;
 
@@ -1274,7 +1274,7 @@ pfnSPR_Width
 
 =========
 */
-static int pfnSPR_Width( HSPRITE hPic, int frame )
+static int pfnSPR_Width( VHSPRITE hPic, int frame )
 {
 	int	sprWidth;
 
@@ -1289,7 +1289,7 @@ pfnSPR_Set
 
 =========
 */
-static void pfnSPR_Set( HSPRITE hPic, int r, int g, int b )
+static void pfnSPR_Set( VHSPRITE hPic, int r, int g, int b )
 {
 	clgame.ds.pSprite = CL_GetSpritePointer( hPic );
 	clgame.ds.spriteColor[0] = bound( 0, r, 255 );
@@ -1486,7 +1486,7 @@ pfnSetCrosshair
 setup crosshair
 =============
 */
-static void pfnSetCrosshair( HSPRITE hspr, wrect_t rc, int r, int g, int b )
+static void pfnSetCrosshair( VHSPRITE hspr, wrect_t rc, int r, int g, int b )
 {
 	clgame.ds.rgbaCrosshair[0] = (byte)r;
 	clgame.ds.rgbaCrosshair[1] = (byte)g;

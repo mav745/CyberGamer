@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -147,7 +147,7 @@ void CCrowbar::PrimaryAttack()
 {
 	if (! Swing( 1 ))
 	{
-		SetThink( SwingAgain );
+		SetThink( &CCrowbar::SwingAgain );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 }
@@ -193,7 +193,7 @@ int CCrowbar::Swing( int fFirst )
 	}
 #endif
 
-	PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usCrowbar, 
+	PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usCrowbar,
 	0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0, 0, 0,
 	0.0, 0, 0.0 );
 
@@ -204,7 +204,7 @@ int CCrowbar::Swing( int fFirst )
 		{
 			// miss
 			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5;
-			
+
 			// player "shoot" animation
 			m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
 		}
@@ -223,7 +223,7 @@ int CCrowbar::Swing( int fFirst )
 
 		// player "shoot" animation
 		m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
-		
+
 #ifndef CLIENT_DLL
 
 		// hit
@@ -235,13 +235,13 @@ int CCrowbar::Swing( int fFirst )
 		if ( (m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
 		{
 			// first swing does full damage
-			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgCrowbar, gpGlobals->v_forward, &tr, DMG_CLUB ); 
+			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgCrowbar, gpGlobals->v_forward, &tr, DMG_CLUB );
 		}
 		else
 		{
 			// subsequent swings do half
-			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgCrowbar / 2, gpGlobals->v_forward, &tr, DMG_CLUB ); 
-		}	
+			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgCrowbar / 2, gpGlobals->v_forward, &tr, DMG_CLUB );
+		}
 		ApplyMultiDamage( m_pPlayer->pev, m_pPlayer->pev );
 
 		// play thwack, smack, or dong sound
@@ -281,7 +281,7 @@ int CCrowbar::Swing( int fFirst )
 
 			if ( g_pGameRules->IsMultiplayer() )
 			{
-				// override the volume here, cause we don't play texture sounds in multiplayer, 
+				// override the volume here, cause we don't play texture sounds in multiplayer,
 				// and fvolbar is going to be 0 from the above call.
 
 				fvolbar = 1;
@@ -291,10 +291,10 @@ int CCrowbar::Swing( int fFirst )
 			switch( RANDOM_LONG(0,1) )
 			{
 			case 0:
-				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/cbar_hit1.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0,3)); 
+				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/cbar_hit1.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0,3));
 				break;
 			case 1:
-				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/cbar_hit2.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0,3)); 
+				EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/cbar_hit2.wav", fvolbar, ATTN_NORM, 0, 98 + RANDOM_LONG(0,3));
 				break;
 			}
 
@@ -305,11 +305,11 @@ int CCrowbar::Swing( int fFirst )
 		m_pPlayer->m_iWeaponVolume = flVol * CROWBAR_WALLHIT_VOLUME;
 #endif
 		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25;
-		
-		SetThink( Smack );
+
+		SetThink( &CCrowbar::Smack );
 		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
 
-		
+
 	}
 	return fDidHit;
 }

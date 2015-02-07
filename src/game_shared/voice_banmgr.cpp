@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -39,7 +39,7 @@ CVoiceBanMgr::~CVoiceBanMgr()
 	Term();
 }
 
-
+#pragma warning(disable : 4996)
 bool CVoiceBanMgr::Init(char const *pGameDir)
 {
 	Term();
@@ -64,7 +64,7 @@ bool CVoiceBanMgr::Init(char const *pGameDir)
 				char playerID[16];
 				fread(playerID, 1, 16, fp);
 				AddBannedPlayer(playerID);
-			}			
+			}
 		}
 
 		fclose(fp);
@@ -131,7 +131,7 @@ void CVoiceBanMgr::SetPlayerBan(char const playerID[16], bool bSquelch)
 		// Is this guy already squelched?
 		if(GetPlayerBan(playerID))
 			return;
-	
+
 		AddBannedPlayer(playerID);
 	}
 	else

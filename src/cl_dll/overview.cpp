@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -17,8 +17,10 @@
 
 #pragma warning(disable: 4244)
 
+//#include "overview.h"
+
 //-----------------------------------------------------------------------------
-// Purpose: 
+// Purpose:
 //-----------------------------------------------------------------------------
 int CHudOverview::Init()
 {
@@ -41,9 +43,9 @@ int CHudOverview::VidInit()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: 
-// Input  : flTime - 
-//			intermission - 
+// Purpose:
+// Input  : flTime -
+//			intermission -
 //-----------------------------------------------------------------------------
 int CHudOverview::Draw(float flTime)
 {
@@ -123,7 +125,7 @@ int i;	for ( i = 1; i < MAX_PLAYERS; i++)
 			VectorTransform(a, rmatrix , b );
 			gEngfuncs.pTriAPI->TexCoord2f( 0, 1 );
 			gEngfuncs.pTriAPI->Vertex3f (x + b[0], y + b[1], z);
-			
+
 			a[0]=scale; a[1] = scale;
 			VectorTransform(a, rmatrix , b );
 			gEngfuncs.pTriAPI->TexCoord2f( 1, 1 );

@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -62,7 +62,7 @@ extern int iNumberOfTeamColors;
 
 #define MAX_SERVERNAME_LENGTH	32
 
-// Command Menu positions 
+// Command Menu positions
 #define MAX_MENUS				80
 #define MAX_BUTTONS				100
 
@@ -200,7 +200,7 @@ public:
 	void UpdateSubMenus( int iAdjustment );
 	int GetPlayerClass() { return m_iPlayerClass; };
 	CCommandMenu *GetSubMenu() { return m_pSubMenu; };
-	
+
 	CCommandMenu *getParentMenu( void );
 	void setParentMenu( CCommandMenu *pParentMenu );
 
@@ -227,15 +227,15 @@ private:
 	Color *UnArmedBorderColor;
 
 public:
-	ColorButton( const char* text,int x,int y,int wide,int tall, bool bNoHighlight, bool bFlat ) : 
-	  CommandButton( text, x, y, wide, tall, bNoHighlight, bFlat  ) 
+	ColorButton( const char* text,int x,int y,int wide,int tall, bool bNoHighlight, bool bFlat ) :
+	  CommandButton( text, x, y, wide, tall, bNoHighlight, bFlat  )
 	  {
 		  ArmedColor = NULL;
 		  UnArmedColor = NULL;
 		  ArmedBorderColor = NULL;
 		  UnArmedBorderColor = NULL;
 	  }
-	
+
 
 	virtual void paintBackground()
 	{
@@ -290,10 +290,10 @@ public:
 			else
 				setFgColor( Scheme::sc_primary1 );
 		}
-		
+
 		Button::paint();
 	}
-	
+
 	void setArmedColor ( int r, int g, int b, int a )
 	{
 		ArmedColor = new Color( r, g, b, a );
@@ -318,28 +318,28 @@ public:
 class SpectButton : public CommandButton
 {
 private:
-	
+
 public:
-	SpectButton( int iPlayerClass, const char* text,int x,int y,int wide,int tall ) : 
+	SpectButton( int iPlayerClass, const char* text,int x,int y,int wide,int tall ) :
 	  CommandButton( text, x, y, wide, tall, false)
 	  {
-		  	Init();
-			
+			Init();
+
 			setText( text );
 	  }
-		
+
 	virtual void paintBackground()
 	{
 		if ( isArmed())
 		{
-			drawSetColor( 143,143, 54, 125 ); 
+			drawSetColor( 143,143, 54, 125 );
 			drawFilledRect( 5, 0,_size[0] - 5,_size[1]);
 		}
 	}
 
 	virtual void paint()
 	{
-	
+
 		if ( isArmed() )
 		{
 			setFgColor( 194, 202, 54, 0 );
@@ -366,7 +366,7 @@ private:
 	int			  m_iButtons;
 
 	// opens menu from top to bottom (0 = default), or from bottom to top (1)?
-	int				m_iDirection; 
+	int				m_iDirection;
 public:
 	CCommandMenu( CCommandMenu *pParentMenu, int x,int y,int wide,int tall ) : Panel(x,y,wide,tall)
 	{
@@ -435,7 +435,7 @@ private:
 	void		 CreateClassMenu( void );
 	CMenuPanel*	 ShowClassMenu( void );
 	void		 CreateSpectatorMenu( void );
-	
+
 	// Scheme handler
 	CSchemeManager m_SchemeManager;
 
@@ -558,7 +558,7 @@ public:
 	SpectatorPanel *		m_pSpectatorPanel;
 	char			m_szServerName[ MAX_SERVERNAME_LENGTH ];
 };
-
+#pragma warning(disable : 4996)
 //============================================================
 // Command Menu Button Handlers
 #define MAX_COMMAND_SIZE	256
@@ -594,7 +594,7 @@ public:
 	}
 };
 
-// This works the same as CMenuHandler_StringCommand, except it watches the string command 
+// This works the same as CMenuHandler_StringCommand, except it watches the string command
 // for specific commands, and modifies client vars based upon them.
 class CMenuHandler_StringCommandWatch : public CMenuHandler_StringCommand
 {
@@ -658,7 +658,7 @@ public:
 		//gViewPort->SetCurrentCommandMenu( m_pSubMenu );
 	}
 
-	virtual void cursorEntered(Panel* panel) 
+	virtual void cursorEntered(Panel* panel)
 	{
 		gViewPort->SetCurrentCommandMenu( m_pSubMenu );
 
@@ -725,7 +725,7 @@ public:
 		{
 			gViewPort->HideTopMenu();
 		}
-		else 
+		else
 		{
 			gViewPort->HideCommandMenu();
 			gViewPort->ShowVGUIMenu( m_iState );
@@ -754,7 +754,7 @@ public:
 		gViewPort->UpdateSpectatorPanel();
 	}
 
-	
+
 };
 class CDragNDropHandler : public InputSignal
 {
@@ -796,7 +796,7 @@ public:
 		m_iButton = iButton;
 		m_pMenuPanel = pPanel;
 	}
-		
+
 	void cursorEntered(Panel *panel);
 
 	void cursorMoved(int x,int y,Panel* panel) {};
@@ -821,11 +821,11 @@ public:
 		m_pButton = pButton;
 	}
 
-	virtual void cursorEntered(Panel* panel) 
-	{ 
+	virtual void cursorEntered(Panel* panel)
+	{
 		m_pButton->setArmed(true);
 	};
-	virtual void cursorExited(Panel* Panel) 
+	virtual void cursorExited(Panel* Panel)
 	{
 		m_pButton->setArmed(false);
 	};
@@ -1122,7 +1122,7 @@ private:
 	int m_iTeamNum;
 
 public:
-	TeamOnlyCommandButton( int iTeamNum, const char* text,int x,int y,int wide,int tall, bool flat ) : 
+	TeamOnlyCommandButton( int iTeamNum, const char* text,int x,int y,int wide,int tall, bool flat ) :
 	  CommandButton( text, x, y, wide, tall, false, flat ), m_iTeamNum(iTeamNum) {}
 
 	virtual int IsNotValid()
@@ -1137,15 +1137,15 @@ public:
 	{
 		if ( isArmed() )
 		{
-			drawSetColor( 143,143, 54, 125 ); 
+			drawSetColor( 143,143, 54, 125 );
 			drawFilledRect( 5, 0,_size[0] - 5,_size[1]);
 		}
 	}
-	
+
 	virtual void paint( void )
 	{
 		if ( isArmed() )
-		{ 
+		{
 			setFgColor( 194, 202, 54, 0 );
 		}
 		else
@@ -1166,10 +1166,10 @@ private:
 	struct cvar_s * m_cvar;
 	CImageLabel *	pLabelOn;
 	CImageLabel *	pLabelOff;
-	
+
 
 public:
-	ToggleCommandButton( const char* cvarname, const char* text,int x,int y,int wide,int tall, bool flat ) : 
+	ToggleCommandButton( const char* cvarname, const char* text,int x,int y,int wide,int tall, bool flat ) :
 	  CommandButton( text, x, y, wide, tall, false, flat )
 	 {
 		m_cvar = gEngfuncs.pfnGetCvarPointer( cvarname );
@@ -1178,7 +1178,7 @@ public:
 		pLabelOn = new CImageLabel( "checked", 0, 0 );
 		pLabelOn->setParent(this);
 		pLabelOn->addInputSignal(this);
-				
+
 		pLabelOff = new CImageLabel( "unchecked", 0, 0 );
 		pLabelOff->setParent(this);
 		pLabelOff->setEnabled(true);
@@ -1186,12 +1186,12 @@ public:
 
 		int textwide, texttall;
 		getTextSize( textwide, texttall);
-	
+
 		// Reposition
 		pLabelOn->setPos( textwide, (tall - pLabelOn->getTall()) / 2 );
 
 		pLabelOff->setPos( textwide, (tall - pLabelOff->getTall()) / 2 );
-		
+
 		// Set text color to orange
 		setFgColor(Scheme::sc_primary1);
 	}
@@ -1212,7 +1212,7 @@ public:
 	};
 
 	virtual void cursorMoved(int x,int y,Panel* panel) {};
-	
+
 	virtual void mouseDoublePressed(MouseCode code,Panel* panel)  {};
 	virtual void mouseReleased(MouseCode code,Panel* panel) {};
 	virtual void mouseWheeled(int delta,Panel* panel) {};
@@ -1227,7 +1227,7 @@ public:
 		{
 			pLabelOff->setVisible(false);
 			pLabelOn->setVisible(false);
-		} 
+		}
 		else if ( m_cvar->value )
 		{
 			pLabelOff->setVisible(false);
@@ -1241,16 +1241,16 @@ public:
 
 		CommandButton::paint();
 
-	} 
+	}
 };
 class SpectToggleButton : public CommandButton, public InputSignal
 {
 private:
 	struct cvar_s * m_cvar;
-	CImageLabel *	pLabelOn; 
+	CImageLabel *	pLabelOn;
 
 public:
-	SpectToggleButton( const char* cvarname, const char* text,int x,int y,int wide,int tall, bool flat ) : 
+	SpectToggleButton( const char* cvarname, const char* text,int x,int y,int wide,int tall, bool flat ) :
 	  CommandButton( text, x, y, wide, tall, false, flat )
 	 {
 		m_cvar = gEngfuncs.pfnGetCvarPointer( cvarname );
@@ -1259,14 +1259,14 @@ public:
 		pLabelOn = new CImageLabel( "checked", 0, 0 );
 		pLabelOn->setParent(this);
 		pLabelOn->addInputSignal(this);
-		
+
 
 		int textwide, texttall;
 		getTextSize( textwide, texttall);
-	
+
 		// Reposition
 		pLabelOn->setPos( textwide, (tall - pLabelOn->getTall()) / 2 );
-	  } 
+	  }
 
 	virtual void cursorEntered(Panel* panel)
 	{
@@ -1284,7 +1284,7 @@ public:
 	};
 
 	virtual void cursorMoved(int x,int y,Panel* panel) {};
-	
+
 	virtual void mouseDoublePressed(MouseCode code,Panel* panel)  {};
 	virtual void mouseReleased(MouseCode code,Panel* panel) {};
 	virtual void mouseWheeled(int delta,Panel* panel) {};
@@ -1297,15 +1297,15 @@ public:
 	{
 		if ( isArmed() )
 		{
-			drawSetColor( 143,143, 54, 125 ); 
+			drawSetColor( 143,143, 54, 125 );
 			drawFilledRect( 5, 0,_size[0] - 5,_size[1]);
 		}
 	}
-	
+
 	virtual void paint( void )
 	{
 		if ( isArmed() )
-		{ 
+		{
 			setFgColor( 194, 202, 54, 0 );
 		}
 		else
@@ -1316,7 +1316,7 @@ public:
 		if ( !m_cvar )
 		{
 			pLabelOn->setVisible(false);
-		} 
+		}
 		else if ( m_cvar->value )
 		{
 			pLabelOn->setVisible(true);
@@ -1327,7 +1327,7 @@ public:
 		}
 
 		Button::paint();
-	} 
+	}
 };
 
 /*
@@ -1337,10 +1337,10 @@ private:
 	struct cvar_s * m_cvar;
 	CImageLabel *	pLabelOn;
 	CImageLabel *	pLabelOff;
-	
+
 public:
 
-	SpectToggleButton( const char* cvarname, const char* text,int x,int y,int wide,int tall, bool flat ) : 
+	SpectToggleButton( const char* cvarname, const char* text,int x,int y,int wide,int tall, bool flat ) :
 	  ToggleCommandButton( cvarname, text, x, y, wide, tall, flat, TRUE )
 	 {
 		m_cvar = gEngfuncs.pfnGetCvarPointer( cvarname );
@@ -1349,7 +1349,7 @@ public:
 		pLabelOn = new CImageLabel( "checked", 0, 0 );
 		pLabelOn->setParent(this);
 		pLabelOn->addInputSignal(this);
-				
+
 		pLabelOff = new CImageLabel( "unchecked", 0, 0 );
 		pLabelOff->setParent(this);
 		pLabelOff->setEnabled(true);
@@ -1357,30 +1357,30 @@ public:
 
 		int textwide, texttall;
 		getTextSize( textwide, texttall);
-	
+
 		// Reposition
 		pLabelOn->setPos( textwide, (tall - pLabelOn->getTall()) / 2 );
 
 		pLabelOff->setPos( textwide, (tall - pLabelOff->getTall()) / 2 );
-		
+
 		// Set text color to orange
 		setFgColor(Scheme::sc_primary1);
 	}
-		
+
 	virtual void paintBackground()
 	{
 		if ( isArmed())
 		{
-			drawSetColor( 143,143, 54, 125 ); 
+			drawSetColor( 143,143, 54, 125 );
 			drawFilledRect( 5, 0,_size[0] - 5,_size[1]);
 		}
 	}
 
 	virtual void paint()
 	{
-	
+
 		if ( isArmed() )
-		{ 
+		{
 			setFgColor( 194, 202, 54, 0 );
 		}
 		else
@@ -1392,7 +1392,7 @@ public:
 		{
 			pLabelOff->setVisible(false);
 			pLabelOn->setVisible(false);
-		} 
+		}
 		else if ( m_cvar->value )
 		{
 			pLabelOff->setVisible(false);

@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -58,19 +58,19 @@ int CHudStatusIcons::Draw( float flTime )
 	// find starting position to draw from, along right-hand side of screen
 	int x = 5;
 	int y = ScreenHeight / 2;
-	
+
 	// loop through icon list, and draw any valid icons drawing up from the middle of screen
 int i;	for (  i = 0; i < MAX_ICONSPRITES; i++ )
 	{
 		if ( m_IconList[i].spr )
 		{
 			y -= ( m_IconList[i].rc.bottom - m_IconList[i].rc.top ) + 5;
-			
+
 			SPR_Set( m_IconList[i].spr, m_IconList[i].r, m_IconList[i].g, m_IconList[i].b );
 			SPR_DrawAdditive( 0, x, y, &m_IconList[i].rc );
 		}
 	}
-	
+
 	return 1;
 }
 
@@ -103,6 +103,7 @@ int CHudStatusIcons::MsgFunc_StatusIcon( const char *pszName, int iSize, void *p
 	return 1;
 }
 
+#pragma warning(disable : 4996)
 // add the icon to the icon list, and set it's drawing color
 void CHudStatusIcons::EnableIcon( char *pszIconName, unsigned char red, unsigned char green, unsigned char blue )
 {

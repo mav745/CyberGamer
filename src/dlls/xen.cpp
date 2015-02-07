@@ -525,7 +525,7 @@ void CXenSporeLarge::Spawn( void )
 
 	// Rotate the leg hulls into position
 	int i;
-	for ( i = 0; i < ARRAYSIZE(m_hullSizes); i++ )
+	for ( i = 0; i < VARRAYSIZE(m_hullSizes); i++ )
 		CXenHull :: CreateHull( this, Vector(-12, -12, 0 ), Vector( 12, 12, 120 ), (m_hullSizes[i].x * forward) + (m_hullSizes[i].y * right) );
 }
 

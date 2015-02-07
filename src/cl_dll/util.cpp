@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -38,7 +38,7 @@ float Length(const float *v)
 {
 	int		i;
 	float	length;
-	
+
 	length = 0;
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
@@ -50,7 +50,7 @@ float Length(const float *v)
 void VectorAngles( const float *forward, float *angles )
 {
 	float	tmp, yaw, pitch;
-	
+
 	if (forward[1] == 0 && forward[0] == 0)
 	{
 		yaw = 0;
@@ -70,7 +70,7 @@ void VectorAngles( const float *forward, float *angles )
 		if (pitch < 0)
 			pitch += 360;
 	}
-	
+
 	angles[0] = pitch;
 	angles[1] = yaw;
 	angles[2] = 0;
@@ -90,7 +90,7 @@ float VectorNormalize (float *v)
 		v[1] *= ilength;
 		v[2] *= ilength;
 	}
-		
+
 	return length;
 
 }
@@ -116,10 +116,11 @@ void VectorMA (const float *veca, float scale, const float *vecb, float *vecc)
 	vecc[2] = veca[2] + scale*vecb[2];
 }
 
-HSPRITE LoadSprite(const char *pszName)
+#pragma warning(disable : 4996)
+VHSPRITE LoadSprite(const char *pszName)
 {
 	int i;
-	char sz[256]; 
+	char sz[256];
 
 	if (ScreenWidth < 640)
 		i = 320;

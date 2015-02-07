@@ -241,7 +241,7 @@ void CISlave :: PainSound( void )
 {
 	if (RANDOM_LONG( 0, 2 ) == 0)
 	{
-		EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pPainSounds[ RANDOM_LONG(0,ARRAYSIZE(pPainSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
+		EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pPainSounds[ RANDOM_LONG(0,VARRAYSIZE(pPainSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
 	}
 }
 
@@ -251,7 +251,7 @@ void CISlave :: PainSound( void )
 
 void CISlave :: DeathSound( void )
 {
-	EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pDeathSounds[ RANDOM_LONG(0,ARRAYSIZE(pDeathSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
+	EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pDeathSounds[ RANDOM_LONG(0,VARRAYSIZE(pDeathSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
 }
 
 
@@ -324,12 +324,12 @@ void CISlave :: HandleAnimEvent( MonsterEvent_t *pEvent )
 					pHurt->pev->punchangle.x = 5;
 				}
 				// Play a random attack hit sound
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,ARRAYSIZE(pAttackHitSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackHitSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
 			}
 			else
 			{
 				// Play a random attack miss sound
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,ARRAYSIZE(pAttackMissSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackMissSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
 			}
 		}
 		break;
@@ -344,11 +344,11 @@ void CISlave :: HandleAnimEvent( MonsterEvent_t *pEvent )
 					pHurt->pev->punchangle.z = -18;
 					pHurt->pev->punchangle.x = 5;
 				}
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,ARRAYSIZE(pAttackHitSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackHitSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
 			}
 			else
 			{
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,ARRAYSIZE(pAttackMissSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackMissSounds)-1) ], 1.0, ATTN_NORM, 0, m_voicePitch );
 			}
 		}
 		break;
@@ -561,16 +561,16 @@ void CISlave :: Precache()
 	PRECACHE_SOUND("headcrab/hc_headbite.wav");
 	PRECACHE_SOUND("weapons/cbar_miss1.wav");
 
-	for ( i = 0; i < ARRAYSIZE( pAttackHitSounds ); i++ )
+	for ( i = 0; i < VARRAYSIZE( pAttackHitSounds ); i++ )
 		PRECACHE_SOUND((char *)pAttackHitSounds[i]);
 
-	for ( i = 0; i < ARRAYSIZE( pAttackMissSounds ); i++ )
+	for ( i = 0; i < VARRAYSIZE( pAttackMissSounds ); i++ )
 		PRECACHE_SOUND((char *)pAttackMissSounds[i]);
 
-	for ( i = 0; i < ARRAYSIZE( pPainSounds ); i++ )
+	for ( i = 0; i < VARRAYSIZE( pPainSounds ); i++ )
 		PRECACHE_SOUND((char *)pPainSounds[i]);
 
-	for ( i = 0; i < ARRAYSIZE( pDeathSounds ); i++ )
+	for ( i = 0; i < VARRAYSIZE( pDeathSounds ); i++ )
 		PRECACHE_SOUND((char *)pDeathSounds[i]);
 
 	UTIL_PrecacheOther( "test_effect" );
@@ -619,7 +619,7 @@ Schedule_t	slSlaveAttack1[] =
 {
 	{ 
 		tlSlaveAttack1,
-		ARRAYSIZE ( tlSlaveAttack1 ), 
+		VARRAYSIZE ( tlSlaveAttack1 ), 
 		bits_COND_CAN_MELEE_ATTACK1 |
 		bits_COND_HEAR_SOUND |
 		bits_COND_HEAVY_DAMAGE, 

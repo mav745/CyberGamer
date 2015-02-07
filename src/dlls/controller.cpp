@@ -412,7 +412,7 @@ Schedule_t slControllerChaseEnemy[] =
 {
 	{ 
 		tlControllerChaseEnemy,
-		ARRAYSIZE ( tlControllerChaseEnemy ),
+		VARRAYSIZE ( tlControllerChaseEnemy ),
 		bits_COND_NEW_ENEMY			|
 		bits_COND_TASK_FAILED,
 		0,
@@ -434,7 +434,7 @@ Schedule_t	slControllerStrafe[] =
 {
 	{ 
 		tlControllerStrafe,
-		ARRAYSIZE ( tlControllerStrafe ), 
+		VARRAYSIZE ( tlControllerStrafe ), 
 		bits_COND_NEW_ENEMY,
 		0,
 		"ControllerStrafe"
@@ -454,7 +454,7 @@ Schedule_t	slControllerTakeCover[] =
 {
 	{ 
 		tlControllerTakeCover,
-		ARRAYSIZE ( tlControllerTakeCover ), 
+		VARRAYSIZE ( tlControllerTakeCover ), 
 		bits_COND_NEW_ENEMY,
 		0,
 		"ControllerTakeCover"
@@ -474,7 +474,7 @@ Schedule_t	slControllerFail[] =
 {
 	{
 		tlControllerFail,
-		ARRAYSIZE ( tlControllerFail ),
+		VARRAYSIZE ( tlControllerFail ),
 		0,
 		0,
 		"ControllerFail"

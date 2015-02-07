@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -103,7 +103,7 @@ void CHandGrenade::Holster( int skiplocal /* = 0 */ )
 	{
 		// no more grenades!
 		m_pPlayer->pev->weapons &= ~(1<<WEAPON_HANDGRENADE);
-		SetThink( DestroyItem );
+		SetThink( &CHandGrenade::DestroyItem );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 
@@ -218,7 +218,7 @@ void CHandGrenade::WeaponIdle( void )
 			iAnim = HANDGRENADE_IDLE;
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );// how long till we do this again.
 		}
-		else 
+		else
 		{
 			iAnim = HANDGRENADE_FIDGET;
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 75.0 / 30.0;

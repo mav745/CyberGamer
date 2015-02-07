@@ -109,20 +109,20 @@ private:
 
 #define MAX_ENTITYARRAY 64
 
-//#define ARRAYSIZE(p)		(sizeof(p)/sizeof(p[0]))
+//#define VARRAYSIZE(p)		(sizeof(p)/sizeof(p[0]))
 
 #define IMPLEMENT_SAVERESTORE(derivedClass,baseClass) \
 	int derivedClass::Save( CSave &save )\
 	{\
 		if ( !baseClass::Save(save) )\
 			return 0;\
-		return save.WriteFields( #derivedClass, this, m_SaveData, ARRAYSIZE(m_SaveData) );\
+		return save.WriteFields( #derivedClass, this, m_SaveData, VARRAYSIZE(m_SaveData) );\
 	}\
 	int derivedClass::Restore( CRestore &restore )\
 	{\
 		if ( !baseClass::Restore(restore) )\
 			return 0;\
-		return restore.ReadFields( #derivedClass, this, m_SaveData, ARRAYSIZE(m_SaveData) );\
+		return restore.ReadFields( #derivedClass, this, m_SaveData, VARRAYSIZE(m_SaveData) );\
 	}
 
 

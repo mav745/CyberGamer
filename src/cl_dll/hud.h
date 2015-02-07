@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -12,7 +12,7 @@
 *   without written permission from Valve LLC.
 *
 ****/
-//			
+//
 //  hud.h
 //
 // class CHud declaration
@@ -32,7 +32,7 @@
 #define DHN_DRAWZERO 1
 #define DHN_2DIGITS  2
 #define DHN_3DIGITS  4
-#define MIN_ALPHA	 100	
+#define MIN_ALPHA	 100
 
 #define		HUDELEM_ACTIVE	1
 
@@ -40,8 +40,8 @@ typedef struct {
 	int x, y;
 } POSITION;
 
-enum 
-{ 
+enum
+{
 	MAX_PLAYERS = 64,
 	MAX_TEAMS = 64,
 	MAX_TEAM_NAME = 16,
@@ -60,7 +60,7 @@ typedef struct cvar_s cvar_t;
 #define MAX_PLAYER_NAME_LENGTH		32
 
 #define	MAX_MOTD_LENGTH				1536
-
+#pragma warning(disable : 4100)
 //
 //-----------------------------------------------------
 //
@@ -69,7 +69,7 @@ class CHudBase
 public:
 	POSITION  m_pos;
 	int   m_type;
-	int	  m_iFlags; // active, moving, 
+	int	  m_iFlags; // active, moving,
 	virtual		~CHudBase() {}
 	virtual int Init( void ) {return 0;}
 	virtual int VidInit( void ) {return 0;}
@@ -180,7 +180,7 @@ public:
 	int VidInit( void );
 	int Draw(float flTime);
 	int MsgFunc_Geiger(const char *pszName, int iSize, void *pbuf);
-	
+
 private:
 	int m_iGeigerRange;
 
@@ -198,7 +198,7 @@ public:
 	int MsgFunc_Train(const char *pszName, int iSize, void *pbuf);
 
 private:
-	HSPRITE m_hSprite;
+	VHSPRITE m_hSprite;
 	int m_iPos;
 
 };
@@ -243,7 +243,7 @@ public:
 	int MsgFunc_StatusValue( const char *pszName, int iSize, void *pbuf );
 
 protected:
-	enum { 
+	enum {
 		MAX_STATUSTEXT_LENGTH = 128,
 		MAX_STATUSBAR_VALUES = 8,
 		MAX_STATUSBAR_LINES = 2,
@@ -294,7 +294,7 @@ private:
 };
 */
 
-struct extra_player_info_t 
+struct extra_player_info_t
 {
 	short frags;
 	short deaths;
@@ -303,7 +303,7 @@ struct extra_player_info_t
 	char teamname[MAX_TEAM_NAME];
 };
 
-struct team_info_t 
+struct team_info_t
 {
 	char name[MAX_TEAM_NAME];
 	short frags;
@@ -391,13 +391,13 @@ public:
 	int VidInit( void );
 	int Draw(float flTime);
 	int MsgFunc_Battery(const char *pszName,  int iSize, void *pbuf );
-	
+
 private:
-	HSPRITE m_hSprite1;
-	HSPRITE m_hSprite2;
+	VHSPRITE m_hSprite1;
+	VHSPRITE m_hSprite2;
 	wrect_t *m_prc1;
 	wrect_t *m_prc2;
-	int	  m_iBat;	
+	int	  m_iBat;
 	float m_fFade;
 	int	  m_iHeight;		// width of the battery innards
 };
@@ -415,16 +415,16 @@ public:
 	void Reset( void );
 	int MsgFunc_Flashlight(const char *pszName,  int iSize, void *pbuf );
 	int MsgFunc_FlashBat(const char *pszName,  int iSize, void *pbuf );
-	
+
 private:
-	HSPRITE m_hSprite1;
-	HSPRITE m_hSprite2;
-	HSPRITE m_hBeam;
+	VHSPRITE m_hSprite1;
+	VHSPRITE m_hSprite2;
+	VHSPRITE m_hBeam;
 	wrect_t *m_prc1;
 	wrect_t *m_prc2;
 	wrect_t *m_prcBeam;
-	float m_flBat;	
-	int	  m_iBat;	
+	float m_flBat;
+	int	  m_iBat;
 	int	  m_fOn;
 	float m_fFade;
 	int	  m_iWidth;		// width of the battery innards
@@ -514,12 +514,12 @@ public:
 	int Draw(float flTime);
 	int MsgFunc_StatusIcon(const char *pszName, int iSize, void *pbuf);
 
-	enum { 
+	enum {
 		MAX_ICONSPRITENAME_LENGTH = MAX_SPRITE_NAME_LENGTH,
 		MAX_ICONSPRITES = 4,
 	};
 
-	
+
 	//had to make these public so CHud could access them (to enable concussion icon)
 	//could use a friend declaration instead...
 	void EnableIcon( char *pszIconName, unsigned char red, unsigned char green, unsigned char blue );
@@ -530,7 +530,7 @@ private:
 	typedef struct
 	{
 		char szSpriteName[MAX_ICONSPRITENAME_LENGTH];
-		HSPRITE spr;
+		VHSPRITE spr;
 		wrect_t rc;
 		unsigned char r, g, b;
 	} icon_sprite_t;
@@ -549,17 +549,17 @@ class CHud
 {
 private:
 	HUDLIST						*m_pHudList;
-	HSPRITE						m_hsprLogo;
+	VHSPRITE						m_hsprLogo;
 	int							m_iLogo;
 	client_sprite_t				*m_pSpriteList;
 	int							m_iSpriteCount;
 	int							m_iSpriteCountAllRes;
 	float						m_flMouseSensitivity;
-	int							m_iConcussionEffect; 
+	int							m_iConcussionEffect;
 
 public:
 
-	HSPRITE						m_hsprCursor;
+	VHSPRITE						m_hsprCursor;
 	float m_flTime;	   // the current client time
 	float m_fOldTime;  // the time at which the HUD was last redrawn
 	double m_flTimeDelta; // the difference between flTime and fOldTime
@@ -583,13 +583,13 @@ public:
 private:
 	// the memory for these arrays are allocated in the first call to CHud::VidInit(), when the hud.txt and associated sprites are loaded.
 	// freed in ~CHud()
-	HSPRITE *m_rghSprites;	/*[HUD_SPRITE_COUNT]*/			// the sprites loaded from hud.txt
+	VHSPRITE *m_rghSprites;	/*[HUD_SPRITE_COUNT]*/			// the sprites loaded from hud.txt
 	wrect_t *m_rgrcRects;	/*[HUD_SPRITE_COUNT]*/
 	char *m_rgszSpriteNames; /*[HUD_SPRITE_COUNT][MAX_SPRITE_NAME_LENGTH]*/
 
 	struct cvar_s *default_fov;
 public:
-	HSPRITE GetSprite( int index ) 
+	VHSPRITE GetSprite( int index )
 	{
 		return (index < 0) ? 0 : m_rghSprites[index];
 	}
@@ -599,7 +599,7 @@ public:
 		return m_rgrcRects[index];
 	}
 
-	
+
 	int GetSpriteIndex( const char *SpriteName );	// gets a sprite index, for use in the m_rghSprites[] array
 
 	CHudAmmo		m_Ammo;
@@ -624,7 +624,7 @@ public:
 	int Redraw( float flTime, int intermission );
 	int UpdateClientData( client_data_t *cdata, float time );
 
-	CHud() : m_iSpriteCount(0), m_pHudList(NULL) {}  
+	CHud() : m_iSpriteCount(0), m_pHudList(NULL) {}
 	~CHud();			// destructor, frees allocated memory
 
 	// user messages

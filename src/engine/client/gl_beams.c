@@ -190,7 +190,7 @@ static void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3
 	float	div, length, fraction, factor;
 	float	flMaxWidth, vLast, vStep, brightness;
 	vec3_t	perp1, vLastNormal;
-	HSPRITE	m_hSprite;
+	VHSPRITE	m_hSprite;
 	beamseg_t	curSeg;
 
 	if( !cl_draw_beams->integer )
@@ -401,7 +401,7 @@ static void CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3
 {
 	float	div, length, fraction;
 	float	w, vLast, vStep;
-	HSPRITE	m_hSprite;
+	VHSPRITE	m_hSprite;
 	vec3_t	point;
 	int	i;
 
@@ -469,7 +469,7 @@ static void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const 
 {
 	float	length, fraction;
 	float	div, vLast, vStep;
-	HSPRITE	m_hSprite;
+	VHSPRITE	m_hSprite;
 	vec3_t	point;
 	int	i;
 
@@ -542,7 +542,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 	vec3_t	last1, last2, point, screen, screenLast;
 	vec3_t	center, xaxis, yaxis, zaxis, tmp, normal;
 	float	radius, x, y, scale;
-	HSPRITE	m_hSprite;
+	VHSPRITE	m_hSprite;
 	vec3_t	d;
 
 	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), frame );
@@ -744,7 +744,7 @@ static void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int re
 	float	vLast = 0.0;
 	float	vStep = 1.0;
 	vec3_t	last1, last2, tmp, normal, scaledColor;
-	HSPRITE	m_hSprite;
+	VHSPRITE	m_hSprite;
 	rgb_t	nColor;
 
 	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), frame );

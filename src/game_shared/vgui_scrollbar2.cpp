@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -17,7 +17,7 @@
 
 using namespace vgui;
 
-
+#pragma warning(disable : 4100)
 namespace
 {
 class FooDefaultScrollBarIntChangeSignal : public IntChangeSignal
@@ -93,18 +93,18 @@ public:
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
-// Input  : x - 
-//			y - 
-//			wide - 
-//			tall - 
-//			vertical - 
+// Input  : x -
+//			y -
+//			wide -
+//			tall -
+//			vertical -
 //-----------------------------------------------------------------------------
 ScrollBar2::ScrollBar2(int x,int y,int wide,int tall,bool vertical) : Panel(x,y,wide,tall)
 {
 	_slider=null;
 	_button[0]=null;
 	_button[1]=null;
-	
+
 	if(vertical)
 	{
 		setSlider(new Slider2(0,wide-1,wide,(tall-(wide*2))+2,true));
@@ -290,7 +290,7 @@ void ScrollBar2::validate()
 				if(_button[i]->isVisible())
 				{
 					if(_slider->isVertical())
-					{					
+					{
 						buttonOffset+=_button[i]->getTall();
 					}
 					else

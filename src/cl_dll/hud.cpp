@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -222,7 +222,7 @@ int __MsgFunc_RandomPC(const char *pszName, int iSize, void *pbuf)
 		return gViewPort->MsgFunc_RandomPC( pszName, iSize, pbuf );
 	return 0;
 }
- 
+
 int __MsgFunc_ServerName(const char *pszName, int iSize, void *pbuf)
 {
 	if (gViewPort)
@@ -264,7 +264,7 @@ int __MsgFunc_AllowSpec(const char *pszName, int iSize, void *pbuf)
 		return gViewPort->MsgFunc_AllowSpec( pszName, iSize, pbuf );
 	return 0;
 }
- 
+
 // This is called every time the DLL is loaded
 void CHud :: Init( void )
 {
@@ -350,7 +350,7 @@ void CHud :: Init( void )
 	GetClientVoiceMgr()->Init(&g_VoiceStatusHelper, (vgui::Panel**)&gViewPort);
 
 	m_Menu.Init();
-	
+
 	ServersInit();
 
 	MsgFunc_ResetHUD(0, 0, NULL );
@@ -404,8 +404,8 @@ void CHud :: VidInit( void )
 	// Load Sprites
 	// ---------
 //	m_hsprFont = LoadSprite("sprites/%d_font.spr");
-	
-	m_hsprLogo = 0;	
+
+	m_hsprLogo = 0;
 	m_hsprCursor = 0;
 
 	if (ScreenWidth < 640)
@@ -424,7 +424,8 @@ void CHud :: VidInit( void )
 			// count the number of sprites of the appropriate res
 			m_iSpriteCount = 0;
 			client_sprite_t *p = m_pSpriteList;
-			for ( int j = 0; j < m_iSpriteCountAllRes; j++ )
+			int j;
+			for ( j = 0; j < m_iSpriteCountAllRes; j++ )
 			{
 				if ( p->iRes == m_iRes )
 					m_iSpriteCount++;
@@ -432,7 +433,7 @@ void CHud :: VidInit( void )
 			}
 
 			// allocated memory for sprite handle arrays
- 			m_rghSprites = new HSPRITE[m_iSpriteCount];
+			m_rghSprites = new VHSPRITE[m_iSpriteCount];
 			m_rgrcRects = new wrect_t[m_iSpriteCount];
 			m_rgszSpriteNames = new char[m_iSpriteCount * MAX_SPRITE_NAME_LENGTH];
 
@@ -463,7 +464,8 @@ void CHud :: VidInit( void )
 
 		// count the number of sprites of the appropriate res
 		m_iSpriteCount = 0;
-		for ( int j = 0; j < m_iSpriteCountAllRes; j++ )
+		int j;
+		for ( j = 0; j < m_iSpriteCountAllRes; j++ )
 		{
 			if ( p->iRes == m_iRes )
 				m_iSpriteCount++;
@@ -475,7 +477,7 @@ void CHud :: VidInit( void )
 		delete [] m_rgszSpriteNames;
 
 		// allocated memory for sprite handle arrays
- 		m_rghSprites = new HSPRITE[m_iSpriteCount];
+		m_rghSprites = new VHSPRITE[m_iSpriteCount];
 		m_rgrcRects = new wrect_t[m_iSpriteCount];
 		m_rgszSpriteNames = new char[m_iSpriteCount * MAX_SPRITE_NAME_LENGTH];
 
@@ -545,15 +547,15 @@ void COM_FileBase ( const char *in, char *out)
 	int len, start, end;
 
 	len = strlen( in );
-	
+
 	// scan backward for '.'
 	end = len - 1;
 	while ( end && in[end] != '.' && in[end] != '/' && in[end] != '\\' )
 		end--;
-	
+
 	if ( in[end] != '.' )		// no '.', copy to end
 		end = len-1;
-	else 
+	else
 		end--;					// Found ',', copy to left of '.'
 
 
@@ -564,7 +566,7 @@ void COM_FileBase ( const char *in, char *out)
 
 	if ( in[start] != '/' && in[start] != '\\' )
 		start = 0;
-	else 
+	else
 		start++;
 
 	// Length of new sting
@@ -652,12 +654,12 @@ int CHud::MsgFunc_SetFOV(const char *pszName,  int iSize, void *pbuf)
 
 	// Set a new sensitivity
 	if ( m_iFOV == def_fov )
-	{  
+	{
 		// reset to saved sensitivity
 		m_flMouseSensitivity = 0;
 	}
 	else
-	{  
+	{
 		// set a new sensitivity that is proportional to the change from the FOV default
 		m_flMouseSensitivity = sensitivity->value * ((float)newfov / (float)def_fov) * CVAR_GET_FLOAT("zoom_sensitivity_ratio");
 	}

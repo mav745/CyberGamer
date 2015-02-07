@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -55,7 +55,7 @@ public:
 LINK_ENTITY_TO_CLASS( monster_satchel, CSatchelCharge );
 
 //=========================================================
-// Deactivate - do whatever it is we do to an orphaned 
+// Deactivate - do whatever it is we do to an orphaned
 // satchel when we don't want it in the world anymore.
 //=========================================================
 void CSatchelCharge::Deactivate( void )
@@ -77,9 +77,9 @@ void CSatchelCharge :: Spawn( void )
 	UTIL_SetSize(pev, Vector( -4, -4, -4), Vector(4, 4, 4));	// Uses point-sized, and can be stepped over
 	UTIL_SetOrigin( pev, pev->origin );
 
-	SetTouch( SatchelSlide );
-	SetUse( DetonateUse );
-	SetThink( SatchelThink );
+	SetTouch( &CSatchelCharge::SatchelSlide );
+	SetUse( &CSatchelCharge::DetonateUse );
+	SetThink( &CSatchelCharge::SatchelThink );
 	pev->nextthink = gpGlobals->time + 0.1;
 
 	pev->gravity = 0.5;
@@ -146,7 +146,7 @@ void CSatchelCharge :: SatchelThink( void )
 	else
 	{
 		pev->velocity.z -= 8;
-	}	
+	}
 }
 
 void CSatchelCharge :: Precache( void )
@@ -219,7 +219,7 @@ void CSatchel::Spawn( )
 	SET_MODEL(ENT(pev), "models/w_satchel.mdl");
 
 	m_iDefaultAmmo = SATCHEL_DEFAULT_GIVE;
-		
+
 	FallInit();// get ready to fall down.
 }
 
@@ -257,7 +257,7 @@ int CSatchel::GetItemInfo(ItemInfo *p)
 //=========================================================
 BOOL CSatchel::IsUseable( void )
 {
-	if ( m_pPlayer->m_rgAmmo[ PrimaryAmmoIndex() ] > 0 ) 
+	if ( m_pPlayer->m_rgAmmo[ PrimaryAmmoIndex() ] > 0 )
 	{
 		// player is carrying some satchels
 		return TRUE;
@@ -274,7 +274,7 @@ BOOL CSatchel::IsUseable( void )
 
 BOOL CSatchel::CanDeploy( void )
 {
-	if ( m_pPlayer->m_rgAmmo[ PrimaryAmmoIndex() ] > 0 ) 
+	if ( m_pPlayer->m_rgAmmo[ PrimaryAmmoIndex() ] > 0 )
 	{
 		// player is carrying some satchels
 		return TRUE;
@@ -300,7 +300,7 @@ BOOL CSatchel::Deploy( )
 	else
 		return DefaultDeploy( "models/v_satchel.mdl", "models/p_satchel.mdl", SATCHEL_DRAW, "trip" );
 
-	
+
 	return TRUE;
 }
 
@@ -308,7 +308,7 @@ BOOL CSatchel::Deploy( )
 void CSatchel::Holster( int skiplocal /* = 0 */ )
 {
 	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
-	
+
 	if ( m_chargeReady )
 	{
 		SendWeaponAnim( SATCHEL_RADIO_HOLSTER );
@@ -322,7 +322,7 @@ void CSatchel::Holster( int skiplocal /* = 0 */ )
 	if ( !m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] && !m_chargeReady )
 	{
 		m_pPlayer->pev->weapons &= ~(1<<WEAPON_SATCHEL);
-		SetThink( DestroyItem );
+		SetThink( &CSatchel::DestroyItem );
 		pev->nextthink = gpGlobals->time + 0.1;
 	}
 }
@@ -408,7 +408,7 @@ void CSatchel::Throw( void )
 		m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
 		m_chargeReady = 1;
-		
+
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
 
 		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 1.0;
@@ -416,6 +416,7 @@ void CSatchel::Throw( void )
 	}
 }
 
+#pragma warning(disable : 4996)
 
 void CSatchel::WeaponIdle( void )
 {
@@ -470,7 +471,7 @@ void CSatchel::WeaponIdle( void )
 //=========================================================
 void DeactivateSatchels( CBasePlayer *pOwner )
 {
-	edict_t *pFind; 
+	edict_t *pFind;
 
 	pFind = FIND_ENTITY_BY_CLASSNAME( NULL, "monster_satchel" );
 

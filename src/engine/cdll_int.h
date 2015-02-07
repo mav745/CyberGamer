@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -15,7 +15,7 @@
 //
 //  cdll_int.h
 //
-// 4-23-98  
+// 4-23-98
 // JOHN:  client dll interface declarations
 //
 
@@ -40,7 +40,7 @@ typedef struct cmdalias_s
 // this file is included by both the engine and the client-dll,
 // so make sure engine declarations aren't done twice
 
-typedef int HSPRITE;	// handle to a graphic
+typedef int VHSPRITE;	// handle to a graphic
 typedef int (*pfnUserMsgHook)( const char *pszName, int iSize, void *pbuf );
 
 #include "wrect.h"
@@ -112,11 +112,11 @@ typedef struct hud_player_info_s
 typedef struct cl_enginefuncs_s
 {
 	// sprite handlers
-	HSPRITE	(*pfnSPR_Load)( const char *szPicName );
-	int	(*pfnSPR_Frames)( HSPRITE hPic );
-	int	(*pfnSPR_Height)( HSPRITE hPic, int frame );
-	int	(*pfnSPR_Width)( HSPRITE hPic, int frame );
-	void	(*pfnSPR_Set)( HSPRITE hPic, int r, int g, int b );
+	VHSPRITE	(*pfnSPR_Load)( const char *szPicName );
+	int	(*pfnSPR_Frames)( VHSPRITE hPic );
+	int	(*pfnSPR_Height)( VHSPRITE hPic, int frame );
+	int	(*pfnSPR_Width)( VHSPRITE hPic, int frame );
+	void	(*pfnSPR_Set)( VHSPRITE hPic, int r, int g, int b );
 	void	(*pfnSPR_Draw)( int frame, int x, int y, const wrect_t *prc );
 	void	(*pfnSPR_DrawHoles)( int frame, int x, int y, const wrect_t *prc );
 	void	(*pfnSPR_DrawAdditive)( int frame, int x, int y, const wrect_t *prc );
@@ -127,7 +127,7 @@ typedef struct cl_enginefuncs_s
 	// screen handlers
 	void	(*pfnFillRGBA)( int x, int y, int width, int height, int r, int g, int b, int a );
 	int	(*pfnGetScreenInfo)( SCREENINFO *pscrinfo );
-	void	(*pfnSetCrosshair)( HSPRITE hspr, wrect_t rc, int r, int g, int b );
+	void	(*pfnSetCrosshair)( VHSPRITE hspr, wrect_t rc, int r, int g, int b );
 
 	// cvar handlers
 	struct cvar_s *(*pfnRegisterVariable)( char *szName, char *szValue, int flags );
@@ -167,7 +167,7 @@ typedef struct cl_enginefuncs_s
 	int	(*GetMaxClients)( void );
 	void	(*Cvar_SetValue)( char *cvar, float value );
 
-	int       (*Cmd_Argc)( void );	
+	int       (*Cmd_Argc)( void );
 	char	*(*Cmd_Argv)( int arg );
 	void	(*Con_Printf)( char *fmt, ... );
 	void	(*Con_DPrintf)( char *fmt, ... );
@@ -198,13 +198,13 @@ typedef struct cl_enginefuncs_s
 	struct model_s *(*CL_LoadModel)( const char *modelname, int *index );
 	int	(*CL_CreateVisibleEntity)( int type, struct cl_entity_s *ent );
 
-	const struct model_s* (*GetSpritePointer)( HSPRITE hSprite );
+	const struct model_s* (*GetSpritePointer)( VHSPRITE hSprite );
 	void	(*pfnPlaySoundByNameAtLocation)( char *szSound, float volume, float *origin );
-	
+
 	unsigned short (*pfnPrecacheEvent)( int type, const char* psz );
 	void	(*pfnPlaybackEvent)( int flags, const struct edict_s *pInvoker, unsigned short eventindex, float delay, float *origin, float *angles, float fparam1, float fparam2, int iparam1, int iparam2, int bparam1, int bparam2 );
 	void	(*pfnWeaponAnim)( int iAnim, int body );
-	float	(*pfnRandomFloat)( float flLow, float flHigh );	
+	float	(*pfnRandomFloat)( float flLow, float flHigh );
 	long	(*pfnRandomLong)( long lLow, long lHigh );
 	void	(*pfnHookEvent)( char *name, void ( *pfnEvent )( struct event_args_s *args ));
 	int	(*Con_IsVisible) ();
@@ -223,12 +223,12 @@ typedef struct cl_enginefuncs_s
 
 	struct triangleapi_s	*pTriAPI;
 	struct efx_api_s		*pEfxAPI;
-	struct event_api_s		*pEventAPI;	
+	struct event_api_s		*pEventAPI;
 	struct demo_api_s		*pDemoAPI;
 	struct net_api_s		*pNetAPI;
 	struct IVoiceTweak_s	*pVoiceTweak;
 
-	// returns 1 if the client is a spectator only (connected to a proxy), 0 otherwise or 2 if in dev_overview mode	
+	// returns 1 if the client is a spectator only (connected to a proxy), 0 otherwise or 2 if in dev_overview mode
 	int	(*IsSpectateOnly)( void );
 	struct model_s *(*LoadMapSprite)( const char *filename );
 

@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -17,6 +17,8 @@ CGameStudioModelRenderer
 
 ====================
 */
+#include "StudioModelRenderer.h"
+
 class CGameStudioModelRenderer : public CStudioModelRenderer
 {
 public:

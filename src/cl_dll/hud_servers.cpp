@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -155,6 +155,7 @@ ServerResponse
 
 ===================
 */
+#pragma warning(disable : 4996)
 void CHudServers::ServerResponse( struct net_response_s *response )
 {
 	char *szresponse;
@@ -170,10 +171,10 @@ void CHudServers::ServerResponse( struct net_response_s *response )
 		RemoveServerFromList( &m_pActiveList, p );
 		m_nActiveQueries--;
 	}
-	
+
 	if ( response->error != NET_SUCCESS )
 		return;
-	
+
 	switch ( response->type )
 	{
 	case NETAPI_REQUEST_DETAILS:
@@ -191,7 +192,7 @@ void CHudServers::ServerResponse( struct net_response_s *response )
 
 			NET_API->SetValueForKey( browser->info, "address", gEngfuncs.pNetAPI->AdrToString( &response->remote_address ), len );
 			NET_API->SetValueForKey( browser->info, "ping", sz, len );
-			
+
 			AddServer( &m_pServers, browser );
 		}
 		break;
@@ -234,10 +235,10 @@ RulesResponse
 void CHudServers::RulesResponse( struct net_response_s *response )
 {
 	char *szresponse;
-	
+
 	if ( response->error != NET_SUCCESS )
 		return;
-	
+
 	switch ( response->type )
 	{
 	case NETAPI_REQUEST_RULES:
@@ -265,7 +266,7 @@ void CHudServers::PlayersResponse( struct net_response_s *response )
 
 	if ( response->error != NET_SUCCESS )
 		return;
-	
+
 	switch ( response->type )
 	{
 	case NETAPI_REQUEST_PLAYERS:
@@ -602,7 +603,7 @@ int CompareField( CHudServers::server_t *p1, CHudServers::server_t *p2, const ch
 int CALLBACK ServerListCompareFunc( CHudServers::server_t *p1, CHudServers::server_t *p2, const char *fieldname )
 {
 	if (!p1 || !p2)  // No meaningful comparison
-		return 0;  
+		return 0;
 
 	int iSortOrder = 1;
 
@@ -644,7 +645,7 @@ void CHudServers::SortServers( const char *fieldname )
 	}
 
 	server_t **pSortArray;
-	
+
 	pSortArray = new server_t *[ c ];
 	memset( pSortArray, 0, c  * sizeof( server_t * ) );
 
@@ -808,17 +809,17 @@ int CHudServers::LoadMasterAddresses( int maxservers, int *count, netadr_t *padr
 
 			// Now parse all addresses between { }
 			pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
-			
+
 			if (strlen(m_szToken) <= 0)
 				break;
 
 			if ( !stricmp ( m_szToken, "}" ) )
 				break;
-			
+
 			sprintf( base, "%s", m_szToken );
-				
+
 			pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
-			
+
 			if (strlen(m_szToken) <= 0)
 				break;
 
@@ -826,7 +827,7 @@ int CHudServers::LoadMasterAddresses( int maxservers, int *count, netadr_t *padr
 				break;
 
 			pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
-			
+
 			if (strlen(m_szToken) <= 0)
 				break;
 
@@ -855,7 +856,7 @@ finish_master:
 		// Convert to netadr_t
 		if ( NET_API->StringToAdr ( szMaster, &adr ) )
 		{
-		
+
 			padr[ nCount++ ] = adr;
 		}
 	}
@@ -952,7 +953,7 @@ void CHudServers::RequestBroadcastList( int clearpending )
 void CHudServers::ServerPing( int server )
 {
 	server_t *p;
-	
+
 	p = GetServer( server );
 	if ( !p )
 		return;
@@ -967,7 +968,7 @@ void CHudServers::ServerPing( int server )
 void CHudServers::ServerRules( int server )
 {
 	server_t *p;
-	
+
 	p = GetServer( server );
 	if ( !p )
 		return;
@@ -982,7 +983,7 @@ void CHudServers::ServerRules( int server )
 void CHudServers::ServerPlayers( int server )
 {
 	server_t *p;
-	
+
 	p = GetServer( server );
 	if ( !p )
 		return;
@@ -1028,7 +1029,7 @@ CHudServers::CHudServers( void )
 	m_pActiveList		= NULL;
 	m_nQuerying			= 0;
 	m_nActiveQueries	= 0;
-	
+
 	m_fElapsed			= 0.0;
 
 
@@ -1057,7 +1058,7 @@ CHudServers::~CHudServers( void )
 		m_pPingRequest = NULL;
 
 	}
-	
+
 	if ( m_pRulesRequest )
 	{
 		delete m_pRulesRequest;
@@ -1113,7 +1114,7 @@ const char *ServersGetInfo( int server )
 	{
 		return g_pServers->GetServerInfo( server );
 	}
-	
+
 	return NULL;
 }
 
@@ -1150,7 +1151,7 @@ void ServersInit( void )
 {
 	// Kill any previous instance
 	ServersShutdown();
-	
+
 	g_pServers = new CHudServers();
 }
 

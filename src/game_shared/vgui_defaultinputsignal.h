@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -14,7 +14,7 @@
 
 #include "vgui_inputsignal.h"
 
-
+#pragma warning(disable : 4100)
 namespace vgui
 {
 	// This class derives from vgui::InputSignal and implements empty defaults for all of its functions.

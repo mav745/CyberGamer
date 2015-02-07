@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -97,16 +97,16 @@ int __MsgFunc_ReqState(const char *pszName, int iSize, void *pbuf)
 	return 1;
 }
 
-
+#pragma warning(disable : 4996)
 int g_BannedPlayerPrintCount;
 void ForEachBannedPlayer(char id[16])
 {
 	char str[256];
 	sprintf(str, "Ban %d: %2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x%2x\n",
 		g_BannedPlayerPrintCount++,
-		id[0], id[1], id[2], id[3], 
-		id[4], id[5], id[6], id[7], 
-		id[8], id[9], id[10], id[11], 
+		id[0], id[1], id[2], id[3],
+		id[4], id[5], id[6], id[7],
+		id[8], id[9], id[10], id[11],
 		id[12], id[13], id[14], id[15]
 		);
 	strupr(str);
@@ -142,7 +142,7 @@ CVoiceStatus::CVoiceStatus()
 	m_pScoreboardSpeaking2 = NULL;
 	m_pScoreboardSquelch = NULL;
 	m_pScoreboardBanned = NULL;
-	
+
 	m_pLocalBitmap = NULL;
 	m_pAckBitmap = NULL;
 
@@ -159,7 +159,7 @@ CVoiceStatus::CVoiceStatus()
 CVoiceStatus::~CVoiceStatus()
 {
 	g_pInternalVoiceStatus = NULL;
-	
+
 	for(int i=0; i < MAX_VOICE_SPEAKERS; i++)
 	{
 		delete m_Labels[i].m_pLabel;
@@ -167,10 +167,10 @@ CVoiceStatus::~CVoiceStatus()
 
 		delete m_Labels[i].m_pIcon;
 		m_Labels[i].m_pIcon = NULL;
-		
+
 		delete m_Labels[i].m_pBackground;
 		m_Labels[i].m_pBackground = NULL;
-	}				
+	}
 
 	delete m_pLocalLabel;
 	m_pLocalLabel = NULL;
@@ -212,7 +212,7 @@ int CVoiceStatus::Init(
 	m_BlinkTimer = 0;
 	m_VoiceHeadModel = NULL;
 	memset(m_Labels, 0, sizeof(m_Labels));
-	
+
 	for(int i=0; i < MAX_VOICE_SPEAKERS; i++)
 	{
 		CVoiceLabel *pLabel = &m_Labels[i];
@@ -284,13 +284,13 @@ int CVoiceStatus::VidInit()
 
 	if(m_pScoreboardNotSpeaking = vgui_LoadTGANoInvertAlpha("gfx/vgui/640_speaker2.tga"))
 		m_pScoreboardNotSpeaking->setColor(Color(255,255,255,1));	// Give just a tiny bit of translucency so software draws correctly.
-	
+
 	if(m_pScoreboardSpeaking = vgui_LoadTGANoInvertAlpha("gfx/vgui/640_speaker3.tga"))
 		m_pScoreboardSpeaking->setColor(Color(255,255,255,1));	// Give just a tiny bit of translucency so software draws correctly.
-	
+
 	if(m_pScoreboardSpeaking2 = vgui_LoadTGANoInvertAlpha("gfx/vgui/640_speaker4.tga"))
 		m_pScoreboardSpeaking2->setColor(Color(255,255,255,1));	// Give just a tiny bit of translucency so software draws correctly.
-	
+
 	if(m_pScoreboardSquelch  = vgui_LoadTGA("gfx/vgui/icntlk_squelch.tga"))
 		m_pScoreboardSquelch->setColor(Color(255,255,255,1));	// Give just a tiny bit of translucency so software draws correctly.
 
@@ -356,9 +356,9 @@ void CVoiceStatus::CreateEntities()
 	{
 		if(!m_VoicePlayers[i])
 			continue;
-		
+
 		cl_entity_s *pClient = gEngfuncs.GetEntityByIndex(i+1);
-		
+
 		// Don't show an icon if the player is not in our PVS.
 		if(!pClient || pClient->curstate.messagenum < localPlayer->curstate.messagenum)
 			continue;
@@ -385,7 +385,7 @@ void CVoiceStatus::CreateEntities()
 		pEnt->model = (struct model_s*)gEngfuncs.GetSpritePointer(m_VoiceHeadModel);
 		pEnt->angles[0] = pEnt->angles[1] = pEnt->angles[2] = 0;
 		pEnt->curstate.scale = 0.5f;
-		
+
 		pEnt->origin[0] = pEnt->origin[1] = 0;
 		pEnt->origin[2] = 45;
 
@@ -464,7 +464,7 @@ void CVoiceStatus::UpdateSpeakerStatus(int entindex, qboolean bTalking)
 						pLabel->m_pLabel->setBgColor( 0, 0, 0, 255 );
 						pLabel->m_pLabel->setText( paddedName );
 					}
-					
+
 					pLabel->m_clientindex = iClient;
 				}
 			}
@@ -499,7 +499,7 @@ void CVoiceStatus::UpdateServerState(bool bForce)
 
 		return;
 	}
-	
+
 	int bCVarModEnable = !!gEngfuncs.pfnGetCvarFloat("voice_modenable");
 	if(bForce || m_bServerModEnable != bCVarModEnable)
 	{
@@ -522,7 +522,7 @@ void CVoiceStatus::UpdateServerState(bool bForce)
 	bool bChange = false;
 
 	for(unsigned long dw=0; dw < VOICE_MAX_PLAYERS_DW; dw++)
-	{	
+	{
 		unsigned long serverBanMask = 0;
 		unsigned long banMask = 0;
 		for(unsigned long i=0; i < 32; i++)
@@ -565,7 +565,7 @@ void CVoiceStatus::UpdateServerState(bool bForce)
 			gEngfuncs.pfnConsolePrint( "CVoiceStatus::UpdateServerState: no change\n" );
 		}
 	}
-	
+
 	m_LastUpdateServerState = gEngfuncs.GetClientTime();
 }
 
@@ -636,10 +636,10 @@ void CVoiceStatus::HandleVoiceMaskMsg(int iSize, void *pbuf)
 		{
 			char str[256];
 			gEngfuncs.pfnConsolePrint("CVoiceStatus::HandleVoiceMaskMsg\n");
-			
+
 			sprintf(str, "    - m_AudiblePlayers[%d] = %lu\n", dw, m_AudiblePlayers.GetDWord(dw));
 			gEngfuncs.pfnConsolePrint(str);
-			
+
 			sprintf(str, "    - m_ServerBannedPlayers[%d] = %lu\n", dw, m_ServerBannedPlayers.GetDWord(dw));
 			gEngfuncs.pfnConsolePrint(str);
 		}
@@ -655,7 +655,7 @@ void CVoiceStatus::HandleReqStateMsg(int iSize, void *pbuf)
 		gEngfuncs.pfnConsolePrint("CVoiceStatus::HandleReqStateMsg\n");
 	}
 
-	UpdateServerState(true);	
+	UpdateServerState(true);
 }
 
 void CVoiceStatus::StartSquelchMode()
@@ -700,13 +700,13 @@ void CVoiceStatus::RepositionLabels()
 {
 	// find starting position to draw from, along right-hand side of screen
 	int y = ScreenHeight / 2;
-	
+
 	int iconWide = 8, iconTall = 8;
 	if( m_pSpeakerLabelIcon )
 	{
 		m_pSpeakerLabelIcon->getSize( iconWide, iconTall );
 	}
-	
+
 	// Reposition active labels.
 	for(int i = 0; i < MAX_VOICE_SPEAKERS; i++)
 	{
@@ -763,7 +763,7 @@ void CVoiceStatus::RepositionLabels()
 
 		int local_xPos = ScreenWidth - sizeX - 10;
 		int local_yPos = m_pHelper->GetAckIconHeight() - sizeY;
-		
+
 		m_pLocalLabel->setPos( local_xPos, local_yPos );
 	}
 	else
@@ -818,7 +818,7 @@ void CVoiceStatus::FreeBitmaps()
 
 //-----------------------------------------------------------------------------
 // Purpose: returns true if the target client has been banned
-// Input  : playerID - 
+// Input  : playerID -
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
 bool CVoiceStatus::IsPlayerBlocked(int iPlayer)
@@ -832,7 +832,7 @@ bool CVoiceStatus::IsPlayerBlocked(int iPlayer)
 
 //-----------------------------------------------------------------------------
 // Purpose: returns true if the player can't hear the other client due to game rules (eg. the other team)
-// Input  : playerID - 
+// Input  : playerID -
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
 bool CVoiceStatus::IsPlayerAudible(int iPlayer)
@@ -842,7 +842,7 @@ bool CVoiceStatus::IsPlayerAudible(int iPlayer)
 
 //-----------------------------------------------------------------------------
 // Purpose: blocks/unblocks the target client from being heard
-// Input  : playerID - 
+// Input  : playerID -
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
 void CVoiceStatus::SetPlayerBlockedState(int iPlayer, bool blocked)

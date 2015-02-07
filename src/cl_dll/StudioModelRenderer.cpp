@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -122,7 +122,7 @@ void CStudioModelRenderer::StudioCalcBoneAdj( float dadt, float *adj, const byte
 	int					i, j;
 	float				value;
 	mstudiobonecontroller_t *pbonecontroller;
-	
+
 	pbonecontroller = (mstudiobonecontroller_t *)((byte *)m_pStudioHeader + m_pStudioHeader->bonecontrollerindex);
 
 	for (j = 0; j < m_pStudioHeader->numbonecontrollers; j++)
@@ -140,12 +140,12 @@ void CStudioModelRenderer::StudioCalcBoneAdj( float dadt, float *adj, const byte
 					b = (pcontroller2[j] + 128) % 256;
 					value = ((a * dadt) + (b * (1 - dadt)) - 128) * (360.0/256.0) + pbonecontroller[j].start;
 				}
-				else 
+				else
 				{
 					value = ((pcontroller1[i] * dadt + (pcontroller2[i]) * (1.0 - dadt))) * (360.0/256.0) + pbonecontroller[j].start;
 				}
 			}
-			else 
+			else
 			{
 				value = (pcontroller1[i] * dadt + pcontroller2[i] * (1.0 - dadt)) / 255.0;
 				if (value < 0) value = 0;
@@ -157,7 +157,7 @@ void CStudioModelRenderer::StudioCalcBoneAdj( float dadt, float *adj, const byte
 		else
 		{
 			value = mouthopen / 64.0;
-			if (value > 1.0) value = 1.0;				
+			if (value > 1.0) value = 1.0;
 			value = (1.0 - value) * pbonecontroller[j].start + value * pbonecontroller[j].end;
 			// Con_DPrintf("%d %f\n", mouthopen, value );
 		}
@@ -285,7 +285,7 @@ void CStudioModelRenderer::StudioCalcBonePosition( int frame, float s, mstudiobo
 			if (i == 0 && j == 0)
 				Con_DPrintf("%d  %d:%d  %f\n", frame, panimvalue->num.valid, panimvalue->num.total, s );
 			*/
-			
+
 			k = frame;
 			// DEBUG
 			if (panimvalue->num.total < panimvalue->num.valid)
@@ -295,7 +295,7 @@ void CStudioModelRenderer::StudioCalcBonePosition( int frame, float s, mstudiobo
 			{
 				k -= panimvalue->num.total;
 				panimvalue += panimvalue->num.valid + 1;
-  				// DEBUG
+				// DEBUG
 				if (panimvalue->num.total < panimvalue->num.valid)
 					k = 0;
 			}
@@ -438,7 +438,7 @@ void CStudioModelRenderer::StudioSetUpTransform (int trivial_accept)
 	vec3_t			angles;
 	vec3_t			modelpos;
 
-// tweek model origin	
+// tweek model origin
 	//for (i = 0; i < 3; i++)
 	//	modelpos[i] = m_pCurrentEntity->origin[i];
 
@@ -453,7 +453,7 @@ void CStudioModelRenderer::StudioSetUpTransform (int trivial_accept)
 
 	//Con_DPrintf("Angles %4.2f prev %4.2f for %i\n", angles[PITCH], m_pCurrentEntity->index);
 	//Con_DPrintf("movetype %d %d\n", m_pCurrentEntity->movetype, m_pCurrentEntity->aiment );
-	if (m_pCurrentEntity->curstate.movetype == MOVETYPE_STEP) 
+	if (m_pCurrentEntity->curstate.movetype == MOVETYPE_STEP)
 	{
 		float			f = 0;
 		float			d;
@@ -503,7 +503,7 @@ void CStudioModelRenderer::StudioSetUpTransform (int trivial_accept)
 				d -= 360;
 			}
 			else if (d < -180)
-			{	
+			{
 				d += 360;
 			}
 
@@ -511,7 +511,7 @@ void CStudioModelRenderer::StudioSetUpTransform (int trivial_accept)
 		}
 		//Con_DPrintf("%.3f \n", f );
 	}
-	else if ( m_pCurrentEntity->curstate.movetype != MOVETYPE_NONE ) 
+	else if ( m_pCurrentEntity->curstate.movetype != MOVETYPE_NONE )
 	{
 		VectorCopy( m_pCurrentEntity->angles, angles );
 	}
@@ -628,7 +628,7 @@ void CStudioModelRenderer::StudioCalcRotations ( float pos[][3], vec4_t *q, mstu
 
 	StudioCalcBoneAdj( dadt, adj, m_pCurrentEntity->curstate.controller, m_pCurrentEntity->latched.prevcontroller, m_pCurrentEntity->mouth.mouthopen );
 
-	for (i = 0; i < m_pStudioHeader->numbones; i++, pbone++, panim++) 
+	for (i = 0; i < m_pStudioHeader->numbones; i++, pbone++, panim++)
 	{
 		StudioCalcBoneQuaterion( frame, s, pbone, panim, adj, q[i] );
 
@@ -746,27 +746,27 @@ float CStudioModelRenderer::StudioEstimateFrame( mstudioseqdesc_t *pseqdesc )
 	{
 		f = (m_pCurrentEntity->curstate.frame * (pseqdesc->numframes - 1)) / 256.0;
 	}
- 	
+
 	f += dfdt;
 
-	if (pseqdesc->flags & STUDIO_LOOPING) 
+	if (pseqdesc->flags & STUDIO_LOOPING)
 	{
 		if (pseqdesc->numframes > 1)
 		{
 			f -= (int)(f / (pseqdesc->numframes - 1)) *  (pseqdesc->numframes - 1);
 		}
-		if (f < 0) 
+		if (f < 0)
 		{
 			f += (pseqdesc->numframes - 1);
 		}
 	}
-	else 
+	else
 	{
-		if (f >= pseqdesc->numframes - 1.001) 
+		if (f >= pseqdesc->numframes - 1.001)
 		{
 			f = pseqdesc->numframes - 1.001;
 		}
-		if (f < 0.0) 
+		if (f < 0.0)
 		{
 			f = 0.0;
 		}
@@ -800,7 +800,7 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 	static float		pos4[MAXSTUDIOBONES][3];
 	static vec4_t		q4[MAXSTUDIOBONES];
 
-	if (m_pCurrentEntity->curstate.sequence >=  m_pStudioHeader->numseq) 
+	if (m_pCurrentEntity->curstate.sequence >=  m_pStudioHeader->numseq)
 	{
 		m_pCurrentEntity->curstate.sequence = 0;
 	}
@@ -845,10 +845,10 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 			StudioSlerpBones( q, pos, q3, pos3, s );
 		}
 	}
-	
+
 	if (m_fDoInterp &&
 		m_pCurrentEntity->latched.sequencetime &&
-		( m_pCurrentEntity->latched.sequencetime + 0.2 > m_clTime ) && 
+		( m_pCurrentEntity->latched.sequencetime + 0.2 > m_clTime ) &&
 		( m_pCurrentEntity->latched.prevsequence < m_pStudioHeader->numseq ))
 	{
 		// blend from last sequence
@@ -899,7 +899,7 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 	// calc gait animation
 	if (m_pPlayerInfo && m_pPlayerInfo->gaitsequence != 0)
 	{
-		if (m_pPlayerInfo->gaitsequence >= m_pStudioHeader->numseq) 
+		if (m_pPlayerInfo->gaitsequence >= m_pStudioHeader->numseq)
 		{
 			m_pPlayerInfo->gaitsequence = 0;
 		}
@@ -911,7 +911,8 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 
 		for (i = 0; i < m_pStudioHeader->numbones; i++)
 		{
-			for( int j = 0; j < LEGS_BONES_COUNT; j++ )
+			int j;
+			for( j = 0; j < LEGS_BONES_COUNT; j++ )
 			{
 				if( !strcmp( pbones[i].name, legs_bones[j] ))
 					break;
@@ -926,7 +927,7 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 	}
 
 
-	for (i = 0; i < m_pStudioHeader->numbones; i++) 
+	for (i = 0; i < m_pStudioHeader->numbones; i++)
 	{
 		QuaternionMatrix( q[i], bonematrix );
 
@@ -934,7 +935,7 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 		bonematrix[1][3] = pos[i][1];
 		bonematrix[2][3] = pos[i][2];
 
-		if (pbones[i].parent == -1) 
+		if (pbones[i].parent == -1)
 		{
 			if ( IEngineStudio.IsHardware() )
 			{
@@ -952,8 +953,8 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 
 			// Apply client-side effects to the transformation matrix
 			StudioFxTransform( m_pCurrentEntity, (*m_pbonetransform)[i] );
-		} 
-		else 
+		}
+		else
 		{
 			ConcatTransforms ((*m_pbonetransform)[pbones[i].parent], bonematrix, (*m_pbonetransform)[i]);
 			ConcatTransforms ((*m_plighttransform)[pbones[i].parent], bonematrix, (*m_plighttransform)[i]);
@@ -968,6 +969,7 @@ StudioSaveBones
 
 ====================
 */
+#pragma warning(disable : 4996)
 void CStudioModelRenderer::StudioSaveBones( void )
 {
 	int		i;
@@ -977,7 +979,7 @@ void CStudioModelRenderer::StudioSaveBones( void )
 
 	m_nCachedBones = m_pStudioHeader->numbones;
 
-	for (i = 0; i < m_pStudioHeader->numbones; i++) 
+	for (i = 0; i < m_pStudioHeader->numbones; i++)
 	{
 		strcpy( m_nCachedBoneNames[i], pbones[i].name );
 		MatrixCopy( (*m_pbonetransform)[i], m_rgCachedBoneTransform[i] );
@@ -992,6 +994,8 @@ StudioMergeBones
 
 ====================
 */
+#pragma warning(disable : 4996)
+#pragma warning(disable : 4189)
 void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 {
 	int					i, j;
@@ -1006,7 +1010,7 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 	float				bonematrix[3][4];
 	static vec4_t		q[MAXSTUDIOBONES];
 
-	if (m_pCurrentEntity->curstate.sequence >=  m_pStudioHeader->numseq) 
+	if (m_pCurrentEntity->curstate.sequence >=  m_pStudioHeader->numseq)
 	{
 		m_pCurrentEntity->curstate.sequence = 0;
 	}
@@ -1026,7 +1030,7 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 	pbones = (mstudiobone_t *)((byte *)m_pStudioHeader + m_pStudioHeader->boneindex);
 
 
-	for (i = 0; i < m_pStudioHeader->numbones; i++) 
+	for (i = 0; i < m_pStudioHeader->numbones; i++)
 	{
 		for (j = 0; j < m_nCachedBones; j++)
 		{
@@ -1045,7 +1049,7 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 			bonematrix[1][3] = pos[i][1];
 			bonematrix[2][3] = pos[i][2];
 
-			if (pbones[i].parent == -1) 
+			if (pbones[i].parent == -1)
 			{
 				if ( IEngineStudio.IsHardware() )
 				{
@@ -1063,8 +1067,8 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 
 				// Apply client-side effects to the transformation matrix
 				StudioFxTransform( m_pCurrentEntity, (*m_pbonetransform)[i] );
-			} 
-			else 
+			}
+			else
 			{
 				ConcatTransforms ((*m_pbonetransform)[pbones[i].parent], bonematrix, (*m_pbonetransform)[i]);
 				ConcatTransforms ((*m_plighttransform)[pbones[i].parent], bonematrix, (*m_plighttransform)[i]);
@@ -1113,10 +1117,10 @@ int CStudioModelRenderer::StudioDrawModel( int flags )
 
 		save_interp = m_fDoInterp;
 		m_fDoInterp = 0;
-		
+
 		// draw as though it were a player
 		result = StudioDrawPlayer( flags, &deadplayer );
-		
+
 		m_fDoInterp = save_interp;
 		return result;
 	}
@@ -1271,7 +1275,7 @@ void CStudioModelRenderer::StudioProcessGait( entity_state_t *pplayer )
 	int iBlend;
 	float flYaw;	 // view direction relative to movement
 
-	if (m_pCurrentEntity->curstate.sequence >=  m_pStudioHeader->numseq) 
+	if (m_pCurrentEntity->curstate.sequence >=  m_pStudioHeader->numseq)
 	{
 		m_pCurrentEntity->curstate.sequence = 0;
 	}
@@ -1333,7 +1337,7 @@ void CStudioModelRenderer::StudioProcessGait( entity_state_t *pplayer )
 		m_pCurrentEntity->angles[YAW] += 360;
 	m_pCurrentEntity->latched.prevangles[YAW] = m_pCurrentEntity->angles[YAW];
 
-	if (pplayer->gaitsequence >= m_pStudioHeader->numseq) 
+	if (pplayer->gaitsequence >= m_pStudioHeader->numseq)
 	{
 		pplayer->gaitsequence = 0;
 	}
@@ -1397,7 +1401,7 @@ int CStudioModelRenderer::StudioDrawPlayer( int flags, entity_state_t *pplayer )
 		m_pPlayerInfo = IEngineStudio.PlayerInfo( m_nPlayerIndex );
 
 		VectorCopy( m_pCurrentEntity->angles, orig_angles );
-	
+
 		StudioProcessGait( pplayer );
 
 		m_pPlayerInfo->gaitsequence = pplayer->gaitsequence;
@@ -1416,7 +1420,7 @@ int CStudioModelRenderer::StudioDrawPlayer( int flags, entity_state_t *pplayer )
 		m_pCurrentEntity->latched.prevcontroller[1] = m_pCurrentEntity->curstate.controller[1];
 		m_pCurrentEntity->latched.prevcontroller[2] = m_pCurrentEntity->curstate.controller[2];
 		m_pCurrentEntity->latched.prevcontroller[3] = m_pCurrentEntity->curstate.controller[3];
-		
+
 		m_pPlayerInfo = IEngineStudio.PlayerInfo( m_nPlayerIndex );
 		m_pPlayerInfo->gaitsequence = 0;
 
@@ -1560,7 +1564,7 @@ void CStudioModelRenderer::StudioRenderModel( void )
 	{
 		m_pCurrentEntity->curstate.renderfx = kRenderFxNone;
 		StudioRenderFinal( );
-		
+
 		if ( !IEngineStudio.IsHardware() )
 		{
 			gEngfuncs.pTriAPI->RenderMode( kRenderTransAdd );
@@ -1594,7 +1598,7 @@ void CStudioModelRenderer::StudioRenderFinal_Software( void )
 	int i;
 
 	// Note, rendermode set here has effect in SW
-	IEngineStudio.SetupRenderer( 0 ); 
+	IEngineStudio.SetupRenderer( 0 );
 
 	if (m_pCvarDrawEntities->value == 2)
 	{
@@ -1624,7 +1628,7 @@ void CStudioModelRenderer::StudioRenderFinal_Software( void )
 	{
 		IEngineStudio.StudioDrawAbsBBox( );
 	}
-	
+
 	IEngineStudio.RestoreRenderer();
 }
 
@@ -1641,7 +1645,7 @@ void CStudioModelRenderer::StudioRenderFinal_Hardware( void )
 
 	rendermode = IEngineStudio.GetForceFaceFlags() ? kRenderTransAdd : m_pCurrentEntity->curstate.rendermode;
 	IEngineStudio.SetupRenderer( rendermode );
-	
+
 	if (m_pCvarDrawEntities->value == 2)
 	{
 		IEngineStudio.StudioDrawBones();
@@ -1659,7 +1663,7 @@ void CStudioModelRenderer::StudioRenderFinal_Hardware( void )
 			if (m_fDoInterp)
 			{
 				// interpolation messes up bounding boxes.
-				m_pCurrentEntity->trivial_accept = 0; 
+				m_pCurrentEntity->trivial_accept = 0;
 			}
 
 			IEngineStudio.GL_SetRenderMode( rendermode );
