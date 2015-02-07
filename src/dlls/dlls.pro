@@ -30,7 +30,7 @@ else:LIBS += -L$$PWD/../utils/vgui/lib/win32_vc6
 
 LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 \
 		-ladvapi32 -lshell32 -lole32 -loleaut32 \
-		-lwinmm -lwsock32 -luuid -ladvapi32
+		-lwinmm -lwsock32 -luuid
 
 HEADERS += \
 	activity.h \

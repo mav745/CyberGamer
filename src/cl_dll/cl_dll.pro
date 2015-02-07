@@ -15,6 +15,7 @@ else:DLLDESTDIR = $$PWD/../../build/valve/cl_dlls
 
 debug:DEFINES += _DEBUG _MBCS _WINDOWS WIN32 CLIENT_DLL CLIENT_WEAPONS
 else:DEFINES += NDEBUG _WINDOWS WIN32 CLIENT_DLL CLIENT_WEAPONS
+DEFINES -= UNICODE
 
 INCLUDEPATH += \
 	$$PWD/../dlls \
@@ -23,13 +24,12 @@ INCLUDEPATH += \
 	$$PWD/../engine \
 	$$PWD/../utils/vgui/include
 
-debug:LIBS += -L$$PWD/../utils/vgui/lib/win32_vc6
-else:LIBS += -L$$PWD/../utils/vgui/lib/win32_vc6
-
+LIBS += -L$$PWD/../utils/vgui/lib/win32_vc6
 LIBS += -lvgui
+
 LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 \
 		-ladvapi32 -lshell32 -lole32 -loleaut32 \
-		-lwinmm -lwsock32 -luuid -ladvapi32
+		-lwinmm -lwsock32 -luuid
 
 HEADERS += \
 	ammo.h \

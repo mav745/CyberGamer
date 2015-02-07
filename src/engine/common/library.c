@@ -23,6 +23,10 @@ GNU General Public License for more details.
 
 ---------------------------------------------------------------
 */
+#ifndef IMAGE_SIZEOF_BASE_RELOCATION
+// Vista SDKs no longer define IMAGE_SIZEOF_BASE_RELOCATION!?
+# define IMAGE_SIZEOF_BASE_RELOCATION (sizeof(IMAGE_BASE_RELOCATION))
+#endif
 
 typedef struct
 {
@@ -111,7 +115,7 @@ static void FinalizeSections( MEMORYMODULE *module )
 {
 	PIMAGE_SECTION_HEADER section = IMAGE_FIRST_SECTION( module->headers );
 	int	i;
-	
+
 	// loop through all sections and change access flags
 	for( i = 0; i < module->headers->FileHeader.NumberOfSections; i++, section++ )
 	{
@@ -144,7 +148,7 @@ static void FinalizeSections( MEMORYMODULE *module )
 		}
 
 		if( size > 0 )
-		{         
+		{
 			// change memory access flags
 			if( !VirtualProtect((LPVOID)section->Misc.PhysicalAddress, size, protect, &oldProtect ))
 				Sys_Error( "Com_FinalizeSections: error protecting memory page\n" );
@@ -175,7 +179,7 @@ static void PerformBaseRelocation( MEMORYMODULE *module, DWORD delta )
 				type = *relInfo >> 12;
 				// the lower 12 bits define the offset
 				offset = *relInfo & 0xfff;
-				
+
 				switch( type )
 				{
 				case IMAGE_REL_BASED_ABSOLUTE:
@@ -325,7 +329,7 @@ static void MemoryFreeLibrary( void *hInstance )
 	if( module != NULL )
 	{
 		int	i;
-	
+
 		if( module->initialized != 0 )
 		{
 			// notify library about detaching from process
@@ -400,7 +404,7 @@ void *MemoryLoadLibrary( const char *name )
 	{
 		// try to allocate memory at arbitrary position
 		code = (byte *)VirtualAlloc( NULL, old_header->OptionalHeader.SizeOfImage, MEM_RESERVE, PAGE_READWRITE );
-	}    
+	}
 	if( code == NULL )
 	{
 		Q_sprintf( errorstring, "%s can't reserve memory", name );
@@ -419,7 +423,7 @@ void *MemoryLoadLibrary( const char *name )
 
 	// commit memory for headers
 	headers = (byte *)VirtualAlloc( code, old_header->OptionalHeader.SizeOfHeaders, MEM_COMMIT, PAGE_READWRITE );
-	
+
 	// copy PE header to code
 	Q_memcpy( headers, dos_header, dos_header->e_lfanew + old_header->OptionalHeader.SizeOfHeaders );
 	result->headers = (PIMAGE_NT_HEADERS)&((const byte *)(headers))[dos_header->e_lfanew];
@@ -624,7 +628,7 @@ qboolean LibraryLoadSymbols( dll_user_t *hInst )
 			goto table_error;
 		}
 
-		if((( optional_header.DataDirectory[0].VirtualAddress >= section_header.VirtualAddress ) && 
+		if((( optional_header.DataDirectory[0].VirtualAddress >= section_header.VirtualAddress ) &&
 			(optional_header.DataDirectory[0].VirtualAddress < (section_header.VirtualAddress + section_header.Misc.VirtualSize))))
 		{
 			rdata_found = true;
@@ -634,7 +638,7 @@ qboolean LibraryLoadSymbols( dll_user_t *hInst )
 
 	if( rdata_found )
 	{
-		rdata_delta = section_header.VirtualAddress - section_header.PointerToRawData; 
+		rdata_delta = section_header.VirtualAddress - section_header.PointerToRawData;
 	}
 
 	exports_offset = optional_header.DataDirectory[0].VirtualAddress - rdata_delta;
@@ -768,10 +772,10 @@ void *Com_LoadLibraryExt( const char *dllname, int build_ordinals_table, qboolea
 
 	hInst = FS_FindLibrary( dllname, directpath );
 	if( !hInst ) return NULL; // nothing to load
-		
+
 	if( hInst->custom_loader )
 	{
-          	if( hInst->encrypted )
+			if( hInst->encrypted )
 		{
 			MsgDev( D_ERROR, "Sys_LoadLibrary: couldn't load encrypted library %s\n", dllname );
 			return NULL;
@@ -835,7 +839,7 @@ void Com_FreeLibrary( void *hInstance )
 		return;
 	}
 	else MsgDev( D_NOTE, "Sys_FreeLibrary: Unloading %s\n", hInst->dllName );
-	
+
 	if( hInst->custom_loader )
 		MemoryFreeLibrary( hInst->hInstance );
 	else FreeLibrary( hInst->hInstance );
