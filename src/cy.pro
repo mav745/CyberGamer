@@ -5,6 +5,5 @@ SUBDIRS += \
 	cl_dll \
 	mainui \
 	engine \
+	engine2 \
 	game
-
-game.depends = cl_dll dlls mainui engine
