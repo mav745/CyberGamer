@@ -336,9 +336,15 @@ void CL_CreateCmd( void )
 	// so don't overwrite them
 	if( !cls.demoplayback )
 	{
+//		if (cls.state == ca_active)
+//		{
+//			char txt[64];
+//			sprintf(txt,"cmd, %i - %i\n",cls.netchan.outgoing_sequence,cmd.buttons);
+//			Sys_Print(txt);
+//		} 
 		cl.refdef.cmd = &cl.cmds[cls.netchan.outgoing_sequence & CL_UPDATE_MASK];
 		*cl.refdef.cmd = cmd;
-	}
+	} 
 }
 
 void CL_WriteUsercmd( sizebuf_t *msg, int from, int to )

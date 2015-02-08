@@ -146,6 +146,7 @@ typedef struct netchan_s
 	// Sequencing variables
 	int		incoming_sequence;		// increasing count of sequence numbers               
 	int		incoming_acknowledged;	// # of last outgoing message that has been ack'd.          
+	
 	int		incoming_reliable_acknowledged;	// toggles T/F as reliable messages are received.	
 	int		incoming_reliable_sequence;	// single bit, maintained local	    
 	int		outgoing_sequence;		// message we are sending to remote              

@@ -18,6 +18,8 @@ GNU General Public License for more details.
 #include "client.h"
 #include "vgui_draw.h"
 
+
+
 #define PRINTSCREEN_ID	1
 #define WND_HEADSIZE	wnd_caption		// some offset
 #define WND_BORDER		3			// sentinel border in pixels
@@ -441,8 +443,15 @@ long IN_WndProc( void *hWnd, uint uMsg, uint wParam, long lParam )
 	qboolean	fActivate;
 
 	if( uMsg == in_mouse_wheel )
-		uMsg = WM_MOUSEWHEEL;
-
+	{
+		//Sys_Print("mouse wheel!\n");
+		uMsg = WM_MOUSEWHEEL_V;
+	}
+	if( uMsg == WM_MOUSEWHEEL )
+	{
+		//Sys_Print("new mouse wheel!\n");
+		uMsg = WM_MOUSEWHEEL_V;
+	}
 	VGUI_SurfaceWndProc( hWnd, uMsg, wParam, lParam );
 
 	switch( uMsg )
@@ -454,7 +463,7 @@ long IN_WndProc( void *hWnd, uint uMsg, uint wParam, long lParam )
 	case WM_SETCURSOR:
 		IN_ActivateCursor();
 		break;
-	case WM_MOUSEWHEEL:
+	case WM_MOUSEWHEEL_V:
 		if( !in_mouseactive ) break;
 		if(( short )HIWORD( wParam ) > 0 )
 		{

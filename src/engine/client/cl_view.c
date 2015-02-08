@@ -90,18 +90,18 @@ void V_SetupRefDef( void )
 	if( glState.wideScreen && r_adjust_fov->integer )
 		V_AdjustFov( &cl.refdef.fov_x, &cl.refdef.fov_y, cl.refdef.viewport[2], cl.refdef.viewport[3], false );
 
-	if( CL_IsPredicted( ) && !cl.refdef.demoplayback )
-	{	
+//	if( CL_IsPredicted( ) && !cl.refdef.demoplayback )
+//	{	
 		VectorCopy( cl.predicted_origin, cl.refdef.simorg );
 		VectorCopy( cl.predicted_velocity, cl.refdef.simvel );
 		VectorCopy( cl.predicted_viewofs, cl.refdef.viewheight );
-	}
-	else
-	{
-		VectorCopy( cl.frame.local.client.origin, cl.refdef.simorg );
-		VectorCopy( cl.frame.local.client.view_ofs, cl.refdef.viewheight );
-		VectorCopy( cl.frame.local.client.velocity, cl.refdef.simvel );
-	}
+//	}
+//	else
+//	{
+//		VectorCopy( cl.frame.local.client.origin, cl.refdef.simorg );
+//		VectorCopy( cl.frame.local.client.view_ofs, cl.refdef.viewheight );
+//		VectorCopy( cl.frame.local.client.velocity, cl.refdef.simvel );
+//	}
 }
 
 /*

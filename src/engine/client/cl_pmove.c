@@ -783,6 +783,7 @@ void CL_PredictMovement( void )
 	int		current_command_mod;
 	cl_entity_t	*player, *viewent;
 	clientdata_t	*cd;
+	char txt[64];
 
 	if( cls.state != ca_active ) return;
 
@@ -801,23 +802,32 @@ void CL_PredictMovement( void )
 	// unpredicted pure angled values converted into axis
 	AngleVectors( cl.refdef.cl_viewangles, cl.refdef.forward, cl.refdef.right, cl.refdef.up );
 
-	if( !CL_IsPredicted( ))
+	/*if( !CL_IsPredicted( ))
 	{	
 		// run commands even if client predicting is disabled - client expected it
 		clgame.pmove->runfuncs = true;
 		CL_PostRunCmd( cl.refdef.cmd, cls.lastoutgoingcommand );
 		return;
-	}
+	}*/
 
+//	if (cls.netchan.incoming_acknowledged != cls.netchan.incoming_acknowledged_prev)
+//		cls.netchan.last_predicted = -1;
+//	cls.netchan.incoming_acknowledged_prev = cls.netchan.incoming_acknowledged; 
 	ack = cls.netchan.incoming_acknowledged;
 	outgoing_command = cls.netchan.outgoing_sequence;
 
 	ASSERT( cl.refdef.cmd != NULL );
 
 	// setup initial pmove state
+//	sprintf(txt,"start(%i): ",outgoing_command);
+//	Sys_Print(txt);
+	
+//	sprintf(txt,"%.2f / ",cd->view_ofs[2]);
+//	Sys_Print(txt);
+	
 	CL_SetupPMove( clgame.pmove, cd, &player->curstate, cl.refdef.cmd );
 	clgame.pmove->runfuncs = false;
-
+	
 	while( 1 )
 	{
 		// we've run too far forward
@@ -828,22 +838,33 @@ void CL_PredictMovement( void )
 		current_command = ack + frame;
 		current_command_mod = current_command & CL_UPDATE_MASK;
 
+		//sprintf(txt,"current_command %i, outgoing_command %i\n",
+		//		  current_command,outgoing_command);
+		//Sys_Print(txt);
+		
 		// we've caught up to the current command.
-		if( current_command > outgoing_command )
+		if( current_command >= outgoing_command )
 			break;
-
-		clgame.pmove->cmd = cl.cmds[frame];
-
+		
+		clgame.pmove->cmd = cl.cmds[current_command_mod/*frame*/];
+		
+		//sprintf(txt,"%i,",clgame.pmove->cmd.buttons);
+		//Sys_Print(txt);
+		
 		// motor!
 		clgame.dllFuncs.pfnPlayerMove( clgame.pmove, false ); // run frames
 		clgame.pmove->runfuncs = ( current_command > outgoing_command - 1 ) ? true : false;
 
+		//sprintf(txt,"(%i)%.2f ",clgame.pmove->cmd.buttons,clgame.pmove->view_ofs[2]);
+		//Sys_Print(txt);
+		//cls.netchan.last_predicted = current_command;
 		frame++;
 	}
-
-	CL_PostRunCmd( cl.refdef.cmd, frame );
-		
+	//Sys_Print("\n");
+	CL_PostRunCmd( cl.refdef.cmd, current_command );
+	
 	// copy results out for rendering
+	//player->curstate.oldbuttons = clgame.pmove->oldbuttons;
 	VectorCopy( clgame.pmove->view_ofs, cl.predicted_viewofs );
 	VectorCopy( clgame.pmove->origin, cl.predicted_origin );
 	VectorCopy( clgame.pmove->velocity, cl.predicted_velocity );

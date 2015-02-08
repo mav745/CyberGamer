@@ -1945,7 +1945,7 @@ void PM_UnDuck( void )
 		pmove->flDuckTime = 0;
 
 		VectorCopy( newOrigin, pmove->origin );
-		pmove->Con_Printf("unduck..\n");
+		//pmove->Con_Printf("unduck..\n");
 		// Recatagorize position since ducking can change origin
 		PM_CatagorizePosition();
 	}
@@ -1999,7 +1999,7 @@ void PM_Duck( void )
 				// Use 1 second so super long jump will work
 				pmove->flDuckTime = 1000;
 				pmove->bInDuck    = true;
-				pmove->Con_Printf("ducking..\n");
+				//pmove->Con_Printf("ducking..\n");
 			}
 
 			time = max( 0.0, ( 1.0 - (float)pmove->flDuckTime / 1000.0 ) );
@@ -2034,8 +2034,11 @@ void PM_Duck( void )
 					float fMore = (VEC_DUCK_HULL_MIN - VEC_HULL_MIN);
 
 					// Calc parametric time
+					//pmove->Con_Printf("time %.2f\n",time);
 					duckFraction = PM_SplineFraction( time, (1.0/TIME_TO_DUCK) );
+					
 					pmove->view_ofs[2] = ((VEC_DUCK_VIEW - fMore ) * duckFraction) + (VEC_VIEW * (1-duckFraction));
+					
 				}
 			}
 		}
@@ -3300,6 +3303,10 @@ void PM_Move ( struct playermove_s *ppmove, int server )
 	{
 		pmove->friction = 1.0f;
 	}
+//	pmove->Con_Printf("[%i](%i)pmove->view_ofs[2] %f\n",
+//							pmove->server,
+//							pmove->runfuncs,
+//							pmove->view_ofs[2]);
 }
 
 int PM_GetVisEntInfo( int ent )

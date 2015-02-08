@@ -279,7 +279,7 @@ long VGUI_SurfaceWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	case WM_MBUTTONDBLCLK:
 		pApp->internalMouseDoublePressed( MOUSE_MIDDLE, surface );
 		break;
-	case WM_MOUSEWHEEL:
+	case WM_MOUSEWHEEL_V:
 		pApp->internalMouseWheeled(((short)HIWORD( wParam )) / 120, surface );
 		break;
 	case WM_KEYDOWN:

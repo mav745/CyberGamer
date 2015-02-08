@@ -1184,6 +1184,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 //
 		state->usehull      = ( ent->v.flags & FL_DUCKING ) ? 1 : 0;
 		state->health		= ent->v.health;
+		state->oldbuttons = ent->v.oldbuttons;
 	}
 
 	return 1;

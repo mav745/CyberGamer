@@ -147,6 +147,7 @@ void DLLEXPORT HUD_ProcessPlayerState( struct entity_state_s *dst, const struct 
 	dst->gaitsequence			= src->gaitsequence;
 	dst->spectator				= src->spectator;
 	dst->usehull				= src->usehull;
+	dst->oldbuttons			= src->oldbuttons;
 	dst->playerclass			= src->playerclass;
 	dst->team					= src->team;
 	dst->colormap				= src->colormap;
