@@ -5,5 +5,4 @@ SUBDIRS += \
 	cl_dll \
 	mainui \
 	engine \
-	engine2 \
 	game
