@@ -1,0 +1,36 @@
+// Server Lists
+//
+Titan
+{
+	half-life.east.won.net:6003
+	half-life.west.won.net:6003
+	half-life.central.won.net:6003
+}
+
+Auth
+{
+	half-life.east.won.net:7002 
+	half-life.west.won.net:7002
+	half-life.central.won.net:7002
+}
+
+Master
+{
+	half-life.east.won.net:27010 
+	half-life.west.won.net:27010
+	half-life.central.won.net:27010	
+}
+
+ModServer
+{
+	half-life.east.won.net:27011
+	half-life.west.won.net:27011
+	half-life.central.won.net:27011
+}
+
+Secure
+{
+	half-life.speakeasy-nyc.hlauth.net:27012
+	half-life.speakeasy-sea.hlauth.net:27012
+	half-life.speakeasy-chi.hlauth.net:27012
+}

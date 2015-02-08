@@ -1,0 +1,33 @@
+// These settings are saved for each player profile used 
+//  in the engine.  I.e., when the name is changed, or the
+//  engine shuts down, these settings are saved under the .cfg that
+//  is unique to the player.
+//
+// Created:  7/15/98 YWB
+//
+// Sound
+//
+hisound
+bgmvolume
+volume
+//
+// Video
+//
+viewsize
+gamma
+brightness
+vid_mode
+//
+// Game Settings
+//
+cl_forwardspeed
+sv_aim
+crosshair
+//
+// Mouse
+//
+sensitivity
+m_pitch
+lookspring
+lookstrafe
+

@@ -1,0 +1,8 @@
+You are about to download a custom game.  Downloading a custom game for use in connection with Half-Life has the same issues and risks as downloading any other program or file from the Internet.  The custom game could, among other things, contain viruses or bugs that may cause your system to crash and result in a loss of data and/or perform operations that might otherwise harm your computer.
+
+Except for custom games that are authored or sponsored by Valve or Sierra and clearly labeled as such, neither Valve nor Sierra has edited, reviewed, examined, tested, or otherwise exercised any control over the content or functionality of the custom game. Likewise, neither Valve nor Sierra has made any determination as to whether the custom game contains materials which violate the intellectual property or other rights of third parties, contains material considered offensive to some people, contains material considered unlawful in any jurisdiction, or contains material which otherwise could be considered inappropriate.  You acknowledge, by continuing with the download, that your downloading and/or use of the custom game is done at your own risk and that neither Valve nor Sierra is responsible, in any way, for the custom game, including, without limitation, your use of that game, or any loss damage of any kind that may result from your downloading and/or use of the custom game.
+
+For additional information, consult the End-User License Agreement, the Readme file, and the other materials which you received with this software.
+
+You can disable this warning by checking the "Don't show this warning again" checkbox at the bottom of this form.
+
