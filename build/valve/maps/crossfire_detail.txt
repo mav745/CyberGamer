@@ -1,0 +1,146 @@
+//HL: Detail is a project fury# and Crowbar /` started in December 2009.
+//We changed halflife.wad and linked new 24bit textures with 18 popular hldm maps.
+//These Textures aren't completely created by us.
+
+//Credit goes to:
+//-Chain Studios (Half-Life: FX Contents, http://chainstudios.hlfx.ru/index.php?do=lbmfx)
+//-Valve (Source Materials)
+//-Cred Injuries (Some Textures + Some Help, http://www.fpsbanana.com/members/790621)
+//-thedönerking (thwc2_stalky map detailtextures, http://www.fpsbanana.com/maps/37711)
+//-protostar (source materials, http://www.fpsbanana.com/textures/95)
+
+//maplist:
+
+//lost_village2,
+//rapidcore, 
+//echo, 
+//stalkx,
+//boot_camp,
+//crossfire,
+//ag_crossfire,
+//gasworks,
+//stalkyard,
+//bounce,
+//cyanidestalkyard,
+//scary_1,
+//endcamp,
+//thunderstruck,
+//doublecross,
+//rebellion,
+//datacore,
+//ag_hidden_lab
+
+//Contact: www.xen-raiders.ucoz.com
+
++0medkit			detail/+0medkit			1.0	1.0
++amedkit			detail/+amedkit			1.0	1.0
++0recharge			detail/+0recharge			1.0	1.0
++arecharge			detail/+arecharge			1.0	1.0
+
+ammo01			detail/ammo01			1.0	1.0
+ammo04			detail/ammo01			1.0	1.0
+
+babtech_ceil01		detail/dt_ssteel1			1.0	1.0
+
+-0babtech_c5		detail/snow				1.0	1.0
+-1babtech_c5		detail/snow				1.0	1.0
+-2babtech_c5		detail/snow				1.0	1.0
+-3babtech_c5		detail/snow				1.0	1.0
+
+xcrate10a			detail/xcrate10a			1.0	1.0
+xcrate10b			detail/xcrate10b			1.0	1.0
+xcrate10c			detail/xcrate10c			1.0	1.0
+xcrate10d			detail/xcrate10d			1.0	1.0
+
+c1a0_labflre		detail/snow				1.0	1.0
+
+c1a4tnnl1			detail/concretewall037b_FINAL	2.0	1.0
+c3a1_w5a			detail/concretewall037c		2.0	1.0
+
+c1a0_c1			detail/dt_metal2			4.0	2.0
+c1a1w1c			detail/dt_metal2			4.0	4.0
+
+c1a4_silo2b			detail/dt_ground4			4.0	4.0
+c1a4b_w1			detail/dettex1_dark		1.0	1.0
+c1a4i_w1b			detail/concretewall010a		1.0	1.0
+c1a4i_w1c			detail/concretewall010c		1.0	1.0
+
+c2a1_w1			detail/concretewall055b		2.0	1.0
+c2a4e_w1			detail/c2a4e_w1_cross		1.0	1.0
+
+-0c2a4e_w1			detail/c2a4e_w1_cross		1.0	1.0
+-1c2a4e_w1			detail/c2a4e_w1_cross		1.0	1.0
+-2c2a4e_w1			detail/c2a4e_w1_cross		1.0	1.0
+-3c2a4e_w1			detail/c2a4e_w1_cross		1.0	1.0
+-4c2a4e_w1			detail/c2a4e_w1_cross		1.0	1.0
+
+c3a1_w3c			detail/concretefloor028a	1.0	1.0
+c3a1_w5d			detail/concretewall054a		1.0	1.0
+
+crete2_flr03a		detail/metalfloor007a		1.0	1.0
+crete3_ceil02a		detail/metal_detail_01		1.0	1.0
+crete3_flr04		detail/metalwall014a		1.0	1.0
+crete4_flr01		detail/concretefloor026a	1.0	1.0
+crete4_stp01		detail/crete4_stp01		1.0	1.0
+
+-0crete2_flr04		detail/concretefloor023a	0.25	0.25
+-1crete2_flr04		detail/concretefloor023a	0.25	0.25
+-2crete2_flr04		detail/concretefloor023a	0.25	0.25
+-3crete2_flr04		detail/concretefloor023a	0.25	0.25
+-4crete2_flr04		detail/concretefloor023a	0.25	0.25
+
+fifties_dr5d		detail/metalwall074a		1.0	1.0
+
+-0fifties_w12		detail/wall_detail		1.0	1.0
+-1fifties_w12		detail/wall_detail		1.0	1.0
+-2fifties_w12		detail/wall_detail		1.0	1.0
+-3fifties_w12		detail/wall_detail		1.0	1.0
+
+introdr1b			detail/metal_detail_01		1.0	1.0
+
++0lab1_comp10e		detail/dt_metal2			1.0	3.0
++1lab1_comp10e		detail/dt_metal2			1.0	3.0
++2lab1_comp10e		detail/dt_metal2			1.0	3.0
+
+lab1_comp10f		detail/dt_metal2			1.0	3.0
+lab1_trim4			detail/metaltruss017a		1.0	1.0
+lab1_helpad			detail/concretefloor005a	1.0	1.0
+lab1_glu1			detail/dt_ssteel2			2.0	1.0
+
+out_roof2a			detail/forest_metal_04b		1.0	1.0
+out_wall2c			detail/silo2_brd1a_b		1.0	1.0
+out_wall7f			detail/out_wall7f_detail	1.0	1.0
+out_w6b			detail/out_w6b			1.0	1.0
+out_wlk			detail/concretefloor039b	1.0	1.0
+out_pave2			detail/concretefloor005ab	1.0	1.0
+out_pav3			detail/concretefloor005ab	1.0	1.0
+out_grnd2			detail/snow				1.0	1.0
+
+-0out_grnd3			detail/snow				1.0	1.0
+-1out_grnd3			detail/snow				1.0	1.0
+-2out_grnd3			detail/snow				1.0	1.0
+-3out_grnd3			detail/snow				1.0	1.0
+
+out_wall3b			detail/out_wall3b			1.0	1.0
+out_wall3a			detail/out_wall3a			1.0	1.0
+
+-0out_w3			detail/concretewall065a		1.0	1.0
+-1out_w3			detail/concretewall065a		1.0	1.0
+-2out_w3			detail/concretewall065a		1.0	1.0
+-3out_w3			detail/concretewall065a		1.0	1.0
+-4out_w3			detail/concretewall065a		1.0	1.0
+
+sign53a			detail/dt_plaster1		2.0	2.0
+sign87			detail/dt_plaster1		2.0	2.0
+
+silo2_wetdr			detail/cave_rk1			1.0	1.0
+silo2_brd1a			detail/silo2_brd1a		1.0	1.0
+silo2_brd1b			detail/silo2_brd1b		1.0	1.0
+
+stripes2			detail/stripes2_detail		1.0	1.0
+
+tnnl_flr8			detail/snow	1.0	1.0
+
+{grate2a			detail/metal_detail_01		1.0	1.0
+{ladder3a			detail/metal_detail_01		1.0	1.0
+{rail1			detail/metal_detail_01		1.0	1.0
