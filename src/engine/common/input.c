@@ -383,13 +383,14 @@ void Host_InputFrame( void )
 
 	Sys_SendKeyEvents ();
 
-	Cbuf_Execute ();
+	
 
 	if( host.state == HOST_RESTART )
 		host.state = HOST_FRAME; // restart is finished
 
 	if( host.type == HOST_DEDICATED )
 	{
+		Cbuf_Execute ();
 		// let the dedicated server some sleep
 		Sys_Sleep( 1 );
 	}

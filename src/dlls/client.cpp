@@ -391,6 +391,8 @@ void ClientCommand( edict_t *pEntity )
 
 	entvars_t *pev = &pEntity->v;
 
+	//ALERT(at_console,"pcmd %s",pcmd);
+	
 	if ( FStrEq(pcmd, "say" ) )
 	{
 		Host_Say( pEntity, 0 );

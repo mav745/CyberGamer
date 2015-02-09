@@ -2839,6 +2839,8 @@ void PM_CheckParamters( void )
 
 	PM_DropPunchAngle( pmove->punchangle );
 
+	
+	
 	// Take angles from command.
 	if ( !pmove->dead )
 	{

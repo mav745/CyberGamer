@@ -570,6 +570,8 @@ void CL_SendCmd( void )
 	// we create commands even if a demo is playing,
 	CL_CreateCmd();
 
+	Cbuf_Execute ();
+	
 	// clc_move, userinfo etc
 	CL_WritePacket();
 
