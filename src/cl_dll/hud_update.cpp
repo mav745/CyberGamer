@@ -36,7 +36,15 @@ int CHud::UpdateClientData(client_data_t *cdata, float time)
 	
 	m_iKeyBits = CL_ButtonBits( 0 );
 	m_iWeaponBits = cdata->iWeaponBits;
-
+//	gEngfuncs.Con_Printf("m_iWeaponBits",m_iWeaponBits);
+//	for(int i=0;i<32;i++)
+//	{
+//		if (m_iWeaponBits & (1<<i))
+//			gEngfuncs.Con_Printf("1 ");
+//		else
+//			gEngfuncs.Con_Printf("0 ");
+//	}
+//	gEngfuncs.Con_Printf("\n");
 	in_fov = cdata->fov;
 
 	Think();

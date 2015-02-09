@@ -275,7 +275,10 @@ void CL_CreateCmd( void )
 	vec3_t		angles;
 	qboolean		active;
 	int		ms;
-
+	
+	
+	
+	
 	ms = host.frametime * 1000;
 	if( ms > 250 ) ms = 100;	// time was unreasonable
 
@@ -288,13 +291,15 @@ void CL_CreateCmd( void )
 	VectorCopy( cl.frame.local.client.origin, cl.data.origin );
 	VectorCopy( cl.refdef.cl_viewangles, cl.data.viewangles );
 	cl.data.iWeaponBits = cl.frame.local.client.weapons;
+	
+	
 	cl.data.fov = cl.frame.local.client.fov;
 
 	clgame.dllFuncs.pfnUpdateClientData( &cl.data, cl.time );
 
 	// grab changes
 	VectorCopy( cl.data.viewangles, cl.refdef.cl_viewangles );
-	cl.frame.local.client.weapons = cl.data.iWeaponBits;
+	//cl.frame.local.client.weapons = cl.data.iWeaponBits;
 	cl.frame.local.client.fov = cl.data.fov;
 
 	// allways dump the first ten messages,

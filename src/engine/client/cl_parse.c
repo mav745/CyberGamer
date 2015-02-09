@@ -687,6 +687,9 @@ void CL_ParseClientData( sizebuf_t *msg )
 	clientdata_t	nullcd;
 	frame_t		*frame;
 	int		idx;
+	
+//	int wpns[32];
+//	char txt[256];
 
 	// this is the frame update that this message corresponds to
 	i = cls.netchan.incoming_sequence;
@@ -738,6 +741,17 @@ void CL_ParseClientData( sizebuf_t *msg )
 
 	MSG_ReadClientData( msg, from_cd, to_cd, cl.mtime[0] );
 
+//	for(i=0;i<32;i++) wpns[i] = !!(to_cd->weapons & (1<<i));
+//	sprintf(txt,"in weapons %i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i\n",
+//			wpns[ 0],wpns[ 1],wpns[ 2],wpns[ 3],wpns[ 4],
+//			wpns[ 5],wpns[ 6],wpns[ 7],wpns[ 8],wpns[ 9],
+//			wpns[10],wpns[11],wpns[12],wpns[13],wpns[14],
+//			wpns[15],wpns[16],wpns[17],wpns[18],wpns[19],
+//			wpns[20],wpns[21],wpns[22],wpns[23],wpns[24],
+//			wpns[25],wpns[26],wpns[27],wpns[28],wpns[29],
+//			wpns[30],wpns[31]);
+//	Sys_Print(txt);
+	
 	for( i = 0; i < MAX_WEAPONS; i++ )
 	{
 		// check for end of weapondata (and clientdata_t message)

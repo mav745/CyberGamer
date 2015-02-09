@@ -442,7 +442,9 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 	client_frame_t	*frame;
 	edict_t		*clent;
 	int		i;
-
+//	int wpns[32];
+//	char txt[256];
+	
 	Q_memset( &nullcd, 0, sizeof( nullcd ));
 
 	clent = cl->edict;
@@ -482,7 +484,7 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 
 	// update clientdata_t
 	svgame.dllFuncs.pfnUpdateClientData( clent, cl->local_weapons, &frame->clientdata );
-
+	
 	BF_WriteByte( msg, svc_clientdata );
 	if( cl->hltv_proxy ) return;	// don't send more nothing
 
@@ -502,7 +504,7 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 
 	// write clientdata_t
 	MSG_WriteClientData( msg, from_cd, to_cd, sv.time );
-
+	
 	if( cl->local_weapons && svgame.dllFuncs.pfnGetWeaponData( clent, frame->weapondata ))
 	{
 		Q_memset( &nullwd, 0, sizeof( nullwd ));
@@ -519,6 +521,17 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 
 	// end marker
 	BF_WriteOneBit( msg, 0 );
+	
+//	for(i=0;i<32;i++) wpns[i] = !!(to_cd->weapons & (1<<i));
+//	sprintf(txt,"out.n weapons %i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i\n",
+//			wpns[ 0],wpns[ 1],wpns[ 2],wpns[ 3],wpns[ 4],
+//			wpns[ 5],wpns[ 6],wpns[ 7],wpns[ 8],wpns[ 9],
+//			wpns[10],wpns[11],wpns[12],wpns[13],wpns[14],
+//			wpns[15],wpns[16],wpns[17],wpns[18],wpns[19],
+//			wpns[20],wpns[21],wpns[22],wpns[23],wpns[24],
+//			wpns[25],wpns[26],wpns[27],wpns[28],wpns[29],
+//			wpns[30],wpns[31]);
+//	Sys_Print(txt);
 }
 
 /*

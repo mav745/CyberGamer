@@ -355,14 +355,18 @@ void CHudAmmo::Think(void)
 	{
 		gWR.iOldWeaponBits = gHUD.m_iWeaponBits;
 
-int i;		for ( i = MAX_WEAPONS-1; i > 0; i-- )
+		int i;		
+		for ( i = MAX_WEAPONS-1; i > 0; i-- )
 		{
 			WEAPON *p = gWR.GetWeapon(i);
 
 			if ( p )
 			{
 				if ( gHUD.m_iWeaponBits & ( 1 << p->iId ) )
+				{
+					
 					gWR.PickupWeapon( p );
+				}
 				else
 					gWR.DropWeapon( p );
 			}
@@ -662,6 +666,7 @@ int CHudAmmo::MsgFunc_WeaponList(const char *pszName, int iSize, void *pbuf )
 	Weapon.iFlags = READ_BYTE();
 	Weapon.iClip = 0;
 
+	
 	gWR.AddWeapon( &Weapon );
 
 	return 1;

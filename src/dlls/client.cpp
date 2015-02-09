@@ -1585,6 +1585,8 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 	cd->waterlevel		= ent->v.waterlevel;
 	cd->watertype		= ent->v.watertype;
 	cd->weapons			= ent->v.weapons;
+	
+	
 
 	// Vectors
 	cd->origin			= ent->v.origin;
