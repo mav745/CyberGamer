@@ -25,7 +25,7 @@
 // fall over
 #define	ROLL	2 
 
-#pragma warning(disable : 4244)
+//#pragma warning(disable : 4244)
 
 vec3_t vec3_origin = {0,0,0};
 int nanmask = 255<<23;

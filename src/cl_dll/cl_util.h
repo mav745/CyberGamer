@@ -146,7 +146,7 @@ void VectorInverse ( float *v );
 extern vec3_t vec3_origin;
 
 // disable 'possible loss of data converting float to int' warning message
-#pragma warning( disable: 4244 )
+//#pragma warning( disable: 4244 )
 // disable 'truncation from 'const double' to 'float' warning message
 #pragma warning( disable: 4305 )
 

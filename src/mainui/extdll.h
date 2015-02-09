@@ -21,7 +21,7 @@ GNU General Public License for more details.
 #pragma warning(disable : 4201)	// nameless struct/union
 #pragma warning(disable : 4514)	// unreferenced inline function removed
 #pragma warning(disable : 4100)	// unreferenced formal parameter
-#pragma warning(disable : 4244)	// conversion from 'float' to 'int', possible loss of data
+//#pragma warning(disable : 4244)	// conversion from 'float' to 'int', possible loss of data
 
 #include "windows.h"
 

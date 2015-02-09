@@ -27,7 +27,7 @@
 #include "screenfade.h"
 
 
-#pragma warning(disable: 4244)
+//#pragma warning(disable: 4244)
 
 extern "C" int		iJumpSpectator;
 extern "C" float	vJumpOrigin[3];

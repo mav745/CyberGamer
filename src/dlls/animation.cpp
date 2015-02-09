@@ -57,7 +57,7 @@ typedef unsigned char byte;
 
 extern globalvars_t				*gpGlobals;
 
-#pragma warning( disable : 4244 )
+//#pragma warning( disable : 4244 )
 
 
 

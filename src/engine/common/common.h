@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 // disable some warnings
-#pragma warning(disable : 4244)	// MIPS
+//#pragma warning(disable : 4244)	// MIPS
 #pragma warning(disable : 4018)	// signed/unsigned mismatch
 #pragma warning(disable : 4305)	// truncation from const double to float
 #pragma warning(disable : 4115)	// named type definition in parentheses

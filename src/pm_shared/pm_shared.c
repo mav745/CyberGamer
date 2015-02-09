@@ -115,7 +115,7 @@ typedef struct hull_s
 #define PLAYER_LONGJUMP_SPEED 350 // how fast we longjump
 
 // double to float warning
-#pragma warning(disable : 4244)
+//#pragma warning(disable : 4244)
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
 // up / down
