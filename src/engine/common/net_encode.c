@@ -1017,8 +1017,8 @@ qboolean Delta_CompareField( delta_t *pField, void *from, void *to, float timeba
 
 		fromF = Delta_ClampIntegerField( fromF, bSigned, pField->bits );
 		toF = Delta_ClampIntegerField( toF, bSigned, pField->bits );
-		fromF *= /*(uint)*/pField->multiplier;
-		toF *= /*(uint)*/pField->multiplier;
+		fromF *= (uint)pField->multiplier;
+		toF *= (uint)pField->multiplier;
 	}
 	else if( pField->flags & DT_SHORT )
 	{
@@ -1035,8 +1035,8 @@ qboolean Delta_CompareField( delta_t *pField, void *from, void *to, float timeba
 
 		fromF = Delta_ClampIntegerField( fromF, bSigned, pField->bits );
 		toF = Delta_ClampIntegerField( toF, bSigned, pField->bits );
-		fromF *= /*(uint)*/pField->multiplier;
-		toF *= /*(uint)*/pField->multiplier;
+		fromF *= (uint)pField->multiplier;
+		toF *= (uint)pField->multiplier;
 	}
 	else if( pField->flags & DT_INTEGER )
 	{
@@ -1053,8 +1053,8 @@ qboolean Delta_CompareField( delta_t *pField, void *from, void *to, float timeba
 
 		fromF = Delta_ClampIntegerField( fromF, bSigned, pField->bits );
 		toF = Delta_ClampIntegerField( toF, bSigned, pField->bits );
-		fromF *= /*(uint)*/pField->multiplier;
-		toF *= /*(uint)*/pField->multiplier;
+		fromF *= (uint)pField->multiplier;
+		toF *= (uint)pField->multiplier;
 	}
 	else if( pField->flags & ( DT_FLOAT|DT_ANGLE ))
 	{
@@ -1120,21 +1120,21 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 	{
 		iValue = *(byte *)((byte *)to + pField->offset );
 		iValue = Delta_ClampIntegerField( iValue, bSigned, pField->bits );
-		iValue *=/*(uint)*/pField->multiplier;
+		iValue *=(uint)pField->multiplier;
 		BF_WriteBitLong( msg, iValue, pField->bits, bSigned );
 	}
 	else if( pField->flags & DT_SHORT )
 	{
 		iValue = *(word *)((byte *)to + pField->offset );
 		iValue = Delta_ClampIntegerField( iValue, bSigned, pField->bits );
-		iValue *= /*(uint)*/pField->multiplier;
+		iValue *= (uint)pField->multiplier;
 		BF_WriteBitLong( msg, iValue, pField->bits, bSigned );
 	}
 	else if( pField->flags & DT_INTEGER )
 	{
 		iValue = *(uint *)((byte *)to + pField->offset );
 		iValue = Delta_ClampIntegerField( iValue, bSigned, pField->bits );
-		iValue *= /*(uint)*/pField->multiplier;
+		iValue *= (uint)pField->multiplier;
 		//Sys_Print(pField->name);
 		//Sys_Print("\n");
 //		if (!strcmp(pField->name,"weapons"))
@@ -1221,7 +1221,7 @@ qboolean Delta_ReadField( sizebuf_t *msg, delta_t *pField, void *from, void *to,
 		if( bChanged )
 		{
 			iValue = BF_ReadBitLong( msg, pField->bits, bSigned );
-			iValue /= /*(uint)*/pField->multiplier;
+			iValue /= (uint)pField->multiplier;
 		}
 		else
 		{
@@ -1234,7 +1234,7 @@ qboolean Delta_ReadField( sizebuf_t *msg, delta_t *pField, void *from, void *to,
 		if( bChanged )
 		{
 			iValue = BF_ReadBitLong( msg, pField->bits, bSigned );
-			iValue /= /*(uint)*/pField->multiplier;
+			iValue /= (uint)pField->multiplier;
 		}
 		else
 		{
@@ -1247,7 +1247,7 @@ qboolean Delta_ReadField( sizebuf_t *msg, delta_t *pField, void *from, void *to,
 		if( bChanged )
 		{
 			iValue = BF_ReadBitLong( msg, pField->bits, bSigned );
-			iValue /= /*(uint)*/pField->multiplier;
+			iValue /= (uint)pField->multiplier;
 		}
 		else
 		{
