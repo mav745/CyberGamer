@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -29,7 +29,7 @@
 extern playermove_t *pmove;
 
 // Expand debugging BBOX particle hulls by this many units.
-#define BOX_GAP 0.0f               
+#define BOX_GAP 0.0f
 
 static int PM_boxpnt[6][4] =
 {
@@ -39,7 +39,7 @@ static int PM_boxpnt[6][4] =
 	{ 7, 5, 1, 3 }, // -X
 	{ 7, 3, 2, 6 }, // -Y
 	{ 7, 6, 4, 5 }, // -Z
-};	
+};
 
 void PM_ShowClipBox( void )
 {
@@ -82,7 +82,7 @@ void PM_ShowClipBox( void )
 		{
 			if ( pmove->physents[ i ].info >= 1 && pmove->physents[ i ].info <= 4 )
 			{
-			 	PM_DrawBBox( pmove->player_mins[pmove->usehull], pmove->player_maxs[pmove->usehull], pmove->physents[i].origin, 132, 0.1 );
+				PM_DrawBBox( pmove->player_mins[pmove->usehull], pmove->player_maxs[pmove->usehull], pmove->physents[i].origin, 132, 0.1 );
 			}
 		}
 	}
@@ -107,7 +107,7 @@ void PM_ParticleLine(vec3_t start, vec3_t end, int pcolor, float life, float ver
 	// Determine distance;
 
 	VectorSubtract(end, start, diff);
-	
+
 	len = VectorNormalize(diff);
 
 	curdist = 0;
@@ -115,8 +115,8 @@ void PM_ParticleLine(vec3_t start, vec3_t end, int pcolor, float life, float ver
 	{
 		for (i = 0; i < 3; i++)
 			curpos[i] = start[i] + curdist * diff[i];
-		
-		pmove->PM_Particle( curpos, pcolor, life, 0, vert);
+
+		pmove->PM_Particle( curpos, pcolor, life, 0, (int)vert);
 		curdist += linestep;
 	}
 
@@ -235,7 +235,7 @@ PM_DrawBBox(vec3_t mins, vec3_t maxs, vec3_t origin, int pcolor, float life)
 void PM_DrawBBox(vec3_t mins, vec3_t maxs, vec3_t origin, int pcolor, float life)
 {
 	int j;
-	
+
 	vec3_t tmp;
 	vec3_t		p[8];
 	float gap = BOX_GAP;
@@ -294,7 +294,7 @@ void PM_ViewEntity( void )
 
 	VectorCopy( pmove->origin, origin);
 
-	fup = 0.5*( pmove->player_mins[pmove->usehull][2] + pmove->player_maxs[pmove->usehull][2] );
+	fup = 0.5f*( pmove->player_mins[pmove->usehull][2] + pmove->player_maxs[pmove->usehull][2] );
 	fup += pmove->view_ofs[2];
 	fup -= 4;
 
@@ -309,7 +309,7 @@ void PM_ViewEntity( void )
 	{
 		pcolor = 111;
 	}
-	
+
 	// Draw the hull or bbox.
 	if (trace.ent > 0)
 	{
