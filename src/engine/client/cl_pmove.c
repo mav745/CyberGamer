@@ -789,8 +789,26 @@ void CL_PredictMovement( void )
 
 	if( cls.demoplayback && cl.refdef.cmd != NULL )
 	{
+		int i;
+		float f = 0.3f, a, b;
+		
 		// restore viewangles from cmd.angles
-		VectorCopy( cl.refdef.cmd->viewangles, cl.refdef.cl_viewangles );
+		for(i=0;i<3;i++)
+		{
+//			a = fmod(cl.refdef.cmd->viewangles[i],360.f);
+//			b = fmod(cl.refdef.cl_viewangles[i]  ,360.f);
+//			if (a > 180.f) a -= 360.f; if (a <= -180.f) a += 360.f;
+//			if (b > 180.f) b -= 360.f; if (b <= -180.f) b += 360.f;
+//			cl.refdef.cl_viewangles[i] += (a - b)*f;
+			
+			a = 360.f - cl.refdef.cmd->viewangles[i] + cl.refdef.cl_viewangles[i];
+			a = fmod(a,360.f);
+			if(a < 0.f) a += 360.f;
+			b = 360.f - a;
+			if (a < b) cl.refdef.cl_viewangles[i] -= a*f;
+			else cl.refdef.cl_viewangles[i] += b*f;
+		}
+		//VectorCopy( cl.refdef.cmd->viewangles, cl.refdef.cl_viewangles );
 	}
 
 	if( cl.refdef.paused || cls.key_dest == key_menu ) return;
@@ -866,7 +884,9 @@ void CL_PredictMovement( void )
 
 	// copy results out for rendering
 	//player->curstate.oldbuttons = clgame.pmove->oldbuttons;
-	VectorCopy( clgame.pmove->view_ofs, cl.predicted_viewofs );
-	VectorCopy( clgame.pmove->origin, cl.predicted_origin );
-	VectorCopy( clgame.pmove->velocity, cl.predicted_velocity );
+	
+	VectorCopy( clgame.pmove->punchangle,cl.predicted_punchangle);
+	VectorCopy( clgame.pmove->view_ofs,  cl.predicted_viewofs   );
+	VectorCopy( clgame.pmove->origin  ,  cl.predicted_origin    );
+	VectorCopy( clgame.pmove->velocity,  cl.predicted_velocity  );
 }

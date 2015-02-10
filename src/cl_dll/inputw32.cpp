@@ -379,6 +379,11 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 		}
 	}
 
+	for(int i=0;i<3;i++)
+	{
+		while(viewangles[i] >  180.f) viewangles[i] -= 360.f;
+		while(viewangles[i] < -180.f) viewangles[i] += 360.f;
+	}
 	gEngfuncs.SetViewAngles( (float *)viewangles );
 
 /*
