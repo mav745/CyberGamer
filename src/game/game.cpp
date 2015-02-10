@@ -17,6 +17,9 @@ GNU General Public License for more details.
 
 #define GAME_PATH	"valve"	// default dir to start from
 
+#pragma warning(disable : 4100)
+#pragma warning(disable : 4996)
+
 typedef void (*pfnChangeGame)( const char *progname );
 typedef int (*pfnInit)( const char *progname, int bChangeGame, pfnChangeGame func );
 typedef void (*pfnShutdown)( void );
@@ -62,7 +65,7 @@ void Sys_ChangeGame( const char *progname )
 
 	Sys_UnloadEngine ();
 	Sys_LoadEngine ();
-	
+
 	Host_Main( szGameDir, TRUE, ( Host_Shutdown != NULL ) ? Sys_ChangeGame : NULL );
 }
 
