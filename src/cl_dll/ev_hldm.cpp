@@ -894,7 +894,7 @@ void EV_FireGauss( event_args_t *args )
 
 	}
 
-	gEngfuncs.pEventAPI->EV_PlaySound( idx, origin, CHAN_WEAPON, "weapons/gauss2.wav", 0.5 + flDamage * (1.0 / 400.0), ATTN_NORM, 0, 85 + gEngfuncs.pfnRandomLong( 0, 0x1f ) );
+	gEngfuncs.pEventAPI->EV_PlaySound( idx, origin, CHAN_WEAPON, "weapons/gauss2.wav", 0.5f + flDamage * (1.0f / 400.0f), ATTN_NORM, 0, 85 + gEngfuncs.pfnRandomLong( 0, 0x1f ) );
 
 	while (flDamage > 10 && nMaxHits > 0)
 	{
@@ -929,16 +929,16 @@ void EV_FireGauss( event_args_t *args )
 				idx | 0x1000,
 				tr.endpos,
 				m_iBeam,
-				0.1,
-				m_fPrimaryFire ? 1.0 : 2.5,
-				0.0,
-				m_fPrimaryFire ? 128.0 : flDamage,
+				0.1f,
+				m_fPrimaryFire ? 1.0f : 2.5f,
+				0.0f,
+				m_fPrimaryFire ? 128.0f : flDamage,
+				0.f,
 				0,
-				0,
-				0,
-				m_fPrimaryFire ? 255 : 255,
-				m_fPrimaryFire ? 128 : 255,
-				m_fPrimaryFire ? 0 : 255
+				0.f,
+				m_fPrimaryFire ? 255.f : 255.f,
+				m_fPrimaryFire ? 128.f : 255.f,
+				m_fPrimaryFire ? 0.f : 255.f
 			);
 		}
 		else
@@ -946,16 +946,16 @@ void EV_FireGauss( event_args_t *args )
 			gEngfuncs.pEfxAPI->R_BeamPoints( vecSrc,
 				tr.endpos,
 				m_iBeam,
-				0.1,
-				m_fPrimaryFire ? 1.0 : 2.5,
-				0.0,
-				m_fPrimaryFire ? 128.0 : flDamage,
+				0.1f,
+				m_fPrimaryFire ? 1.0f : 2.5f,
+				0.0f,
+				m_fPrimaryFire ? 128.0f : flDamage,
+				0.f,
 				0,
-				0,
-				0,
-				m_fPrimaryFire ? 255 : 255,
-				m_fPrimaryFire ? 128 : 255,
-				m_fPrimaryFire ? 0 : 255
+				0.f,
+				m_fPrimaryFire ? 255.f : 255.f,
+				m_fPrimaryFire ? 128.f : 255.f,
+				m_fPrimaryFire ? 0.f : 255.f
 			);
 		}
 
@@ -977,27 +977,27 @@ void EV_FireGauss( event_args_t *args )
 				// reflect
 				vec3_t r;
 
-				VectorMA( forward, 2.0 * n, tr.plane.normal, r );
+				VectorMA( forward, 2.0f * n, tr.plane.normal, r );
 
 				flMaxFrac = flMaxFrac - tr.fraction;
 
 				VectorCopy( r, forward );
 
-				VectorMA( tr.endpos, 8.0, forward, vecSrc );
-				VectorMA( vecSrc, 8192.0, forward, vecDest );
+				VectorMA( tr.endpos, 8.0f, forward, vecSrc );
+				VectorMA( vecSrc, 8192.0f, forward, vecDest );
 
-				gEngfuncs.pEfxAPI->R_TempSprite( tr.endpos, vec3_origin, 0.2, m_iGlow, kRenderGlow, kRenderFxNoDissipation, flDamage * n / 255.0, flDamage * n * 0.5 * 0.1, FTENT_FADEOUT );
+				gEngfuncs.pEfxAPI->R_TempSprite( tr.endpos, vec3_origin, 0.2f, m_iGlow, kRenderGlow, kRenderFxNoDissipation, flDamage * n / 255.0f, flDamage * n * 0.5f * 0.1f, FTENT_FADEOUT );
 
 				vec3_t fwd;
 				VectorAdd( tr.endpos, tr.plane.normal, fwd );
 
-				gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, tr.endpos, fwd, m_iBalls, 3, 0.1, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0, 100,
+				gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, tr.endpos, fwd, m_iBalls, 3, 0.1f, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0f, 100,
 									255, 100 );
 
 				// lose energy
 				if ( n == 0 )
 				{
-					n = 0.1;
+					n = 0.1f;
 				}
 
 				flDamage = flDamage * (1 - n);
@@ -1008,7 +1008,7 @@ void EV_FireGauss( event_args_t *args )
 				// tunnel
 				EV_HLDM_DecalGunshot( &tr, BULLET_MONSTER_12MM );
 
-				gEngfuncs.pEfxAPI->R_TempSprite( tr.endpos, vec3_origin, 1.0, m_iGlow, kRenderGlow, kRenderFxNoDissipation, flDamage / 255.0, 6.0, FTENT_FADEOUT );
+				gEngfuncs.pEfxAPI->R_TempSprite( tr.endpos, vec3_origin, 1.0f, m_iGlow, kRenderGlow, kRenderFxNoDissipation, flDamage / 255.0f, 6.0f, FTENT_FADEOUT );
 
 				// limit it to one hole punch
 				if (fHasPunched)
@@ -1056,7 +1056,7 @@ void EV_FireGauss( event_args_t *args )
 							{
 								vec3_t fwd;
 								VectorSubtract( tr.endpos, forward, fwd );
-								gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, tr.endpos, fwd, m_iBalls, 3, 0.1, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0, 100,
+								gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, tr.endpos, fwd, m_iBalls, 3, 0.1f, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0f, 100,
 									255, 100 );
 							}
 
@@ -1065,13 +1065,13 @@ void EV_FireGauss( event_args_t *args )
 
 							EV_HLDM_DecalGunshot( &beam_tr, BULLET_MONSTER_12MM );
 
-							gEngfuncs.pEfxAPI->R_TempSprite( beam_tr.endpos, vec3_origin, 0.1, m_iGlow, kRenderGlow, kRenderFxNoDissipation, flDamage / 255.0, 6.0, FTENT_FADEOUT );
+							gEngfuncs.pEfxAPI->R_TempSprite( beam_tr.endpos, vec3_origin, 0.1, m_iGlow, kRenderGlow, kRenderFxNoDissipation, flDamage / 255.0f, 6.0f, FTENT_FADEOUT );
 
 							// balls
 							{
 								vec3_t fwd;
 								VectorSubtract( beam_tr.endpos, forward, fwd );
-								gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, beam_tr.endpos, fwd, m_iBalls, (int)(flDamage * 0.3), 0.1, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0, 200,
+								gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, beam_tr.endpos, fwd, m_iBalls, (int)(flDamage * 0.3f), 0.1f, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0f, 200,
 									255, 40 );
 							}
 
@@ -1096,7 +1096,7 @@ void EV_FireGauss( event_args_t *args )
 						{
 							vec3_t fwd;
 							VectorAdd( tr.endpos, tr.plane.normal, fwd );
-							gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, tr.endpos, fwd, m_iBalls, 8, 0.6, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0, 100,
+							gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, tr.endpos, fwd, m_iBalls, 8, 0.6f, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0f, 100,
 								255, 200 );
 						}
 					}
@@ -1526,7 +1526,7 @@ void EV_HornetGunFire( event_args_t *args )
 	//Only play the weapon anims if I shot it.
 	if ( EV_IsLocal( idx ) )
 	{
-		V_PunchAxis( 0, gEngfuncs.pfnRandomLong ( 0, 2 ) );
+		V_PunchAxis( 0, reinterpret_cast<float>(gEngfuncs.pfnRandomLong ( 0, 2 )) );
 		gEngfuncs.pEventAPI->EV_WeaponAnimation ( HGUN_SHOOT, 1 );
 	}
 
@@ -1667,7 +1667,7 @@ void EV_TrainPitchAdjust( event_args_t *args )
 	us_params = (unsigned short)args->iparam1;
 	stop	  = args->bparam1;
 
-	m_flVolume	= (float)(us_params & 0x003f)/40.0;
+	m_flVolume	= (float)(us_params & 0x003f)/40.0f;
 	noise		= (int)(((us_params) >> 12 ) & 0x0007);
 	pitch		= (int)( 10.0 * (float)( ( us_params >> 6 ) & 0x003f ) );
 

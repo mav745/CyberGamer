@@ -534,7 +534,7 @@ int CHud::MsgFunc_Logo(const char *pszName,  int iSize, void *pbuf)
 	return 1;
 }
 
-float g_lastFOV = 0.0;
+float g_lastFOV = 0.0f;
 
 /*
 ============
@@ -633,13 +633,13 @@ int CHud::MsgFunc_SetFOV(const char *pszName,  int iSize, void *pbuf)
 	BEGIN_READ( pbuf, iSize );
 
 	int newfov = READ_BYTE();
-	int def_fov = CVAR_GET_FLOAT( "default_fov" );
+	int def_fov = reinterpret_cast<int>(CVAR_GET_FLOAT( "default_fov" ));
 
 	//Weapon prediction already takes care of changing the fog. ( g_lastFOV ).
 	if ( cl_lw && cl_lw->value )
 		return 1;
 
-	g_lastFOV = newfov;
+	g_lastFOV = reinterpret_cast<float>(newfov);
 
 	if ( newfov == 0 )
 	{

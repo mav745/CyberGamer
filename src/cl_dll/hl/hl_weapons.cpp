@@ -508,7 +508,7 @@ void UTIL_ParticleBox( CBasePlayer *player, float *mins, float *maxs, float life
 		mmax[ i ] = player->pev->origin[ i ] + maxs[ i ];
 	}
 
-	gEngfuncs.pEfxAPI->R_ParticleBox( (float *)&mmin, (float *)&mmax, 5.0, 0, 255, 0 );
+	gEngfuncs.pEfxAPI->R_ParticleBox( (float *)&mmin, (float *)&mmax, 5, 0, 255, 0 );
 }
 
 /*
@@ -695,7 +695,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	HUD_InitClientWeapons();
 
 	// Get current clock
-	gpGlobals->time = time;
+	gpGlobals->time = static_cast<float>(time);
 
 	// Fill in data based on selected weapon
 	// FIXME, make this a method in each weapon?  where you pass in an entity_state_t *?
@@ -777,7 +777,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 			player.Spawn();
 		}
 
-		lasthealth = to->client.health;
+		lasthealth = static_cast<int>(to->client.health);
 	}
 
 	// We are not predicting the current weapon, just bow out here.
@@ -920,20 +920,20 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	to->client.maxspeed					= player.pev->maxspeed;
 
 	//HL Weapons
-	to->client.vuser1[0]				= player.ammo_9mm;
-	to->client.vuser1[1]				= player.ammo_357;
-	to->client.vuser1[2]				= player.ammo_argrens;
+	to->client.vuser1[0]				= static_cast<float>(player.ammo_9mm);
+	to->client.vuser1[1]				= static_cast<float>(player.ammo_357);
+	to->client.vuser1[2]				= static_cast<float>(player.ammo_argrens);
 
 	to->client.ammo_nails				= player.ammo_bolts;
 	to->client.ammo_shells				= player.ammo_buckshot;
 	to->client.ammo_cells				= player.ammo_uranium;
-	to->client.vuser2[0]				= player.ammo_hornets;
+	to->client.vuser2[0]				= static_cast<float>(player.ammo_hornets);
 	to->client.ammo_rockets				= player.ammo_rockets;
 
 	if ( player.m_pActiveItem->m_iId == WEAPON_RPG )
 	{
-		 from->client.vuser2[ 1 ] = ( ( CRpg * )player.m_pActiveItem)->m_fSpotActive;
-		 from->client.vuser2[ 2 ] = ( ( CRpg * )player.m_pActiveItem)->m_cActiveRockets;
+		 from->client.vuser2[ 1 ] = static_cast<float>( dynamic_cast<CRpg *>(player.m_pActiveItem)->m_fSpotActive );
+		 from->client.vuser2[ 2 ] = static_cast<float>( dynamic_cast<CRpg *>(player.m_pActiveItem)->m_cActiveRockets );
 	}
 
 	// Make sure that weapon animation matches what the game .dll is telling us
@@ -981,17 +981,17 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 		pto->iuser3						= pCurrent->m_fireState;
 
 		// Decrement weapon counters, server does this at same time ( during post think, after doing everything else )
-		pto->m_flNextReload				-= cmd->msec / 1000.0;
-		pto->m_fNextAimBonus			-= cmd->msec / 1000.0;
-		pto->m_flNextPrimaryAttack		-= cmd->msec / 1000.0;
-		pto->m_flNextSecondaryAttack	-= cmd->msec / 1000.0;
-		pto->m_flTimeWeaponIdle			-= cmd->msec / 1000.0;
-		pto->fuser1						-= cmd->msec / 1000.0;
+		pto->m_flNextReload				-= static_cast<float>(cmd->msec) / 1000.0f;
+		pto->m_fNextAimBonus			-= static_cast<float>(cmd->msec) / 1000.0f;
+		pto->m_flNextPrimaryAttack		-= static_cast<float>(cmd->msec) / 1000.0f;
+		pto->m_flNextSecondaryAttack	-= static_cast<float>(cmd->msec) / 1000.0f;
+		pto->m_flTimeWeaponIdle			-= static_cast<float>(cmd->msec) / 1000.0f;
+		pto->fuser1						-= static_cast<float>(cmd->msec) / 1000.0f;
 
-		to->client.vuser3[2]				= pCurrent->m_iSecondaryAmmoType;
-		to->client.vuser4[0]				= pCurrent->m_iPrimaryAmmoType;
-		to->client.vuser4[1]				= player.m_rgAmmo[ pCurrent->m_iPrimaryAmmoType ];
-		to->client.vuser4[2]				= player.m_rgAmmo[ pCurrent->m_iSecondaryAmmoType ];
+		to->client.vuser3[2]				= static_cast<float>(pCurrent->m_iSecondaryAmmoType);
+		to->client.vuser4[0]				= static_cast<float>(pCurrent->m_iPrimaryAmmoType);
+		to->client.vuser4[1]				= static_cast<float>(player.m_rgAmmo[ pCurrent->m_iPrimaryAmmoType ]);
+		to->client.vuser4[2]				= static_cast<float>(player.m_rgAmmo[ pCurrent->m_iSecondaryAmmoType ]);
 
 /*		if ( pto->m_flPumpTime != -9999 )
 		{
@@ -1000,54 +1000,54 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 				pto->m_flPumpTime = -0.001;
 		}*/
 
-		if ( pto->m_fNextAimBonus < -1.0 )
+		if ( pto->m_fNextAimBonus < -1.0f )
 		{
-			pto->m_fNextAimBonus = -1.0;
+			pto->m_fNextAimBonus = -1.0f;
 		}
 
-		if ( pto->m_flNextPrimaryAttack < -1.0 )
+		if ( pto->m_flNextPrimaryAttack < -1.0f )
 		{
-			pto->m_flNextPrimaryAttack = -1.0;
+			pto->m_flNextPrimaryAttack = -1.0f;
 		}
 
-		if ( pto->m_flNextSecondaryAttack < -0.001 )
+		if ( pto->m_flNextSecondaryAttack < -0.001f )
 		{
-			pto->m_flNextSecondaryAttack = -0.001;
+			pto->m_flNextSecondaryAttack = -0.001f;
 		}
 
-		if ( pto->m_flTimeWeaponIdle < -0.001 )
+		if ( pto->m_flTimeWeaponIdle < -0.001f )
 		{
-			pto->m_flTimeWeaponIdle = -0.001;
+			pto->m_flTimeWeaponIdle = -0.001f;
 		}
 
-		if ( pto->m_flNextReload < -0.001 )
+		if ( pto->m_flNextReload < -0.001f )
 		{
-			pto->m_flNextReload = -0.001;
+			pto->m_flNextReload = -0.001f;
 		}
 
-		if ( pto->fuser1 < -0.001 )
+		if ( pto->fuser1 < -0.001f )
 		{
-			pto->fuser1 = -0.001;
+			pto->fuser1 = -0.001f;
 		}
 	}
 
 	// m_flNextAttack is now part of the weapons, but is part of the player instead
-	to->client.m_flNextAttack -= cmd->msec / 1000.0;
-	if ( to->client.m_flNextAttack < -0.001 )
+	to->client.m_flNextAttack -= static_cast<float>(cmd->msec) / 1000.0f;
+	if ( to->client.m_flNextAttack < -0.001f )
 	{
-		to->client.m_flNextAttack = -0.001;
+		to->client.m_flNextAttack = -0.001f;
 	}
 
-	to->client.fuser2 -= cmd->msec / 1000.0;
-	if ( to->client.fuser2 < -0.001 )
+	to->client.fuser2 -= static_cast<float>(cmd->msec) / 1000.0f;
+	if ( to->client.fuser2 < -0.001f )
 	{
-		to->client.fuser2 = -0.001;
+		to->client.fuser2 = -0.001f;
 	}
 
-	to->client.fuser3 -= cmd->msec / 1000.0;
-	if ( to->client.fuser3 < -0.001 )
+	to->client.fuser3 -= static_cast<float>(cmd->msec) / 1000.0f;
+	if ( to->client.fuser3 < -0.001f )
 	{
-		to->client.fuser3 = -0.001;
+		to->client.fuser3 = -0.001f;
 	}
 
 	// Store off the last position from the predicted state.

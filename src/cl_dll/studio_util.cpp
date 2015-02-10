@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -22,16 +22,16 @@ void AngleMatrix (const float *angles, float (*matrix)[4] )
 {
 	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
-	
-	angle = angles[YAW] * (M_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
-	angle = angles[PITCH] * (M_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
-	angle = angles[ROLL] * (M_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+
+	angle = static_cast<float>(angles[YAW] * M_PI*2 / 360);
+	sy = sinf(angle);
+	cy = cosf(angle);
+	angle = static_cast<float>(angles[PITCH] * M_PI*2 / 360);
+	sp = sinf(angle);
+	cp = cosf(angle);
+	angle = static_cast<float>(angles[ROLL] * M_PI*2 / 360);
+	sr = sinf(angle);
+	cr = cosf(angle);
 
 	// matrix = (YAW * PITCH) * ROLL
 	matrix[0][0] = cp*cy;
@@ -43,9 +43,9 @@ void AngleMatrix (const float *angles, float (*matrix)[4] )
 	matrix[0][2] = (cr*sp*cy+-sr*-sy);
 	matrix[1][2] = (cr*sp*sy+-sr*cy);
 	matrix[2][2] = cr*cp;
-	matrix[0][3] = 0.0;
-	matrix[1][3] = 0.0;
-	matrix[2][3] = 0.0;
+	matrix[0][3] = 0.0f;
+	matrix[1][3] = 0.0f;
+	matrix[2][3] = 0.0f;
 }
 
 /*
@@ -57,11 +57,11 @@ VectorCompare
 int VectorCompare (const float *v1, const float *v2)
 {
 	int		i;
-	
+
 	for (i=0 ; i<3 ; i++)
 		if (v1[i] != v2[i])
 			return 0;
-			
+
 	return 1;
 }
 
@@ -139,15 +139,15 @@ void AngleQuaternion( float *angles, vec4_t quaternion )
 	float		sr, sp, sy, cr, cp, cy;
 
 	// FIXME: rescale the inputs to 1/2 angle
-	angle = angles[2] * 0.5;
-	sy = sin(angle);
-	cy = cos(angle);
-	angle = angles[1] * 0.5;
-	sp = sin(angle);
-	cp = cos(angle);
-	angle = angles[0] * 0.5;
-	sr = sin(angle);
-	cr = cos(angle);
+	angle = angles[2] * 0.5f;
+	sy = sinf(angle);
+	cy = cosf(angle);
+	angle = angles[1] * 0.5f;
+	sp = sinf(angle);
+	cp = cosf(angle);
+	angle = angles[0] * 0.5f;
+	sr = sinf(angle);
+	cr = cosf(angle);
 
 	quaternion[0] = sr*cp*cy-cr*sp*sy; // X
 	quaternion[1] = cr*sp*cy+sr*cp*sy; // Y
@@ -185,18 +185,18 @@ void QuaternionSlerp( vec4_t p, vec4_t q, float t, vec4_t qt )
 
 	cosom = p[0]*q[0] + p[1]*q[1] + p[2]*q[2] + p[3]*q[3];
 
-	if ((1.0 + cosom) > 0.000001)
+	if ((1.0f + cosom) > 0.000001f)
 	{
-		if ((1.0 - cosom) > 0.000001)
+		if ((1.0f - cosom) > 0.000001f)
 		{
-			omega = acos( cosom );
-			sinom = sin( omega );
-			sclp = sin( (1.0 - t)*omega) / sinom;
-			sclq = sin( t*omega ) / sinom;
+			omega = acosf( cosom );
+			sinom = sinf( omega );
+			sclp = sinf( (1.0f - t)*omega) / sinom;
+			sclq = sinf( t*omega ) / sinom;
 		}
 		else
 		{
-			sclp = 1.0 - t;
+			sclp = 1.0f - t;
 			sclq = t;
 		}
 		for (i = 0; i < 4; i++) {
@@ -209,8 +209,8 @@ void QuaternionSlerp( vec4_t p, vec4_t q, float t, vec4_t qt )
 		qt[1] = q[0];
 		qt[2] = -q[3];
 		qt[3] = q[2];
-		sclp = sin( (1.0 - t) * (0.5 * M_PI));
-		sclq = sin( t * (0.5 * M_PI));
+		sclp = static_cast<float>(sin( (1.0 - t) * 0.5 * M_PI));
+		sclq = static_cast<float>(sin( t * 0.5 * M_PI));
 		for (i = 0; i < 3; i++)
 		{
 			qt[i] = sclp * p[i] + sclq * qt[i];
@@ -226,17 +226,17 @@ QuaternionMatrix
 */
 void QuaternionMatrix( vec4_t quaternion, float (*matrix)[4] )
 {
-	matrix[0][0] = 1.0 - 2.0 * quaternion[1] * quaternion[1] - 2.0 * quaternion[2] * quaternion[2];
-	matrix[1][0] = 2.0 * quaternion[0] * quaternion[1] + 2.0 * quaternion[3] * quaternion[2];
-	matrix[2][0] = 2.0 * quaternion[0] * quaternion[2] - 2.0 * quaternion[3] * quaternion[1];
+	matrix[0][0] = 1.0f - 2.0f * quaternion[1] * quaternion[1] - 2.0f * quaternion[2] * quaternion[2];
+	matrix[1][0] = 2.0f * quaternion[0] * quaternion[1] + 2.0f * quaternion[3] * quaternion[2];
+	matrix[2][0] = 2.0f * quaternion[0] * quaternion[2] - 2.0f * quaternion[3] * quaternion[1];
 
-	matrix[0][1] = 2.0 * quaternion[0] * quaternion[1] - 2.0 * quaternion[3] * quaternion[2];
-	matrix[1][1] = 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[2] * quaternion[2];
-	matrix[2][1] = 2.0 * quaternion[1] * quaternion[2] + 2.0 * quaternion[3] * quaternion[0];
+	matrix[0][1] = 2.0f * quaternion[0] * quaternion[1] - 2.0f * quaternion[3] * quaternion[2];
+	matrix[1][1] = 1.0f - 2.0f * quaternion[0] * quaternion[0] - 2.0f * quaternion[2] * quaternion[2];
+	matrix[2][1] = 2.0f * quaternion[1] * quaternion[2] + 2.0f * quaternion[3] * quaternion[0];
 
-	matrix[0][2] = 2.0 * quaternion[0] * quaternion[2] + 2.0 * quaternion[3] * quaternion[1];
-	matrix[1][2] = 2.0 * quaternion[1] * quaternion[2] - 2.0 * quaternion[3] * quaternion[0];
-	matrix[2][2] = 1.0 - 2.0 * quaternion[0] * quaternion[0] - 2.0 * quaternion[1] * quaternion[1];
+	matrix[0][2] = 2.0f * quaternion[0] * quaternion[2] + 2.0f * quaternion[3] * quaternion[1];
+	matrix[1][2] = 2.0f * quaternion[1] * quaternion[2] - 2.0f * quaternion[3] * quaternion[0];
+	matrix[2][2] = 1.0f - 2.0f * quaternion[0] * quaternion[0] - 2.0f * quaternion[1] * quaternion[1];
 }
 
 /*

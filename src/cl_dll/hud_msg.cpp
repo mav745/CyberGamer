@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -90,7 +90,7 @@ int CHud :: MsgFunc_Damage(const char *pszName, int iSize, void *pbuf )
 	Vector	from;
 	int		i;
 	float	count;
-	
+
 	BEGIN_READ( pbuf, iSize );
 	armor = READ_BYTE();
 	blood = READ_BYTE();
@@ -98,7 +98,7 @@ int CHud :: MsgFunc_Damage(const char *pszName, int iSize, void *pbuf )
 	for (i=0 ; i<3 ; i++)
 		from[i] = READ_COORD();
 
-	count = (blood * 0.5) + (armor * 0.5);
+	count = static_cast<float>(blood+armor*0.5f);//(blood * 0.5f) + (armor * 0.5f);
 
 	if (count < 10)
 		count = 10;

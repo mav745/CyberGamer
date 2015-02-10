@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -241,7 +241,7 @@ int i;	for (  i = 0; i < MAX_DEATHNOTICES; i++ )
 
 	rgDeathNoticeList[i].iId = spr;
 
-	DEATHNOTICE_DISPLAY_TIME = CVAR_GET_FLOAT( "hud_deathnotice_time" );
+	DEATHNOTICE_DISPLAY_TIME = static_cast<int>(CVAR_GET_FLOAT( "hud_deathnotice_time" ));
 	rgDeathNoticeList[i].flDisplayTime = gHUD.m_flTime + DEATHNOTICE_DISPLAY_TIME;
 
 	if (rgDeathNoticeList[i].iNonPlayerKill)

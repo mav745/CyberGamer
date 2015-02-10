@@ -183,27 +183,19 @@ float V_CalcBob ( struct ref_params_s *pparams )
 	vec3_t	vel;
 
 
-	if ( pparams->onground == -1 ||
-		 pparams->time == lasttime )
-	{
-		// just use old value
-		return bob;
-	}
+	if ( pparams->onground == -1 || pparams->time == lasttime )
+		return bob; // just use old value
 
 	lasttime = pparams->time;
 
 	bobtime += pparams->frametime;
-	cycle = bobtime - (int)( bobtime / cl_bobcycle->value ) * cl_bobcycle->value;
+	cycle = static_cast<float>(bobtime - floor( bobtime / cl_bobcycle->value ) * cl_bobcycle->value);
 	cycle /= cl_bobcycle->value;
 
 	if ( cycle < cl_bobup->value )
-	{
-		cycle = M_PI * cycle / cl_bobup->value;
-	}
+		cycle = static_cast<float>(M_PI * cycle / cl_bobup->value);
 	else
-	{
-		cycle = M_PI + M_PI * ( cycle - cl_bobup->value )/( 1.0 - cl_bobup->value );
-	}
+		cycle = static_cast<float>(M_PI + M_PI * ( cycle - cl_bobup->value )/( 1.0 - cl_bobup->value ));
 
 	// bob is proportional to simulated velocity in the xy plane
 	// (don't count Z, or jumping messes it up)
@@ -211,11 +203,10 @@ float V_CalcBob ( struct ref_params_s *pparams )
 	vel[2] = 0;
 
 	bob = sqrt( vel[0] * vel[0] + vel[1] * vel[1] ) * cl_bob->value;
-	bob = bob * 0.3 + bob * 0.7 * sin(cycle);
+	bob = bob * 0.3f + bob * 0.7f * sinf(cycle);
 	bob = min( bob, 4 );
 	bob = max( bob, -7 );
 	return bob;
-
 }
 
 /*
@@ -234,7 +225,7 @@ float V_CalcRoll (vec3_t angles, vec3_t velocity, float rollangle, float rollspe
 	AngleVectors ( angles, forward, right, up );
 
 	side = DotProduct (velocity, right);
-	sign = side < 0 ? -1 : 1;
+	sign = side < 0 ? -1.f : 1.f;
 	side = fabs( side );
 
 	value = rollangle;
@@ -368,11 +359,11 @@ void V_CalcGunAngle ( struct ref_params_s *pparams )
 		return;
 
 	viewent->angles[YAW]   =  pparams->viewangles[YAW]   + pparams->crosshairangle[YAW];
-	viewent->angles[PITCH] = -pparams->viewangles[PITCH] + pparams->crosshairangle[PITCH] * 0.25;
+	viewent->angles[PITCH] = -pparams->viewangles[PITCH] + pparams->crosshairangle[PITCH] * 0.25f;
 	viewent->angles[ROLL]  -= v_idlescale * sin(pparams->time*v_iroll_cycle.value) * v_iroll_level.value;
 
 	// don't apply all of the v_ipitch to prevent normally unseen parts of viewmodel from coming into view.
-	viewent->angles[PITCH] -= v_idlescale * sin(pparams->time*v_ipitch_cycle.value) * (v_ipitch_level.value * 0.5);
+	viewent->angles[PITCH] -= v_idlescale * sin(pparams->time*v_ipitch_cycle.value) * (v_ipitch_level.value * 0.5f);
 	viewent->angles[YAW]   -= v_idlescale * sin(pparams->time*v_iyaw_cycle.value) * v_iyaw_level.value;
 
 	VectorCopy( viewent->angles, viewent->curstate.angles );
@@ -547,7 +538,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	{
 		int		i, contents, waterDist, waterEntity;
 		vec3_t	point;
-		waterDist = cl_waterdist->value;
+		waterDist = static_cast<int>(cl_waterdist->value);
 
 		if ( pparams->hardware )
 		{
@@ -557,7 +548,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 				pwater = gEngfuncs.GetEntityByIndex( waterEntity );
 				if ( pwater && ( pwater->model != NULL ) )
 				{
-					waterDist += ( pwater->curstate.scale * 16 );	// Add in wave height
+					waterDist += static_cast<int>( pwater->curstate.scale * 16 );	// Add in wave height
 				}
 			}
 		}
@@ -649,18 +640,18 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	VectorAdd( view->origin, pparams->viewheight, view->origin );
 
 	// Let the viewmodel shake at about 10% of the amplitude
-	gEngfuncs.V_ApplyShake( view->origin, view->angles, 0.9 );
+	gEngfuncs.V_ApplyShake( view->origin, view->angles, 0.9f );
 
 	for ( i = 0; i < 3; i++ )
 	{
-		view->origin[ i ] += bob * 0.4 * pparams->forward[ i ];
+		view->origin[ i ] += bob * 0.4f * pparams->forward[ i ];
 	}
 	view->origin[2] += bob;
 
 	// throw in a little tilt.
-	view->angles[YAW]   -= bob * 0.5;
-	view->angles[ROLL]  -= bob * 1;
-	view->angles[PITCH] -= bob * 0.3;
+	view->angles[YAW]   -= bob * 0.5f;
+	view->angles[ROLL]  -= bob * 1.f;
+	view->angles[PITCH] -= bob * 0.3f;
 
 	// pushing the view origin down off of the same X/Z plane as the ent's origin will give the
 	// gun a very nice 'shifting' effect when the player looks up/down. If there is a problem
@@ -771,7 +762,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 				frac = ( t - ViewInterp.OriginTime[ foundidx & ORIGIN_MASK] ) / dt;
 				frac = min( 1.0, frac );
 				VectorSubtract( ViewInterp.Origins[ ( foundidx + 1 ) & ORIGIN_MASK ], ViewInterp.Origins[ foundidx & ORIGIN_MASK ], delta );
-				VectorMA( ViewInterp.Origins[ foundidx & ORIGIN_MASK ], frac, delta, neworg );
+				VectorMA( ViewInterp.Origins[ foundidx & ORIGIN_MASK ], static_cast<float>(frac), delta, neworg );
 
 				// Dont interpolate large changes
 				if ( Length( delta ) < 64 )
@@ -1650,8 +1641,8 @@ void V_DropPunchAngle ( float frametime, float *ev_punchangle )
 	float	len;
 
 	len = VectorNormalize ( ev_punchangle );
-	len -= (10.0 + len * 0.5) * frametime;
-	len = max( len, 0.0 );
+	len -= (10.0f + len * 0.5f) * frametime;
+	len = max( len, 0.0f );
 	VectorScale ( ev_punchangle, len, ev_punchangle );
 }
 

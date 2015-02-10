@@ -167,7 +167,7 @@ private:
 #include "health.h"
 
 
-#define FADE_TIME 100
+#define FADE_TIME 100.f
 
 
 //

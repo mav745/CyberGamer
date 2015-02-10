@@ -61,12 +61,12 @@ void VectorAngles( const float *forward, float *angles )
 	}
 	else
 	{
-		yaw = (atan2(forward[1], forward[0]) * 180 / M_PI);
+		yaw = static_cast<float>(atan2(forward[1], forward[0]) * 180. / M_PI);
 		if (yaw < 0)
 			yaw += 360;
 
-		tmp = sqrt (forward[0]*forward[0] + forward[1]*forward[1]);
-		pitch = (atan2(forward[2], tmp) * 180 / M_PI);
+		tmp = sqrtf (forward[0]*forward[0] + forward[1]*forward[1]);
+		pitch = static_cast<float>(atan2(forward[2], tmp) * 180. / M_PI);
 		if (pitch < 0)
 			pitch += 360;
 	}

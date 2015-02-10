@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -26,7 +26,7 @@
 // Set this to 1 to show mouse cursor.  Experimental
 int	g_iVisibleMouse = 0;
 
-extern "C" 
+extern "C"
 {
 	void DLLEXPORT IN_ActivateMouse( void );
 	void DLLEXPORT IN_DeactivateMouse( void );
@@ -156,7 +156,7 @@ void Force_CenterView_f (void)
 	if (!iMouseInUse)
 	{
 		gEngfuncs.GetViewAngles( (float *)viewangles );
-	    viewangles[PITCH] = 0;
+		viewangles[PITCH] = 0;
 		gEngfuncs.SetViewAngles( (float *)viewangles );
 	}
 }
@@ -199,24 +199,24 @@ IN_StartupMouse
 */
 void IN_StartupMouse (void)
 {
-	if ( gEngfuncs.CheckParm ("-nomouse", NULL ) ) 
-		return; 
+	if ( gEngfuncs.CheckParm ("-nomouse", NULL ) )
+		return;
 
 	mouseinitialized = 1;
 	mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
 
 	if (mouseparmsvalid)
 	{
-		if ( gEngfuncs.CheckParm ("-noforcemspd", NULL ) ) 
+		if ( gEngfuncs.CheckParm ("-noforcemspd", NULL ) )
 			newmouseparms[2] = originalmouseparms[2];
 
-		if ( gEngfuncs.CheckParm ("-noforcemaccel", NULL ) ) 
+		if ( gEngfuncs.CheckParm ("-noforcemaccel", NULL ) )
 		{
 			newmouseparms[0] = originalmouseparms[0];
 			newmouseparms[1] = originalmouseparms[1];
 		}
 
-		if ( gEngfuncs.CheckParm ("-noforcemparms", NULL ) ) 
+		if ( gEngfuncs.CheckParm ("-noforcemparms", NULL ) )
 		{
 			newmouseparms[0] = originalmouseparms[0];
 			newmouseparms[1] = originalmouseparms[1];
@@ -258,7 +258,7 @@ FIXME: Call through to engine?
 */
 void IN_ResetMouse( void )
 {
-	SetCursorPos ( gEngfuncs.GetWindowCenterX(), gEngfuncs.GetWindowCenterY() );	
+	SetCursorPos ( gEngfuncs.GetWindowCenterX(), gEngfuncs.GetWindowCenterY() );
 }
 
 /*
@@ -287,8 +287,8 @@ void DLLEXPORT IN_MouseEvent (int mstate)
 		{
 			gEngfuncs.Key_Event (K_MOUSE1 + i, 0);
 		}
-	}	
-	
+	}
+
 	mouse_oldbuttonstate = mstate;
 }
 
@@ -309,7 +309,7 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 		V_StopPitchDrift ();
 	}
 
-	//jjb - this disbles normal mouse control if the user is trying to 
+	//jjb - this disbles normal mouse control if the user is trying to
 	//      move the camera, or if the mouse cursor is visible or if we're in intermission
 	if ( !iMouseInUse && !g_iVisibleMouse && !gHUD.m_iIntermission )
 	{
@@ -323,8 +323,8 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 
 		if (m_filter->value)
 		{
-			mouse_x = (mx + old_mouse_x) * 0.5;
-			mouse_y = (my + old_mouse_y) * 0.5;
+			mouse_x = static_cast<int>((mx + old_mouse_x) * 0.5f);
+			mouse_y = static_cast<int>((my + old_mouse_y) * 0.5f);
 		}
 		else
 		{
@@ -337,13 +337,13 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 
 		if ( gHUD.GetSensitivity() != 0 )
 		{
-			mouse_x *= gHUD.GetSensitivity();
-			mouse_y *= gHUD.GetSensitivity();
+			mouse_x = static_cast<int>(mouse_x*gHUD.GetSensitivity());
+			mouse_y = static_cast<int>(mouse_y*gHUD.GetSensitivity());
 		}
 		else
 		{
-			mouse_x *= sensitivity->value;
-			mouse_y *= sensitivity->value;
+			mouse_x = static_cast<int>(mouse_x*sensitivity->value);
+			mouse_y = static_cast<int>(mouse_y*sensitivity->value);
 		}
 
 		// add mouse X/Y movement to cmd
@@ -404,8 +404,8 @@ void DLLEXPORT IN_Accumulate (void)
 	//only accumulate mouse if we are not moving the camera with the mouse
 	if ( !iMouseInUse && !g_iVisibleMouse )
 	{
-	    if (mouseactive)
-	    {
+		if (mouseactive)
+		{
 			GetCursorPos (&current_pos);
 
 			mx_accum += current_pos.x - gEngfuncs.GetWindowCenterX();
@@ -433,24 +433,24 @@ void DLLEXPORT IN_ClearStates (void)
 	mouse_oldbuttonstate = 0;
 }
 
-/* 
-=============== 
-IN_StartupJoystick 
-=============== 
-*/  
-void IN_StartupJoystick (void) 
-{ 
+/*
+===============
+IN_StartupJoystick
+===============
+*/
+void IN_StartupJoystick (void)
+{
 	int			numdevs;
 	JOYCAPS		jc;
 	MMRESULT	mmr;
- 
- 	// assume no joystick
-	joy_avail = 0; 
+
+	// assume no joystick
+	joy_avail = 0;
 
 	// abort startup if user requests no joystick
-	if ( gEngfuncs.CheckParm ("-nojoy", NULL ) ) 
-		return; 
- 
+	if ( gEngfuncs.CheckParm ("-nojoy", NULL ) )
+		return;
+
 	// verify joystick driver is present
 	if ((numdevs = joyGetNumDevs ()) == 0)
 	{
@@ -467,7 +467,7 @@ void IN_StartupJoystick (void)
 
 		if ((mmr = joyGetPosEx (joy_id, &ji)) == JOYERR_NOERROR)
 			break;
-	} 
+	}
 
 	// abort startup if we didn't find a valid joystick
 	if (mmr != JOYERR_NOERROR)
@@ -481,7 +481,7 @@ void IN_StartupJoystick (void)
 	memset (&jc, 0, sizeof(jc));
 	if ((mmr = joyGetDevCaps (joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
 	{
-		gEngfuncs.Con_DPrintf ("joystick not found -- invalid joystick capabilities (%x)\n\n", mmr); 
+		gEngfuncs.Con_DPrintf ("joystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
 		return;
 	}
 
@@ -494,8 +494,8 @@ void IN_StartupJoystick (void)
 
 	// mark the joystick as available and advanced initialization not completed
 	// this is needed as cvars are not available during initialization
-	gEngfuncs.Con_Printf ("joystick found\n\n", mmr); 
-	joy_avail = 1; 
+	gEngfuncs.Con_Printf ("joystick found\n\n", mmr);
+	joy_avail = 1;
 	joy_advancedinit = 0;
 }
 
@@ -614,7 +614,7 @@ void IN_Commands (void)
 		return;
 	}
 
-	
+
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
 	buttonstate = ji.dwButtons;
@@ -669,11 +669,11 @@ void IN_Commands (void)
 }
 
 
-/* 
-=============== 
+/*
+===============
 IN_ReadJoystick
-=============== 
-*/  
+===============
+*/
 int IN_ReadJoystick (void)
 {
 
@@ -730,9 +730,9 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 	// verify joystick is available and that the user wants to use it
 	if (!joy_avail || !in_joystick->value)
 	{
-		return; 
+		return;
 	}
- 
+
 	// collect the joystick data, if possible
 	if (IN_ReadJoystick () != 1)
 	{
@@ -762,25 +762,25 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 				// y=ax^b; where a = 300 and b = 1.3
 				// also x values are in increments of 800 (so this is factored out)
 				// then bounds check result to level out excessively high spin rates
-				fTemp = 300.0 * pow(abs(fAxisValue) / 800.0, 1.3);
-				if (fTemp > 14000.0)
-					fTemp = 14000.0;
+				fTemp = 300.0f * powf(fabsf(fAxisValue) / 800.0f, 1.3);
+				if (fTemp > 14000.0f)
+					fTemp = 14000.0f;
 				// restore direction information
-				fAxisValue = (fAxisValue > 0.0) ? fTemp : -fTemp;
+				fAxisValue = (fAxisValue > 0.0f) ? fTemp : -fTemp;
 			}
 		}
 
-		// convert range from -32768..32767 to -1..1 
-		fAxisValue /= 32768.0;
+		// convert range from -32768..32767 to -1..1
+		fAxisValue /= 32768.0f;
 
 		switch (dwAxisMap[i])
 		{
 		case AxisForward:
-			if ((joy_advanced->value == 0.0) && (in_jlook.state & 1))
+			if ((joy_advanced->value == 0.0f) && (in_jlook.state & 1))
 			{
 				// user wants forward control to become look control
 				if (fabs(fAxisValue) > joy_pitchthreshold->value)
-				{		
+				{
 					// if mouse invert is on, invert the joystick pitch value
 					// only absolute control support here (joy_advanced is 0)
 					if (m_pitch->value < 0.0)
@@ -842,7 +842,7 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 					}
 					else
 					{
-						viewangles[YAW] += (fAxisValue * joy_yawsensitivity->value) * speed * 180.0;
+						viewangles[YAW] += (fAxisValue * joy_yawsensitivity->value) * speed * 180.0f;
 					}
 
 				}
@@ -861,7 +861,7 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 					}
 					else
 					{
-						viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity->value) * speed * 180.0;
+						viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity->value) * speed * 180.0f;
 					}
 					V_StopPitchDrift();
 				}

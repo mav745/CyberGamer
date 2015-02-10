@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -36,14 +36,14 @@ DECLARE_MESSAGE(m_Health, Damage )
 
 int giDmgHeight, giDmgWidth;
 
-int giDmgFlags[NUM_DMG_TYPES] = 
+int giDmgFlags[NUM_DMG_TYPES] =
 {
 	DMG_POISON,
 	DMG_ACID,
 	DMG_FREEZE|DMG_SLOWFREEZE,
 	DMG_DROWN,
 	DMG_BURN|DMG_SLOWBURN,
-	DMG_NERVEGAS, 
+	DMG_NERVEGAS,
 	DMG_RADIATION,
 	DMG_SHOCK,
 	DMG_CALTROP,
@@ -164,7 +164,7 @@ void CHudHealth::GetPainColor( int &r, int &g, int &b )
 		g = 0;
 		b = 0;
 	}
-#endif 
+#endif
 }
 
 int CHudHealth::Draw(float flTime)
@@ -178,11 +178,11 @@ int CHudHealth::Draw(float flTime)
 
 	if ( !m_hSprite )
 		m_hSprite = LoadSprite(PAIN_NAME);
-	
+
 	// Has health changed? Flash the health #
 	if (m_fFade)
 	{
-		m_fFade -= (gHUD.m_flTimeDelta * 20);
+		m_fFade -= static_cast<float>(gHUD.m_flTimeDelta * 20.);
 		if (m_fFade <= 0)
 		{
 			a = MIN_ALPHA;
@@ -191,7 +191,7 @@ int CHudHealth::Draw(float flTime)
 
 		// Fade the health number back to dim
 
-		a = MIN_ALPHA +  (m_fFade/FADE_TIME) * 128;
+		a = static_cast<int>(MIN_ALPHA +  (m_fFade/FADE_TIME) * 128.f);
 
 	}
 	else
@@ -200,7 +200,7 @@ int CHudHealth::Draw(float flTime)
 	// If health is getting low, make it bright red
 	if (m_iHealth <= 15)
 		a = 255;
-		
+
 	GetPainColor( r, g, b );
 	ScaleColors(r, g, b, a );
 
@@ -262,7 +262,7 @@ void CHudHealth::CalcDamageDirection(vec3_t vecFrom)
 	{
 		m_fAttackFront = m_fAttackRear = m_fAttackRight = m_fAttackLeft = 1;
 	}
-	else 
+	else
 	{
 		if (side > 0)
 		{
@@ -301,13 +301,13 @@ int CHudHealth::DrawPain(float flTime)
 	// TODO:  get the shift value of the health
 	a = 255;	// max brightness until then
 
-	float fFade = gHUD.m_flTimeDelta * 2;
-	
+	float fFade = static_cast<float>(gHUD.m_flTimeDelta * 2.);
+
 	// SPR_Draw top
 	if (m_fAttackFront > 0.4)
 	{
 		GetPainColor(r,g,b);
-		shade = a * max( m_fAttackFront, 0.5 );
+		shade = static_cast<int>(a * max( m_fAttackFront, 0.5f ));
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
 
@@ -321,7 +321,7 @@ int CHudHealth::DrawPain(float flTime)
 	if (m_fAttackRight > 0.4)
 	{
 		GetPainColor(r,g,b);
-		shade = a * max( m_fAttackRight, 0.5 );
+		shade = static_cast<int>(a * max( m_fAttackRight, 0.5f ));
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
 
@@ -335,7 +335,7 @@ int CHudHealth::DrawPain(float flTime)
 	if (m_fAttackRear > 0.4)
 	{
 		GetPainColor(r,g,b);
-		shade = a * max( m_fAttackRear, 0.5 );
+		shade = static_cast<int>(a * max( m_fAttackRear, 0.5f ));
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
 
@@ -349,7 +349,7 @@ int CHudHealth::DrawPain(float flTime)
 	if (m_fAttackLeft > 0.4)
 	{
 		GetPainColor(r,g,b);
-		shade = a * max( m_fAttackLeft, 0.5 );
+		shade = static_cast<int>(a * max( m_fAttackLeft, 0.5f ));
 		ScaleColors(r, g, b, shade);
 		SPR_Set(m_hSprite, r, g, b );
 
@@ -373,7 +373,7 @@ int CHudHealth::DrawDamage(float flTime)
 		return 1;
 
 	UnpackRGB(r,g,b, RGB_YELLOWISH);
-	
+
 	a = (int)( fabs(sin(flTime*2)) * 256.0);
 
 	ScaleColors(r, g, b, a);
@@ -423,15 +423,15 @@ int j;			for ( j = 0; j < NUM_DMG_TYPES; j++)
 
 	return 1;
 }
- 
+
 
 void CHudHealth::UpdateTiles(float flTime, long bitsDamage)
-{	
+{
 	DAMAGE_IMAGE *pdmg;
 
 	// Which types are new?
 	long bitsOn = ~m_bitsDamage & bitsDamage;
-	
+
 int i;	for ( i = 0; i < NUM_DMG_TYPES; i++)
 	{
 		pdmg = &m_dmg[i];
@@ -451,7 +451,7 @@ int i;	for ( i = 0; i < NUM_DMG_TYPES; i++)
 			pdmg->x = giDmgWidth/8;
 			pdmg->y = ScreenHeight - giDmgHeight * 2;
 			pdmg->fExpire=flTime + DMG_IMAGE_LIFE;
-			
+
 			// move everyone else up
 int j;		for ( j = 0; j < NUM_DMG_TYPES; j++)
 			{
@@ -464,8 +464,8 @@ int j;		for ( j = 0; j < NUM_DMG_TYPES; j++)
 
 			}
 			pdmg = &m_dmg[i];
-		}	
-	}	
+		}
+	}
 
 	// damage bits are only turned on here;  they are turned off when the draw time has expired (in DrawDamage())
 	m_bitsDamage |= bitsDamage;

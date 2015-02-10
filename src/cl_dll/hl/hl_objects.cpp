@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -37,7 +37,7 @@ void UpdateBeams ( void )
 	pmtrace_t tr;
 	cl_entity_t *pthisplayer = gEngfuncs.GetLocalPlayer();
 	int idx = pthisplayer->index;
-		
+
 	// Get our exact viewangles from engine
 	gEngfuncs.GetViewAngles( (float *)angles );
 
@@ -47,16 +47,16 @@ void UpdateBeams ( void )
 	AngleVectors( angles, forward, right, up );
 
 	VectorCopy( origin, vecSrc );
-	
+
 	VectorMA( vecSrc, 2048, forward, vecEnd );
 
-	gEngfuncs.pEventAPI->EV_SetUpPlayerPrediction( false, true );	
-						
+	gEngfuncs.pEventAPI->EV_SetUpPlayerPrediction( false, true );
+
 	// Store off the old count
 	gEngfuncs.pEventAPI->EV_PushPMStates();
-					
+
 	// Now add in all of the players.
-	gEngfuncs.pEventAPI->EV_SetSolidPlayers ( idx - 1 );	
+	gEngfuncs.pEventAPI->EV_SetSolidPlayers ( idx - 1 );
 
 	gEngfuncs.pEventAPI->EV_SetTraceHull( 2 );
 	gEngfuncs.pEventAPI->EV_PlayerTrace( vecSrc, vecEnd, PM_STUDIO_BOX, -1, &tr );
@@ -66,13 +66,13 @@ void UpdateBeams ( void )
 	if ( pBeam )
 	{
 		pBeam->target = tr.endpos;
-		pBeam->die	  = gEngfuncs.GetClientTime() + 0.1; // We keep it alive just a little bit forward in the future, just in case.
+		pBeam->die	  = gEngfuncs.GetClientTime() + 0.1f; // We keep it alive just a little bit forward in the future, just in case.
 	}
-		
+
 	if ( pBeam2 )
 	{
 		pBeam2->target = tr.endpos;
-		pBeam2->die	   = gEngfuncs.GetClientTime() + 0.1; // We keep it alive just a little bit forward in the future, just in case.
+		pBeam2->die	   = gEngfuncs.GetClientTime() + 0.1f; // We keep it alive just a little bit forward in the future, just in case.
 	}
 }
 

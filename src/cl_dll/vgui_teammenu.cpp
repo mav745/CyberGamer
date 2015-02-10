@@ -44,7 +44,7 @@
 #define TEAMMENU_WINDOW_TEXT_SIZE_Y		YRES(178)
 #define TEAMMENU_WINDOW_INFO_X			XRES(16)
 #define TEAMMENU_WINDOW_INFO_Y			YRES(234)
-      
+
 // Creation
 CTeamMenuPanel::CTeamMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide,int tall) : CMenuPanel(iTrans, iRemoveMe, x,y,wide,tall)
 {
@@ -74,11 +74,11 @@ CTeamMenuPanel::CTeamMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide,i
 	// Create the Info Window
 	m_pTeamWindow  = new CTransparentPanel( 255, TEAMMENU_WINDOW_X, TEAMMENU_WINDOW_Y, TEAMMENU_WINDOW_SIZE_X, TEAMMENU_WINDOW_SIZE_Y );
 	m_pTeamWindow->setParent( this );
-	m_pTeamWindow->setBorder( new LineBorder( Color(255*0.7,170*0.7,0,0 )) );
+	m_pTeamWindow->setBorder( new LineBorder( Color(static_cast<int>(255*0.7f),static_cast<int>(170*0.7f),0,0 )) );
 
 	// Create the Map Name Label
 	m_pMapTitle = new Label( "", TEAMMENU_WINDOW_TITLE_X, TEAMMENU_WINDOW_TITLE_Y );
-	m_pMapTitle->setFont( pTitleFont ); 
+	m_pMapTitle->setFont( pTitleFont );
 	m_pMapTitle->setParent( m_pTeamWindow );
 	pSchemes->getFgColor( hTitleScheme, r, g, b, a );
 	m_pMapTitle->setFgColor( r, g, b, a );
@@ -101,11 +101,11 @@ CTeamMenuPanel::CTeamMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide,i
 	m_pBriefing->setBgColor( r, g, b, a );
 
 	m_pBriefing->setText( gHUD.m_TextMessage.BufferedLocaliseTextString("#Map_Description_not_available") );
-	
+
 	// Team Menu buttons
 int i;	for ( i = 1; i <= 5; i++)
 	{
-		char sz[256]; 
+		char sz[256];
 
 		int iYPos = TEAMMENU_TOPLEFT_BUTTON_Y + ( (TEAMMENU_BUTTON_SIZE_Y + TEAMMENU_BUTTON_SPACER_Y) * i );
 
@@ -181,7 +181,7 @@ int i;	for ( i = 1; i <= 4; i++)
 				m_pButtons[i]->setText( gViewPort->GetTeamName(i) );
 
 				// bound key replacement
-				char sz[32]; 
+				char sz[32];
 				sprintf( sz, "%d", i );
 				m_pButtons[i]->setBoundKey( sz[0] );
 
@@ -217,7 +217,7 @@ int i;	for ( i = 1; i <= 4; i++)
 				if (iTotal > 0)
 				{
 					// Set the text of the info Panel
-					char szText[ ((MAX_PLAYER_NAME_LENGTH + 3) * 31) + 256 ]; 
+					char szText[ ((MAX_PLAYER_NAME_LENGTH + 3) * 31) + 256 ];
 					if (iTotal == 1)
 						sprintf(szText, "%s: %d Player (%d points)", gViewPort->GetTeamName(i), iTotal, g_TeamInfo[i].frags );
 					else
@@ -255,7 +255,7 @@ int i;	for ( i = 1; i <= 4; i++)
 		m_pSpectateButton->setVisible( true );
 		iYPos += TEAMMENU_BUTTON_SIZE_Y + TEAMMENU_BUTTON_SPACER_Y;
 	}
-	
+
 	// If the player is already in a team, make the cancel button visible
 	if ( g_iTeamNumber )
 	{
@@ -274,8 +274,8 @@ int i;	for ( i = 1; i <= 4; i++)
 		const char *level = gEngfuncs.pfnGetLevelName();
 		if (level && level[0])
 		{
-			char sz[256]; 
-			char szTitle[256]; 
+			char sz[256];
+			char szTitle[256];
 			char *ch;
 
 			// Update the level name

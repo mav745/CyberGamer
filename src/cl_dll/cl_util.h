@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -68,8 +68,8 @@ inline struct cvar_s *CVAR_CREATE( const char *cv, const char *val, const int fl
 #define ScreenWidth (gHUD.m_scrinfo.iWidth)
 
 // Use this to set any co-ords in 640x480 space
-#define XRES(x)		((int)(float(x)  * ((float)ScreenWidth / 640.0f) + 0.5f))
-#define YRES(y)		((int)(float(y)  * ((float)ScreenHeight / 480.0f) + 0.5f))
+#define XRES(x)		(static_cast<int>(static_cast<float>(x)  * (static_cast<float>(ScreenWidth) / 640.0f) + 0.5f))
+#define YRES(y)		(static_cast<int>(static_cast<float>(y)  * (static_cast<float>(ScreenHeight) / 480.0f) + 0.5f))
 
 // use this to project world coordinates to screen coordinates
 #define XPROJECT(x)	( (1.0f+(x))*ScreenWidth*0.5f )
@@ -87,9 +87,9 @@ inline int SPR_Height( VHSPRITE x, int f )	{ return gEngfuncs.pfnSPR_Height(x, f
 inline int SPR_Width( VHSPRITE x, int f )	{ return gEngfuncs.pfnSPR_Width(x, f); }
 
 inline 	client_textmessage_t	*TextMessageGet( const char *pName ) { return gEngfuncs.pfnTextMessageGet( pName ); }
-inline 	int						TextMessageDrawChar( int x, int y, int number, int r, int g, int b ) 
-{ 
-	return gEngfuncs.pfnDrawCharacter( x, y, number, r, g, b ); 
+inline 	int						TextMessageDrawChar( int x, int y, int number, int r, int g, int b )
+{
+	return gEngfuncs.pfnDrawCharacter( x, y, number, r, g, b );
 }
 
 inline int DrawConsoleString( int x, int y, const char *string )

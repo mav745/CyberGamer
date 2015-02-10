@@ -185,7 +185,7 @@ void UTIL_StringToVector( float * pVector, const char *pString )
 
 	for ( j = 0; j < 3; j++ )
 	{
-		pVector[j] = atof( pfront );
+		pVector[j] = static_cast<float>(atof( pfront ));
 
 		while ( *pstr && *pstr != ' ' )
 			pstr++;
@@ -284,7 +284,7 @@ int UTIL_FindEntityInMap(char * name, float * origin, float * angle)
 
 			if( !strcmp( keyname, "angle" ) )
 			{
-				float y = atof( token );
+				float y = static_cast<float>(atof( token ));
 
 				if (y >= 0)
 				{
@@ -452,7 +452,7 @@ int i;	for ( i = 0; i < MAX_PLAYERS; i++)
 		lx = strlen(string)*3; // 3 is avg. character length :)
 
 		gEngfuncs.pfnDrawSetTextColor( color[0], color[1], color[2] );
-		DrawConsoleString( m_vPlayerPos[i][0]-lx,m_vPlayerPos[i][1], string);
+		DrawConsoleString( static_cast<int>(m_vPlayerPos[i][0]-lx),static_cast<int>(m_vPlayerPos[i][1]), string);
 
 	}
 
@@ -675,7 +675,7 @@ void CHudSpectator::HandleButtonsDown( int ButtonPressed )
 	double time = gEngfuncs.GetClientTime();
 
 	int newMainMode		= g_iUser1;
-	int newInsetMode	= m_pip->value;
+	int newInsetMode	= static_cast<int>(m_pip->value);
 
 	// gEngfuncs.Con_Printf(" HandleButtons:%i\n", ButtonPressed );
 	if ( !gViewPort )
@@ -765,7 +765,7 @@ void CHudSpectator::HandleButtonsDown( int ButtonPressed )
 			m_moveDelta =  12.0f;
 	}
 
-	m_flNextObserverInput = time + 0.2;
+	m_flNextObserverInput = static_cast<float>(time) + 0.2f;
 }
 
 void CHudSpectator::HandleButtonsUp( int ButtonPressed )
@@ -790,10 +790,10 @@ void CHudSpectator::SetModes(int iNewMainMode, int iNewInsetMode)
 		iNewMainMode = g_iUser1;
 
 	if ( iNewInsetMode == -1 )
-		iNewInsetMode = m_pip->value;
+		iNewInsetMode = static_cast<int>(m_pip->value);
 
 	// inset mode is handled only clients side
-	m_pip->value = iNewInsetMode;
+	m_pip->value = static_cast<float>(iNewInsetMode);
 
 	if ( iNewMainMode < OBS_CHASE_LOCKED || iNewMainMode > OBS_MAP_CHASE )
 	{
@@ -957,16 +957,16 @@ bool CHudSpectator::ParseOverviewFile( )
 				if ( !stricmp( token, "zoom" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					m_OverviewData.zoom = atof( token );
+					m_OverviewData.zoom = static_cast<float>(atof( token ));
 				}
 				else if ( !stricmp( token, "origin" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile, token);
-					m_OverviewData.origin[0] = atof( token );
+					m_OverviewData.origin[0] = static_cast<float>(atof( token ));
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					m_OverviewData.origin[1] = atof( token );
+					m_OverviewData.origin[1] = static_cast<float>(atof( token ));
 					pfile = gEngfuncs.COM_ParseFile(pfile, token);
-					m_OverviewData.origin[2] = atof( token );
+					m_OverviewData.origin[2] = static_cast<float>(atof( token ));
 				}
 				else if ( !stricmp( token, "rotated" ) )
 				{
@@ -976,13 +976,13 @@ bool CHudSpectator::ParseOverviewFile( )
 				else if ( !stricmp( token, "inset" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					m_OverviewData.insetWindowX = atof( token );
+					m_OverviewData.insetWindowX = static_cast<int>(atof( token ));
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					m_OverviewData.insetWindowY = atof( token );
+					m_OverviewData.insetWindowY = static_cast<int>(atof( token ));
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					m_OverviewData.insetWindowWidth = atof( token );
+					m_OverviewData.insetWindowWidth = static_cast<int>(atof( token ));
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					m_OverviewData.insetWindowHeight = atof( token );
+					m_OverviewData.insetWindowHeight = static_cast<int>(atof( token ));
 
 				}
 				else
@@ -1028,7 +1028,7 @@ bool CHudSpectator::ParseOverviewFile( )
 				else if ( !stricmp( token, "height" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					height = atof(token);
+					height = static_cast<float>(atof(token));
 					m_OverviewData.layersHeights[ m_OverviewData.layers ] = height;
 				}
 				else
@@ -1076,7 +1076,7 @@ void CHudSpectator::DrawOverviewLayer()
 	if ( hasMapImage)
 	{
 		i = m_MapSprite->numframes / (4*3);
-		i = sqrt(static_cast<float>(i));
+		i = static_cast<int>(sqrtf(static_cast<float>(i)));
 		xTiles = i*4;
 		yTiles = i*3;
 	}
@@ -1487,7 +1487,7 @@ void CHudSpectator::CheckSettings()
 {
 	// disallow same inset mode as main mode:
 
-	m_pip->value = (int)m_pip->value;
+	m_pip->value = floorf(m_pip->value);
 
 	if ( ( g_iUser1 < OBS_MAP_FREE ) && ( m_pip->value == INSET_CHASE_FREE || m_pip->value == INSET_IN_EYE ) )
 	{
@@ -1618,6 +1618,6 @@ void CHudSpectator::InitHUDData()
 	g_iUser2 = 0; // fake not target until first camera command
 
 	// reset HUD FOV
-	gHUD.m_iFOV =  CVAR_GET_FLOAT("default_fov");
+	gHUD.m_iFOV =  static_cast<int>(CVAR_GET_FLOAT("default_fov"));
 }
 

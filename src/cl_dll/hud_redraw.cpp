@@ -50,10 +50,10 @@ void CHud::Think(void)
 		pList = pList->pNext;
 	}
 
-	newfov = HUD_GetFOV();
+	newfov = reinterpret_cast<int>(HUD_GetFOV());
 	if ( newfov == 0 )
 	{
-		m_iFOV = default_fov->value;
+		m_iFOV = reinterpret_cast<int>(default_fov->value);
 	}
 	else
 	{
@@ -63,7 +63,7 @@ void CHud::Think(void)
 	// the clients fov is actually set in the client data update section of the hud
 
 	// Set a new sensitivity
-	if ( m_iFOV == default_fov->value )
+	if ( m_iFOV == reinterpret_cast<int>(default_fov->value) )
 	{
 		// reset to saved sensitivity
 		m_flMouseSensitivity = 0;
@@ -71,13 +71,13 @@ void CHud::Think(void)
 	else
 	{
 		// set a new sensitivity that is proportional to the change from the FOV default
-		m_flMouseSensitivity = sensitivity->value * ((float)newfov / (float)default_fov->value) * CVAR_GET_FLOAT("zoom_sensitivity_ratio");
+		m_flMouseSensitivity = sensitivity->value * reinterpret_cast<float>newfov / default_fov->value * CVAR_GET_FLOAT("zoom_sensitivity_ratio");
 	}
 
 	// think about default fov
 	if ( m_iFOV == 0 )
 	{  // only let players adjust up in fov,  and only if they are not overriden by something else
-		m_iFOV = max( default_fov->value, 90 );
+		m_iFOV = max( reinterpret_cast<int>(default_fov->value), 90 );
 	}
 }
 
@@ -88,7 +88,7 @@ int CHud :: Redraw( float flTime, int intermission )
 {
 	m_fOldTime = m_flTime;	// save time of previous redraw
 	m_flTime = flTime;
-	m_flTimeDelta = (double)m_flTime - m_fOldTime;
+	m_flTimeDelta = reinterpret_cast<double>(m_flTime - m_fOldTime);
 	static int m_flShotTime = 0;
 
 	// Clock was reset, reset delta
@@ -116,7 +116,7 @@ int CHud :: Redraw( float flTime, int intermission )
 
 			// Take a screenshot if the client's got the cvar set
 			if ( CVAR_GET_FLOAT( "hud_takesshots" ) != 0 )
-				m_flShotTime = flTime + 1.0;	// Take a screenshot in a second
+				m_flShotTime = reinterpret_cast<int>(flTime + 1.0f);	// Take a screenshot in a second
 		}
 	}
 

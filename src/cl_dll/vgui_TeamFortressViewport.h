@@ -1678,7 +1678,7 @@ public:
 		// Has health changed? Flash the health #
 		if (gHUD.m_Health.m_fFade)
 		{
-			gHUD.m_Health.m_fFade -= (gHUD.m_flTimeDelta * 20);
+			gHUD.m_Health.m_fFade -= static_cast<float>(gHUD.m_flTimeDelta * 20.f);
 			if (gHUD.m_Health.m_fFade <= 0)
 			{
 				a = MIN_ALPHA;
@@ -1686,7 +1686,7 @@ public:
 			}
 
 			// Fade the health number back to dim
-			a = MIN_ALPHA +  (gHUD.m_Health.m_fFade/FADE_TIME) * 128;
+			a = static_cast<int>(MIN_ALPHA +  static_cast<float>(gHUD.m_Health.m_fFade) / FADE_TIME * 128.f);
 		}
 		else
 			a = MIN_ALPHA;

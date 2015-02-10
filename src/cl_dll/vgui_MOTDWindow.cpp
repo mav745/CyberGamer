@@ -5,7 +5,7 @@
 // Valve, L.L.C., or in accordance with the terms and conditions stipulated in
 // the agreement/contract under which the contents have been supplied.
 //
-// Purpose: 
+// Purpose:
 //
 // $Workfile:     $
 // $Date:         $
@@ -80,7 +80,7 @@ CMessageWindowPanel::CMessageWindowPanel( const char *szMOTD, const char *szTitl
 	// Create the window
 	m_pBackgroundPanel = new CTransparentPanel( iShadeFullscreen ? 255 : 100, MOTD_WINDOW_X, MOTD_WINDOW_Y, MOTD_WINDOW_SIZE_X, MOTD_WINDOW_SIZE_Y );
 	m_pBackgroundPanel->setParent( this );
-	m_pBackgroundPanel->setBorder( new LineBorder( Color(255 * 0.7,170 * 0.7,0,0)) );
+	m_pBackgroundPanel->setBorder( new LineBorder( Color(static_cast<int>(255 * 0.7f),static_cast<int>(170 * 0.7f),0,0)) );
 	m_pBackgroundPanel->setVisible( true );
 
 	int iXSize,iYSize,iXPos,iYPos;
@@ -104,7 +104,7 @@ CMessageWindowPanel::CMessageWindowPanel( const char *szMOTD, const char *szTitl
 	// Create the Scroll panel
 	ScrollPanel *pScrollPanel = new CTFScrollPanel( iXPos + XRES(16), iYPos + MOTD_TITLE_Y*2 + YRES(16), iXSize - XRES(32), iYSize - (YRES(48) + BUTTON_SIZE_Y*2) );
 	pScrollPanel->setParent(this);
-	
+
 	//force the scrollbars on so clientClip will take them in account after the validate
 	pScrollPanel->setScrollBarAutoVisible(false, false);
 	pScrollPanel->setScrollBarVisible(true, true);
@@ -131,7 +131,7 @@ CMessageWindowPanel::CMessageWindowPanel( const char *szMOTD, const char *szTitl
 	//  specified width.
 	pText->getTextImage()->setSize(pScrollPanel->getClientClip()->getWide(), pScrollPanel->getClientClip()->getTall());
 	pText->getTextImage()->getTextSizeWrapped( iScrollSizeX, iScrollSizeY );
-	
+
 	// Now resize the textpanel to fit the scrolled size
 	pText->setSize( iScrollSizeX , iScrollSizeY );
 

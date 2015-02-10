@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -58,7 +58,7 @@ int CHudBattery:: MsgFunc_Battery(const char *pszName,  int iSize, void *pbuf )
 {
 	m_iFlags |= HUD_ACTIVE;
 
-	
+
 	BEGIN_READ( pbuf, iSize );
 	int x = READ_SHORT();
 
@@ -81,7 +81,7 @@ int CHudBattery::Draw(float flTime)
 	wrect_t rc;
 
 	rc = *m_prc2;
-	rc.top  += m_iHeight * ((float)(100-(min(100,m_iBat))) * 0.01);	// battery can go from 0 to 100 so * 0.01 goes from 0 to 1
+	rc.top  += static_cast<int>( 0.01f * m_iHeight * (100.f-min(100, m_iBat)) );	// battery can go from 0 to 100 so * 0.01 goes from 0 to 1
 
 	UnpackRGB(r,g,b, RGB_YELLOWISH);
 
@@ -94,7 +94,7 @@ int CHudBattery::Draw(float flTime)
 		if (m_fFade > FADE_TIME)
 			m_fFade = FADE_TIME;
 
-		m_fFade -= (gHUD.m_flTimeDelta * 20);
+		m_fFade -= static_cast<float>(gHUD.m_flTimeDelta * 20.);
 		if (m_fFade <= 0)
 		{
 			a = 128;
@@ -103,14 +103,13 @@ int CHudBattery::Draw(float flTime)
 
 		// Fade the health number back to dim
 
-		a = MIN_ALPHA +  (m_fFade/FADE_TIME) * 128;
-
+		a = static_cast<int>(MIN_ALPHA +  m_fFade / FADE_TIME * 128.f);
 	}
 	else
 		a = MIN_ALPHA;
 
 	ScaleColors(r, g, b, a );
-	
+
 	int iOffset = (m_prc1->bottom - m_prc1->top)/6;
 
 	y = ScreenHeight - gHUD.m_iFontHeight - gHUD.m_iFontHeight / 2;

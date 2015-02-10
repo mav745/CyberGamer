@@ -200,7 +200,7 @@ int i;	for (  i = 0; i < MAX_STATUSBAR_LINES; i++ )
 		if ( (i == STATUSBAR_ID_LINE) && CVAR_GET_FLOAT("hud_centerid") )
 		{
 			x = max( 0, max(2, (ScreenWidth - TextWidth)) / 2 );
-			y = (ScreenHeight / 2) + (TextHeight*CVAR_GET_FLOAT("hud_centerid"));
+			y = static_cast<int>((ScreenHeight / 2) + (TextHeight*CVAR_GET_FLOAT("hud_centerid")));
 		}
 
 		if ( m_pflNameColors[i] )

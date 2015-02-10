@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -63,7 +63,7 @@ int CHudAmmoSecondary :: Draw(float flTime)
 	UnpackRGB( r, g, b, RGB_YELLOWISH );
 	a = (int) max( MIN_ALPHA, m_fFade );
 	if (m_fFade > 0)
-		m_fFade -= (gHUD.m_flTimeDelta * 20);  // slowly lower alpha to fade out icons
+		m_fFade -= static_cast<float>(gHUD.m_flTimeDelta * 20.);  // slowly lower alpha to fade out icons
 	ScaleColors( r, g, b, a );
 
 	AmmoWidth = gHUD.GetSpriteRect(gHUD.m_HUD_number_0).right - gHUD.GetSpriteRect(gHUD.m_HUD_number_0).left;
@@ -144,7 +144,7 @@ int i;	for (  i = 0; i < MAX_SEC_AMMO_VALUES; i++ )
 		count += max( 0, m_iAmmoAmounts[i] );
 	}
 
-	if ( count == 0 ) 
+	if ( count == 0 )
 	{	// the ammo fields are all empty, so turn off this hud area
 		m_iFlags &= ~HUD_ACTIVE;
 		return 1;

@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -75,13 +75,13 @@ public:
 	void setPos(int x, int y)
 	{
 		_image[0]->setPos(x, y);
-		
+
 		int swide, stall;
 		_image[0]->getSize(swide, stall);
 
 		int wide, tall;
 		_image[1]->getSize(wide, tall);
-		_image[1]->setPos(x + wide, y + (stall * 0.9) - tall);
+		_image[1]->setPos(x + wide, static_cast<int>(y + stall * 0.9f - tall));
 	}
 
 	void setColor(Color color)
@@ -242,22 +242,22 @@ private:
 private:
 
 	Label			m_TitleLabel;
-	
+
 	// Here is how these controls are arranged hierarchically.
 	// m_HeaderGrid
 	//     m_HeaderLabels
 
 	// m_PlayerGridScroll
 	//     m_PlayerGrid
-	//         m_PlayerEntries 
+	//         m_PlayerEntries
 
 	CGrid			m_HeaderGrid;
-	CLabelHeader	m_HeaderLabels[NUM_COLUMNS];			// Labels above the 
+	CLabelHeader	m_HeaderLabels[NUM_COLUMNS];			// Labels above the
 	CLabelHeader	*m_pCurrentHighlightLabel;
 	int				m_iHighlightRow;
-	
+
 	vgui::CListBox	m_PlayerList;
-	CGrid			m_PlayerGrids[NUM_ROWS];				// The grid with player and team info. 
+	CGrid			m_PlayerGrids[NUM_ROWS];				// The grid with player and team info.
 	CLabelHeader	m_PlayerEntries[NUM_COLUMNS][NUM_ROWS];	// Labels for the grid entries.
 
 	ScorePanel::HitTestPanel	m_HitTestPanel;
@@ -265,7 +265,7 @@ private:
 	CLabelHeader*	GetPlayerEntry(int x, int y)	{return &m_PlayerEntries[x][y];}
 
 public:
-	
+
 	int				m_iNumTeams;
 	int				m_iPlayerNum;
 	int				m_iShowscoresHeld;

@@ -663,7 +663,7 @@ void ScorePanel::FillGrid()
 				else if ( m_iSortedRows[row] == m_iLastKilledBy && m_fLastKillTime && m_fLastKillTime > gHUD.m_flTime )
 				{
 					// Killer's name
-					pLabel->setBgColor( 255,0,0, 255 - ((float)15 * (float)(m_fLastKillTime - gHUD.m_flTime)) );
+					pLabel->setBgColor( 255,0,0, static_cast<int>(255. - 15. * (m_fLastKillTime - gHUD.m_flTime)) );
 				}
 			}
 
@@ -827,7 +827,7 @@ void ScorePanel::DeathMsg( int killer, int victim )
 	if ( victim == m_iPlayerNum || killer == 0 )
 	{
 		m_iLastKilledBy = killer ? killer : m_iPlayerNum;
-		m_fLastKillTime = gHUD.m_flTime + 10;	// display who we were killed by for 10 seconds
+		m_fLastKillTime = static_cast<int>(gHUD.m_flTime + 10.f);	// display who we were killed by for 10 seconds
 
 		if ( killer == m_iPlayerNum )
 			m_iLastKilledBy = m_iPlayerNum;

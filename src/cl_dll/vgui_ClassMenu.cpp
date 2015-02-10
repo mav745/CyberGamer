@@ -5,7 +5,7 @@
 // Valve, L.L.C., or in accordance with the terms and conditions stipulated in
 // the agreement/contract under which the contents have been supplied.
 //
-// Purpose: TFC Class Menu 
+// Purpose: TFC Class Menu
 //
 // $Workfile:     $
 // $Date:         $
@@ -91,7 +91,7 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 	//force the scrollbars on, so after the validate clientClip will be smaller
 	m_pScrollPanel->setScrollBarAutoVisible(false, false);
 	m_pScrollPanel->setScrollBarVisible(true, true);
-	m_pScrollPanel->setBorder( new LineBorder( Color(255 * 0.7,170 * 0.7,0,0) ) );
+	m_pScrollPanel->setBorder( new LineBorder( Color(static_cast<int>(255 * 0.7f),static_cast<int>(170 * 0.7f),0,0) ) );
 	m_pScrollPanel->validate();
 
 	int clientWide=m_pScrollPanel->getClient()->getWide();
@@ -104,7 +104,7 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 	// Create the Class buttons
 int i;	for ( i = 0; i <= PC_RANDOM; i++)
 	{
-		char sz[256]; 
+		char sz[256];
 		int iYPos = CLASSMENU_TOPLEFT_BUTTON_Y + ( (CLASSMENU_BUTTON_SIZE_Y + CLASSMENU_BUTTON_SPACER_Y) * i );
 
 		ActionSignal *pASignal = new CMenuHandler_StringCommandClassSelect( sTFClassSelection[i], true );
@@ -145,7 +145,7 @@ int i;	for ( i = 0; i <= PC_RANDOM; i++)
 		sprintf(sz, "#Title_%s", sTFClassSelection[i]);
 		char* localName=CHudTextMessage::BufferedLocaliseTextString( sz );
 		Label *pNameLabel = new Label( "", textOffs, CLASSMENU_WINDOW_NAME_Y );
-		pNameLabel->setFont( pSchemes->getFont(hTitleScheme) ); 
+		pNameLabel->setFont( pSchemes->getFont(hTitleScheme) );
 		pNameLabel->setParent( m_pClassInfoPanel[i] );
 		pSchemes->getFgColor( hTitleScheme, r, g, b, a );
 		pNameLabel->setFgColor( r, g, b, a );
@@ -179,7 +179,7 @@ int i;	for ( i = 0; i <= PC_RANDOM; i++)
 				{
 					pLabel->setVisible( false );
 				}
-				
+
 				// Reposition it based upon it's size
 				int xOut, yOut;
 				pNameLabel->getTextSize( xOut, yOut );
@@ -203,7 +203,7 @@ int i;	for ( i = 0; i <= PC_RANDOM; i++)
 		{
 			cText = pfile;
 		}
-		
+
 		// Create the Text info window
 		TextPanel *pTextWindow = new TextPanel(cText, textOffs, CLASSMENU_WINDOW_TEXT_Y, (CLASSMENU_WINDOW_SIZE_X - textOffs)-5, CLASSMENU_WINDOW_SIZE_Y - CLASSMENU_WINDOW_TEXT_Y);
 		pTextWindow->setParent( m_pClassInfoPanel[i] );
@@ -278,7 +278,7 @@ int i;	for ( i = 0; i <= PC_RANDOM; i++)
 				m_pButtons[i]->setVisible( false );
 			}
 		}
-		else 
+		else
 		{
 			if ( m_pButtons[i]->IsNotValid() || i == 0 )
 			{
@@ -316,7 +316,7 @@ int i;	for ( i = 0; i <= PC_RANDOM; i++)
 			iTotal++;
 		}
 
-		char sz[256]; 
+		char sz[256];
 		sprintf(sz, m_sPlayersOnTeamString, iTotal);
 		m_pPlayers[i]->setText( sz );
 

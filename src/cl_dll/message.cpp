@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -57,9 +57,9 @@ int CHudMessage::VidInit( void )
 
 void CHudMessage::Reset( void )
 {
- 	memset( m_pMessages, 0, sizeof( m_pMessages[0] ) * maxHUDMessages );
+	memset( m_pMessages, 0, sizeof( m_pMessages[0] ) * maxHUDMessages );
 	memset( m_startTime, 0, sizeof( m_startTime[0] ) * maxHUDMessages );
-	
+
 	m_gameTitleTime = 0;
 	m_pGameTitle = NULL;
 }
@@ -102,9 +102,9 @@ int	CHudMessage::XPosition( float x, int width, int totalWidth )
 	else
 	{
 		if ( x < 0 )
-			xPos = (1.0 + x) * ScreenWidth - totalWidth;	// Alight right
+			xPos = static_cast<int>((1.0f + x) * ScreenWidth - totalWidth);	// Alight right
 		else
-			xPos = x * ScreenWidth;
+			xPos = static_cast<int>(x * ScreenWidth);
 	}
 
 	if ( xPos + width > ScreenWidth )
@@ -121,14 +121,14 @@ int CHudMessage::YPosition( float y, int height )
 	int yPos;
 
 	if ( y == -1 )	// Centered?
-		yPos = (ScreenHeight - height) * 0.5;
+		yPos = static_cast<int>((ScreenHeight - height) * 0.5f);
 	else
 	{
 		// Alight bottom?
 		if ( y < 0 )
-			yPos = (1.0 + y) * ScreenHeight - height;	// Alight bottom
+			yPos = static_cast<int>((1.0f + y) * ScreenHeight - height);	// Alight bottom
 		else // align top
-			yPos = y * ScreenHeight;
+			yPos = static_cast<int>(y * ScreenHeight);
 	}
 
 	if ( yPos + height > ScreenHeight )
@@ -182,7 +182,7 @@ void CHudMessage::MessageScanNextChar( void )
 				destRed = m_parms.pMessage->r2;
 				destGreen = m_parms.pMessage->g2;
 				destBlue = m_parms.pMessage->b2;
-				blend = 255 - (deltaTime * (1.0/m_parms.pMessage->fxtime) * 255.0 + 0.5);
+				blend = static_cast<int>(255 - (deltaTime * (1.0f/m_parms.pMessage->fxtime) * 255.0f + 0.5f));
 			}
 		}
 		break;
@@ -212,16 +212,16 @@ void CHudMessage::MessageScanStart( void )
 	case 1:
 	case 0:
 		m_parms.fadeTime = m_parms.pMessage->fadein + m_parms.pMessage->holdtime;
-		
+
 
 		if ( m_parms.time < m_parms.pMessage->fadein )
 		{
-			m_parms.fadeBlend = ((m_parms.pMessage->fadein - m_parms.time) * (1.0/m_parms.pMessage->fadein) * 255);
+			m_parms.fadeBlend = static_cast<int>((m_parms.pMessage->fadein - m_parms.time) * (1.0f/m_parms.pMessage->fadein) * 255);
 		}
 		else if ( m_parms.time > m_parms.fadeTime )
 		{
 			if ( m_parms.pMessage->fadeout > 0 )
-				m_parms.fadeBlend = (((m_parms.time - m_parms.fadeTime) / m_parms.pMessage->fadeout) * 255);
+				m_parms.fadeBlend = static_cast<int>(((m_parms.time - m_parms.fadeTime) / m_parms.pMessage->fadeout) * 255);
 			else
 				m_parms.fadeBlend = 255; // Pure dest (off)
 		}
@@ -235,9 +235,9 @@ void CHudMessage::MessageScanStart( void )
 
 	case 2:
 		m_parms.fadeTime = (m_parms.pMessage->fadein * m_parms.length) + m_parms.pMessage->holdtime;
-		
+
 		if ( m_parms.time > m_parms.fadeTime && m_parms.pMessage->fadeout > 0 )
-			m_parms.fadeBlend = (((m_parms.time - m_parms.fadeTime) / m_parms.pMessage->fadeout) * 255);
+			m_parms.fadeBlend = static_cast<int>(((m_parms.time - m_parms.fadeTime) / m_parms.pMessage->fadeout) * 255);
 		else
 			m_parms.fadeBlend = 0;
 		break;
@@ -306,7 +306,7 @@ void CHudMessage::MessageDrawScan( client_textmessage_t *pMessage, float time )
 			m_parms.text = line[j];
 			int next = m_parms.x + gHUD.m_scrinfo.charWidths[ m_parms.text ];
 			MessageScanNextChar();
-			
+
 			if ( m_parms.x >= 0 && m_parms.y >= 0 && next <= ScreenWidth )
 				TextMessageDrawChar( m_parms.x, m_parms.y, m_parms.text, m_parms.r, m_parms.g, m_parms.b );
 			m_parms.x = next;
@@ -348,10 +348,10 @@ int CHudMessage::Draw( float fTime )
 			int y = YPosition( m_pGameTitle->y, fullHeight );
 
 
-			SPR_Set( gHUD.GetSprite(m_HUD_title_half), brightness * m_pGameTitle->r1, brightness * m_pGameTitle->g1, brightness * m_pGameTitle->b1 );
+			SPR_Set( gHUD.GetSprite(m_HUD_title_half), static_cast<int>(brightness * m_pGameTitle->r1), static_cast<int>(brightness * m_pGameTitle->g1), static_cast<int>(brightness * m_pGameTitle->b1) );
 			SPR_DrawAdditive( 0, x, y, &gHUD.GetSpriteRect(m_HUD_title_half) );
 
-			SPR_Set( gHUD.GetSprite(m_HUD_title_life), brightness * m_pGameTitle->r1, brightness * m_pGameTitle->g1, brightness * m_pGameTitle->b1 );
+			SPR_Set( gHUD.GetSprite(m_HUD_title_life), static_cast<int>(brightness * m_pGameTitle->r1), static_cast<int>(brightness * m_pGameTitle->g1), static_cast<int>(brightness * m_pGameTitle->b1) );
 			SPR_DrawAdditive( 0, x + halfWidth, y, &gHUD.GetSpriteRect(m_HUD_title_life) );
 
 			drawn = 1;
@@ -365,7 +365,7 @@ int CHudMessage::Draw( float fTime )
 		{
 			pMessage = m_pMessages[i];
 			if ( m_startTime[i] > gHUD.m_flTime )
-				m_startTime[i] = gHUD.m_flTime + m_parms.time - m_startTime[i] + 0.2;	// Server takes 0.2 seconds to spawn, adjust for this
+				m_startTime[i] = gHUD.m_flTime + m_parms.time - m_startTime[i] + 0.2f;	// Server takes 0.2 seconds to spawn, adjust for this
 		}
 	}
 
@@ -382,7 +382,7 @@ int CHudMessage::Draw( float fTime )
 			case 1:
 				endTime = m_startTime[i] + pMessage->fadein + pMessage->fadeout + pMessage->holdtime;
 				break;
-			
+
 			// Fade in is per character in scanning messages
 			case 2:
 				endTime = m_startTime[i] + (pMessage->fadein * strlen( pMessage->pMessage )) + pMessage->fadeout + pMessage->holdtime;
@@ -429,7 +429,7 @@ void CHudMessage::MessageAdd( const char *pName, float time )
 		if ( !m_pMessages[i] )
 		{
 			// Trim off a leading # if it's there
-			if ( pName[0] == '#' ) 
+			if ( pName[0] == '#' )
 				tempMessage = TextMessageGet( pName+1 );
 			else
 				tempMessage = TextMessageGet( pName );
@@ -524,7 +524,7 @@ void CHudMessage::MessageAdd(client_textmessage_t * newMessage )
 	// Turn on drawing
 	if ( !(m_iFlags & HUD_ACTIVE) )
 		m_iFlags |= HUD_ACTIVE;
-	
+
 int i;	for (  i = 0; i < maxHUDMessages; i++ )
 	{
 		if ( !m_pMessages[i] )

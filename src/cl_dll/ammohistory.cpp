@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -53,9 +53,9 @@ void HistoryResource :: AddToHistory( int iType, int iId, int iCount )
 		// so start from the bottom
 		iCurrentHistorySlot = 0;
 	}
-	
+
 	HIST_ITEM *freeslot = &rgAmmoHistory[iCurrentHistorySlot++];  // default to just writing to the first slot
-	HISTORY_DRAW_TIME = CVAR_GET_FLOAT( "hud_drawhistory_time" );
+	HISTORY_DRAW_TIME = static_cast<int>(CVAR_GET_FLOAT( "hud_drawhistory_time" ));
 
 	freeslot->type = iType;
 	freeslot->iId = iId;
@@ -86,7 +86,7 @@ void HistoryResource :: AddToHistory( int iType, const char *szName, int iCount 
 	freeslot->type = iType;
 	freeslot->iCount = iCount;
 
-	HISTORY_DRAW_TIME = CVAR_GET_FLOAT( "hud_drawhistory_time" );
+	HISTORY_DRAW_TIME = static_cast<int>(CVAR_GET_FLOAT( "hud_drawhistory_time" ));
 	freeslot->DisplayTime = gHUD.m_flTime + HISTORY_DRAW_TIME;
 }
 
@@ -126,7 +126,7 @@ int i;	for (  i = 0; i < MAX_HISTORY; i++ )
 				int r, g, b;
 				UnpackRGB(r,g,b, RGB_YELLOWISH);
 				float scale = (rgAmmoHistory[i].DisplayTime - flTime) * 80;
-				ScaleColors(r, g, b, min(scale, 255) );
+				ScaleColors(r, g, b, min(static_cast<int>(scale), 255) );
 
 				// Draw the pic
 				int ypos = ScreenHeight - (AMMO_PICKUP_PICK_HEIGHT + (AMMO_PICKUP_GAP * i));
@@ -154,7 +154,7 @@ int i;	for (  i = 0; i < MAX_HISTORY; i++ )
 					UnpackRGB(r,g,b, RGB_REDISH);	// if the weapon doesn't have ammo, display it as red
 
 				float scale = (rgAmmoHistory[i].DisplayTime - flTime) * 80;
-				ScaleColors(r, g, b, min(scale, 255) );
+				ScaleColors(r, g, b, min(static_cast<int>(scale), 255) );
 
 				int ypos = ScreenHeight - (AMMO_PICKUP_PICK_HEIGHT + (AMMO_PICKUP_GAP * i));
 				int xpos = ScreenWidth - (weap->rcInactive.right - weap->rcInactive.left);
@@ -172,7 +172,7 @@ int i;	for (  i = 0; i < MAX_HISTORY; i++ )
 
 				UnpackRGB(r,g,b, RGB_YELLOWISH);
 				float scale = (rgAmmoHistory[i].DisplayTime - flTime) * 80;
-				ScaleColors(r, g, b, min(scale, 255) );
+				ScaleColors(r, g, b, min(static_cast<int>(scale), 255) );
 
 				int ypos = ScreenHeight - (AMMO_PICKUP_PICK_HEIGHT + (AMMO_PICKUP_GAP * i));
 				int xpos = ScreenWidth - (rect.right - rect.left) - 10;
