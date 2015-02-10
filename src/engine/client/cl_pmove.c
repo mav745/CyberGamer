@@ -853,7 +853,7 @@ void CL_PredictMovement( void )
 
 		// motor!
 		clgame.dllFuncs.pfnPlayerMove( clgame.pmove, false ); // run frames
-		clgame.pmove->runfuncs = ( current_command > outgoing_command - 1 ) ? true : false;
+		//clgame.pmove->runfuncs = ( current_command > outgoing_command - 1 ) ? true : false;
 
 		//sprintf(txt,"(%i)%.2f ",clgame.pmove->cmd.buttons,clgame.pmove->view_ofs[2]);
 		//Sys_Print(txt);
@@ -861,6 +861,7 @@ void CL_PredictMovement( void )
 		frame++;
 	}
 	//Sys_Print("\n");
+	//clgame.pmove->runfuncs = true;
 	CL_PostRunCmd( cl.refdef.cmd, current_command );
 
 	// copy results out for rendering

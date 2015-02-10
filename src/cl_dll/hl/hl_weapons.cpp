@@ -356,7 +356,7 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 		{
 			m_fFireOnEmpty = TRUE;
 		}
-
+		//gEngfuncs.Con_Printf("m_iClip %i\n",m_iClip);
 		PrimaryAttack();
 	}
 	else if ( m_pPlayer->pev->button & IN_RELOAD && iMaxClip() != WEAPON_NOCLIP && !m_fInReload )
@@ -605,18 +605,18 @@ void HUD_InitClientWeapons( void )
 	g_engfuncs.pfnPrecacheModel		= stub_PrecacheModel;
 	g_engfuncs.pfnPrecacheSound		= stub_PrecacheSound;
 	g_engfuncs.pfnPrecacheEvent		= stub_PrecacheEvent;
-	g_engfuncs.pfnNameForFunction	= stub_NameForFunction;
-	g_engfuncs.pfnSetModel			= stub_SetModel;
-	g_engfuncs.pfnSetClientMaxspeed = HUD_SetMaxSpeed;
+	g_engfuncs.pfnNameForFunction		= stub_NameForFunction;
+	g_engfuncs.pfnSetModel				= stub_SetModel;
+	g_engfuncs.pfnSetClientMaxspeed	= HUD_SetMaxSpeed;
 
 	// Handled locally
 	g_engfuncs.pfnPlaybackEvent		= HUD_PlaybackEvent;
-	g_engfuncs.pfnAlertMessage		= AlertMessage;
+	g_engfuncs.pfnAlertMessage			= AlertMessage;
 
 	// Pass through to engine
 	g_engfuncs.pfnPrecacheEvent		= gEngfuncs.pfnPrecacheEvent;
-	g_engfuncs.pfnRandomFloat		= gEngfuncs.pfnRandomFloat;
-	g_engfuncs.pfnRandomLong		= gEngfuncs.pfnRandomLong;
+	g_engfuncs.pfnRandomFloat			= gEngfuncs.pfnRandomFloat;
+	g_engfuncs.pfnRandomLong			= gEngfuncs.pfnRandomLong;
 
 	// Allocate a slot for the local player
 	HUD_PrepEntity( &player		, NULL );
@@ -625,16 +625,16 @@ void HUD_InitClientWeapons( void )
 	HUD_PrepEntity( &g_Glock	, &player );
 	HUD_PrepEntity( &g_Crowbar	, &player );
 	HUD_PrepEntity( &g_Python	, &player );
-	HUD_PrepEntity( &g_Mp5	, &player );
-	HUD_PrepEntity( &g_Crossbow	, &player );
+	HUD_PrepEntity( &g_Mp5		, &player );
+	HUD_PrepEntity( &g_Crossbow, &player );
 	HUD_PrepEntity( &g_Shotgun	, &player );
-	HUD_PrepEntity( &g_Rpg	, &player );
+	HUD_PrepEntity( &g_Rpg		, &player );
 	HUD_PrepEntity( &g_Gauss	, &player );
-	HUD_PrepEntity( &g_Egon	, &player );
-	HUD_PrepEntity( &g_HGun	, &player );
-	HUD_PrepEntity( &g_HandGren	, &player );
+	HUD_PrepEntity( &g_Egon		, &player );
+	HUD_PrepEntity( &g_HGun		, &player );
+	HUD_PrepEntity( &g_HandGren, &player );
 	HUD_PrepEntity( &g_Satchel	, &player );
-	HUD_PrepEntity( &g_Tripmine	, &player );
+	HUD_PrepEntity( &g_Tripmine, &player );
 	HUD_PrepEntity( &g_Snark	, &player );
 }
 
@@ -696,7 +696,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 
 	// Get current clock
 	gpGlobals->time = static_cast<float>(time);
-
+	//gEngfuncs.Con_Printf("+attack %i\n",!!(cmd->buttons & IN_ATTACK));
 	// Fill in data based on selected weapon
 	// FIXME, make this a method in each weapon?  where you pass in an entity_state_t *?
 	switch ( from->client.m_iId )
@@ -784,6 +784,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	if ( !pWeapon )
 		return;
 
+	
 	for ( i = 0; i < 32; i++ )
 	{
 		pCurrent = g_pWpns[ i ];
@@ -793,6 +794,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 		}
 
 		pfrom = &from->weapondata[ i ];
+		//gEngfuncs.Con_Printf("[%i]->m_iClip %i\n",i,pfrom->m_iClip);
 
 		pCurrent->m_fInReload			= pfrom->m_fInReload;
 		pCurrent->m_fInSpecialReload	= pfrom->m_fInSpecialReload;
@@ -875,6 +877,10 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	{
 		if ( player.m_flNextAttack <= 0 )
 		{
+//			if (player.pev->button & IN_ATTACK)
+//			{
+//				int lol = true;
+//			}
 			pWeapon->ItemPostFrame();
 		}
 	}

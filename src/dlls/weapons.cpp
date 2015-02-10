@@ -675,7 +675,6 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 		{
 			m_fFireOnEmpty = TRUE;
 		}
-
 		m_pPlayer->TabulateAmmo();
 		PrimaryAttack();
 	}

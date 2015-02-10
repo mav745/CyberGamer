@@ -456,6 +456,8 @@ void EV_FireGlock1( event_args_t *args )
 	vec3_t vecSrc, vecAiming;
 	vec3_t up, right, forward;
 
+	//gEngfuncs.Con_Printf("EV_FireGlock1");
+	
 	idx = args->entindex;
 	VectorCopy( args->origin, origin );
 	VectorCopy( args->angles, angles );

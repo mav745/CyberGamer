@@ -2691,7 +2691,7 @@ static void Mod_LoadBrushModel( model_t *mod, const void *buffer, qboolean *load
 		break;
 	case Q1BSP_VERSION:
 	case HLBSP_VERSION:
-		sample_size = 16;
+		sample_size = 16; //MAV: lightmap scale
 		break;
 	case XTBSP_VERSION:
 		sample_size = 8;

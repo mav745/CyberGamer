@@ -132,9 +132,11 @@ void HUD_PlaybackEvent( int flags, const edict_t *pInvoker, unsigned short event
 	vec3_t org;
 	vec3_t ang;
 
+	//gEngfuncs.Con_Printf("HUD_PlaybackEvent %i %i\n",g_runfuncs,g_finalstate);
+	
 	if ( !g_runfuncs || !g_finalstate )
 		 return;
-
+	
 	// Weapon prediction events are assumed to occur at the player's origin
 	org			= g_finalstate->playerstate.origin;
 	ang			= v_angles;
