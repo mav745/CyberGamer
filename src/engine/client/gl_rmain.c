@@ -271,67 +271,67 @@ int R_ComputeFxBlend( cl_entity_t *e )
 	offset = ((int)e->index ) * 363.0f; // Use ent index to de-sync these fx
 	renderAmt = e->curstate.renderamt;
 
-	switch( e->curstate.renderfx ) 
+	switch( e->curstate.renderfx )
 	{
 	case kRenderFxPulseSlowWide:
-		blend = renderAmt + 0x40 * sin( RI.refdef.time * 2 + offset );	
+		blend = (int)(renderAmt + 0x40 * sinf( RI.refdef.time * 2 + offset ));
 		break;
 	case kRenderFxPulseFastWide:
-		blend = renderAmt + 0x40 * sin( RI.refdef.time * 8 + offset );
+		blend = (int)(renderAmt + 0x40 * sinf( RI.refdef.time * 8 + offset ));
 		break;
 	case kRenderFxPulseSlow:
-		blend = renderAmt + 0x10 * sin( RI.refdef.time * 2 + offset );
+		blend = (int)(renderAmt + 0x10 * sinf( RI.refdef.time * 2 + offset ));
 		break;
 	case kRenderFxPulseFast:
-		blend = renderAmt + 0x10 * sin( RI.refdef.time * 8 + offset );
+		blend = (int)(renderAmt + 0x10 * sinf( RI.refdef.time * 8 + offset ));
 		break;
 	// JAY: HACK for now -- not time based
-	case kRenderFxFadeSlow:			
-		if( renderAmt > 0 ) 
+	case kRenderFxFadeSlow:
+		if( renderAmt > 0 )
 			renderAmt -= 1;
 		else renderAmt = 0;
 		blend = renderAmt;
 		break;
 	case kRenderFxFadeFast:
-		if( renderAmt > 3 ) 
+		if( renderAmt > 3 )
 			renderAmt -= 4;
 		else renderAmt = 0;
 		blend = renderAmt;
 		break;
 	case kRenderFxSolidSlow:
-		if( renderAmt < 255 ) 
+		if( renderAmt < 255 )
 			renderAmt += 1;
 		else renderAmt = 255;
 		blend = renderAmt;
 		break;
 	case kRenderFxSolidFast:
-		if( renderAmt < 252 ) 
+		if( renderAmt < 252 )
 			renderAmt += 4;
 		else renderAmt = 255;
 		blend = renderAmt;
 		break;
 	case kRenderFxStrobeSlow:
-		blend = 20 * sin( RI.refdef.time * 4 + offset );
+		blend = (int)(20.f * sinf( RI.refdef.time * 4 + offset ));
 		if( blend < 0 ) blend = 0;
 		else blend = renderAmt;
 		break;
 	case kRenderFxStrobeFast:
-		blend = 20 * sin( RI.refdef.time * 16 + offset );
+		blend = (int)(20.f * sinf( RI.refdef.time * 16 + offset ));
 		if( blend < 0 ) blend = 0;
 		else blend = renderAmt;
 		break;
 	case kRenderFxStrobeFaster:
-		blend = 20 * sin( RI.refdef.time * 36 + offset );
+		blend = (int)(20.f * sinf( RI.refdef.time * 36 + offset ));
 		if( blend < 0 ) blend = 0;
 		else blend = renderAmt;
 		break;
 	case kRenderFxFlickerSlow:
-		blend = 20 * (sin( RI.refdef.time * 2 ) + sin( RI.refdef.time * 17 + offset ));
+		blend = (int)(20.f * (sinf( RI.refdef.time * 2 ) + sinf( RI.refdef.time * 17 + offset )));
 		if( blend < 0 ) blend = 0;
 		else blend = renderAmt;
 		break;
 	case kRenderFxFlickerFast:
-		blend = 20 * (sin( RI.refdef.time * 16 ) + sin( RI.refdef.time * 23 + offset ));
+		blend = (int)(20.f * (sinf( RI.refdef.time * 16 ) + sinf( RI.refdef.time * 23 + offset )));
 		if( blend < 0 ) blend = 0;
 		else blend = renderAmt;
 		break;
@@ -340,7 +340,7 @@ int R_ComputeFxBlend( cl_entity_t *e )
 		VectorCopy( e->origin, tmp );
 		VectorSubtract( tmp, RI.refdef.vieworg, tmp );
 		dist = DotProduct( tmp, RI.refdef.forward );
-			
+
 		// Turn off distance fade
 		if( e->curstate.renderfx == kRenderFxDistort )
 			dist = 1;
@@ -349,7 +349,7 @@ int R_ComputeFxBlend( cl_entity_t *e )
 		{
 			blend = 0;
 		}
-		else 
+		else
 		{
 			renderAmt = 180;
 			if( dist <= 100 ) blend = renderAmt;
@@ -367,7 +367,7 @@ int R_ComputeFxBlend( cl_entity_t *e )
 		if( e->curstate.rendermode == kRenderNormal )
 			blend = 255;
 		else blend = renderAmt;
-		break;	
+		break;
 	}
 
 	if( e->model->type != mod_brush )
@@ -646,7 +646,7 @@ static void R_SetupProjectionMatrix( const ref_params_t *fd, matrix4x4 m )
 	xMax = zNear * tan( fd->fov_x * M_PI / 360.0 );
 	xMin = -xMax;
 
-	Matrix4x4_CreateProjection( m, xMax, xMin, yMax, yMin, zNear, zFar );
+	Matrix4x4_CreateProjection( m, (float)xMax, (float)xMin, (float)yMax, (float)yMin, (float)zNear, (float)zFar );
 }
 
 /*
@@ -854,7 +854,7 @@ static void R_SetupGL( void )
 	if( RI.refdef.waterlevel >= 3 )
 	{
 		float	f;
-		f = sin( cl.time * 0.4f * ( M_PI * 2.7f ));
+		f = sinf( (float)cl.time * 0.4f * ( (float)M_PI * 2.7f ));
 		RI.refdef.fov_x += f;
 		RI.refdef.fov_y -= f;
 	}
@@ -870,10 +870,10 @@ static void R_SetupGL( void )
 		int	x, x2, y, y2;
 
 		// set up viewport (main, playersetup)
-		x = floor( RI.viewport[0] * glState.width / glState.width );
-		x2 = ceil(( RI.viewport[0] + RI.viewport[2] ) * glState.width / glState.width );
-		y = floor( glState.height - RI.viewport[1] * glState.height / glState.height );
-		y2 = ceil( glState.height - ( RI.viewport[1] + RI.viewport[3] ) * glState.height / glState.height );
+		x = (int)floorf( RI.viewport[0] * glState.width / glState.width );
+		x2 = (int)ceilf(( RI.viewport[0] + RI.viewport[2] ) * glState.width / glState.width );
+		y = (int)floorf( glState.height - RI.viewport[1] * glState.height / glState.height );
+		y2 = (int)ceilf( glState.height - ( RI.viewport[1] + RI.viewport[3] ) * glState.height / glState.height );
 
 		pglViewport( x, y2, x2 - x, y - y2 );
 	}
@@ -940,7 +940,7 @@ static gltexture_t *R_RecursiveFindWaterTexture( const mnode_t *node, const mnod
 	gltexture_t *tex = NULL;
 
 	// assure the initial node is not null
-	// we could check it here, but we would rather check it 
+	// we could check it here, but we would rather check it
 	// outside the call to get rid of one additional recursion level
 	ASSERT( node != NULL );
 
@@ -961,7 +961,7 @@ static gltexture_t *R_RecursiveFindWaterTexture( const mnode_t *node, const mnod
 		// find texture
 		pleaf = (mleaf_t *)node;
 		mark = pleaf->firstmarksurface;
-		c = pleaf->nummarksurfaces;	
+		c = pleaf->nummarksurfaces;
 
 		for( i = 0; i < c; i++, mark++ )
 		{
@@ -1039,7 +1039,7 @@ static void R_CheckFog( void )
 		if( ent && ent->model && ent->model->type == mod_brush )
 		{
 			msurface_t	*surf;
-	
+
 			count = ent->model->nummodelsurfaces;
 
 			for( i = 0, surf = &ent->model->surfaces[ent->model->firstmodelsurface]; i < count; i++, surf++ )
@@ -1116,7 +1116,7 @@ void R_DrawEntitiesOnList( void )
 
 		RI.currententity = tr.solid_entities[i];
 		RI.currentmodel = RI.currententity->model;
-	
+
 		ASSERT( RI.currententity != NULL );
 		ASSERT( RI.currententity->model != NULL );
 
@@ -1137,7 +1137,7 @@ void R_DrawEntitiesOnList( void )
 	}
 
 	if( !RI.refdef.onlyClientDraw )
-          {
+		  {
 		CL_DrawBeams( false );
 	}
 
@@ -1162,7 +1162,7 @@ void R_DrawEntitiesOnList( void )
 
 		RI.currententity = tr.trans_entities[i];
 		RI.currentmodel = RI.currententity->model;
-	
+
 		ASSERT( RI.currententity != NULL );
 		ASSERT( RI.currententity->model != NULL );
 
@@ -1385,7 +1385,7 @@ void R_DrawCubemapView( const vec3_t origin, const vec3_t angles, int size )
 	VectorCopy( origin, fd->vieworg );
 	VectorCopy( angles, fd->viewangles );
 	VectorCopy( fd->vieworg, RI.pvsorigin );
-		
+
 	// setup viewport
 	RI.viewport[0] = fd->viewport[0];
 	RI.viewport[1] = fd->viewport[1];
@@ -1512,7 +1512,7 @@ static void R_EnvShot( const float *vieworg, const char *name, int skyshot, int 
 	if( !name )
 	{
 		MsgDev( D_ERROR, "R_%sShot: bad name\n", skyshot ? "Sky" : "Env" );
-		return; 
+		return;
 	}
 
 	if( cls.scrshot_action != scrshot_inactive )
@@ -1579,7 +1579,7 @@ static void CL_GetBeamChains( BEAM ***active_beams, BEAM ***free_beams, particle
 {
 	*active_beams = &cl_active_beams;
 	*free_beams = &cl_free_beams;
-	*free_trails = &cl_free_trails; 
+	*free_trails = &cl_free_trails;
 }
 
 static void GL_SetWorldviewProjectionMatrix( const float *glmatrix )
@@ -1591,7 +1591,7 @@ static void GL_SetWorldviewProjectionMatrix( const float *glmatrix )
 
 static const char *GL_TextureName( unsigned int texnum )
 {
-	return R_GetTexture( texnum )->name;	
+	return R_GetTexture( texnum )->name;
 }
 
 static const byte *GL_TextureData( unsigned int texnum )
@@ -1600,12 +1600,12 @@ static const byte *GL_TextureData( unsigned int texnum )
 
 	if( pic != NULL )
 		return pic->buffer;
-	return NULL;	
+	return NULL;
 }
 
 static int GL_LoadTextureNoFilter( const char *name, const byte *buf, size_t size, int flags )
 {
-	return GL_LoadTexture( name, buf, size, flags, NULL );	
+	return GL_LoadTexture( name, buf, size, flags, NULL );
 }
 
 static const ref_overview_t *GL_GetOverviewParms( void )
@@ -1646,7 +1646,7 @@ static char **pfnGetFilesList( const char *pattern, int *numFiles, int gamediron
 	if( numFiles ) *numFiles = t->numfilenames;
 	return t->filenames;
 }
-	
+
 static render_api_t gRenderAPI =
 {
 	GL_RenderGetParm,

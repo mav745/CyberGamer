@@ -653,7 +653,7 @@ void CBaseEntity :: SUB_StartFadeOut ( void )
 	pev->solid = SOLID_NOT;
 	pev->avelocity = g_vecZero;
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	SetThink ( &CBaseEntity::SUB_FadeOut );
 }
 
@@ -662,12 +662,12 @@ void CBaseEntity :: SUB_FadeOut ( void  )
 	if ( pev->renderamt > 7 )
 	{
 		pev->renderamt -= 7;
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 	else
 	{
 		pev->renderamt = 0;
-		pev->nextthink = gpGlobals->time + 0.2;
+		pev->nextthink = gpGlobals->time + 0.2f;
 		SetThink ( &CBaseEntity::SUB_Remove );
 	}
 }
@@ -701,7 +701,7 @@ void CGib :: WaitTillLand ( void )
 	else
 	{
 		// wait and check again in another half second.
-		pev->nextthink = gpGlobals->time + 0.5;
+		pev->nextthink = gpGlobals->time + 0.5f;
 	}
 }
 
@@ -718,7 +718,7 @@ void CGib :: BounceGibTouch ( CBaseEntity *pOther )
 
 	if (pev->flags & FL_ONGROUND)
 	{
-		pev->velocity = pev->velocity * 0.9;
+		pev->velocity = pev->velocity * 0.9f;
 		pev->angles.x = 0;
 		pev->angles.z = 0;
 		pev->avelocity.x = 0;
@@ -739,9 +739,9 @@ void CGib :: BounceGibTouch ( CBaseEntity *pOther )
 		if ( m_material != matNone && RANDOM_LONG(0,2) == 0 )
 		{
 			float volume;
-			float zvel = fabs(pev->velocity.z);
+			float zvel = fabsf(pev->velocity.z);
 
-			volume = 0.8 * min(1.0, ((float)zvel) / 450.0);
+			volume = 0.8f * min(1.0f, zvel / 450.0f);
 
 			CBreakable::MaterialSoundRandom( edict(), (Materials)m_material, volume );
 		}
@@ -1010,7 +1010,7 @@ int CBaseMonster :: DeadTakeDamage( entvars_t *pevInflictor, entvars_t *pevAttac
 			return 0;
 		}
 		// Accumulate corpse gibbing damage, so you can gib with multiple hits
-		pev->health -= flDamage * 0.1;
+		pev->health -= flDamage * 0.1f;
 	}
 
 	return 1;
@@ -1019,11 +1019,11 @@ int CBaseMonster :: DeadTakeDamage( entvars_t *pevInflictor, entvars_t *pevAttac
 
 float CBaseMonster :: DamageForce( float damage )
 {
-	float force = damage * ((32 * 32 * 72.0) / (pev->size.x * pev->size.y * pev->size.z)) * 5;
+	float force = damage * ((32 * 32 * 72.0f) / (pev->size.x * pev->size.y * pev->size.z)) * 5;
 
-	if ( force > 1000.0)
+	if ( force > 1000.0f)
 	{
-		force = 1000.0;
+		force = 1000.0f;
 	}
 
 	return force;
@@ -1112,13 +1112,13 @@ void RadiusDamage( Vector vecSrc, entvars_t *pevInflictor, entvars_t *pevAttacke
 
 void CBaseMonster :: RadiusDamage(entvars_t* pevInflictor, entvars_t*	pevAttacker, float flDamage, int iClassIgnore, int bitsDamageType )
 {
-	::RadiusDamage( pev->origin, pevInflictor, pevAttacker, flDamage, flDamage * 2.5, iClassIgnore, bitsDamageType );
+	::RadiusDamage( pev->origin, pevInflictor, pevAttacker, flDamage, flDamage * 2.5f, iClassIgnore, bitsDamageType );
 }
 
 
 void CBaseMonster :: RadiusDamage( Vector vecSrc, entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, int iClassIgnore, int bitsDamageType )
 {
-	::RadiusDamage( vecSrc, pevInflictor, pevAttacker, flDamage, flDamage * 2.5, iClassIgnore, bitsDamageType );
+	::RadiusDamage( vecSrc, pevInflictor, pevAttacker, flDamage, flDamage * 2.5f, iClassIgnore, bitsDamageType );
 }
 
 
@@ -1140,7 +1140,7 @@ CBaseEntity* CBaseMonster :: CheckTraceHullAttack( float flDist, int iDamage, in
 		UTIL_MakeAimVectors( pev->angles );
 
 	Vector vecStart = pev->origin;
-	vecStart.z += pev->size.z * 0.5;
+	vecStart.z += pev->size.z * 0.5f;
 	Vector vecEnd = vecStart + (gpGlobals->v_forward * flDist );
 
 	UTIL_TraceHull( vecStart, vecEnd, dont_ignore_monsters, head_hull, ENT(pev), &tr );
@@ -1151,7 +1151,7 @@ CBaseEntity* CBaseMonster :: CheckTraceHullAttack( float flDist, int iDamage, in
 
 		if ( iDamage > 0 )
 		{
-			pEntity->TakeDamage( pev, pev, iDamage, iDmgType );
+			pEntity->TakeDamage( pev, pev, static_cast<float>(iDamage), iDmgType );
 		}
 
 		return pEntity;
@@ -1442,7 +1442,7 @@ void CBaseEntity::FireBullets(ULONG cShots, Vector vecSrc, Vector vecDirShooting
 
 			if ( iDamage )
 			{
-				pEntity->TraceAttack(pevAttacker, iDamage, vecDir, &tr, DMG_BULLET | ((iDamage > 16) ? DMG_ALWAYSGIB : DMG_NEVERGIB) );
+				pEntity->TraceAttack(pevAttacker, static_cast<float>(iDamage), vecDir, &tr, DMG_BULLET | ((iDamage > 16) ? DMG_ALWAYSGIB : DMG_NEVERGIB) );
 
 				TEXTURETYPE_PlaySound(&tr, vecSrc, vecEnd, iBulletType);
 				DecalGunshot( &tr, iBulletType );
@@ -1488,7 +1488,7 @@ void CBaseEntity::FireBullets(ULONG cShots, Vector vecSrc, Vector vecDirShooting
 			}
 		}
 		// make bullet trails
-		UTIL_BubbleTrail( vecSrc, tr.vecEndPos, (flDistance * tr.flFraction) / 64.0 );
+		UTIL_BubbleTrail( vecSrc, tr.vecEndPos, static_cast<int>(flDistance * tr.flFraction / 64.0) );
 	}
 	ApplyMultiDamage(pev, pevAttacker);
 }
@@ -1540,7 +1540,7 @@ Vector CBaseEntity::FireBulletsPlayer ( ULONG cShots, Vector vecSrc, Vector vecD
 
 			if ( iDamage )
 			{
-				pEntity->TraceAttack(pevAttacker, iDamage, vecDir, &tr, DMG_BULLET | ((iDamage > 16) ? DMG_ALWAYSGIB : DMG_NEVERGIB) );
+				pEntity->TraceAttack(pevAttacker, static_cast<float>(iDamage), vecDir, &tr, DMG_BULLET | ((iDamage > 16) ? DMG_ALWAYSGIB : DMG_NEVERGIB) );
 
 				TEXTURETYPE_PlaySound(&tr, vecSrc, vecEnd, iBulletType);
 				DecalGunshot( &tr, iBulletType );
@@ -1578,11 +1578,11 @@ Vector CBaseEntity::FireBulletsPlayer ( ULONG cShots, Vector vecSrc, Vector vecD
 			}
 		}
 		// make bullet trails
-		UTIL_BubbleTrail( vecSrc, tr.vecEndPos, (flDistance * tr.flFraction) / 64.0 );
+		UTIL_BubbleTrail( vecSrc, tr.vecEndPos, static_cast<int>(flDistance * tr.flFraction / 64.0) );
 	}
 	ApplyMultiDamage(pev, pevAttacker);
 
-	return Vector( x * vecSpread.x, y * vecSpread.y, 0.0 );
+	return Vector( x * vecSpread.x, y * vecSpread.y, 0.0f );
 }
 
 void CBaseEntity :: TraceBleed( float flDamage, Vector vecDir, TraceResult *ptr, int bitsDamageType )

@@ -55,7 +55,7 @@ void SCR_DrawFPS( void )
 	char		fpsstring[32];
 	int		offset;
 
-	if( cls.state != ca_active ) return; 
+	if( cls.state != ca_active ) return;
 	if( !cl_showfps->integer || cl.background ) return;
 
 	switch( cls.scrshot_action )
@@ -77,7 +77,7 @@ void SCR_DrawFPS( void )
 	}
 
 	framecount++;
-	calc = framerate;
+	calc = (float)framerate;
 
 	if( calc < 1.0f )
 	{
@@ -88,7 +88,7 @@ void SCR_DrawFPS( void )
 	{
 		Q_snprintf( fpsstring, sizeof( fpsstring ), "%4i fps", (int)(calc + 0.5));
 		MakeRGBA( color, 255, 255, 255, 255 );
-          }
+		  }
 
 	Con_DrawStringLen( fpsstring, &offset, NULL );
 	Con_DrawString( scr_width->integer - offset - 2, 4, fpsstring, color );
@@ -106,11 +106,11 @@ void SCR_NetSpeeds( void )
 	static char	msg[MAX_SYSPATH];
 	int		x, y, height;
 	char		*p, *start, *end;
-	float		time = cl.mtime[0];
+	float		time = (float)cl.mtime[0];
 	rgba_t		color;
 
 	if( !net_speeds->integer ) return;
-	if( cls.state != ca_active ) return; 
+	if( cls.state != ca_active ) return;
 
 	switch( net_speeds->integer )
 	{
@@ -118,24 +118,24 @@ void SCR_NetSpeeds( void )
 		if( cls.netchan.compress )
 		{
 			Q_snprintf( msg, sizeof( msg ), "Game Time: %02d:%02d\nTotal received from server:\n Huffman %s\nUncompressed %s\n",
-			(int)(time / 60.0f ), (int)fmod( time, 60.0f ), Q_memprint( cls.netchan.total_received ), Q_memprint( cls.netchan.total_received_uncompressed ));
+			(int)(time / 60.0f ), (int)fmodf( time, 60.0f ), Q_memprint( (float)cls.netchan.total_received ), Q_memprint( (float)cls.netchan.total_received_uncompressed ));
 		}
 		else
 		{
 			Q_snprintf( msg, sizeof( msg ), "Game Time: %02d:%02d\nTotal received from server:\nUncompressed %s\n",
-			(int)(time / 60.0f ), (int)fmod( time, 60.0f ), Q_memprint( cls.netchan.total_received_uncompressed ));
+			(int)(time / 60.0f ), (int)fmodf( time, 60.0f ), Q_memprint( (float)cls.netchan.total_received_uncompressed ));
 		}
 		break;
 	case 2:
 		if( cls.netchan.compress )
 		{
 			Q_snprintf( msg, sizeof( msg ), "Game Time: %02d:%02d\nTotal sended to server:\nHuffman %s\nUncompressed %s\n",
-			(int)(time / 60.0f ), (int)fmod( time, 60.0f ), Q_memprint( cls.netchan.total_sended ), Q_memprint( cls.netchan.total_sended_uncompressed ));
+			(int)(time / 60.0f ), (int)fmodf( time, 60.0f ), Q_memprint( (float)cls.netchan.total_sended ), Q_memprint( (float)cls.netchan.total_sended_uncompressed ));
 		}
 		else
 		{
 			Q_snprintf( msg, sizeof( msg ), "Game Time: %02d:%02d\nTotal sended to server:\nUncompressed %s\n",
-			(int)(time / 60.0f ), (int)fmod( time, 60.0f ), Q_memprint( cls.netchan.total_sended_uncompressed ));
+			(int)(time / 60.0f ), (int)fmodf( time, 60.0f ), Q_memprint( (float)cls.netchan.total_sended_uncompressed ));
 		}
 		break;
 	default: return;
@@ -247,7 +247,7 @@ void SCR_MakeScreenShot( void )
 	// report
 	if( iRet )
 	{
-		// snapshots don't writes message about image		
+		// snapshots don't writes message about image
 		if( cls.scrshot_action != scrshot_snapshot )
 			MsgDev( D_AICONSOLE, "Write %s\n", cls.shotname );
 	}
@@ -268,7 +268,7 @@ void SCR_DrawPlaque( void )
 	{
 		levelshot = GL_LoadTexture( cl_levelshot_name->string, NULL, 0, TF_IMAGE, NULL );
 		GL_SetRenderMode( kRenderNormal );
-		R_DrawStretchPic( 0, 0, scr_width->integer, scr_height->integer, 0, 0, 1, 1, levelshot );
+		R_DrawStretchPic( 0.f, 0.f, (float)scr_width->integer, (float)scr_height->integer, 0.f, 0.f, 1.f, 1.f, levelshot );
 		if( !cl.background ) CL_DrawHUD( CL_LOADING );
 	}
 }
@@ -289,7 +289,7 @@ void SCR_BeginLoadingPlaque( qboolean is_background )
 
 	cls.draw_changelevel = is_background ? false : true;
 	SCR_UpdateScreen();
-	cls.disable_screen = host.realtime;
+	cls.disable_screen = (float)host.realtime;
 	cls.disable_servercount = cl.servercount;
 	cl.background = is_background;		// set right state before svc_serverdata is came
 }
@@ -375,7 +375,7 @@ void SCR_TileClear( void )
 	right = left + cl.refdef.viewport[2] - 1;
 
 	if( clear.y1 < top )
-	{	
+	{
 		// clear above view screen
 		i = clear.y2 < top-1 ? clear.y2 : top - 1;
 		R_DrawTileClear( clear.x1, clear.y1, clear.x2 - clear.x1 + 1, i - clear.y1 + 1 );
@@ -383,7 +383,7 @@ void SCR_TileClear( void )
 	}
 
 	if( clear.y2 > bottom )
-	{	
+	{
 		// clear below view screen
 		i = clear.y1 > bottom + 1 ? clear.y1 : bottom + 1;
 		R_DrawTileClear( clear.x1, i, clear.x2 - clear.x1 + 1, clear.y2 - i + 1 );
@@ -399,7 +399,7 @@ void SCR_TileClear( void )
 	}
 
 	if( clear.x2 > right )
-	{	
+	{
 		// clear left of view screen
 		i = clear.x1 > right + 1 ? clear.x1 : right + 1;
 		R_DrawTileClear( i, clear.y1, clear.x2 - i + 1, clear.y2 - clear.y1 + 1 );
@@ -459,11 +459,11 @@ void SCR_LoadCreditsFont( void )
 
 		// half-life font with variable chars witdh
 		buffer = FS_LoadFile( "gfx/creditsfont.fnt", &length, false );
-	
+
 		if( buffer && length >= sizeof( qfont_t ))
 		{
 			int	i;
-	
+
 			src = (qfont_t *)buffer;
 			cls.creditsFont.charHeight = clgame.scrInfo.iCharHeight = src->rowheight;
 
@@ -474,7 +474,8 @@ void SCR_LoadCreditsFont( void )
 				cls.creditsFont.fontRc[i].right = cls.creditsFont.fontRc[i].left + src->fontinfo[i].charwidth;
 				cls.creditsFont.fontRc[i].top = (word)src->fontinfo[i].startoffset / fontWidth;
 				cls.creditsFont.fontRc[i].bottom = cls.creditsFont.fontRc[i].top + src->rowheight;
-				cls.creditsFont.charWidths[i] = clgame.scrInfo.charWidths[i] = src->fontinfo[i].charwidth;
+				clgame.scrInfo.charWidths[i] = src->fontinfo[i].charwidth;
+				cls.creditsFont.charWidths[i] = (byte)src->fontinfo[i].charwidth;
 			}
 			cls.creditsFont.valid = true;
 		}
@@ -525,7 +526,7 @@ void SCR_RegisterTextures( void )
 	cls.pauseIcon = GL_LoadTexture( "gfx.wad/paused.lmp", NULL, 0, TF_IMAGE, NULL );
 	if( cl_allow_levelshots->integer )
 		cls.loadingBar = GL_LoadTexture( "gfx.wad/lambda.lmp", NULL, 0, TF_IMAGE|TF_LUMINANCE, NULL );
-	else cls.loadingBar = GL_LoadTexture( "gfx.wad/lambda.lmp", NULL, 0, TF_IMAGE, NULL ); 
+	else cls.loadingBar = GL_LoadTexture( "gfx.wad/lambda.lmp", NULL, 0, TF_IMAGE, NULL );
 	cls.tileImage = GL_LoadTexture( "gfx.wad/backtile.lmp", NULL, 0, TF_UNCOMPRESSED|TF_NOPICMIP|TF_NOMIPMAP, NULL );
 	cls.hChromeSprite = pfnSPR_Load( "sprites/shellchrome.spr" );
 }
@@ -574,7 +575,7 @@ void SCR_VidInit( void )
 	VGui_Startup ();
 
 	clgame.load_sequence++; // now all hud sprites are invalid
-	
+
 	// vid_state has changed
 	if( menu.hInstance ) menu.dllFuncs.pfnVidInit();
 	if( clgame.hInstance ) clgame.dllFuncs.pfnVidInit();
@@ -602,7 +603,7 @@ void SCR_Init( void )
 	cl_envshot_size = Cvar_Get( "cl_envshot_size", "256", CVAR_ARCHIVE, "envshot size of cube side" );
 	scr_dark = Cvar_Get( "v_dark", "0", 0, "starts level from dark screen" );
 	scr_viewsize = Cvar_Get( "viewsize", "120", CVAR_ARCHIVE, "screen size" );
-	
+
 	// register our commands
 	Cmd_AddCommand( "timerefresh", SCR_TimeRefresh_f, "turn quickly and print rendering statistcs" );
 	Cmd_AddCommand( "skyname", CL_SetSky_f, "set new skybox by basename" );
@@ -623,7 +624,7 @@ void SCR_Init( void )
 	SCR_VidInit();
 
 	if( host.state != HOST_RESTART )
-          {
+		  {
 		if( host.developer && Sys_CheckParm( "-toconsole" ))
 			Cbuf_AddText( "toggleconsole\n" );
 		else UI_SetActiveMenu( true );

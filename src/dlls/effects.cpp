@@ -77,18 +77,18 @@ void CBubbling::Spawn( void )
 	pev->solid = SOLID_NOT;							// Remove model & collisions
 	pev->renderamt = 0;								// The engine won't draw this model if this is set to 0 and blending is on
 	pev->rendermode = kRenderTransTexture;
-	int speed = pev->speed > 0 ? pev->speed : -pev->speed;
+	int speed = static_cast<int>(pev->speed > 0 ? pev->speed : -pev->speed);
 
 	// HACKHACK!!! - Speed in rendercolor
-	pev->rendercolor.x = speed >> 8;
-	pev->rendercolor.y = speed & 255;
-	pev->rendercolor.z = (pev->speed < 0) ? 1 : 0;
+	pev->rendercolor.x = static_cast<float>(speed >> 8);
+	pev->rendercolor.y = static_cast<float>(speed & 255);
+	pev->rendercolor.z = (pev->speed < 0) ? 1.f : 0.f;
 
 
 	if ( !(pev->spawnflags & SF_BUBBLES_STARTOFF) )
 	{
 		SetThink( &CBubbling::FizzThink );
-		pev->nextthink = gpGlobals->time + 2.0;
+		pev->nextthink = gpGlobals->time + 2.0f;
 		m_state = 1;
 	}
 	else
@@ -109,7 +109,7 @@ void CBubbling::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	if ( m_state )
 	{
 		SetThink( &CBubbling::FizzThink );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 	else
 	{
@@ -133,7 +133,7 @@ void CBubbling::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "current"))
 	{
-		pev->speed = atoi(pkvd->szValue);
+		pev->speed = static_cast<float>(atoi(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -151,9 +151,9 @@ void CBubbling::FizzThink( void )
 	MESSAGE_END();
 
 	if ( m_frequency > 19 )
-		pev->nextthink = gpGlobals->time + 0.5;
+		pev->nextthink = gpGlobals->time + 0.5f;
 	else
-		pev->nextthink = gpGlobals->time + 2.5 - (0.1 * m_frequency);
+		pev->nextthink = gpGlobals->time + 2.5f - (0.1f * m_frequency);
 }
 
 // --------------------------------------------------
@@ -473,7 +473,7 @@ void CLightning::Spawn( void )
 		if ( pev->dmg > 0 )
 		{
 			SetThink( &CLightning::DamageThink );
-			pev->nextthink = gpGlobals->time + 0.1;
+			pev->nextthink = gpGlobals->time + 0.1f;
 		}
 		if ( pev->targetname )
 		{
@@ -499,7 +499,7 @@ void CLightning::Spawn( void )
 		if ( FStringNull(pev->targetname) || FBitSet(pev->spawnflags, SF_BEAM_STARTON) )
 		{
 			SetThink( &CLightning::StrikeThink );
-			pev->nextthink = gpGlobals->time + 1.0;
+			pev->nextthink = gpGlobals->time + 1.0f;
 		}
 	}
 }
@@ -532,7 +532,7 @@ void CLightning::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "life"))
 	{
-		m_life = atof(pkvd->szValue);
+		m_life = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "BoltWidth"))
@@ -552,7 +552,7 @@ void CLightning::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "StrikeTime"))
 	{
-		m_restrike = atof(pkvd->szValue);
+		m_restrike = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "texture"))
@@ -567,12 +567,12 @@ void CLightning::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "Radius"))
 	{
-		m_radius = atof( pkvd->szValue );
+		m_radius = static_cast<float>(atof( pkvd->szValue ));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "damage"))
 	{
-		pev->dmg = atof(pkvd->szValue);
+		pev->dmg = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -617,7 +617,7 @@ void CLightning::StrikeUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_T
 	else
 	{
 		SetThink( &CLightning::StrikeThink );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 
 	if ( !FBitSet( pev->spawnflags, SF_BEAM_TOGGLE ) )
@@ -721,14 +721,14 @@ void CLightning::StrikeThink( void )
 
 			WRITE_SHORT( m_spriteTexture );
 			WRITE_BYTE( m_frameStart ); // framestart
-			WRITE_BYTE( (int)pev->framerate); // framerate
-			WRITE_BYTE( (int)(m_life*10.0) ); // life
+			WRITE_BYTE( static_cast<int>(pev->framerate)); // framerate
+			WRITE_BYTE( static_cast<int>(m_life*10.0f) ); // life
 			WRITE_BYTE( m_boltWidth );  // width
 			WRITE_BYTE( m_noiseAmplitude );   // noise
-			WRITE_BYTE( (int)pev->rendercolor.x );   // r, g, b
-			WRITE_BYTE( (int)pev->rendercolor.y );   // r, g, b
-			WRITE_BYTE( (int)pev->rendercolor.z );   // r, g, b
-			WRITE_BYTE( pev->renderamt );	// brightness
+			WRITE_BYTE( static_cast<int>(pev->rendercolor.x) );   // r, g, b
+			WRITE_BYTE( static_cast<int>(pev->rendercolor.y) );   // r, g, b
+			WRITE_BYTE( static_cast<int>(pev->rendercolor.z) );   // r, g, b
+			WRITE_BYTE( static_cast<int>(pev->renderamt) );	// brightness
 			WRITE_BYTE( m_speed );		// speed
 		MESSAGE_END();
 		DoSparks( pStart->pev->origin, pEnd->pev->origin );
@@ -766,7 +766,7 @@ void CBeam::BeamDamage( TraceResult *ptr )
 
 void CLightning::DamageThink( void )
 {
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	TraceResult tr;
 	UTIL_TraceLine( GetStartPos(), GetEndPos(), dont_ignore_monsters, NULL, &tr );
 	BeamDamage( &tr );
@@ -787,14 +787,14 @@ void CLightning::Zap( const Vector &vecSrc, const Vector &vecDest )
 		WRITE_COORD(vecDest.z);
 		WRITE_SHORT( m_spriteTexture );
 		WRITE_BYTE( m_frameStart ); // framestart
-		WRITE_BYTE( (int)pev->framerate); // framerate
-		WRITE_BYTE( (int)(m_life*10.0) ); // life
+		WRITE_BYTE( static_cast<int>(pev->framerate)); // framerate
+		WRITE_BYTE( static_cast<int>(m_life*10.0f) ); // life
 		WRITE_BYTE( m_boltWidth );  // width
 		WRITE_BYTE( m_noiseAmplitude );   // noise
-		WRITE_BYTE( (int)pev->rendercolor.x );   // r, g, b
-		WRITE_BYTE( (int)pev->rendercolor.y );   // r, g, b
-		WRITE_BYTE( (int)pev->rendercolor.z );   // r, g, b
-		WRITE_BYTE( pev->renderamt );	// brightness
+		WRITE_BYTE( static_cast<int>(pev->rendercolor.x) );   // r, g, b
+		WRITE_BYTE( static_cast<int>(pev->rendercolor.y) );   // r, g, b
+		WRITE_BYTE( static_cast<int>(pev->rendercolor.z) );   // r, g, b
+		WRITE_BYTE( static_cast<int>(pev->renderamt) );	// brightness
 		WRITE_BYTE( m_speed );		// speed
 	MESSAGE_END();
 #else
@@ -937,7 +937,7 @@ void CLightning::BeamUpdateVars( void )
 
 	SetWidth( m_boltWidth );
 	SetNoise( m_noiseAmplitude );
-	SetFrame( m_frameStart );
+	SetFrame( static_cast<float>(m_frameStart) );
 	SetScrollRate( m_speed );
 	if ( pev->spawnflags & SF_BEAM_SHADEIN )
 		SetFlags( BEAM_FSHADEIN );
@@ -978,7 +978,12 @@ void CLaser::Spawn( void )
 		m_pSprite = NULL;
 
 	if ( m_pSprite )
-		m_pSprite->SetTransparency( kRenderGlow, pev->rendercolor.x, pev->rendercolor.y, pev->rendercolor.z, pev->renderamt, pev->renderfx );
+		m_pSprite->SetTransparency( kRenderGlow,
+									static_cast<int>(pev->rendercolor.x),
+									static_cast<int>(pev->rendercolor.y),
+									static_cast<int>(pev->rendercolor.z),
+									static_cast<int>(pev->renderamt),
+									pev->renderfx );
 
 	if ( pev->targetname && !(pev->spawnflags & SF_BEAM_STARTON) )
 		TurnOff();
@@ -1003,7 +1008,7 @@ void CLaser::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "width"))
 	{
-		SetWidth( atof(pkvd->szValue) );
+		SetWidth( static_cast<int>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "NoiseAmplitude"))
@@ -1028,12 +1033,12 @@ void CLaser::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "framestart"))
 	{
-		pev->frame = atoi(pkvd->szValue);
+		pev->frame = static_cast<float>(atoi(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "damage"))
 	{
-		pev->dmg = atof(pkvd->szValue);
+		pev->dmg = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1106,7 +1111,7 @@ void CLaser::StrikeThink( void )
 
 	UTIL_TraceLine( pev->origin, m_firePosition, dont_ignore_monsters, NULL, &tr );
 	FireAtPoint( tr );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 
@@ -1145,9 +1150,9 @@ void CGlow::Spawn( void )
 	PRECACHE_MODEL( (char *)STRING(pev->model) );
 	SET_MODEL( ENT(pev), STRING(pev->model) );
 
-	m_maxFrame = (float) MODEL_FRAMES( pev->modelindex ) - 1;
-	if ( m_maxFrame > 1.0 && pev->framerate != 0 )
-		pev->nextthink	= gpGlobals->time + 0.1;
+	m_maxFrame = static_cast<float>(MODEL_FRAMES( pev->modelindex ) - 1);
+	if ( m_maxFrame > 1.0f && pev->framerate != 0 )
+		pev->nextthink	= gpGlobals->time + 0.1f;
 
 	m_lastTime = gpGlobals->time;
 }
@@ -1157,7 +1162,7 @@ void CGlow::Think( void )
 {
 	Animate( pev->framerate * (gpGlobals->time - m_lastTime) );
 
-	pev->nextthink		= gpGlobals->time + 0.1;
+	pev->nextthink		= gpGlobals->time + 0.1f;
 	m_lastTime			= gpGlobals->time;
 }
 
@@ -1189,7 +1194,7 @@ void CSprite::Spawn( void )
 	Precache();
 	SET_MODEL( ENT(pev), STRING(pev->model) );
 
-	m_maxFrame = (float) MODEL_FRAMES( pev->modelindex ) - 1;
+	m_maxFrame = static_cast<float>(MODEL_FRAMES( pev->modelindex ) - 1);
 	if ( pev->targetname && !(pev->spawnflags & SF_SPRITE_STARTON) )
 		TurnOff();
 	else
@@ -1245,7 +1250,7 @@ void CSprite::AnimateThink( void )
 {
 	Animate( pev->framerate * (gpGlobals->time - m_lastTime) );
 
-	pev->nextthink		= gpGlobals->time + 0.1;
+	pev->nextthink		= gpGlobals->time + 0.1f;
 	m_lastTime			= gpGlobals->time;
 }
 
@@ -1283,7 +1288,7 @@ void CSprite::ExpandThink( void )
 	}
 	else
 	{
-		pev->nextthink		= gpGlobals->time + 0.1;
+		pev->nextthink		= gpGlobals->time + 0.1f;
 		m_lastTime			= gpGlobals->time;
 	}
 }
@@ -1405,17 +1410,17 @@ void CGibShooter::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flVelocity"))
 	{
-		m_flGibVelocity = atof(pkvd->szValue);
+		m_flGibVelocity = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flVariance"))
 	{
-		m_flVariance = atof(pkvd->szValue);
+		m_flVariance = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flGibLife"))
 	{
-		m_flGibLife = atof(pkvd->szValue);
+		m_flGibLife = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1682,15 +1687,15 @@ void CTestEffect::TestThink( void )
 #endif
 	}
 
-	if (t < 3.0)
+	if (t < 3.0f)
 	{
 		for (i = 0; i < m_iBeam; i++)
 		{
 			t = (gpGlobals->time - m_flBeamTime[i]) / ( 3 + m_flStartTime - m_flBeamTime[i]);
-			m_pBeam[i]->SetBrightness( 255 * t );
+			m_pBeam[i]->SetBrightness( static_cast<int>(255 * t) );
 			// m_pBeam[i]->SetScrollRate( 20 * t );
 		}
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 	else
 	{
@@ -1709,7 +1714,7 @@ void CTestEffect::TestThink( void )
 void CTestEffect::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
 	SetThink( &CTestEffect::TestThink );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	m_flStartTime = gpGlobals->time;
 }
 
@@ -1773,7 +1778,7 @@ void CBlood::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "amount"))
 	{
-		SetBloodAmount( atof(pkvd->szValue) );
+		SetBloodAmount( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1813,9 +1818,9 @@ Vector CBlood::BloodPosition( CBaseEntity *pActivator )
 void CBlood::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
 	if ( pev->spawnflags & SF_BLOOD_STREAM )
-		UTIL_BloodStream( BloodPosition(pActivator), Direction(), (Color() == BLOOD_COLOR_RED) ? 70 : Color(), BloodAmount() );
+		UTIL_BloodStream( BloodPosition(pActivator), Direction(), (Color() == BLOOD_COLOR_RED) ? 70 : Color(), (int)BloodAmount() );
 	else
-		UTIL_BloodDrips( BloodPosition(pActivator), Direction(), Color(), BloodAmount() );
+		UTIL_BloodDrips( BloodPosition(pActivator), Direction(), Color(), static_cast<int>(BloodAmount()) );
 
 	if ( pev->spawnflags & SF_BLOOD_DECAL )
 	{
@@ -1824,7 +1829,7 @@ void CBlood::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useTyp
 		TraceResult tr;
 
 		UTIL_TraceLine( start, start + forward * BloodAmount() * 2, ignore_monsters, NULL, &tr );
-		if ( tr.flFraction != 1.0 )
+		if ( tr.flFraction != 1.0f )
 			UTIL_BloodDecalTrace( &tr, Color() );
 	}
 }
@@ -1881,22 +1886,22 @@ void CShake::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "amplitude"))
 	{
-		SetAmplitude( atof(pkvd->szValue) );
+		SetAmplitude( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "frequency"))
 	{
-		SetFrequency( atof(pkvd->szValue) );
+		SetFrequency( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		SetDuration( atof(pkvd->szValue) );
+		SetDuration( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		SetRadius( atof(pkvd->szValue) );
+		SetRadius( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1946,12 +1951,12 @@ void CFade::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		SetDuration( atof(pkvd->szValue) );
+		SetDuration( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "holdtime"))
 	{
-		SetHoldTime( atof(pkvd->szValue) );
+		SetHoldTime( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1973,12 +1978,12 @@ void CFade::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType
 	{
 		if ( pActivator->IsNetClient() )
 		{
-			UTIL_ScreenFade( pActivator, pev->rendercolor, Duration(), HoldTime(), pev->renderamt, fadeFlags );
+			UTIL_ScreenFade( pActivator, pev->rendercolor, Duration(), HoldTime(), static_cast<int>(pev->renderamt), fadeFlags );
 		}
 	}
 	else
 	{
-		UTIL_ScreenFadeAll( pev->rendercolor, Duration(), HoldTime(), pev->renderamt, fadeFlags );
+		UTIL_ScreenFadeAll( pev->rendercolor, Duration(), HoldTime(), static_cast<int>(pev->renderamt), fadeFlags );
 	}
 	SUB_UseTargets( this, USE_TOGGLE, 0 );
 }
@@ -2046,7 +2051,7 @@ void CMessage::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "messagevolume"))
 	{
-		pev->scale = atof(pkvd->szValue) * 0.1;
+		pev->scale = static_cast<float>(atof(pkvd->szValue) * 0.1);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "messageattenuation"))
@@ -2229,7 +2234,7 @@ void CItemSoda::Spawn( void )
 	UTIL_SetSize ( pev, Vector ( 0, 0, 0 ), Vector ( 0, 0, 0 ) );
 
 	SetThink (&CItemSoda::CanThink);
-	pev->nextthink = gpGlobals->time + 0.5;
+	pev->nextthink = gpGlobals->time + 0.5f;
 }
 
 void CItemSoda::CanThink ( void )

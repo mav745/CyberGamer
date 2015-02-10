@@ -251,12 +251,12 @@ hull_t *Mod_HullForStudio( model_t *model, float frame, int sequence, vec3_t ang
 		Mod_SetStudioHullPlane( &studio_planes[j+4], phitbox[i].bone, 2, phitbox[i].bbmax[2] );
 		Mod_SetStudioHullPlane( &studio_planes[j+5], phitbox[i].bone, 2, phitbox[i].bbmin[2] );
 
-		studio_planes[j+0].dist += DotProductAbs( studio_planes[j+0].normal, size );
-		studio_planes[j+1].dist -= DotProductAbs( studio_planes[j+1].normal, size );
-		studio_planes[j+2].dist += DotProductAbs( studio_planes[j+2].normal, size );
-		studio_planes[j+3].dist -= DotProductAbs( studio_planes[j+3].normal, size );
-		studio_planes[j+4].dist += DotProductAbs( studio_planes[j+4].normal, size );
-		studio_planes[j+5].dist -= DotProductAbs( studio_planes[j+5].normal, size );
+		studio_planes[j+0].dist += DotProductFabs( studio_planes[j+0].normal, size );
+		studio_planes[j+1].dist -= DotProductFabs( studio_planes[j+1].normal, size );
+		studio_planes[j+2].dist += DotProductFabs( studio_planes[j+2].normal, size );
+		studio_planes[j+3].dist -= DotProductFabs( studio_planes[j+3].normal, size );
+		studio_planes[j+4].dist += DotProductFabs( studio_planes[j+4].normal, size );
+		studio_planes[j+5].dist -= DotProductFabs( studio_planes[j+5].normal, size );
 	}
 
 	// tell trace code about hitbox count
@@ -288,7 +288,7 @@ static void Mod_StudioCalcBoneAdj( float *adj, const byte *pcontroller )
 	int			i, j;
 	float			value;
 	mstudiobonecontroller_t	*pbonecontroller;
-	
+
 	pbonecontroller = (mstudiobonecontroller_t *)((byte *)mod_studiohdr + mod_studiohdr->bonecontrollerindex);
 
 	for( j = 0; j < mod_studiohdr->numbonecontrollers; j++ )
@@ -305,7 +305,7 @@ static void Mod_StudioCalcBoneAdj( float *adj, const byte *pcontroller )
 			{
 				value = pcontroller[i] * (360.0f / 256.0f) + pbonecontroller[j].start;
 			}
-			else 
+			else
 			{
 				value = pcontroller[i] / 255.0f;
 				value = bound( 0.0f, value, 1.0f );
@@ -352,11 +352,11 @@ static void Mod_StudioCalcBoneQuaterion( int frame, float s, mstudiobone_t *pbon
 		{
 			panimvalue = (mstudioanimvalue_t *)((byte *)panim + panim->offset[j+3]);
 			k = frame;
-			
+
 			// debug
 			if( panimvalue->num.total < panimvalue->num.valid )
 				k = 0;
-			
+
 			while( panimvalue->num.total <= k )
 			{
 				k -= panimvalue->num.total;
@@ -433,7 +433,7 @@ static void Mod_StudioCalcBonePosition( int frame, float s, mstudiobone_t *pbone
 		if( panim->offset[j] != 0.0f )
 		{
 			panimvalue = (mstudioanimvalue_t *)((byte *)panim + panim->offset[j]);
-			
+
 			k = frame;
 
 			// debug
@@ -446,7 +446,7 @@ static void Mod_StudioCalcBonePosition( int frame, float s, mstudiobone_t *pbone
 				k -= panimvalue->num.total;
 				panimvalue += panimvalue->num.valid + 1;
 
-  				// DEBUG
+				// DEBUG
 				if( panimvalue->num.total < panimvalue->num.valid )
 					k = 0;
 			}
@@ -532,25 +532,25 @@ StudioEstimateFrame
 static float Mod_StudioEstimateFrame( float frame, mstudioseqdesc_t *pseqdesc )
 {
 	double	f;
-	
+
 	if( pseqdesc->numframes <= 1 )
 		f = 0.0f;
 	else f = ( frame * ( pseqdesc->numframes - 1 )) / 256.0f;
- 
-	if( pseqdesc->flags & STUDIO_LOOPING ) 
+
+	if( pseqdesc->flags & STUDIO_LOOPING )
 	{
 		if( pseqdesc->numframes > 1 )
 			f -= (int)(f / (pseqdesc->numframes - 1)) *  (pseqdesc->numframes - 1);
 		if( f < 0.0f ) f += (pseqdesc->numframes - 1);
 	}
-	else 
+	else
 	{
 		if( f >= pseqdesc->numframes - 1.001f )
 			f = pseqdesc->numframes - 1.001f;
 		if( f < 0.0f )  f = 0.0f;
 	}
 
-	return f;
+	return (float)f;
 }
 
 /*
@@ -592,7 +592,7 @@ static mstudioanim_t *Mod_StudioGetAnim( model_t *m_pSubModel, mstudioseqdesc_t 
 	mstudioseqgroup_t	*pseqgroup;
 	cache_user_t	*paSequences;
 	size_t		filesize;
-          byte		*buf;
+		  byte		*buf;
 
 	pseqgroup = (mstudioseqgroup_t *)((byte *)mod_studiohdr + mod_studiohdr->seqgroupindex) + pseqdesc->seqgroup;
 	if( pseqdesc->seqgroup == 0 )
@@ -685,14 +685,14 @@ static void SV_StudioSetupBones( model_t *pModel,	float frame, int sequence, con
 	}
 
 	f = Mod_StudioEstimateFrame( frame, pseqdesc );
-	Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos, q, pseqdesc, panim, f );
+	Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos, q, pseqdesc, panim, (float)f );
 
 	if( pseqdesc->numblends > 1 )
 	{
 		float	s;
 
 		panim += mod_studiohdr->numbones;
-		Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos2, q2, pseqdesc, panim, f );
+		Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos2, q2, pseqdesc, panim, (float)f );
 
 		s = (float)pblending[0] / 255.0f;
 
@@ -701,10 +701,10 @@ static void SV_StudioSetupBones( model_t *pModel,	float frame, int sequence, con
 		if( pseqdesc->numblends == 4 )
 		{
 			panim += mod_studiohdr->numbones;
-			Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos3, q3, pseqdesc, panim, f );
+			Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos3, q3, pseqdesc, panim, (float)f );
 
 			panim += mod_studiohdr->numbones;
-			Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos4, q4, pseqdesc, panim, f );
+			Mod_StudioCalcRotations( boneused, numbones, pcontroller, pos4, q4, pseqdesc, panim, (float)f );
 
 			s = (float)pblending[0] / 255.0f;
 			Mod_StudioSlerpBones( q3, pos3, q4, pos4, s );
@@ -721,7 +721,7 @@ static void SV_StudioSetupBones( model_t *pModel,	float frame, int sequence, con
 		i = boneused[j];
 
 		Matrix3x4_FromOriginQuat( bonematrix, q[i], pos[i] );
-		if( pbones[i].parent == -1 ) 
+		if( pbones[i].parent == -1 )
 			Matrix3x4_ConcatTransforms( studio_bones[i], studio_transform, bonematrix );
 		else Matrix3x4_ConcatTransforms( studio_bones[i], studio_bones[pbones[i].parent], bonematrix );
 	}
@@ -970,7 +970,7 @@ static server_studio_api_t gStudioAPI =
 	Mod_LoadCacheFile,
 	Mod_Extradata,
 };
-   
+
 /*
 ===============
 Mod_InitStudioAPI

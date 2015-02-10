@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -38,7 +38,7 @@ void CSound :: Clear ( void )
 
 //=========================================================
 // Reset - clears the volume, origin, and type for a sound,
-// but doesn't expire or unlink it. 
+// but doesn't expire or unlink it.
 //=========================================================
 void CSound :: Reset ( void )
 {
@@ -75,14 +75,14 @@ BOOL CSound :: FIsScent ( void )
 }
 
 //=========================================================
-// Spawn 
+// Spawn
 //=========================================================
 void CSoundEnt :: Spawn( void )
 {
 	pev->solid = SOLID_NOT;
 	Initialize();
 
-	pev->nextthink = gpGlobals->time + 1; 
+	pev->nextthink = gpGlobals->time + 1;
 }
 
 //=========================================================
@@ -95,10 +95,10 @@ void CSoundEnt :: Think ( void )
 	int iSound;
 	int iPreviousSound;
 
-	pev->nextthink = gpGlobals->time + 0.3;// how often to check the sound list.
+	pev->nextthink = gpGlobals->time + 0.3f;// how often to check the sound list.
 
 	iPreviousSound = SOUNDLIST_EMPTY;
-	iSound = m_iActiveSound; 
+	iSound = m_iActiveSound;
 
 	while ( iSound != SOUNDLIST_EMPTY )
 	{
@@ -134,7 +134,7 @@ void CSoundEnt :: Precache ( void )
 }
 
 //=========================================================
-// FreeSound - clears the passed active sound and moves it 
+// FreeSound - clears the passed active sound and moves it
 // to the top of the free list. TAKE CARE to only call this
 // function for sounds in the Active list!!
 //=========================================================
@@ -153,7 +153,7 @@ void CSoundEnt :: FreeSound ( int iSound, int iPrevious )
 //		pSoundEnt->m_SoundPool[ iPrevious ].m_iNext = m_SoundPool[ iSound ].m_iNext;
 		pSoundEnt->m_SoundPool[ iPrevious ].m_iNext = pSoundEnt->m_SoundPool[ iSound ].m_iNext;
 	}
-	else 
+	else
 	{
 		// the sound we're freeing IS the head of the active list.
 		pSoundEnt->m_iActiveSound = pSoundEnt->m_SoundPool [ iSound ].m_iNext;
@@ -165,7 +165,7 @@ void CSoundEnt :: FreeSound ( int iSound, int iPrevious )
 }
 
 //=========================================================
-// IAllocSound - moves a sound from the Free list to the 
+// IAllocSound - moves a sound from the Free list to the
 // Active list returns the index of the alloc'd sound
 //=========================================================
 int CSoundEnt :: IAllocSound( void )
@@ -181,10 +181,10 @@ int CSoundEnt :: IAllocSound( void )
 
 	// there is at least one sound available, so move it to the
 	// Active sound list, and return its SoundPool index.
-	
+
 	iNewSound = m_iFreeSound;// copy the index of the next free sound
 
-	m_iFreeSound = m_SoundPool[ m_iFreeSound ].m_iNext;// move the index down into the free list. 
+	m_iFreeSound = m_SoundPool[ m_iFreeSound ].m_iNext;// move the index down into the free list.
 
 	m_SoundPool[ iNewSound ].m_iNext = m_iActiveSound;// point the new sound at the top of the active list.
 
@@ -194,7 +194,7 @@ int CSoundEnt :: IAllocSound( void )
 }
 
 //=========================================================
-// InsertSound - Allocates a free sound and fills it with 
+// InsertSound - Allocates a free sound and fills it with
 // sound info.
 //=========================================================
 void CSoundEnt :: InsertSound ( int iType, const Vector &vecOrigin, int iVolume, float flDuration )
@@ -222,12 +222,12 @@ void CSoundEnt :: InsertSound ( int iType, const Vector &vecOrigin, int iVolume,
 }
 
 //=========================================================
-// Initialize - clears all sounds and moves them into the 
+// Initialize - clears all sounds and moves them into the
 // free sound list.
 //=========================================================
 void CSoundEnt :: Initialize ( void )
 {
-  	int i;
+	int i;
 	int iSound;
 
 	m_cLastActiveSounds;
@@ -242,7 +242,7 @@ void CSoundEnt :: Initialize ( void )
 
 	m_SoundPool[ i - 1 ].m_iNext = SOUNDLIST_EMPTY;// terminate the list here.
 
-	
+
 	// now reserve enough sounds for each client
 	for ( i = 0 ; i < gpGlobals->maxClients ; i++ )
 	{

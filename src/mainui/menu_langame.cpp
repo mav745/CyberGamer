@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -80,7 +80,7 @@ static void UI_PromptDialog( void )
 {
 	// toggle main menu between active\inactive
 	// show\hide quit dialog
-	uiLanGame.joinGame.generic.flags ^= QMF_INACTIVE; 
+	uiLanGame.joinGame.generic.flags ^= QMF_INACTIVE;
 	uiLanGame.createGame.generic.flags ^= QMF_INACTIVE;
 	uiLanGame.gameInfo.generic.flags ^= QMF_INACTIVE;
 	uiLanGame.refresh.generic.flags ^= QMF_INACTIVE;
@@ -129,7 +129,7 @@ static void UI_LanGame_GetGamesList( void )
 		// but this feature not detail tested and may be bugly
 		if( stricmp( gMenu.m_gameinfo.gamefolder, Info_ValueForKey( info, "gamedir" )))
 			continue;	// filter by game
-#endif 
+#endif
 		StringConcat( uiLanGame.gameDescription[i], Info_ValueForKey( info, "host" ), GAME_LENGTH );
 		StringConcat( uiLanGame.gameDescription[i], uiEmptyString, GAME_LENGTH );
 		StringConcat( uiLanGame.gameDescription[i], Info_ValueForKey( info, "map" ), MAPNAME_LENGTH );
@@ -189,7 +189,7 @@ UI_Background_Ownerdraw
 */
 static void UI_Background_Ownerdraw( void *self )
 {
-	menuCommon_s	*item = (menuCommon_s *)self;
+//	menuCommon_s	*item = (menuCommon_s *)self;
 
 	if( !CVAR_GET_FLOAT( "cl_background" ))
 		UI_DrawBackground_Callback( self );
@@ -422,19 +422,19 @@ static void UI_LanGame_Init( void )
 		uiLanGame.createGame.generic.flags |= QMF_GRAYED;	// server.dll is missed - remote servers only
 
 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.background );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.banner );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.joinGame );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.createGame );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.gameInfo );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.refresh );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.done );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.hintMessage );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.gameList );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.msgBox );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.dlgMessage1 );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.dlgMessage2 );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.no );
- 	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.yes );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.banner );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.joinGame );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.createGame );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.gameInfo );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.refresh );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.done );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.hintMessage );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.gameList );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.msgBox );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.dlgMessage1 );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.dlgMessage2 );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.no );
+	UI_AddItem( &uiLanGame.menu, (void *)&uiLanGame.yes );
 
 	uiLanGame.refreshTime = uiStatic.realTime + 500; // delay before update 0.5 sec
 }

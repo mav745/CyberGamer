@@ -178,14 +178,14 @@ int Q_atoi( const char *str )
 		str++;
 
 	if( !str ) return 0;
-	
+
 	if( *str == '-' )
 	{
 		sign = -1;
 		str++;
 	}
 	else sign = 1;
-		
+
 	// check for hex
 	if( str[0] == '0' && ( str[1] == 'x' || str[1] == 'X' ))
 	{
@@ -199,11 +199,11 @@ int Q_atoi( const char *str )
 			else return val * sign;
 		}
 	}
-	
+
 	// check for character
 	if( str[0] == '\'' )
 		return sign * str[1];
-	
+
 	// assume decimal
 	while( 1 )
 	{
@@ -227,14 +227,14 @@ float Q_atof( const char *str )
 		str++;
 
 	if( !str ) return 0.0f;
-	
+
 	if( *str == '-' )
 	{
 		sign = -1;
 		str++;
 	}
 	else sign = 1;
-		
+
 	// check for hex
 	if( str[0] == '0' && ( str[1] == 'x' || str[1] == 'X' ))
 	{
@@ -245,13 +245,13 @@ float Q_atof( const char *str )
 			if( c >= '0' && c <= '9' ) val = (val * 16) + c - '0';
 			else if( c >= 'a' && c <= 'f' ) val = (val * 16) + c - 'a' + 10;
 			else if( c >= 'A' && c <= 'F' ) val = (val * 16) + c - 'A' + 10;
-			else return val * sign;
+			else return (float)(val * sign);
 		}
 	}
-	
+
 	// check for character
-	if( str[0] == '\'' ) return sign * str[1];
-	
+	if( str[0] == '\'' ) return (float)(sign * str[1]);
+
 	// assume decimal
 	decimal = -1;
 	total = 0;
@@ -272,15 +272,15 @@ float Q_atof( const char *str )
 	}
 
 	if( decimal == -1 )
-		return val * sign;
+		return (float)(val * sign);
 
 	while( total > decimal )
 	{
 		val /= 10;
 		total--;
 	}
-	
-	return val * sign;
+
+	return (float)(val * sign);
 }
 
 void Q_atov( float *vec, const char *str, size_t siz )
@@ -346,14 +346,14 @@ int Q_strnicmp( const char *s1, const char *s2, int n )
 	else if( s2 == NULL )
 	{
 		return 1;
-          }
+		  }
 
 	do {
 		c1 = *s1++;
 		c2 = *s2++;
 
 		if( !n-- ) return 0; // strings are equal until end point
-		
+
 		if( c1 != c2 )
 		{
 			if( c1 >= 'a' && c1 <= 'z' ) c1 -= ('a' - 'A');
@@ -379,7 +379,7 @@ int Q_strncmp( const char *s1, const char *s2, int n )
 	else if( s2 == NULL )
 	{
 		return 1;
-	}	
+	}
 
 	do {
 		c1 = *s1++;
@@ -390,7 +390,7 @@ int Q_strncmp( const char *s1, const char *s2, int n )
 		if( c1 != c2 ) return c1 < c2 ? -1 : 1;
 
 	} while( c1 );
-	
+
 	// strings are equal
 	return 0;
 }

@@ -130,12 +130,12 @@ qboolean CL_ChangeGame( const char *gamefolder, qboolean bReset )
 		mlook = (kbutton_t *)clgame.dllFuncs.KB_Find( "in_mlook" );
 		jlook = (kbutton_t *)clgame.dllFuncs.KB_Find( "in_jlook" );
 
-		if( mlook && ( mlook->state & 1 )) 
+		if( mlook && ( mlook->state & 1 ))
 			mlook_active = true;
 
 		if( jlook && ( jlook->state & 1 ))
 			jlook_active = true;
-	
+
 		// so reload all images (remote connect)
 		Mod_ClearAll( true );
 		R_ShutdownImages();
@@ -189,22 +189,22 @@ static float CL_LerpPoint( void )
 {
 	float	f, frac;
 
-	f = cl.mtime[0] - cl.mtime[1];
-	
+	f = (float)(cl.mtime[0] - cl.mtime[1]);
+
 	if( !f || SV_Active( ))
 	{
 		cl.time = cl.mtime[0];
 		return 1.0f;
 	}
-		
+
 	if( f > 0.1f )
-	{	
+	{
 		// dropped packet, or start of demo
 		cl.mtime[1] = cl.mtime[0] - 0.1f;
 		f = 0.1f;
 	}
 
-	frac = ( cl.time - cl.mtime[1] ) / f;
+	frac = (float)( cl.time - cl.mtime[1] ) / f;
 
 	if( frac < 0 )
 	{
@@ -218,7 +218,7 @@ static float CL_LerpPoint( void )
 			cl.time = cl.mtime[0];
 		frac = 1.0f;
 	}
-		
+
 	return frac;
 }
 
@@ -275,11 +275,11 @@ void CL_CreateCmd( void )
 	vec3_t		angles;
 	qboolean		active;
 	int		ms;
-	
-	
-	
-	
-	ms = host.frametime * 1000;
+
+
+
+
+	ms = (int)(host.frametime * 1000.);
 	if( ms > 250 ) ms = 100;	// time was unreasonable
 
 	Q_memset( &cmd, 0, sizeof( cmd ));
@@ -291,11 +291,11 @@ void CL_CreateCmd( void )
 	VectorCopy( cl.frame.local.client.origin, cl.data.origin );
 	VectorCopy( cl.refdef.cl_viewangles, cl.data.viewangles );
 	cl.data.iWeaponBits = cl.frame.local.client.weapons;
-	
-	
+
+
 	cl.data.fov = cl.frame.local.client.fov;
 
-	clgame.dllFuncs.pfnUpdateClientData( &cl.data, cl.time );
+	clgame.dllFuncs.pfnUpdateClientData( &cl.data, (float)cl.time );
 
 	// grab changes
 	VectorCopy( cl.data.viewangles, cl.refdef.cl_viewangles );
@@ -316,7 +316,7 @@ void CL_CreateCmd( void )
 	}
 
 	active = ( cls.state == ca_active && !cl.refdef.paused && !cls.demoplayback );
-	clgame.dllFuncs.CL_CreateMove( cl.time - cl.oldtime, &cmd, active );
+	clgame.dllFuncs.CL_CreateMove( (float)(cl.time - cl.oldtime), &cmd, active );
 
 	R_LightForPoint( cl.frame.local.client.origin, &color, false, false, 128.0f );
 	cmd.lightlevel = (color.r + color.g + color.b) / 3;
@@ -324,8 +324,8 @@ void CL_CreateCmd( void )
 	// never let client.dll calc frametime for player
 	// because is potential backdoor for cheating
 	cmd.msec = ms;
-	cmd.lerp_msec = cl_interp->value * 1000;
-	cmd.lerp_msec = bound( 0, cmd.lerp_msec, 250 ); 
+	cmd.lerp_msec = (short)(cl_interp->value * 1000.f);
+	cmd.lerp_msec = bound( 0, cmd.lerp_msec, 250 );
 
 	V_ProcessOverviewCmds( &cmd );
 	V_ProcessShowTexturesCmds( &cmd );
@@ -346,10 +346,10 @@ void CL_CreateCmd( void )
 //			char txt[64];
 //			sprintf(txt,"cmd, %i - %i\n",cls.netchan.outgoing_sequence,cmd.buttons);
 //			Sys_Print(txt);
-//		} 
+//		}
 		cl.refdef.cmd = &cl.cmds[cls.netchan.outgoing_sequence & CL_UPDATE_MASK];
 		*cl.refdef.cmd = cmd;
-	} 
+	}
 }
 
 void CL_WriteUsercmd( sizebuf_t *msg, int from, int to )
@@ -394,7 +394,7 @@ void CL_WritePacket( void )
 	int		numcmds;
 	int		newcmds;
 	int		cmdnumber;
-	
+
 	// don't send anything if playing back a demo
 	if( cls.demoplayback || cls.state == ca_cinematic )
 		return;
@@ -444,21 +444,21 @@ void CL_WritePacket( void )
 	{
 		cl.validsequence = 0;
 	}
-	
+
 	// send a userinfo update if needed
 	if( userinfo->modified )
 	{
 		BF_WriteByte( &cls.netchan.message, clc_userinfo );
 		BF_WriteString( &cls.netchan.message, Cvar_Userinfo( ));
 	}
-		
+
 	if( send_command )
 	{
 		int	outgoing_sequence;
-	
+
 		if( cl_cmdrate->integer > 0 )
-			cls.nextcmdtime = host.realtime + ( 1.0f / cl_cmdrate->value );
-		else cls.nextcmdtime = host.realtime; // always able to send right away
+			cls.nextcmdtime = (float)host.realtime + ( 1.0f / cl_cmdrate->value );
+		else cls.nextcmdtime = (float)host.realtime; // always able to send right away
 
 		if( cls.lastoutgoingcommand == -1 )
 		{
@@ -475,7 +475,7 @@ void CL_WritePacket( void )
 		BF_WriteByte( &buf, 0 );
 
 		// write packet lossage percentation
-		BF_WriteByte( &buf, cls.packet_loss );
+		BF_WriteByte( &buf, (int)cls.packet_loss );
 
 		// say how many backups we'll be sending
 		BF_WriteByte( &buf, numbackup );
@@ -486,7 +486,7 @@ void CL_WritePacket( void )
 		// put an upper/lower bound on this
 		newcmds = bound( 0, newcmds, MAX_TOTAL_CMDS );
 		if( cls.state == ca_connected ) newcmds = 0;
-	
+
 		BF_WriteByte( &buf, newcmds );
 
 		numcmds = newcmds + numbackup;
@@ -510,7 +510,7 @@ void CL_WritePacket( void )
 
 		// message we are constructing.
 		i = cls.netchan.outgoing_sequence & CL_UPDATE_MASK;
-	
+
 		// determine if we need to ask for a new set of delta's.
 		if( cl.validsequence && (cls.state == ca_active) && !( cls.demorecording && cls.demowaiting ))
 		{
@@ -571,7 +571,7 @@ void CL_SendCmd( void )
 	CL_CreateCmd();
 
 	Cbuf_Execute ();
-	
+
 	// clc_move, userinfo etc
 	CL_WritePacket();
 
@@ -625,7 +625,7 @@ void CL_SendConnectPacket( void )
 	}
 
 	if( adr.port == 0 ) adr.port = BF_BigShort( PORT_SERVER );
-	port = Cvar_VariableValue( "net_qport" );
+	port = (int)Cvar_VariableValue( "net_qport" );
 
 	userinfo->modified = false;
 	Netchan_OutOfBandPrint( NS_CLIENT, adr, "connect %i %i %i \"%s\"\n", PROTOCOL_VERSION, port, cls.challenge, Cvar_Userinfo( ));
@@ -686,11 +686,11 @@ void CL_Connect_f( void )
 	if( Cmd_Argc() != 2 )
 	{
 		Msg( "Usage: connect <server>\n" );
-		return;	
+		return;
 	}
-	
+
 	if( Host_ServerState())
-	{	
+	{
 		// if running a local server, kill it and reissue
 		Q_strncpy( host.finalmsg, "Server quit", MAX_STRING );
 		SV_Shutdown( false );
@@ -698,7 +698,7 @@ void CL_Connect_f( void )
 
 	server = Cmd_Argv( 1 );
 	NET_Config( true ); // allow remote
-	
+
 	Msg( "server %s\n", server );
 	CL_Disconnect();
 
@@ -761,7 +761,7 @@ void CL_Rcon_f( void )
 		NET_StringToAdr( rcon_address->string, &to );
 		if( to.port == 0 ) to.port = BF_BigShort( PORT_SERVER );
 	}
-	
+
 	NET_SendPacket( NS_CLIENT, Q_strlen( message ) + 1, message, to );
 }
 
@@ -899,7 +899,7 @@ void CL_LocalServers_f( void )
 
 	MsgDev( D_INFO, "Scanning for servers on the local network area...\n" );
 	NET_Config( true ); // allow remote
-	
+
 	// send a broadcast packet
 	adr.type = NA_BROADCAST;
 	adr.port = BF_BigShort( PORT_SERVER );
@@ -1014,7 +1014,7 @@ void CL_Reconnect_f( void )
 		cl.validsequence = 0;		// haven't gotten a valid frame update yet
 		cl.delta_sequence = -1;		// we'll request a full delta from the baseline
 		cls.lastoutgoingcommand = -1;		// we don't have a backed up cmd history yet
-		cls.nextcmdtime = host.realtime;	// we can send a cmd right away
+		cls.nextcmdtime = (float)host.realtime;	// we can send a cmd right away
 
 		CL_StartupDemoHeader ();
 		return;
@@ -1088,7 +1088,7 @@ void CL_ParseNETInfoMessage( netadr_t from, sizebuf_t *msg )
 			}
 			else
 			{
-				Q_memset( nr, 0, sizeof( *nr )); 
+				Q_memset( nr, 0, sizeof( *nr ));
 			}
 			return;
 		}
@@ -1140,7 +1140,7 @@ void CL_PrepSound( void )
 		}
 	}
 
-	host.soundList = NULL; 
+	host.soundList = NULL;
 	host.numsounds = 0;
 
 	cl.audio_prepped = true;
@@ -1166,7 +1166,7 @@ void CL_PrepVideo( void )
 	MsgDev( D_NOTE, "CL_PrepVideo: %s\n", clgame.mapname );
 
 	// let the render dll load the map
-	Q_strncpy( mapname, cl.model_precache[1], MAX_STRING ); 
+	Q_strncpy( mapname, cl.model_precache[1], MAX_STRING );
 	Mod_LoadWorld( mapname, &map_checksum, false );
 	cl.worldmodel = Mod_Handle( 1 ); // get world pointer
 	Cvar_SetFloat( "scr_loading", 25.0f );
@@ -1232,7 +1232,7 @@ void CL_PrepVideo( void )
 		Z_Free( host.decalList );
 	}
 
-	host.decalList = NULL; 
+	host.decalList = NULL;
 	host.numdecals = 0;
 
 	if( host.soundList )
@@ -1251,9 +1251,9 @@ void CL_PrepVideo( void )
 		}
 	}
 
-	host.soundList = NULL; 
+	host.soundList = NULL;
 	host.numsounds = 0;
-	
+
 	if( host.developer <= 2 )
 		Con_ClearNotify(); // clear any lines of console text
 
@@ -1277,7 +1277,7 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 	int	len = sizeof( buf );
 	int	dataoffset = 0;
 	netadr_t	servadr;
-	
+
 	BF_Clear( msg );
 	BF_ReadLong( msg ); // skip the -1
 
@@ -1297,7 +1297,7 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 			return;
 		}
 
-		Netchan_Setup( NS_CLIENT, &cls.netchan, from, Cvar_VariableValue( "net_qport" ));
+		Netchan_Setup( NS_CLIENT, &cls.netchan, from, (int)Cvar_VariableValue( "net_qport" ));
 		BF_WriteByte( &cls.netchan.message, clc_stringcmd );
 		BF_WriteString( &cls.netchan.message, "new" );
 		cls.state = ca_connected;
@@ -1305,7 +1305,7 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 		cl.validsequence = 0;		// haven't gotten a valid frame update yet
 		cl.delta_sequence = -1;		// we'll request a full delta from the baseline
 		cls.lastoutgoingcommand = -1;		// we don't have a backed up cmd history yet
-		cls.nextcmdtime = host.realtime;	// we can send a cmd right away
+		cls.nextcmdtime = (float)host.realtime;	// we can send a cmd right away
 
 		CL_StartupDemoHeader ();
 
@@ -1440,7 +1440,7 @@ void CL_ReadNetMessage( void )
 			continue;
 		}
 
-		// can't be a valid sequenced packet	
+		// can't be a valid sequenced packet
 		if( cls.state < ca_connected ) continue;
 
 		if( BF_GetMaxBytes( &net_message ) < 8 )
@@ -1473,7 +1473,7 @@ void CL_ReadNetMessage( void )
 		{
 			CL_ParseServerMessage( &net_message );
 		}
-		
+
 		if( Netchan_CopyFileFragments( &cls.netchan, &net_message ))
 		{
 			// remove from resource request stuff.
@@ -1498,7 +1498,7 @@ void CL_ReadPackets( void )
 	// singleplayer never has connection timeout
 	if( NET_IsLocalAddress( cls.netchan.remote_address ))
 		return;
-          
+
 	// check timeout
 	if( cls.state >= ca_connected && !cls.demoplayback && cls.state != ca_cinematic )
 	{
@@ -1513,7 +1513,7 @@ void CL_ReadPackets( void )
 		}
 	}
 	else cl.timeoutcount = 0;
-	
+
 }
 
 /*
@@ -1620,7 +1620,7 @@ void CL_InitLocal( void )
 	cl_nodelta = Cvar_Get ("cl_nodelta", "0", 0, "disable delta-compression for usercommnds" );
 	cl_idealpitchscale = Cvar_Get( "cl_idealpitchscale", "0.8", 0, "how much to look up/down slopes and stairs when not using freelook" );
 	cl_solid_players = Cvar_Get( "cl_solid_players", "1", 0, "Make all players not solid (can't traceline them)" );
-	cl_interp = Cvar_Get( "ex_interp", "0.1", 0, "Interpolate object positions starting this many seconds in past" ); 
+	cl_interp = Cvar_Get( "ex_interp", "0.1", 0, "Interpolate object positions starting this many seconds in past" );
 	cl_timeout = Cvar_Get( "cl_timeout", "60", 0, "connect timeout (in-seconds)" );
 
 	rcon_client_password = Cvar_Get( "rcon_password", "", 0, "remote control client password" );
@@ -1665,7 +1665,7 @@ void CL_InitLocal( void )
 	Cmd_AddCommand ("gametitle", NULL, "show game logo" );
 	Cmd_AddCommand ("god", NULL, "enable godmode" );
 	Cmd_AddCommand ("fov", NULL, "set client field of view" );
-		
+
 	// register our commands
 	Cmd_AddCommand ("pause", NULL, "pause the game (if the server allows pausing)" );
 	Cmd_AddCommand ("localservers", CL_LocalServers_f, "collect info about local servers" );
@@ -1686,7 +1686,7 @@ void CL_InitLocal( void )
 	Cmd_AddCommand ("escape", CL_Escape_f, "escape from game to menu" );
 	Cmd_AddCommand ("pointfile", CL_ReadPointFile_f, "show leaks on a map (if present of course)" );
 	Cmd_AddCommand ("linefile", CL_ReadLineFile_f, "show leaks on a map (if present of course)" );
-	
+
 	Cmd_AddCommand ("quit", CL_Quit_f, "quit from game" );
 	Cmd_AddCommand ("exit", CL_Quit_f, "quit from game" );
 
@@ -1744,8 +1744,8 @@ void Host_ClientFrame( void )
 	if( menu.hInstance )
 	{
 		// menu time (not paused, not clamped)
-		menu.globals->time = host.realtime;
-		menu.globals->frametime = host.realframetime;
+		menu.globals->time = (float)host.realtime;
+		menu.globals->frametime = (float)host.realframetime;
 		menu.globals->demoplayback = cls.demoplayback;
 		menu.globals->demorecording = cls.demorecording;
 	}
@@ -1803,7 +1803,7 @@ void CL_Init( void )
 	if( host.type == HOST_DEDICATED )
 		return; // nothing running on the client
 
-	Con_Init();	
+	Con_Init();
 	CL_InitLocal();
 
 	R_Init();	// init renderer

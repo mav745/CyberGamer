@@ -63,18 +63,18 @@ void SV_InitBoxHull( void )
 	for( i = 0; i < 6; i++ )
 	{
 		box_clipnodes[i].planenum = i;
-		
+
 		side = i & 1;
-		
+
 		box_clipnodes[i].children[side] = CONTENTS_EMPTY;
 		if( i != 5 ) box_clipnodes[i].children[side^1] = i + 1;
 		else box_clipnodes[i].children[side^1] = CONTENTS_SOLID;
-		
+
 		box_planes[i].type = i>>1;
 		box_planes[i].normal[i>>1] = 1;
 		box_planes[i].signbits = 0;
 	}
-	
+
 }
 
 /*
@@ -86,7 +86,7 @@ StudioPlayerBlend
 void SV_StudioPlayerBlend( mstudioseqdesc_t *pseqdesc, int *pBlend, float *pPitch )
 {
 	// calc up/down pointing
-	*pBlend = (*pPitch * 3);
+	*pBlend = (int)(*pPitch * 3);
 
 	if( *pBlend < pseqdesc->blendstart[0] )
 	{
@@ -102,7 +102,7 @@ void SV_StudioPlayerBlend( mstudioseqdesc_t *pseqdesc, int *pBlend, float *pPitc
 	{
 		if( pseqdesc->blendend[0] - pseqdesc->blendstart[0] < 0.1f ) // catch qc error
 			*pBlend = 127;
-		else *pBlend = 255.0f * (*pBlend - pseqdesc->blendstart[0]) / (pseqdesc->blendend[0] - pseqdesc->blendstart[0]);
+		else *pBlend = (int)(255.0f * (*pBlend - pseqdesc->blendstart[0]) / (pseqdesc->blendend[0] - pseqdesc->blendstart[0]));
 		*pPitch = 0;
 	}
 }
@@ -144,8 +144,8 @@ hull_t *SV_HullAutoSelect( model_t *model, const vec3_t mins, const vec3_t maxs,
 	// select the hull automatically
 	for( i = 0; i < MAX_MAP_HULLS; i++ )
 	{
-		curdiff = floor( VectorAvg( size )) - floor( VectorAvg( world.hull_sizes[i] ));
-		curdiff = fabs( curdiff );
+		curdiff = floorf( VectorAvg( size )) - floorf( VectorAvg( world.hull_sizes[i] ));
+		curdiff = fabsf( curdiff );
 
 		if( curdiff < lastdiff )
 		{
@@ -177,7 +177,7 @@ hull_t *SV_HullForBsp( edict_t *ent, const vec3_t mins, const vec3_t maxs, float
 	hull_t		*hull;
 	model_t		*model;
 	vec3_t		size;
-			
+
 	// decide which clipping hull to use, based on the size
 	model = Mod_Handle( ent->v.modelindex );
 
@@ -211,7 +211,7 @@ hull_t *SV_HullForBsp( edict_t *ent, const vec3_t mins, const vec3_t maxs, float
 		if( size[0] <= 8.0f || ( model->flags & MODEL_LIQUID && ent->v.solid != SOLID_TRIGGER ))
 		{
 			hull = &model->hulls[0];
-			VectorCopy( hull->clip_mins, offset ); 
+			VectorCopy( hull->clip_mins, offset );
 		}
 		else
 		{
@@ -259,7 +259,7 @@ hull_t *SV_HullForEntity( edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t offset 
 		VectorSubtract( ent->v.mins, maxs, hullmins );
 		VectorSubtract( ent->v.maxs, mins, hullmaxs );
 		hull = SV_HullForBox( hullmins, hullmaxs );
-		
+
 		VectorCopy( ent->v.origin, offset );
 	}
 
@@ -378,25 +378,25 @@ areanode_t *SV_CreateAreaNode( int depth, vec3_t mins, vec3_t maxs )
 	ClearLink( &anode->trigger_edicts );
 	ClearLink( &anode->solid_edicts );
 	ClearLink( &anode->water_edicts );
-	
+
 	if( depth == AREA_DEPTH )
 	{
 		anode->axis = -1;
 		anode->children[0] = anode->children[1] = NULL;
 		return anode;
 	}
-	
+
 	VectorSubtract( maxs, mins, size );
 	if( size[0] > size[1] )
 		anode->axis = 0;
 	else anode->axis = 1;
-	
+
 	anode->dist = 0.5f * ( maxs[anode->axis] + mins[anode->axis] );
-	VectorCopy( mins, mins1 );	
-	VectorCopy( mins, mins2 );	
-	VectorCopy( maxs, maxs1 );	
-	VectorCopy( maxs, maxs2 );	
-	
+	VectorCopy( mins, mins1 );
+	VectorCopy( mins, mins2 );
+	VectorCopy( maxs, maxs1 );
+	VectorCopy( maxs, maxs2 );
+
 	maxs1[anode->axis] = mins2[anode->axis] = anode->dist;
 	anode->children[0] = SV_CreateAreaNode( depth+1, mins2, maxs2 );
 	anode->children[1] = SV_CreateAreaNode( depth+1, mins1, maxs1 );
@@ -514,14 +514,14 @@ void SV_TouchLinks( edict_t *ent, areanode_t *node )
 		// never touch the triggers when "playersonly" is active
 		if( !( sv.hostflags & SVF_PLAYERSONLY ))
 		{
-			svgame.globals->time = sv.time;
+			svgame.globals->time = (float)sv.time;
 			svgame.dllFuncs.pfnTouch( touch, ent );
 		}
 	}
-	
+
 	// recurse down both sides
 	if( node->axis == -1 ) return;
-	
+
 	if( ent->v.absmax[node->axis] > node->dist )
 		SV_TouchLinks( ent, node->children[0] );
 	if( ent->v.absmin[node->axis] < node->dist )
@@ -542,7 +542,7 @@ void SV_FindTouchedLeafs( edict_t *ent, mnode_t *node, int *headnode )
 
 	if( node->contents == CONTENTS_SOLID )
 		return;
-	
+
 	// add an efrag if the node is a leaf
 	if(  node->contents < 0 )
 	{
@@ -557,18 +557,18 @@ void SV_FindTouchedLeafs( edict_t *ent, mnode_t *node, int *headnode )
 			leaf = (mleaf_t *)node;
 			leafnum = leaf - sv.worldmodel->leafs - 1;
 			ent->leafnums[ent->num_leafs] = leafnum;
-			ent->num_leafs++;			
+			ent->num_leafs++;
 		}
 		return;
 	}
-	
+
 	// NODE_MIXED
 	splitplane = node->plane;
 	sides = BOX_ON_PLANE_SIDE( ent->v.absmin, ent->v.absmax, splitplane );
 
 	if( sides == 3 && *headnode == -1 )
 		*headnode = node - sv.worldmodel->nodes;
-	
+
 	// recurse down the contacted sides
 	if( sides & 1 ) SV_FindTouchedLeafs( ent, node->children[0], headnode );
 	if( sides & 2 ) SV_FindTouchedLeafs( ent, node->children[1], headnode );
@@ -661,8 +661,8 @@ void SV_LinkEdict( edict_t *ent, qboolean touch_triggers )
 			node = node->children[1];
 		else break; // crosses the node
 	}
-	
-	// link it in	
+
+	// link it in
 	if( ent->v.solid == SOLID_TRIGGER )
 		InsertLinkBefore( &ent->area, &node->trigger_edicts );
 	else if( ent->v.solid == SOLID_NOT && ent->v.skin < CONTENTS_EMPTY )
@@ -741,10 +741,10 @@ void SV_WaterLinks( const vec3_t origin, int *pCont, areanode_t *node )
 		if( RankForContents( touch->v.skin ) > RankForContents( *pCont ))
 			*pCont = touch->v.skin; // new content has more priority
 	}
-	
+
 	// recurse down both sides
 	if( node->axis == -1 ) return;
-	
+
 	if( origin[node->axis] > node->dist )
 		SV_WaterLinks( origin, pCont, node->children[0] );
 	if( origin[node->axis] < node->dist )
@@ -804,7 +804,7 @@ qboolean SV_TestEntityPosition( edict_t *ent, edict_t *blocker )
 	if( ent->v.flags & (FL_CLIENT|FL_FAKECLIENT))
 	{
 		// to avoid falling through tracktrain update client mins\maxs here
-		if( ent->v.flags & FL_DUCKING ) 
+		if( ent->v.flags & FL_DUCKING )
 			SV_SetMinMaxSize( ent, svgame.pmove->player_mins[1], svgame.pmove->player_maxs[1] );
 		else SV_SetMinMaxSize( ent, svgame.pmove->player_mins[0], svgame.pmove->player_maxs[0] );
 	}
@@ -874,7 +874,7 @@ qboolean SV_RecursiveHullCheck( hull_t *hull, int num, float p1f, float p2f, vec
 		t1 = DotProduct( plane->normal, p1 ) - plane->dist;
 		t2 = DotProduct( plane->normal, p2 ) - plane->dist;
 	}
-	
+
 	if( t1 >= 0 && t2 >= 0 )
 		return SV_RecursiveHullCheck( hull, node->children[0], p1f, p2f, p1, p2, trace );
 	if( t1 < 0 && t2 < 0 )
@@ -886,7 +886,7 @@ qboolean SV_RecursiveHullCheck( hull_t *hull, int num, float p1f, float p2f, vec
 
 	if( frac < 0.0f ) frac = 0.0f;
 	if( frac > 1.0f ) frac = 1.0f;
-		
+
 	midf = p1f + ( p2f - p1f ) * frac;
 	VectorLerp( p1, frac, p2, mid );
 
@@ -900,11 +900,11 @@ qboolean SV_RecursiveHullCheck( hull_t *hull, int num, float p1f, float p2f, vec
 	{
 		// go past the node
 		return SV_RecursiveHullCheck (hull, node->children[side^1], midf, p2f, mid, p2, trace);
-	}	
+	}
 
 	if( trace->allsolid )
 		return false; // never got out of the solid area
-		
+
 	//==================
 	// the other side of the node is solid, this is the impact point
 	//==================
@@ -1003,7 +1003,7 @@ void SV_ClipMoveToEntity( edict_t *ent, const vec3_t start, vec3_t mins, vec3_t 
 
 		Matrix4x4_VectorITransform( matrix, start, start_l );
 		Matrix4x4_VectorITransform( matrix, end, end_l );
-                              
+
 		if( transform_bbox )
 		{
 			World_TransformAABB( matrix, mins, maxs, out_mins, out_maxs );
@@ -1193,7 +1193,7 @@ static void SV_ClipToLinks( areanode_t *node, moveclip_t *clip )
 
 		if( SV_IsValidEdict( clip->passedict ))
 		{
-		 	if( touch->v.owner == clip->passedict )
+			if( touch->v.owner == clip->passedict )
 				continue;	// don't clip against own missiles
 			if( clip->passedict->v.owner == touch )
 				continue;	// don't clip against owner
@@ -1207,7 +1207,7 @@ static void SV_ClipToLinks( areanode_t *node, moveclip_t *clip )
 
 		clip->trace = World_CombineTraces( &clip->trace, &trace, touch );
 	}
-	
+
 	// recurse down both sides
 	if( node->axis == -1 ) return;
 
@@ -1486,7 +1486,7 @@ static qboolean SV_RecursiveLightPoint( model_t *model, mnode_t *node, const vec
 
 	VectorLerp( start, frac, end, mid );
 
-	// co down front side	
+	// co down front side
 	if( SV_RecursiveLightPoint( model, node->children[side], start, mid ))
 		return true; // hit something
 
@@ -1503,8 +1503,8 @@ static qboolean SV_RecursiveLightPoint( model_t *model, mnode_t *node, const vec
 		if( surf->flags & SURF_DRAWTILED )
 			continue;	// no lightmaps
 
-		s = DotProduct( mid, tex->vecs[0] ) + tex->vecs[0][3] - surf->texturemins[0];
-		t = DotProduct( mid, tex->vecs[1] ) + tex->vecs[1][3] - surf->texturemins[1];
+		s = (int)(DotProduct( mid, tex->vecs[0] ) + tex->vecs[0][3] - surf->texturemins[0]);
+		t = (int)(DotProduct( mid, tex->vecs[1] ) + tex->vecs[1][3] - surf->texturemins[1]);
 
 		if(( s < 0.0f || s > surf->extents[0] ) || ( t < 0.0f || t > surf->extents[1] ))
 			continue;
@@ -1548,8 +1548,8 @@ void SV_RunLightStyles( void )
 	// run lightstyles animation
 	for( i = 0, ls = sv.lightstyles; i < MAX_LIGHTSTYLES; i++, ls++ )
 	{
-		ls->time += host.frametime;
-		ofs = (ls->time * 10);
+		ls->time += (float)host.frametime;
+		ofs = (int)(ls->time * 10);
 
 		if( ls->length == 0 ) ls->value = scale; // disable this light
 		else if( ls->length == 1 ) ls->value = ( ls->map[0] / 12.0f ) * scale;
@@ -1636,5 +1636,5 @@ int SV_LightForEntity( edict_t *pEdict )
 
 	SV_RecursiveLightPoint( sv.worldmodel, sv.worldmodel->nodes, start, end );
 
-	return VectorAvg( sv_pointColor );
+	return (int)VectorAvg( sv_pointColor );
 }

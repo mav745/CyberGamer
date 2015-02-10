@@ -192,7 +192,7 @@ void CAmbientGeneric :: Spawn( void )
 	if ( FStringNull( pev->message ) || strlen( szSoundFile ) < 1 )
 	{
 		ALERT( at_error, "EMPTY AMBIENT AT: %f, %f, %f\n", pev->origin.x, pev->origin.y, pev->origin.z );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 		SetThink( &CBaseEntity::SUB_Remove );
 		return;
 	}
@@ -241,9 +241,9 @@ void CAmbientGeneric :: Precache( void )
 	if ( m_fActive )
 	{
 		UTIL_EmitAmbientSound ( ENT(pev), pev->origin, szSoundFile,
-				(m_dpv.vol * 0.01), m_flAttenuation, SND_SPAWNING, m_dpv.pitch);
+				(m_dpv.vol * 0.01f), m_flAttenuation, SND_SPAWNING, m_dpv.pitch);
 
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 }
 
@@ -434,11 +434,11 @@ void CAmbientGeneric :: RampThink( void )
 			pitch = PITCH_NORM + 1; // don't send 'no pitch' !
 
 		UTIL_EmitAmbientSound(ENT(pev), pev->origin, szSoundFile,
-				(vol * 0.01), m_flAttenuation, flags, pitch);
+				(vol * 0.01f), m_flAttenuation, flags, pitch);
 	}
 
 	// update ramps at 5hz
-	pev->nextthink = gpGlobals->time + 0.2;
+	pev->nextthink = gpGlobals->time + 0.2f;
 	return;
 }
 
@@ -449,7 +449,7 @@ void CAmbientGeneric :: InitModulationParms(void)
 {
 	int pitchinc;
 
-	m_dpv.volrun = pev->health * 10;	// 0 - 100
+	m_dpv.volrun = (int)pev->health * 10;	// 0 - 100
 	if (m_dpv.volrun > 100) m_dpv.volrun = 100;
 	if (m_dpv.volrun < 0) m_dpv.volrun = 0;
 
@@ -551,7 +551,7 @@ void CAmbientGeneric :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCalle
 		if (fraction < 0.0)
 			fraction = 0.01;
 
-		m_dpv.pitch = fraction * 255;
+		m_dpv.pitch = (int)fraction * 255;
 
 		UTIL_EmitAmbientSound(ENT(pev), pev->origin, szSoundFile,
 					0, 0, SND_CHANGE_PITCH, m_dpv.pitch);
@@ -586,7 +586,7 @@ void CAmbientGeneric :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCalle
 				m_dpv.pitchrun = m_dpv.pitchstart + pitchinc * m_dpv.cspincount;
 				if (m_dpv.pitchrun > 255) m_dpv.pitchrun = 255;
 
-				pev->nextthink = gpGlobals->time + 0.1;
+				pev->nextthink = gpGlobals->time + 0.1f;
 			}
 
 		}
@@ -605,7 +605,7 @@ void CAmbientGeneric :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCalle
 
 				m_dpv.fadeout = m_dpv.fadeoutsav;
 				m_dpv.fadein = 0;
-				pev->nextthink = gpGlobals->time + 0.1;
+				pev->nextthink = gpGlobals->time + 0.1f;
 			}
 			else
 				UTIL_EmitAmbientSound(ENT(pev), pev->origin, szSoundFile,
@@ -632,9 +632,9 @@ void CAmbientGeneric :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCalle
 		InitModulationParms();
 
 		UTIL_EmitAmbientSound(ENT(pev), pev->origin, szSoundFile,
-				(m_dpv.vol * 0.01), m_flAttenuation, 0, m_dpv.pitch);
+				((float)m_dpv.vol * 0.01f), m_flAttenuation, 0, m_dpv.pitch);
 
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 
 	}
 }
@@ -830,12 +830,12 @@ void CEnvSound :: KeyValue( KeyValueData *pkvd )
 
 	if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		m_flRadius = atof(pkvd->szValue);
+		m_flRadius = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	if (FStrEq(pkvd->szKeyName, "roomtype"))
 	{
-		m_flRoomtype = atof(pkvd->szValue);
+		m_flRoomtype = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 }
@@ -966,11 +966,11 @@ void CEnvSound :: Think( void )
 	// not in range. do nothing, fall through to think_fast...
 
 env_sound_Think_fast:
-	pev->nextthink = gpGlobals->time + 0.25;
+	pev->nextthink = gpGlobals->time + 0.25f;
 	return;
 
 env_sound_Think_slow:
-	pev->nextthink = gpGlobals->time + 0.75;
+	pev->nextthink = gpGlobals->time + 0.75f;
 	return;
 }
 
@@ -982,7 +982,7 @@ env_sound_Think_slow:
 void CEnvSound :: Spawn( )
 {
 	// spread think times
-	pev->nextthink = gpGlobals->time + RANDOM_FLOAT(0.0, 0.5);
+	pev->nextthink = gpGlobals->time + RANDOM_FLOAT(0.0f, 0.5f);
 }
 
 // ==================== SENTENCE GROUPS, UTILITY FUNCTIONS  ======================================
@@ -1823,7 +1823,7 @@ void CSpeaker :: Spawn( void )
 	if ( !m_preset && (FStringNull( pev->message ) || strlen( szSoundFile ) < 1 ))
 	{
 		ALERT( at_error, "SPEAKER with no Level/Sentence! at: %f, %f, %f\n", pev->origin.x, pev->origin.y, pev->origin.z );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 		SetThink( &CBaseEntity::SUB_Remove );
 		return;
 	}
@@ -1832,7 +1832,7 @@ void CSpeaker :: Spawn( void )
 
 
 	SetThink(&CSpeaker::SpeakerThink);
-	pev->nextthink = 0.0;
+	pev->nextthink = 0.0f;
 
 	// allow on/off switching via 'use' function.
 
@@ -1841,20 +1841,20 @@ void CSpeaker :: Spawn( void )
 	Precache( );
 }
 
-#define ANNOUNCE_MINUTES_MIN	0.25
-#define ANNOUNCE_MINUTES_MAX	2.25
+#define ANNOUNCE_MINUTES_MIN	0.25f
+#define ANNOUNCE_MINUTES_MAX	2.25f
 
 void CSpeaker :: Precache( void )
 {
 	if ( !FBitSet (pev->spawnflags, SPEAKER_START_SILENT ) )
 		// set first announcement time for random n second
-		pev->nextthink = gpGlobals->time + RANDOM_FLOAT(5.0, 15.0);
+		pev->nextthink = gpGlobals->time + RANDOM_FLOAT(5.0f, 15.0f);
 }
 void CSpeaker :: SpeakerThink( void )
 {
 	char* szSoundFile;
-	float flvolume = pev->health * 0.1;
-	float flattenuation = 0.3;
+	float flvolume = pev->health * 0.1f;
+	float flattenuation = 0.3f;
 	int flags = 0;
 	int pitch = 100;
 
@@ -1862,7 +1862,7 @@ void CSpeaker :: SpeakerThink( void )
 	// Wait for the talkmonster to finish first.
 	if (gpGlobals->time <= CTalkMonster::g_talkWaitTime)
 	{
-		pev->nextthink = CTalkMonster::g_talkWaitTime + RANDOM_FLOAT( 5, 10 );
+		pev->nextthink = CTalkMonster::g_talkWaitTime + RANDOM_FLOAT( 5.f, 10.f );
 		return;
 	}
 
@@ -1934,14 +1934,14 @@ void CSpeaker :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_
 	if ( useType == USE_ON )
 	{
 		// turn on announcements
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 		return;
 	}
 
 	if ( useType == USE_OFF )
 	{
 		// turn off announcements
-		pev->nextthink = 0.0;
+		pev->nextthink = 0.0f;
 		return;
 
 	}
@@ -1952,12 +1952,12 @@ void CSpeaker :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_
 	if ( fActive )
 	{
 		// turn off announcements
-		pev->nextthink = 0.0;
+		pev->nextthink = 0.0f;
 	}
 	else
 	{
 		// turn on announcements
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 }
 

@@ -101,7 +101,7 @@ typedef struct
 	qboolean		drawWorld;	// ignore world for drawing PlayerModel
 	qboolean		thirdPerson;	// thirdperson camera is enabled
 	qboolean		isSkyVisible;	// sky is visible
-	qboolean		drawOrtho;	// draw world as orthogonal projection	
+	qboolean		drawOrtho;	// draw world as orthogonal projection
 
 	ref_params_t	refdef;		// actual refdef
 
@@ -199,11 +199,11 @@ typedef struct
 	uint		num_solid_entities;
 	uint		num_trans_entities;
 	uint		num_child_entities;
-         
+
 	// OpenGL matrix states
 	qboolean		modelviewIdentity;
 	qboolean		fResetVis;
-	
+
 	int		visframecount;	// PVS frame
 	int		dlightframecount;	// dynamic light frame
 	int		realframecount;	// not including passes
@@ -490,7 +490,7 @@ void R_NewMap( void );
 enum
 {
 	GL_OPENGL_110 = 0,		// base
-	GL_WGL_SWAPCONTROL,		
+	GL_WGL_SWAPCONTROL,
 	GL_WGL_PROCADDRESS,
 	GL_HARDWARE_GAMMA_CONTROL,
 	GL_ARB_VERTEX_BUFFER_OBJECT_EXT,
@@ -513,7 +513,7 @@ enum
 	GL_BLEND_SUBTRACT_EXT,
 	GL_SHADER_OBJECTS_EXT,
 	GL_VERTEX_SHADER_EXT,	// glsl vertex program
-	GL_FRAGMENT_SHADER_EXT,	// glsl fragment program	
+	GL_FRAGMENT_SHADER_EXT,	// glsl fragment program
 	GL_EXT_POINTPARAMETERS,
 	GL_SEPARATESTENCIL_EXT,
 	GL_ARB_TEXTURE_NPOT_EXT,

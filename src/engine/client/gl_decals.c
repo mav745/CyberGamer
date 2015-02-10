@@ -35,7 +35,7 @@ GNU General Public License for more details.
 #define RIGHT_EDGE			1
 #define TOP_EDGE			2
 #define BOTTOM_EDGE			3
-		
+
 // This structure contains the information used to create new decals
 typedef struct
 {
@@ -75,14 +75,14 @@ static void R_DecalUnlink( decal_t *pdecal )
 		{
 			pdecal->psurface->pdecals = pdecal->pnext;
 		}
-		else 
+		else
 		{
 			tmp = pdecal->psurface->pdecals;
 			if( !tmp ) Host_Error( "D_DecalUnlink: bad decal list\n" );
 
-			while( tmp->pnext ) 
+			while( tmp->pnext )
 			{
-				if( tmp->pnext == pdecal ) 
+				if( tmp->pnext == pdecal )
 				{
 					tmp->pnext = pdecal->pnext;
 					break;
@@ -110,15 +110,15 @@ static decal_t *R_DecalAlloc( decal_t *pdecal )
 
 	if( r_decals->integer < limit )
 		limit = r_decals->integer;
-	
+
 	if( !limit ) return NULL;
 
-	if( !pdecal ) 
+	if( !pdecal )
 	{
 		int	count = 0;
 
 		// check for the odd possiblity of infinte loop
-		do 
+		do
 		{
 			if( gDecalCount >= limit )
 				gDecalCount = 0;
@@ -128,11 +128,11 @@ static decal_t *R_DecalAlloc( decal_t *pdecal )
 			count++;
 		} while(( pdecal->flags & FDECAL_PERMANENT ) && count < limit );
 	}
-	
+
 	// if decal is already linked to a surface, unlink it.
 	R_DecalUnlink( pdecal );
 
-	return pdecal;	
+	return pdecal;
 }
 
 //-----------------------------------------------------------------------------
@@ -204,7 +204,7 @@ void R_SetupDecalTextureSpaceBasis( decal_t *pDecal, msurface_t *surf, int textu
 	// OPTIMIZE: Get rid of these divides
 	decalWorldScale[0] = (float)pDecal->scale / width;
 	decalWorldScale[1] = (float)pDecal->scale / height;
-	
+
 	VectorScale( textureSpaceBasis[0], decalWorldScale[0], textureSpaceBasis[0] );
 	VectorScale( textureSpaceBasis[1], decalWorldScale[1], textureSpaceBasis[1] );
 }
@@ -285,7 +285,7 @@ void R_ClipIntersect( float *one, float *two, float *out, int edge )
 			out[3] = out[5] = 0.0f;
 		}
 		else
-		{	
+		{
 			// right
 			t = ((one[3] - 1.0f) / (one[3] - two[3]));
 			out[3] = out[5] = 1.0f;
@@ -303,7 +303,7 @@ void R_ClipIntersect( float *one, float *two, float *out, int edge )
 			out[4] = out[6] = 0.0f;
 		}
 		else
-		{	
+		{
 			// bottom
 			t = ((one[4] - 1.0f) / (one[4] - two[4]));
 			out[4] = out[6] = 1.0f;
@@ -388,7 +388,7 @@ float *R_DoDecalSHClip( float *pInVerts, decal_t *pDecal, int nStartVerts, int *
 float *R_DecalVertsClip( decal_t *pDecal, msurface_t *surf, int texture, int *pVertCount )
 {
 	float	decalWorldScale[2];
-	vec3_t	textureSpaceBasis[3]; 
+	vec3_t	textureSpaceBasis[3];
 
 	// figure out where the decal maps onto the surface.
 	R_SetupDecalClip( pDecal, surf, texture, textureSpaceBasis, decalWorldScale );
@@ -440,7 +440,7 @@ static decal_t *R_DecalIntersect( decalinfo_t *decalinfo, msurface_t *surf, int 
 
 	// (Same as R_SetupDecalClip).
 	texture = decalinfo->m_iTexture;
-	
+
 	// precalculate the extents of decalinfo's decal in world space.
 	R_GetDecalDimensions( texture, &mapSize[0], &mapSize[1] );
 	VectorScale( decalinfo->m_Basis[0], ((mapSize[0] / decalinfo->m_scale) * 0.5f), decalExtents[0] );
@@ -448,7 +448,7 @@ static decal_t *R_DecalIntersect( decalinfo_t *decalinfo, msurface_t *surf, int 
 
 	pDecal = surf->pdecals;
 
-	while( pDecal ) 
+	while( pDecal )
 	{
 		texture = pDecal->texture;
 
@@ -479,7 +479,7 @@ static decal_t *R_DecalIntersect( decalinfo_t *decalinfo, msurface_t *surf, int 
 
 			Vector2Set( vDecalMax,
 				DotProduct( testPosition[0], testBasis[0] ) - pDecal->dx + 0.5f,
-				DotProduct( testPosition[1], testBasis[1] ) - pDecal->dy + 0.5f );	
+				DotProduct( testPosition[1], testBasis[1] ) - pDecal->dy + 0.5f );
 
 			// Now figure out the part of the projection that intersects pDecal's
 			// clip box [0,0,1,1].
@@ -488,14 +488,14 @@ static decal_t *R_DecalIntersect( decalinfo_t *decalinfo, msurface_t *surf, int 
 
 			if( vUnionMin[0] < 1 && vUnionMin[1] < 1 && vUnionMax[0] > 0 && vUnionMax[1] > 0 )
 			{
-				// Figure out how much of this intersects the (0,0) - (1,1) bbox.			
+				// Figure out how much of this intersects the (0,0) - (1,1) bbox.
 				float	flArea = (vUnionMax[0] - vUnionMin[1]) * (vUnionMax[1] - vUnionMin[1]);
 
 				if( flArea > 0.6f )
 				{
 					*pcount += 1;
 
-					if( !plast || flArea <= lastArea ) 
+					if( !plast || flArea <= lastArea )
 					{
 						plast = pDecal;
 						lastArea =  flArea;
@@ -593,9 +593,9 @@ static void R_AddDecalToSurface( decal_t *pdecal, msurface_t *surf, decalinfo_t 
 	pdecal->pnext = NULL;
 	pold = surf->pdecals;
 
-	if( pold ) 
+	if( pold )
 	{
-		while( pold->pnext ) 
+		while( pold->pnext )
 			pold = pold->pnext;
 		pold->pnext = pdecal;
 	}
@@ -626,7 +626,7 @@ static void R_DecalCreate( decalinfo_t *decalinfo, msurface_t *surf, float x, fl
 		MsgDev( D_ERROR, "psurface NULL in R_DecalCreate!\n" );
 		return;
 	}
-	
+
 	pold = R_DecalIntersect( decalinfo, surf, &count );
 	if( count < MAX_OVERLAP_DECALS ) pold = NULL;
 
@@ -651,7 +651,7 @@ static void R_DecalCreate( decalinfo_t *decalinfo, msurface_t *surf, float x, fl
 	// check to see if the decal actually intersects the surface
 	// if not, then remove the decal
 	R_DecalVertsClip( pdecal, surf, decalinfo->m_iTexture, &vertCount );
-	
+
 	if( !vertCount )
 	{
 		R_DecalUnlink( pdecal );
@@ -702,9 +702,9 @@ void R_DecalSurface( msurface_t *surf, decalinfo_t *decalinfo )
 
 	// Compute an effective width and height (axis aligned) in the parent texture space
 	// How does this work? decalBasis[0] represents the u-direction (width)
-	// of the decal measured in world space, decalBasis[1] represents the 
+	// of the decal measured in world space, decalBasis[1] represents the
 	// v-direction (height) measured in world space.
-	// textureVecsTexelsPerWorldUnits[0] represents the u direction of 
+	// textureVecsTexelsPerWorldUnits[0] represents the u direction of
 	// the surface's texture space measured in world space (with the appropriate
 	// scale factor folded in), and textureVecsTexelsPerWorldUnits[1]
 	// represents the texture space v direction. We want to find the dimensions (w,h)
@@ -713,11 +713,11 @@ void R_DecalSurface( msurface_t *surf, decalinfo_t *decalinfo )
 	// (decalWidth * decalBasis[0], decalHeight * decalBasis[1])
 	// in texture coordinates:
 
-	w = fabs( decalinfo->m_decalWidth  * DotProduct( textureU, decalinfo->m_Basis[0] )) +
-	    fabs( decalinfo->m_decalHeight * DotProduct( textureU, decalinfo->m_Basis[1] ));
-	
-	h = fabs( decalinfo->m_decalWidth  * DotProduct( textureV, decalinfo->m_Basis[0] )) +
-	    fabs( decalinfo->m_decalHeight * DotProduct( textureV, decalinfo->m_Basis[1] ));
+	w = fabsf( decalinfo->m_decalWidth  * DotProduct( textureU, decalinfo->m_Basis[0] )) +
+		fabsf( decalinfo->m_decalHeight * DotProduct( textureU, decalinfo->m_Basis[1] ));
+
+	h = fabsf( decalinfo->m_decalWidth  * DotProduct( textureV, decalinfo->m_Basis[0] )) +
+		fabsf( decalinfo->m_decalHeight * DotProduct( textureV, decalinfo->m_Basis[1] ));
 
 	// move s,t to upper left corner
 	s -= ( w * 0.5f );
@@ -744,7 +744,7 @@ static void R_DecalNodeSurfaces( model_t *model, mnode_t *node, decalinfo_t *dec
 
 	surf = model->surfaces + node->firstsurface;
 
-	for( i = 0; i < node->numsurfaces; i++, surf++ ) 
+	for( i = 0; i < node->numsurfaces; i++, surf++ )
 	{
 		// never apply decals on the water or sky surfaces
 		if( surf->flags & (SURF_DRAWTURB|SURF_DRAWSKY|SURF_CONVEYOR))
@@ -758,15 +758,15 @@ static void R_DecalNodeSurfaces( model_t *model, mnode_t *node, decalinfo_t *dec
 }
 
 //-----------------------------------------------------------------------------
-// Recursive routine to find surface to apply a decal to.  World coordinates of 
-// the decal are passed in r_recalpos like the rest of the engine.  This should 
+// Recursive routine to find surface to apply a decal to.  World coordinates of
+// the decal are passed in r_recalpos like the rest of the engine.  This should
 // be called through R_DecalShoot()
 //-----------------------------------------------------------------------------
 static void R_DecalNode( model_t *model, mnode_t *node, decalinfo_t *decalinfo )
 {
 	mplane_t	*splitplane;
 	float	dist;
-	
+
 	ASSERT( node );
 
 	if( node->contents < 0 )
@@ -778,13 +778,13 @@ static void R_DecalNode( model_t *model, mnode_t *node, decalinfo_t *decalinfo )
 	splitplane = node->plane;
 	dist = DotProduct( decalinfo->m_Position, splitplane->normal ) - splitplane->dist;
 
-	// This is arbitrarily set to 10 right now. In an ideal world we'd have the 
-	// exact surface but we don't so, this tells me which planes are "sort of 
-	// close" to the gunshot -- the gunshot is actually 4 units in front of the 
-	// wall (see dlls\weapons.cpp). We also need to check to see if the decal 
+	// This is arbitrarily set to 10 right now. In an ideal world we'd have the
+	// exact surface but we don't so, this tells me which planes are "sort of
+	// close" to the gunshot -- the gunshot is actually 4 units in front of the
+	// wall (see dlls\weapons.cpp). We also need to check to see if the decal
 	// actually intersects the texture space of the surface, as this method tags
 	// parallel surfaces in the same node always.
-	// JAY: This still tags faces that aren't correct at edges because we don't 
+	// JAY: This still tags faces that aren't correct at edges because we don't
 	// have a surface normal
 	if( dist > decalinfo->m_Size )
 	{
@@ -794,7 +794,7 @@ static void R_DecalNode( model_t *model, mnode_t *node, decalinfo_t *decalinfo )
 	{
 		R_DecalNode( model, node->children[1], decalinfo );
 	}
-	else 
+	else
 	{
 		if( dist < DECAL_DISTANCE && dist > -DECAL_DISTANCE )
 			R_DecalNodeSurfaces( model, node, decalinfo );
@@ -832,7 +832,7 @@ void R_DecalShoot( int textureIndex, int entityIndex, int modelIndex, vec3_t pos
 	else model = cl.worldmodel;
 
 	if( !model ) return;
-	
+
 	if( model->type != mod_brush )
 	{
 		MsgDev( D_ERROR, "Decals must hit mod_brush!\n" );
@@ -894,14 +894,14 @@ void R_DecalShoot( int textureIndex, int entityIndex, int modelIndex, vec3_t pos
 	decalInfo.m_scale = bound( MIN_DECAL_SCALE, scale, MAX_DECAL_SCALE );
 
 	// compute the decal dimensions in world space
-	decalInfo.m_decalWidth = width / decalInfo.m_scale;
-	decalInfo.m_decalHeight = height / decalInfo.m_scale;
+	decalInfo.m_decalWidth = (int)((float)width / decalInfo.m_scale);
+	decalInfo.m_decalHeight = (int)((float)height / decalInfo.m_scale);
 
 	R_DecalNode( model, &model->nodes[hull->firstclipnode], &decalInfo );
 }
 
 // Build the vertex list for a decal on a surface and clip it to the surface.
-// This is a template so it can work on world surfaces and dynamic displacement 
+// This is a template so it can work on world surfaces and dynamic displacement
 // triangles the same way.
 float *R_DecalSetupVerts( decal_t *pDecal, msurface_t *surf, int texture, int *outCount )
 {
@@ -1058,7 +1058,7 @@ void DrawSurfaceDecals( msurface_t *fa )
 				// color decal like detail texture. Base color is 127 127 127
 				pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 				pglBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
-                              }
+							  }
 
 			DrawSingleDecal( p, fa );
 		}
@@ -1113,9 +1113,9 @@ static qboolean R_DecalUnProject( decal_t *pdecal, decallist_t *entry )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: 
-// Input  : *pList - 
-//			count - 
+// Purpose:
+// Input  : *pList -
+//			count -
 // Output : static int
 //-----------------------------------------------------------------------------
 static int DecalListAdd( decallist_t *pList, int count )
@@ -1158,7 +1158,7 @@ static int DecalDepthCompare( const void *a, const void *b )
 
 //-----------------------------------------------------------------------------
 // Purpose: Called by CSaveRestore::SaveClientState
-// Input  : *pList - 
+// Input  : *pList -
 // Output : int
 //-----------------------------------------------------------------------------
 int R_CreateDecalList( decallist_t *pList, qboolean changelevel )
@@ -1172,9 +1172,9 @@ int R_CreateDecalList( decallist_t *pList, qboolean changelevel )
 		{
 			decal_t	*decal = &gDecalPool[i];
 			decal_t	*pdecals;
-			
+
 			// decal is in use and is not a custom decal
-			if( decal->psurface == NULL || ( decal->flags & FDECAL_DONTSAVE ))	
+			if( decal->psurface == NULL || ( decal->flags & FDECAL_DONTSAVE ))
 				 continue;
 
 			// compute depth
@@ -1190,7 +1190,7 @@ int R_CreateDecalList( decallist_t *pList, qboolean changelevel )
 			pList[total].depth = depth;
 			pList[total].flags = decal->flags;
 			pList[total].scale = decal->scale;
-			
+
 			R_DecalUnProject( decal, &pList[total] );
 			FS_FileBase( R_GetTexture( decal->texture )->name, pList[total].name );
 
@@ -1266,7 +1266,7 @@ void R_EntityRemoveDecals( model_t *mod )
 R_ClearAllDecals
 
 remove all decals from anything
-used for full decals restart 
+used for full decals restart
 ===============
 */
 void R_ClearAllDecals( void )

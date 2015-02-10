@@ -176,7 +176,7 @@ void CController :: SetYawSpeed ( void )
 	}
 #endif
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 int CController :: TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, int bitsDamageType )
@@ -288,9 +288,9 @@ void CController :: HandleAnimEvent( MonsterEvent_t *pEvent )
 			MESSAGE_END();
 
 			m_iBall[0] = 192;
-			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0f;
 			m_iBall[1] = 255;
-			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0f;
 
 		}
 		break;
@@ -329,23 +329,23 @@ void CController :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		{
 			AttackSound( );
 			m_flShootTime = gpGlobals->time;
-			m_flShootEnd = m_flShootTime + atoi( pEvent->options ) / 15.0;
+			m_flShootEnd = m_flShootTime + atoi( pEvent->options ) / 15.0f;
 		}
 		break;
 		case CONTROLLER_AE_POWERUP_FULL:
 		{
 			m_iBall[0] = 255;
-			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0f;
 			m_iBall[1] = 255;
-			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0f;
 		}
 		break;
 		case CONTROLLER_AE_POWERUP_HALF:
 		{
 			m_iBall[0] = 192;
-			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0f;
 			m_iBall[1] = 192;
-			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0f;
 		}
 		break;
 		default:
@@ -564,7 +564,7 @@ Vector Intersect( Vector vecSrc, Vector vecDst, Vector vecMove, float flSpeed )
 	else
 	{
 		t = b * b - 4 * a * c;
-		t = sqrt( t ) / (2.0 * a);
+		t = sqrt( t ) / (2.0f * a);
 		float t1 = -b +t;
 		float t2 = -b -t;
 
@@ -576,10 +576,10 @@ Vector Intersect( Vector vecSrc, Vector vecDst, Vector vecMove, float flSpeed )
 
 	// ALERT( at_console, "Intersect %f\n", t );
 
-	if (t < 0.1)
-		t = 0.1;
-	if (t > 10.0)
-		t = 10.0;
+	if (t < 0.1f)
+		t = 0.1f;
+	if (t > 10.0f)
+		t = 10.0f;
 
 	Vector vecHit = vecTo + vecMove * t;
 	return vecHit.Normalize( ) * flSpeed;
@@ -588,7 +588,7 @@ Vector Intersect( Vector vecSrc, Vector vecDst, Vector vecMove, float flSpeed )
 
 int CController::LookupFloat( )
 {
-	if (m_velocity.Length( ) < 32.0)
+	if (m_velocity.Length( ) < 32.0f)
 	{
 		return LookupSequence( "up" );
 	}
@@ -677,7 +677,7 @@ void CController :: RunTask ( Task_t *pTask )
 	case TASK_WAIT_FACE_ENEMY:
 	case TASK_WAIT_PVS:
 		MakeIdealYaw( m_vecEnemyLKP );
-		ChangeYaw( pev->yaw_speed );
+		ChangeYaw( static_cast<int>(pev->yaw_speed) );
 
 		if (m_fSequenceFinished)
 		{
@@ -844,23 +844,24 @@ void CController :: RunAI( void )
 	if ( HasMemory( bits_MEMORY_KILLED ) )
 		return;
 
-int i;	for ( i = 0; i < 2; i++)
+	int i;
+	for ( i = 0; i < 2; i++)
 	{
 		if (m_pBall[i] == NULL)
 		{
 			m_pBall[i] = CSprite::SpriteCreate( "sprites/xspark4.spr", pev->origin, TRUE );
 			m_pBall[i]->SetTransparency( kRenderGlow, 255, 255, 255, 255, kRenderFxNoDissipation );
 			m_pBall[i]->SetAttachment( edict(), (i + 3) );
-			m_pBall[i]->SetScale( 1.0 );
+			m_pBall[i]->SetScale( 1.0f );
 		}
 
 		float t = m_iBallTime[i] - gpGlobals->time;
-		if (t > 0.1)
-			t = 0.1 / t;
+		if (t > 0.1f)
+			t = 0.1f / t;
 		else
-			t = 1.0;
+			t = 1.0f;
 
-		m_iBallCurrent[i] += (m_iBall[i] - m_iBallCurrent[i]) * t;
+		m_iBallCurrent[i] += static_cast<int>((m_iBall[i] - m_iBallCurrent[i]) * t);
 
 		m_pBall[i]->SetBrightness( m_iBallCurrent[i] );
 
@@ -873,7 +874,7 @@ int i;	for ( i = 0; i < 2; i++)
 			WRITE_COORD( vecStart.x );		// origin
 			WRITE_COORD( vecStart.y );
 			WRITE_COORD( vecStart.z );
-			WRITE_COORD( m_iBallCurrent[i] / 8 );	// radius
+			WRITE_COORD( static_cast<float>(m_iBallCurrent[i]) / 8.f );	// radius
 			WRITE_BYTE( 255 );	// R
 			WRITE_BYTE( 192 );	// G
 			WRITE_BYTE( 64 );	// B
@@ -1014,7 +1015,7 @@ void CController :: Move ( float flInterval )
 					if ( m_moveWaitTime > 0 )
 					{
 						FRefreshRoute();
-						m_flMoveWaitFinished = gpGlobals->time + m_moveWaitTime * 0.5;
+						m_flMoveWaitFinished = gpGlobals->time + m_moveWaitTime * 0.5f;
 					}
 					else
 					{
@@ -1165,7 +1166,7 @@ void CControllerHeadBall :: Spawn( void )
 	pev->rendercolor.y = 255;
 	pev->rendercolor.z = 255;
 	pev->renderamt = 255;
-	pev->scale = 2.0;
+	pev->scale = 2.0f;
 
 	UTIL_SetSize(pev, Vector( 0, 0, 0), Vector(0, 0, 0));
 	UTIL_SetOrigin( pev, pev->origin );
@@ -1175,7 +1176,7 @@ void CControllerHeadBall :: Spawn( void )
 
 	m_vecIdeal = Vector( 0, 0, 0 );
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	m_hOwner = Instance( pev->owner );
 	pev->dmgtime = gpGlobals->time;
@@ -1192,7 +1193,7 @@ void CControllerHeadBall :: Precache( void )
 
 void CControllerHeadBall :: HuntThink( void  )
 {
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	pev->renderamt -= 5;
 
@@ -1255,10 +1256,10 @@ void CControllerHeadBall :: HuntThink( void  )
 
 		UTIL_EmitAmbientSound( ENT(pev), tr.vecEndPos, "weapons/electro4.wav", 0.5, ATTN_NORM, 0, RANDOM_LONG( 140, 160 ) );
 
-		m_flNextAttack = gpGlobals->time + 3.0;
+		m_flNextAttack = static_cast<int>(gpGlobals->time + 3.0f);
 
 		SetThink( &CControllerHeadBall::DieThink );
-		pev->nextthink = gpGlobals->time + 0.3;
+		pev->nextthink = gpGlobals->time + 0.3f;
 	}
 
 	// Crawl( );
@@ -1369,7 +1370,7 @@ void CControllerZapBall :: Spawn( void )
 
 	m_hOwner = Instance( pev->owner );
 	pev->dmgtime = gpGlobals->time; // keep track of when ball spawned
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 
@@ -1383,9 +1384,9 @@ void CControllerZapBall :: Precache( void )
 
 void CControllerZapBall :: AnimateThink( void  )
 {
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
-	pev->frame = ((int)pev->frame + 1) % 11;
+	pev->frame = static_cast<float>(static_cast<int>(pev->frame + 1) % 11);
 
 	if (gpGlobals->time - pev->dmgtime > 5 || pev->velocity.Length() < 10)
 	{

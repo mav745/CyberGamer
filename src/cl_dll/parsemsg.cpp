@@ -151,16 +151,16 @@ char* READ_STRING( void )
 
 float READ_COORD( void )
 {
-	return (float)(READ_SHORT() * (1.0/8));
+	return static_cast<float>(READ_SHORT() * (1.0/8));
 }
 
 float READ_ANGLE( void )
 {
-	return (float)(READ_CHAR() * (360.0/256));
+	return static_cast<float>(READ_CHAR() * (360.0/256));
 }
 
 float READ_HIRESANGLE( void )
 {
-	return (float)(READ_SHORT() * (360.0/65536));
+	return static_cast<float>(READ_SHORT() * (360.0/65536));
 }
 

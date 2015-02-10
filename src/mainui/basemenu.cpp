@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -57,7 +57,7 @@ int		uiInputFgColor	= 0xFF555555;	// 85,  85,  85,  255	// field, scrollist, che
 int		uiColorWhite	= 0xFFFFFFFF;	// 255, 255, 255, 255	// useful for bitmaps
 int		uiColorDkGrey	= 0xFF404040;	// 64,  64,  64,  255	// shadow and grayed items
 int		uiColorBlack	= 0xFF000000;	//  0,   0,   0,  255	// some controls background
-int		uiColorConsole	= 0xFFF0B418;	// just for reference 
+int		uiColorConsole	= 0xFFF0B418;	// just for reference
 
 // color presets (this is nasty hack to allow color presets to part of text)
 const int g_iColorTable[8] =
@@ -81,10 +81,10 @@ Any parameter can be NULL if you don't want it
 */
 void UI_ScaleCoords( int *x, int *y, int *w, int *h )
 {
-	if( x ) *x *= uiStatic.scaleX;
-	if( y ) *y *= uiStatic.scaleY;
-	if( w ) *w *= uiStatic.scaleX;
-	if( h ) *h *= uiStatic.scaleY;
+	if( x ) *x = (int)(*x * uiStatic.scaleX);
+	if( y ) *y = (int)(*y * uiStatic.scaleY);
+	if( w ) *w = (int)(*w * uiStatic.scaleX);
+	if( h ) *h = (int)(*h * uiStatic.scaleY);
 }
 
 /*
@@ -277,7 +277,7 @@ void UI_DrawString( int x, int y, int w, int h, const char *string, const int co
 			}
 			xx += charW;
 		}
-          	yy += charH;
+			yy += charH;
 	}
 }
 
@@ -678,16 +678,17 @@ void UI_DrawMenu( menuFramework_s *menu )
 	if( item && ( item->flags & QMF_HASMOUSEFOCUS && !( item->flags & QMF_NOTIFY )) && ( item->statusText != NULL ))
 	{
 		// fade it in, but wait a second
-		int alpha = bound( 0, ((( uiStatic.realTime - statusFadeTime ) - 1000 ) * 0.001f ) * 255, 255 );
+		int a1 = (int)(( uiStatic.realTime - statusFadeTime  - 1000.f ) * 0.001f * 255.f);
+		int alpha = bound( 0, a1, 255 );
 		int r, g, b, x, len;
 
 		GetConsoleStringSize( item->statusText, &len, NULL );
 
 		UnpackRGB( r, g, b, uiColorHelp );
 		TextMessageSetColor( r, g, b, alpha );
-		x = ( ScreenWidth - len ) * 0.5; // centering
+		x = (int)(( ScreenWidth - len ) * 0.5f); // centering
 
-		DrawConsoleString( x, 720 * uiStatic.scaleY, item->statusText );
+		DrawConsoleString( x, (int)(720.f * uiStatic.scaleY), item->statusText );
 	}
 	else statusFadeTime = uiStatic.realTime;
 }
@@ -803,7 +804,7 @@ const char *UI_DefaultKey( menuFramework_s *menu, int key, int down )
 		break;
 	}
 	return sound;
-}		
+}
 
 /*
 =================
@@ -871,7 +872,7 @@ bool UI_StartBackGroundMap( void )
 
 	char cmd[128];
 	sprintf( cmd, "maps/%s.bsp", uiStatic.bgmaps[bgmapid] );
-	if( !FILE_EXISTS( cmd )) return FALSE; 
+	if( !FILE_EXISTS( cmd )) return FALSE;
 
 	sprintf( cmd, "map_background %s\n", uiStatic.bgmaps[bgmapid] );
 	CLIENT_COMMAND( FALSE, cmd );
@@ -932,7 +933,7 @@ void UI_PushMenu( menuFramework_s *menu )
 
 	uiStatic.menuActive = menu;
 	uiStatic.firstDraw = true;
-	uiStatic.enterSound = gpGlobals->time + 0.15;	// make some delay
+	uiStatic.enterSound = gpGlobals->time + 0.15f;	// make some delay
 	uiStatic.visible = true;
 
 	KEY_SetDest ( KEY_MENU );
@@ -1014,7 +1015,7 @@ void UI_UpdateMenu( float flTime )
 	if( !uiStatic.menuActive )
 		return;
 
-	uiStatic.realTime = flTime * 1000;
+	uiStatic.realTime = (int)(flTime * 1000);
 	uiStatic.framecount++;
 
 	if( CVAR_GET_FLOAT( "cl_background" ) && !g_engfuncs.pfnClientInGame())
@@ -1038,7 +1039,7 @@ void UI_UpdateMenu( float flTime )
 	{
 		uiStatic.firstDraw = false;
 		static int first = TRUE;
-                    
+
 		if( first )
 		{
 			// if game was launched with commandline e.g. +map or +load ignore the music
@@ -1460,7 +1461,7 @@ UI_VidInit
 int UI_VidInit( void )
 {
 	UI_Precache ();
-		
+
 	uiStatic.scaleX = ScreenWidth / 1024.0f;
 	uiStatic.scaleY = ScreenHeight / 768.0f;
 

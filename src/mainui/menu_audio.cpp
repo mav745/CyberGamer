@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -95,8 +95,8 @@ static void UI_Audio_SetConfig( void )
 	CVAR_SET_FLOAT( "volume", uiAudio.soundVolume.curValue );
 	CVAR_SET_FLOAT( "musicvolume", uiAudio.musicVolume.curValue );
 	CVAR_SET_FLOAT( "suitvolume", uiAudio.suitVolume.curValue );
-	CVAR_SET_FLOAT( "s_lerping", uiAudio.lerping.enabled );
-	CVAR_SET_FLOAT( "dsp_off", uiAudio.noDSP.enabled );
+	CVAR_SET_FLOAT( "s_lerping", (float)uiAudio.lerping.enabled );
+	CVAR_SET_FLOAT( "dsp_off", (float)uiAudio.noDSP.enabled );
 }
 
 /*
@@ -109,8 +109,8 @@ static void UI_Audio_UpdateConfig( void )
 	CVAR_SET_FLOAT( "volume", uiAudio.soundVolume.curValue );
 	CVAR_SET_FLOAT( "musicvolume", uiAudio.musicVolume.curValue );
 	CVAR_SET_FLOAT( "suitvolume", uiAudio.suitVolume.curValue );
-	CVAR_SET_FLOAT( "s_lerping", uiAudio.lerping.enabled );
-	CVAR_SET_FLOAT( "dsp_off", uiAudio.noDSP.enabled );
+	CVAR_SET_FLOAT( "s_lerping", (float)uiAudio.lerping.enabled );
+	CVAR_SET_FLOAT( "dsp_off", (float)uiAudio.noDSP.enabled );
 }
 
 /*
@@ -159,7 +159,7 @@ static void UI_Audio_Init( void )
 	memset( &uiAudio, 0, sizeof( uiAudio_t ));
 
 	uiAudio.menu.vidInitFunc = UI_Audio_Init;
-	
+
 	uiAudio.background.generic.id	= ID_BACKGROUND;
 	uiAudio.background.generic.type = QMTYPE_BITMAP;
 	uiAudio.background.generic.flags = QMF_INACTIVE;

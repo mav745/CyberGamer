@@ -23,8 +23,8 @@
 #include "gamerules.h"
 
 
-#define	CROWBAR_BODYHIT_VOLUME 128
-#define	CROWBAR_WALLHIT_VOLUME 512
+#define	CROWBAR_BODYHIT_VOLUME 128.f
+#define	CROWBAR_WALLHIT_VOLUME 512.f
 
 LINK_ENTITY_TO_CLASS( weapon_crowbar, CCrowbar );
 
@@ -93,7 +93,7 @@ BOOL CCrowbar::Deploy( )
 
 void CCrowbar::Holster( int skiplocal /* = 0 */ )
 {
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
 	SendWeaponAnim( CROWBAR_HOLSTER );
 }
 
@@ -111,7 +111,7 @@ void FindHullIntersection( const Vector &vecSrc, TraceResult &tr, float *mins, f
 
 	vecHullEnd = vecSrc + ((vecHullEnd - vecSrc)*2);
 	UTIL_TraceLine( vecSrc, vecHullEnd, dont_ignore_monsters, pEntity, &tmpTrace );
-	if ( tmpTrace.flFraction < 1.0 )
+	if ( tmpTrace.flFraction < 1.0f )
 	{
 		tr = tmpTrace;
 		return;
@@ -148,7 +148,7 @@ void CCrowbar::PrimaryAttack()
 	if (! Swing( 1 ))
 	{
 		SetThink( &CCrowbar::SwingAgain );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 }
 
@@ -194,16 +194,16 @@ int CCrowbar::Swing( int fFirst )
 #endif
 
 	PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usCrowbar,
-	0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0, 0, 0,
-	0.0, 0, 0.0 );
+	0.0f, (float *)&g_vecZero, (float *)&g_vecZero, 0.f, 0.f, 0,
+	0, 0, 0 );
 
 
-	if ( tr.flFraction >= 1.0 )
+	if ( tr.flFraction >= 1.0f )
 	{
 		if (fFirst)
 		{
 			// miss
-			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5;
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 
 			// player "shoot" animation
 			m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
@@ -262,7 +262,7 @@ int CCrowbar::Swing( int fFirst )
 				case 2:
 					EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/cbar_hitbod3.wav", 1, ATTN_NORM); break;
 				}
-				m_pPlayer->m_iWeaponVolume = CROWBAR_BODYHIT_VOLUME;
+				m_pPlayer->m_iWeaponVolume = static_cast<int>(CROWBAR_BODYHIT_VOLUME);
 				if ( !pEntity->IsAlive() )
 					  return TRUE;
 				else
@@ -302,12 +302,12 @@ int CCrowbar::Swing( int fFirst )
 			m_trHit = tr;
 		}
 
-		m_pPlayer->m_iWeaponVolume = flVol * CROWBAR_WALLHIT_VOLUME;
+		m_pPlayer->m_iWeaponVolume = static_cast<int>(flVol * CROWBAR_WALLHIT_VOLUME);
 #endif
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25;
+		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.25f;
 
 		SetThink( &CCrowbar::Smack );
-		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
+		pev->nextthink = UTIL_WeaponTimeBase() + 0.2f;
 
 
 	}

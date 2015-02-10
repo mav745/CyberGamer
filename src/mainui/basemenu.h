@@ -1,5 +1,5 @@
 /*
-basemenu.h - menu basic header 
+basemenu.h - menu basic header
 Copyright (C) 2010 Uncle Mike
 
 This program is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ GNU General Public License for more details.
 #define UI_MAX_MENUDEPTH		8
 #define UI_MAX_MENUITEMS		64
 
-#define UI_PULSE_DIVISOR		75
-#define UI_BLINK_TIME		250
-#define UI_BLINK_MASK		499
+#define UI_PULSE_DIVISOR		75.f
+#define UI_BLINK_TIME		250.f
+#define UI_BLINK_MASK		499.f
 
 #define UI_SMALL_CHAR_WIDTH		10
 #define UI_SMALL_CHAR_HEIGHT		20
@@ -191,7 +191,7 @@ typedef struct
 typedef struct
 {
 	menuCommon_s	generic;
- 	const char	*background;
+	const char	*background;
 	const char	*upArrow;
 	const char	*upArrowFocus;
 	const char	*downArrow;
@@ -240,7 +240,7 @@ typedef struct
 	const char	*background;
 } menuAction_s;
 
-typedef struct  
+typedef struct
 {
 	menuCommon_s	generic;
 	HIMAGE		pic;
@@ -370,7 +370,7 @@ typedef struct
 	HIMAGE		buttonsPics[71];	// FIXME: replace with PC_BUTTONCOUNT
 
 	int		buttons_width;	// btns_main.bmp global width
-	int		buttons_height;	// per one button with all states (inactive, focus, pressed) 
+	int		buttons_height;	// per one button with all states (inactive, focus, pressed)
 
 	int		buttons_draw_width;	// scaled image what we drawing
 	int		buttons_draw_height;

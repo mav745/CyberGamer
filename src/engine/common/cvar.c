@@ -157,7 +157,7 @@ The flags will be or'ed in if the variable exists.
 convar_t *Cvar_Get( const char *var_name, const char *var_value, int flags, const char *var_desc )
 {
 	convar_t	*var;
-	
+
 	if( !var_name )
 	{
 		Sys_Error( "Cvar_Get: passed NULL name\n" );
@@ -275,7 +275,7 @@ void Cvar_RegisterVariable( cvar_t *var )
 		MsgDev( D_ERROR, "Cvar_Register: %s is a command\n", var->name );
 		return;
 	}
-	
+
 	// first check to see if it has already been defined
 	if(( cur = Cvar_FindVar( var->name )) != NULL )
 	{
@@ -335,13 +335,13 @@ void Cvar_RegisterVariable( cvar_t *var )
 		var->string = copystring( var->string );
 		var->value = Q_atof( var->string );
 		var->flags |= CVAR_EXTDLL;		// all cvars passed this function are game cvars
-	
+
 		// link the variable in
 		var->next = (cvar_t *)cvar_vars;
 		cvar_vars = (convar_t *)var;
 	}
 }
-	
+
 /*
 ============
 Cvar_Set2
@@ -353,7 +353,7 @@ convar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force )
 	const char	*pszValue;
 	char		szNew[MAX_SYSPATH];
 	qboolean		dll_variable = false;
-	
+
 	if( !Cvar_ValidateString( var_name, false ))
 	{
 		MsgDev( D_ERROR, "invalid cvar name string: %s\n", var_name );
@@ -491,7 +491,7 @@ convar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force )
 		pszValue = szNew;
 	}
 
- 	// nothing to change
+	// nothing to change
 	if( !Q_strcmp( pszValue, var->string ))
 		return var;
 
@@ -506,7 +506,7 @@ convar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force )
 
 	if( var->flags & CVAR_RENDERINFO )
 		renderinfo->modified = true;	// transmit at next oportunity
-	
+
 	// free the old value string
 	Mem_Free( var->string );
 	var->string = copystring( pszValue );
@@ -550,9 +550,9 @@ void Cvar_FullSet( const char *var_name, const char *value, int flags )
 {
 	convar_t	*var;
 	qboolean	dll_variable = false;
-		
+
 	var = Cvar_FindVar( var_name );
-	if( !var ) 
+	if( !var )
 	{
 		// create it
 		Cvar_Get( var_name, value, flags, "" );
@@ -570,7 +570,7 @@ void Cvar_FullSet( const char *var_name, const char *value, int flags )
 	{
 		// transmit at next oportunity
 		userinfo->modified = true;
-	}	
+	}
 
 	if( var->flags & CVAR_PHYSICINFO )
 	{
@@ -611,12 +611,12 @@ void Cvar_DirectSet( cvar_t *var, const char *value )
 	cvar_t		*test;
 	const char	*pszValue;
 	char		szNew[MAX_SYSPATH];
-	
+
 	if( !var ) return;	// GET_CVAR_POINTER is failed ?
 
 	// make sure what is really pointer to the cvar
 	test = (cvar_t *)Cvar_FindVar( var->name );
-	ASSERT( var == test ); 
+	ASSERT( var == test );
 
 	if( value && !Cvar_ValidateString( value, true ))
 	{
@@ -631,7 +631,7 @@ void Cvar_DirectSet( cvar_t *var, const char *value )
 		// Cvar_DirectSet cannot change these cvars at all
 		return;
 	}
-	
+
 	if(( var->flags & CVAR_CHEAT ) && !Cvar_VariableInteger( "sv_cheats" ))
 	{
 		// cheats are disabled
@@ -744,7 +744,7 @@ void Cvar_SetCheatState( void )
 
 		if( var->flags & CVAR_CHEAT )
 		{
-			// the CVAR_LATCHED|CVAR_CHEAT vars might escape the reset here 
+			// the CVAR_LATCHED|CVAR_CHEAT vars might escape the reset here
 			// because of a different var->latched_string
 			if( var->latched_string )
 			{
@@ -805,7 +805,7 @@ void Cvar_Toggle_f( void )
 		return;
 	}
 
-	v = Cvar_VariableValue( Cmd_Argv( 1 ));
+	v = (int)Cvar_VariableValue( Cmd_Argv( 1 ));
 	v = !v;
 
 	Cvar_Set2( Cmd_Argv( 1 ), va( "%i", v ), false );

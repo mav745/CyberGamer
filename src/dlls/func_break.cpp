@@ -441,7 +441,7 @@ void CBreakable::BreakTouch( CBaseEntity *pOther )
 
 	if ( FBitSet ( pev->spawnflags, SF_BREAK_TOUCH ) )
 	{// can be broken when run into
-		flDamage = pevToucher->velocity.Length() * 0.01;
+		flDamage = pevToucher->velocity.Length() * 0.01f;
 
 		if (flDamage >= pev->health)
 		{
@@ -596,10 +596,10 @@ void CBreakable::Die( void )
 	// The more negative pev->health, the louder
 	// the sound should be.
 
-	fvol = RANDOM_FLOAT(0.85, 1.0) + (abs(pev->health) / 100.0);
+	fvol = RANDOM_FLOAT(0.85f, 1.0f) + (fabsf(pev->health) / 100.0f);
 
-	if (fvol > 1.0)
-		fvol = 1.0;
+	if (fvol > 1.0f)
+		fvol = 1.0f;
 
 
 	switch (m_Material)
@@ -745,7 +745,7 @@ void CBreakable::Die( void )
 	SUB_UseTargets( NULL, USE_TOGGLE, 0 );
 
 	SetThink( &CBaseEntity::SUB_Remove );
-	pev->nextthink = pev->ltime + 0.1;
+	pev->nextthink = pev->ltime + 0.1f;
 	if ( m_iszSpawnObject )
 		CBaseEntity::Create( (char *)STRING(m_iszSpawnObject), VecBModelOrigin(pev), pev->angles, edict() );
 
@@ -840,7 +840,7 @@ void CPushable :: Spawn( void )
 	UTIL_SetOrigin( pev, pev->origin );
 
 	// Multiply by area of the box's cross-section (assume 1000 units^3 standard volume)
-	pev->skin = ( pev->skin * (pev->maxs.x - pev->mins.x) * (pev->maxs.y - pev->mins.y) ) * 0.0005;
+	pev->skin = static_cast<int>( 0.0005 * pev->skin * (pev->maxs.x - pev->mins.x) * (pev->maxs.y - pev->mins.y) );
 	m_soundTime = 0;
 }
 
@@ -886,7 +886,7 @@ void CPushable :: KeyValue( KeyValueData *pkvd )
 	}
 	else if ( FStrEq(pkvd->szKeyName, "buoyancy") )
 	{
-		pev->skin = atof(pkvd->szValue);
+		pev->skin = static_cast<int>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -928,7 +928,7 @@ void CPushable :: Move( CBaseEntity *pOther, int push )
 	{
 		// Only push if floating
 		if ( pev->waterlevel > 0 )
-			pev->velocity.z += pevToucher->velocity.z * 0.1;
+			pev->velocity.z += pevToucher->velocity.z * 0.1f;
 
 		return;
 	}

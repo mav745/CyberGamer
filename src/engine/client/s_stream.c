@@ -51,7 +51,7 @@ S_FadeMusicVolume
 */
 void S_FadeMusicVolume( float fadePercent )
 {
-	musicfade.percent = bound( 0.0f, fadePercent, 100.0f );       
+	musicfade.percent = bound( 0.0f, fadePercent, 100.0f );
 }
 
 /*
@@ -204,7 +204,7 @@ void S_StreamBackgroundTrack( void )
 		bufferSamples = MAX_RAW_SAMPLES - (s_rawend - soundtime);
 
 		// decide how much data needs to be read from the file
-		fileSamples = bufferSamples * ((float)info->rate / SOUND_DMA_SPEED );
+		fileSamples = (int)(bufferSamples * ((float)info->rate / SOUND_DMA_SPEED ));
 		if( fileSamples <= 1 ) return; // no more samples need
 
 		// our max buffer size
@@ -304,7 +304,7 @@ void S_StreamSoundTrack( void )
 		bufferSamples = MAX_RAW_SAMPLES - (s_rawend - soundtime);
 
 		// decide how much data needs to be read from the file
-		fileSamples = bufferSamples * ((float)info->rate / SOUND_DMA_SPEED );
+		fileSamples = (int)(bufferSamples * ((float)info->rate / SOUND_DMA_SPEED ));
 		if( fileSamples <= 1 ) return; // no more samples need
 
 		// our max buffer size
@@ -349,8 +349,8 @@ void S_StreamRawSamples( int samples, int rate, int width, int channels, const b
 
 	src = 0;
 	samplefrac = 0;
-	fracstep = (((double)rate) / (double)SOUND_DMA_SPEED) * 256.0;
-	outcount = (double)samples * (double)SOUND_DMA_SPEED / (double)rate;
+	fracstep = (int)((((double)rate) / (double)SOUND_DMA_SPEED) * 256.0);
+	outcount = (int)((double)samples * (double)SOUND_DMA_SPEED / (double)rate);
 	incount = samples * channels;
 
 #define TAKE_SAMPLE( s )	(sizeof(*in) == 1 ? (a = (in[src+(s)]-128)<<8,\
@@ -378,7 +378,7 @@ void S_StreamRawSamples( int samples, int rate, int width, int channels, const b
 			s_rawsamples[dst].right = s_rawsamples[dst].left; \
 		} \
 	}
-		
+
 	if( s_rawend < paintedtime )
 		s_rawend = paintedtime;
 

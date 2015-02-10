@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -48,7 +48,7 @@ private:
 	string_t	m_iszMaster;
 };
 
-TYPEDESCRIPTION	CRuleEntity::m_SaveData[] = 
+TYPEDESCRIPTION	CRuleEntity::m_SaveData[] =
 {
 	DEFINE_FIELD( CRuleEntity, m_iszMaster, FIELD_STRING),
 };
@@ -84,11 +84,11 @@ BOOL CRuleEntity::CanFireForActivator( CBaseEntity *pActivator )
 		else
 			return FALSE;
 	}
-	
+
 	return TRUE;
 }
 
-// 
+//
 // CRulePointEntity -- base class for all rule "point" entities (not brushes)
 //
 class CRulePointEntity : public CRuleEntity
@@ -104,7 +104,7 @@ void CRulePointEntity::Spawn( void )
 	pev->model			= 0;
 }
 
-// 
+//
 // CRuleBrushEntity -- base class for all rule "brush" entities (not brushes)
 // Default behavior is to set up like a trigger, invisible, but keep the model for volume testing
 //
@@ -123,7 +123,7 @@ void CRuleBrushEntity::Spawn( void )
 }
 
 
-// CGameScore / game_score	-- award points to player / team 
+// CGameScore / game_score	-- award points to player / team
 //	Points +/- total
 //	Flag: Allow negative scores					SF_SCORE_NEGATIVE
 //	Flag: Award points to team in teamplay		SF_SCORE_TEAM
@@ -138,11 +138,11 @@ public:
 	void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 	void	KeyValue( KeyValueData *pkvd );
 
-	inline	int		Points( void ) { return pev->frags; }
+	inline	int		Points( void ) { return static_cast<int>(pev->frags); }
 	inline	BOOL	AllowNegativeScore( void ) { return pev->spawnflags & SF_SCORE_NEGATIVE; }
 	inline	BOOL	AwardToTeam( void ) { return pev->spawnflags & SF_SCORE_TEAM; }
 
-	inline	void	SetPoints( int points ) { pev->frags = points; }
+	inline	void	SetPoints( int points ) { pev->frags = static_cast<float>(points); }
 
 private:
 };
@@ -242,7 +242,7 @@ LINK_ENTITY_TO_CLASS( game_text, CGameText );
 
 // Save parms as a block.  Will break save/restore if the structure changes, but this entity didn't ship with Half-Life, so
 // it can't impact saved Half-Life games.
-TYPEDESCRIPTION	CGameText::m_SaveData[] = 
+TYPEDESCRIPTION	CGameText::m_SaveData[] =
 {
 	DEFINE_ARRAY( CGameText, m_textParms, FIELD_CHARACTER, sizeof(hudtextparms_t) ),
 };
@@ -259,12 +259,12 @@ void CGameText::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "x"))
 	{
-		m_textParms.x = atof( pkvd->szValue );
+		m_textParms.x = static_cast<float>(atof( pkvd->szValue ));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "y"))
 	{
-		m_textParms.y = atof( pkvd->szValue );
+		m_textParms.y = static_cast<float>(atof( pkvd->szValue ));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "effect"))
@@ -294,22 +294,22 @@ void CGameText::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "fadein"))
 	{
-		m_textParms.fadeinTime = atof( pkvd->szValue );
+		m_textParms.fadeinTime = static_cast<float>(atof( pkvd->szValue ));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "fadeout"))
 	{
-		m_textParms.fadeoutTime = atof( pkvd->szValue );
+		m_textParms.fadeoutTime = static_cast<float>(atof( pkvd->szValue ));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "holdtime"))
 	{
-		m_textParms.holdTime = atof( pkvd->szValue );
+		m_textParms.holdTime = static_cast<float>(atof( pkvd->szValue ));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "fxtime"))
 	{
-		m_textParms.fxTime = atof( pkvd->szValue );
+		m_textParms.fxTime = static_cast<float>(atof( pkvd->szValue ));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -516,7 +516,7 @@ private:
 };
 
 LINK_ENTITY_TO_CLASS( game_zone_player, CGamePlayerZone );
-TYPEDESCRIPTION	CGamePlayerZone::m_SaveData[] = 
+TYPEDESCRIPTION	CGamePlayerZone::m_SaveData[] =
 {
 	DEFINE_FIELD( CGamePlayerZone, m_iszInTarget, FIELD_STRING ),
 	DEFINE_FIELD( CGamePlayerZone, m_iszOutTarget, FIELD_STRING ),
@@ -599,12 +599,12 @@ void CGamePlayerZone::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TY
 
 	if ( m_iszInCount )
 	{
-		FireTargets( STRING(m_iszInCount), pActivator, this, USE_SET, playersInCount );
+		FireTargets( STRING(m_iszInCount), pActivator, this, USE_SET, static_cast<float>(playersInCount) );
 	}
 
 	if ( m_iszOutCount )
 	{
-		FireTargets( STRING(m_iszOutCount), pActivator, this, USE_SET, playersOutCount );
+		FireTargets( STRING(m_iszOutCount), pActivator, this, USE_SET, static_cast<float>(playersOutCount) );
 	}
 }
 
@@ -639,7 +639,7 @@ void CGamePlayerHurt::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TY
 		else
 			pActivator->TakeDamage( pev, pev, pev->dmg, DMG_GENERIC );
 	}
-	
+
 	SUB_UseTargets( pActivator, useType, value );
 
 	if ( RemoveOnFire() )
@@ -669,15 +669,15 @@ public:
 	inline void CountUp( void ) { pev->frags++; }
 	inline void CountDown( void ) { pev->frags--; }
 	inline void ResetCount( void ) { pev->frags = pev->dmg; }
-	inline int  CountValue( void ) { return pev->frags; }
-	inline int	LimitValue( void ) { return pev->health; }
-	
+	inline int  CountValue( void ) { return static_cast<int>(pev->frags); }
+	inline int	LimitValue( void ) { return static_cast<int>(pev->health); }
+
 	inline BOOL HitLimit( void ) { return CountValue() == LimitValue(); }
 
 private:
 
-	inline void SetCountValue( int value ) { pev->frags = value; }
-	inline void SetInitialValue( int value ) { pev->dmg = value; }
+	inline void SetCountValue( int value ) { pev->frags = static_cast<float>(value); }
+	inline void SetInitialValue( int value ) { pev->dmg = static_cast<float>(value); }
 };
 
 LINK_ENTITY_TO_CLASS( game_counter, CGameCounter );
@@ -701,7 +701,7 @@ void CGameCounter::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 	case USE_TOGGLE:
 		CountUp();
 		break;
-	
+
 	case USE_OFF:
 		CountDown();
 		break;
@@ -710,7 +710,7 @@ void CGameCounter::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 		SetCountValue( (int)value );
 		break;
 	}
-	
+
 	if ( HitLimit() )
 	{
 		SUB_UseTargets( pActivator, USE_TOGGLE, 0 );
@@ -718,7 +718,7 @@ void CGameCounter::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE 
 		{
 			UTIL_Remove( this );
 		}
-		
+
 		if ( ResetOnFire() )
 		{
 			ResetCount();
@@ -843,7 +843,7 @@ void CGamePlayerEquip::EquipPlayer( CBaseEntity *pEntity )
 			break;
 		for ( int j = 0; j < m_weaponCount[i]; j++ )
 		{
- 			pPlayer->GiveNamedItem( STRING(m_weaponNames[i]) );
+			pPlayer->GiveNamedItem( STRING(m_weaponNames[i]) );
 		}
 	}
 }
@@ -875,7 +875,7 @@ private:
 	inline BOOL RemoveOnFire( void ) { return (pev->spawnflags & SF_PTEAM_FIREONCE) ? TRUE : FALSE; }
 	inline BOOL ShouldKillPlayer( void ) { return (pev->spawnflags & SF_PTEAM_KILL) ? TRUE : FALSE; }
 	inline BOOL ShouldGibPlayer( void ) { return (pev->spawnflags & SF_PTEAM_GIB) ? TRUE : FALSE; }
-	
+
 	const char *TargetTeamName( const char *pszTargetName );
 };
 
@@ -910,7 +910,7 @@ void CGamePlayerTeam::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TY
 			g_pGameRules->ChangePlayerTeam( pPlayer, pszTargetTeam, ShouldKillPlayer(), ShouldGibPlayer() );
 		}
 	}
-	
+
 	if ( RemoveOnFire() )
 	{
 		UTIL_Remove( this );

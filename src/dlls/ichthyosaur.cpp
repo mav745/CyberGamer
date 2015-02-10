@@ -252,9 +252,9 @@ static Schedule_t	slSwimAround[] =
 
 static Task_t	tlSwimAgitated[] =
 {
-	{ TASK_STOP_MOVING,				(float) 0 },
-	{ TASK_SET_ACTIVITY,			(float)ACT_RUN },
-	{ TASK_WAIT,					(float)2.0 },
+	{ TASK_STOP_MOVING,				 0.f },
+	{ TASK_SET_ACTIVITY,			static_cast<float>(ACT_RUN) },
+	{ TASK_WAIT,					2.0f },
 };
 
 static Schedule_t	slSwimAgitated[] =
@@ -685,7 +685,7 @@ void CIchthyosaur :: RunTask ( Task_t *pTask )
 			}
 			else
 			{
-				m_flNextAlert += 0.1;
+				m_flNextAlert += 0.1f;
 
 				if (m_idealDist > 128)
 				{
@@ -700,7 +700,7 @@ void CIchthyosaur :: RunTask ( Task_t *pTask )
 		}
 		else
 		{
-			m_flNextAlert = gpGlobals->time + 0.2;
+			m_flNextAlert = gpGlobals->time + 0.2f;
 		}
 
 		if (m_flNextAlert < gpGlobals->time)
@@ -755,7 +755,7 @@ float CIchthyosaur::VectorToPitch( const Vector &vec )
 		pitch = 0;
 	else
 	{
-		pitch = (int) (atan2(vec.z, sqrt(vec.x*vec.x+vec.y*vec.y)) * 180 / M_PI);
+		pitch = static_cast<float>(atan2(vec.z, sqrt(vec.x*vec.x+vec.y*vec.y)) * 180. / M_PI);
 		if (pitch < 0)
 			pitch += 360;
 	}
@@ -911,7 +911,7 @@ void CIchthyosaur::Swim( )
 		if (m_IdealActivity == ACT_RUN)
 			SetActivity( ACT_WALK );
 		if (m_IdealActivity == ACT_WALK)
-			pev->framerate = m_flightSpeed / 150.0;
+			pev->framerate = m_flightSpeed / 150.0f;
 		// ALERT( at_console, "walk %.2f\n", pev->framerate );
 	}
 	else
@@ -919,7 +919,7 @@ void CIchthyosaur::Swim( )
 		if (m_IdealActivity == ACT_WALK)
 			SetActivity( ACT_RUN );
 		if (m_IdealActivity == ACT_RUN)
-			pev->framerate = m_flightSpeed / 150.0;
+			pev->framerate = m_flightSpeed / 150.0f;
 		// ALERT( at_console, "run  %.2f\n", pev->framerate );
 	}
 
@@ -956,7 +956,7 @@ void CIchthyosaur::Swim( )
 	if (flDot > 0.5)
 		pev->velocity = m_SaveVelocity = m_SaveVelocity * m_flightSpeed;
 	else if (flDot > 0)
-		pev->velocity = m_SaveVelocity = m_SaveVelocity * m_flightSpeed * (flDot + 0.5);
+		pev->velocity = m_SaveVelocity = m_SaveVelocity * m_flightSpeed * (flDot + 0.5f);
 	else
 		pev->velocity = m_SaveVelocity = m_SaveVelocity * 80;
 
@@ -1000,7 +1000,7 @@ void CIchthyosaur::Swim( )
 		turn = Angles.y - pev->angles.y - 360;
 	}
 
-	float speed = m_flightSpeed * 0.1;
+	float speed = m_flightSpeed * 0.1f;
 
 	// ALERT( at_console, "speed %.0f %f\n", turn, speed );
 	if (fabs(turn) > speed)
@@ -1016,15 +1016,15 @@ void CIchthyosaur::Swim( )
 	}
 	pev->angles.y += turn;
 	pev->angles.z -= turn;
-	pev->angles.y = fmod((pev->angles.y + 360.0), 360.0);
+	pev->angles.y = fmodf((pev->angles.y + 360.0f), 360.0f);
 
 	static float yaw_adj;
 
-	yaw_adj = yaw_adj * 0.8 + turn;
+	yaw_adj = yaw_adj * 0.8f + turn;
 
 	// ALERT( at_console, "yaw %f : %f\n", turn, yaw_adj );
 
-	SetBoneController( 0, -yaw_adj / 4.0 );
+	SetBoneController( 0, -yaw_adj / 4.0f );
 
 	// Roll Smoothing
 	//
@@ -1041,14 +1041,14 @@ void CIchthyosaur::Swim( )
 	{
 		turn = Angles.z - pev->angles.z - 360;
 	}
-	speed = m_flightSpeed/2 * 0.1;
+	speed = m_flightSpeed/2.f * 0.1f;
 	if (fabs(turn) < speed)
 	{
 		pev->angles.z += turn;
 	}
 	else
 	{
-		if (turn < 0.0)
+		if (turn < 0.0f)
 		{
 			pev->angles.z -= speed;
 		}

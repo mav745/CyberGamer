@@ -126,12 +126,12 @@ void SV_CalcPings( void )
 			if( frame->latency > 0 )
 			{
 				count++;
-				total += frame->latency;
+				total += (int)frame->latency;
 			}
 		}
 
 		if( !count ) cl->ping = 0;
-		else cl->ping = total / count;
+		else cl->ping = (float)(total / count);
 	}
 }
 
@@ -266,7 +266,7 @@ void SV_UpdateServerInfo( void )
 {
 	if( !serverinfo->modified ) return;
 
-	Cvar_LookupVars( CVAR_SERVERINFO, NULL, NULL, pfnUpdateServerInfo ); 
+	Cvar_LookupVars( CVAR_SERVERINFO, NULL, NULL, pfnUpdateServerInfo );
 
 	serverinfo->modified = false;
 }
@@ -359,7 +359,7 @@ void SV_ReadPackets( void )
 			}
 
 			if( Netchan_Process( &cl->netchan, &net_message ))
-			{	
+			{
 				cl->send_message = true; // reply at end of frame
 
 				// this is a valid, sequenced packet, so process it
@@ -367,8 +367,8 @@ void SV_ReadPackets( void )
 				{
 					cl->lastmessage = host.realtime; // don't timeout
 					SV_ExecuteClientMessage( cl, &net_message );
-					svgame.globals->frametime = host.frametime;
-					svgame.globals->time = sv.time;
+					svgame.globals->frametime = (float)host.frametime;
+					svgame.globals->time = (float)sv.time;
 				}
 			}
 
@@ -414,8 +414,8 @@ void SV_CheckTimeouts( void )
 	float		zombiepoint;
 	int		i, numclients = 0;
 
-	droppoint = host.realtime - timeout->value;
-	zombiepoint = host.realtime - zombietime->value;
+	droppoint = (float)(host.realtime - timeout->value);
+	zombiepoint = (float)(host.realtime - zombietime->value);
 
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
 	{
@@ -423,7 +423,7 @@ void SV_CheckTimeouts( void )
 		{
 			if( cl->edict && !( cl->edict->v.flags & (FL_SPECTATOR|FL_FAKECLIENT)))
 				numclients++;
-                    }
+					}
 
 		// fake clients do not timeout
 		if( cl->fakeclient ) cl->lastmessage = host.realtime;
@@ -441,7 +441,7 @@ void SV_CheckTimeouts( void )
 		if(( cl->state == cs_connected || cl->state == cs_spawned ) && cl->lastmessage < droppoint )
 		{
 			SV_BroadcastPrintf( PRINT_HIGH, "%s timed out\n", cl->name );
-			SV_DropClient( cl ); 
+			SV_DropClient( cl );
 			cl->state = cs_free; // don't bother with zombie state
 		}
 	}
@@ -534,7 +534,7 @@ void Host_ServerFrame( void )
 	// if server is not active, do nothing
 	if( !svs.initialized ) return;
 
-	svgame.globals->frametime = host.frametime;
+	svgame.globals->frametime = (float)host.frametime;
 
 	// check timeouts
 	SV_CheckTimeouts ();
@@ -556,7 +556,7 @@ void Host_ServerFrame( void )
 
 	// let everything in the world think and move
 	SV_RunGameFrame ();
-		
+
 	// send messages back to the clients that had packets read this frame
 	SV_SendClientMessages ();
 
@@ -655,7 +655,7 @@ void SV_Init( void )
 	Cvar_Get( "sv_airmove", "1", CVAR_SERVERNOTIFY, "enable airmovement (legacy, unused)" );
 	Cvar_Get( "mp_autocrosshair", "0", 0, "allow auto crosshair in multiplayer (legacy, unused)" );
 	Cvar_Get( "sv_allow_PhysX", "1", CVAR_ARCHIVE, "allow XashXT to usage PhysX engine" );
-		
+
 	// half-life shared variables
 	sv_zmax = Cvar_Get ("sv_zmax", "4096", CVAR_PHYSICINFO, "zfar server value" );
 	sv_wateramp = Cvar_Get ("sv_wateramp", "0", CVAR_PHYSICINFO, "global water wave height" );
@@ -693,7 +693,7 @@ void SV_Init( void )
 	sv_rollspeed = Cvar_Get( "sv_rollspeed", "200", CVAR_PHYSICINFO, "how much strafing is necessary to tilt the view" );
 	sv_airaccelerate = Cvar_Get("sv_airaccelerate", "10", CVAR_PHYSICINFO, "player accellerate in air" );
 	sv_maxvelocity = Cvar_Get( "sv_maxvelocity", "2000", CVAR_PHYSICINFO, "max world velocity" );
-          sv_gravity = Cvar_Get( "sv_gravity", "800", CVAR_PHYSICINFO, "world gravity" );
+		  sv_gravity = Cvar_Get( "sv_gravity", "800", CVAR_PHYSICINFO, "world gravity" );
 	sv_maxspeed = Cvar_Get( "sv_maxspeed", "320", CVAR_PHYSICINFO, "maximum speed a player can accelerate to when on ground");
 	sv_accelerate = Cvar_Get( "sv_accelerate", "10", CVAR_PHYSICINFO, "rate at which a player accelerates to sv_maxspeed" );
 	sv_friction = Cvar_Get( "sv_friction", "4", CVAR_PHYSICINFO, "how fast you slow down" );
@@ -741,7 +741,7 @@ void SV_FinalMessage( char *message, qboolean reconnect )
 	byte		msg_buf[1024];
 	sizebuf_t		msg;
 	int		i;
-	
+
 	BF_Init( &msg, "FinalMessage", msg_buf, sizeof( msg_buf ));
 	BF_WriteByte( &msg, svc_print );
 	BF_WriteByte( &msg, PRINT_HIGH );

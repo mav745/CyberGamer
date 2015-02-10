@@ -581,7 +581,7 @@ BOOL CHGrunt :: CheckRangeAttack2 ( float flDot, float flDist )
 			// throw a hand grenade
 			m_fThrowGrenade = TRUE;
 			// don't check again for a while.
-			m_flNextGrenadeCheck = gpGlobals->time + 0.3; // 1/3 second.
+			m_flNextGrenadeCheck = gpGlobals->time + 0.3f; // 1/3 second.
 		}
 		else
 		{
@@ -680,7 +680,7 @@ void CHGrunt :: SetYawSpeed ( void )
 		break;
 	}
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 void CHGrunt :: IdleSound( void )
@@ -751,7 +751,7 @@ CBaseEntity *CHGrunt :: Kick( void )
 
 	UTIL_MakeVectors( pev->angles );
 	Vector vecStart = pev->origin;
-	vecStart.z += pev->size.z * 0.5;
+	vecStart.z += pev->size.z * 0.5f;
 	Vector vecEnd = vecStart + (gpGlobals->v_forward * 70);
 
 	UTIL_TraceHull( vecStart, vecEnd, dont_ignore_monsters, head_hull, ENT(pev), &tr );
@@ -825,7 +825,7 @@ void CHGrunt :: Shotgun ( void )
 
 	Vector	vecShellVelocity = gpGlobals->v_right * RANDOM_FLOAT(40,90) + gpGlobals->v_up * RANDOM_FLOAT(75,200) + gpGlobals->v_forward * RANDOM_FLOAT(-40, 40);
 	EjectBrass ( vecShootOrigin - vecShootDir * 24, vecShellVelocity, pev->angles.y, m_iShotgunShell, TE_BOUNCE_SHOTSHELL);
-	FireBullets(gSkillData.hgruntShotgunPellets, vecShootOrigin, vecShootDir, VECTOR_CONE_15DEGREES, 2048, BULLET_PLAYER_BUCKSHOT, 0 ); // shoot +-7.5 degrees
+	FireBullets(static_cast<ULONG>(gSkillData.hgruntShotgunPellets), vecShootOrigin, vecShootDir, VECTOR_CONE_15DEGREES, 2048, BULLET_PLAYER_BUCKSHOT, 0 ); // shoot +-7.5 degrees
 
 	pev->effects |= EF_MUZZLEFLASH;
 
@@ -1140,7 +1140,7 @@ void CHGrunt :: RunTask ( Task_t *pTask )
 		{
 			// project a point along the toss vector and turn to face that point.
 			MakeIdealYaw( pev->origin + m_vecTossVelocity * 64 );
-			ChangeYaw( pev->yaw_speed );
+			ChangeYaw( static_cast<int>(pev->yaw_speed) );
 
 			if ( FacingIdeal() )
 			{
@@ -2424,7 +2424,7 @@ void CHGruntRepel::RepelUse ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE
 	pBeam->SetFlags( BEAM_FSOLID );
 	pBeam->SetColor( 255, 255, 255 );
 	pBeam->SetThink( &CBaseEntity::SUB_Remove );
-	pBeam->pev->nextthink = gpGlobals->time + -4096.0 * tr.flFraction / pGrunt->pev->velocity.z + 0.5;
+	pBeam->pev->nextthink = gpGlobals->time + -4096.0f * tr.flFraction / pGrunt->pev->velocity.z + 0.5f;
 
 	UTIL_Remove( this );
 }

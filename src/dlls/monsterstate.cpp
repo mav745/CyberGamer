@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -13,7 +13,7 @@
 *
 ****/
 //=========================================================
-// monsterstate.cpp - base class monster functions for 
+// monsterstate.cpp - base class monster functions for
 // controlling core AI.
 //=========================================================
 
@@ -37,10 +37,10 @@ void CBaseMonster :: SetState ( MONSTERSTATE State )
 		ALERT ( at_aiconsole, "State Changed to %d\n", State );
 	}
 */
-	
+
 	switch( State )
 	{
-	
+
 	// Drop enemy pointers when going to idle
 	case MONSTERSTATE_IDLE:
 
@@ -71,19 +71,19 @@ void CBaseMonster :: RunAI ( void )
 		IdleSound();
 	}
 
-	if ( m_MonsterState != MONSTERSTATE_NONE	&& 
-		 m_MonsterState != MONSTERSTATE_PRONE   && 
-		 m_MonsterState != MONSTERSTATE_DEAD )// don't bother with this crap if monster is prone. 
+	if ( m_MonsterState != MONSTERSTATE_NONE	&&
+		 m_MonsterState != MONSTERSTATE_PRONE   &&
+		 m_MonsterState != MONSTERSTATE_DEAD )// don't bother with this crap if monster is prone.
 	{
 		// collect some sensory Condition information.
 		// don't let monsters outside of the player's PVS act up, or most of the interesting
 		// things will happen before the player gets there!
-		// UPDATE: We now let COMBAT state monsters think and act fully outside of player PVS. This allows the player to leave 
+		// UPDATE: We now let COMBAT state monsters think and act fully outside of player PVS. This allows the player to leave
 		// an area where monsters are fighting, and the fight will continue.
 		if ( !FNullEnt( FIND_CLIENT_IN_PVS( edict() ) ) || ( m_MonsterState == MONSTERSTATE_COMBAT ) )
 		{
-			Look( m_flDistLook );
-			Listen();// check for audible sounds. 
+			Look( (int)m_flDistLook );
+			Listen();// check for audible sounds.
 
 			// now filter conditions.
 			ClearConditions( IgnoreConditions() );
@@ -108,7 +108,7 @@ void CBaseMonster :: RunAI ( void )
 
 	// if the monster didn't use these conditions during the above call to MaintainSchedule() or CheckAITrigger()
 	// we throw them out cause we don't want them sitting around through the lifespan of a schedule
-	// that doesn't use them. 
+	// that doesn't use them.
 	m_afConditions &= ~( bits_COND_LIGHT_DAMAGE | bits_COND_HEAVY_DAMAGE );
 }
 
@@ -121,12 +121,12 @@ MONSTERSTATE CBaseMonster :: GetIdealState ( void )
 	int	iConditions;
 
 	iConditions = IScheduleFlags();
-	
+
 	// If no schedule conditions, the new ideal state is probably the reason we're in here.
 	switch ( m_MonsterState )
 	{
 	case MONSTERSTATE_IDLE:
-		
+
 		/*
 		IDLE goes to ALERT upon hearing a sound
 		-IDLE goes to ALERT upon being injured
@@ -135,9 +135,9 @@ MONSTERSTATE CBaseMonster :: GetIdealState ( void )
 		IDLE goes to HUNT upon smelling food
 		*/
 		{
-			if ( iConditions & bits_COND_NEW_ENEMY )			
+			if ( iConditions & bits_COND_NEW_ENEMY )
 			{
-				// new enemy! This means an idle monster has seen someone it dislikes, or 
+				// new enemy! This means an idle monster has seen someone it dislikes, or
 				// that a monster in combat has found a more suitable target to attack
 				m_IdealMonsterState = MONSTERSTATE_COMBAT;
 			}
@@ -154,7 +154,7 @@ MONSTERSTATE CBaseMonster :: GetIdealState ( void )
 			else if ( iConditions & bits_COND_HEAR_SOUND )
 			{
 				CSound *pSound;
-				
+
 				pSound = PBestSound();
 				ASSERT( pSound != NULL );
 				if ( pSound )
@@ -178,7 +178,7 @@ MONSTERSTATE CBaseMonster :: GetIdealState ( void )
 		ALERT goes to HUNT upon hearing a noise
 		*/
 		{
-			if ( iConditions & (bits_COND_NEW_ENEMY|bits_COND_SEE_ENEMY) )			
+			if ( iConditions & (bits_COND_NEW_ENEMY|bits_COND_SEE_ENEMY) )
 			{
 				// see an enemy we MUST attack
 				m_IdealMonsterState = MONSTERSTATE_COMBAT;

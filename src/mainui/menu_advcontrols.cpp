@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -73,11 +73,11 @@ static void UI_AdvControls_UpdateConfig( void )
 	else if( !uiAdvControls.invertMouse.enabled && CVAR_GET_FLOAT( "m_pitch" ) < 0 )
 		CVAR_SET_FLOAT( "m_pitch", fabs( CVAR_GET_FLOAT( "m_pitch" )));
 
-	CVAR_SET_FLOAT( "crosshair", uiAdvControls.crosshair.enabled );
-	CVAR_SET_FLOAT( "lookspring", uiAdvControls.lookSpring.enabled );
-	CVAR_SET_FLOAT( "lookstrafe", uiAdvControls.lookStrafe.enabled );
-	CVAR_SET_FLOAT( "m_filter", uiAdvControls.mouseFilter.enabled );
-	CVAR_SET_FLOAT( "sv_aim", uiAdvControls.autoaim.enabled );
+	CVAR_SET_FLOAT( "crosshair", (float)uiAdvControls.crosshair.enabled );
+	CVAR_SET_FLOAT( "lookspring", (float)uiAdvControls.lookSpring.enabled );
+	CVAR_SET_FLOAT( "lookstrafe", (float)uiAdvControls.lookStrafe.enabled );
+	CVAR_SET_FLOAT( "m_filter", (float)uiAdvControls.mouseFilter.enabled );
+	CVAR_SET_FLOAT( "sv_aim", (float)uiAdvControls.autoaim.enabled );
 	CVAR_SET_FLOAT( "sensitivity", (uiAdvControls.sensitivity.curValue * 20.0f) + 0.1f );
 
 	if( uiAdvControls.mouseLook.enabled )
@@ -211,7 +211,7 @@ static void UI_AdvControls_Init( void )
 
 	uiAdvControls.done.generic.id	= ID_DONE;
 	uiAdvControls.done.generic.type = QMTYPE_BM_BUTTON;
-	uiAdvControls.done.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW; 
+	uiAdvControls.done.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW;
 	uiAdvControls.done.generic.x = 72;
 	uiAdvControls.done.generic.y = 680;
 	uiAdvControls.done.generic.name = "Done";

@@ -96,7 +96,7 @@ static void UI_VidModes_GetConfig( void )
 	uiVidModes.videoModesPtr[i] = NULL;	// terminator
 
 	uiVidModes.vidList.itemNames = uiVidModes.videoModesPtr;
-	uiVidModes.vidList.curItem = CVAR_GET_FLOAT( "vid_mode" );
+	uiVidModes.vidList.curItem = (int)CVAR_GET_FLOAT( "vid_mode" );
 
 	if( !CVAR_GET_FLOAT( "fullscreen" ))
 		uiVidModes.windowed.enabled = 1;
@@ -112,9 +112,9 @@ UI_VidModes_SetConfig
 */
 static void UI_VidOptions_SetConfig( void )
 {
-	CVAR_SET_FLOAT( "vid_mode", uiVidModes.vidList.curItem );
+	CVAR_SET_FLOAT( "vid_mode", (float)uiVidModes.vidList.curItem );
 	CVAR_SET_FLOAT( "fullscreen", !uiVidModes.windowed.enabled );
-	CVAR_SET_FLOAT( "gl_swapInterval", uiVidModes.vsync.enabled );
+	CVAR_SET_FLOAT( "gl_swapInterval", (float)uiVidModes.vsync.enabled );
 }
 
 /*
@@ -124,7 +124,7 @@ UI_VidModes_UpdateConfig
 */
 static void UI_VidOptions_UpdateConfig( void )
 {
-	CVAR_SET_FLOAT( "gl_swapInterval", uiVidModes.vsync.enabled );
+	CVAR_SET_FLOAT( "gl_swapInterval", (float)uiVidModes.vsync.enabled );
 }
 
 /*

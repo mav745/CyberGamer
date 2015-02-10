@@ -45,16 +45,16 @@ void V_SetupRefDef( void )
 
 	cl.refdef.movevars = &clgame.movevars;
 	cl.refdef.onground = ( cl.frame.local.client.flags & FL_ONGROUND ) ? 1 : 0;
-	cl.refdef.health = cl.frame.local.client.health;
+	cl.refdef.health = (int)cl.frame.local.client.health;
 	cl.refdef.playernum = cl.playernum;
 	cl.refdef.max_entities = clgame.maxEntities;
 	cl.refdef.maxclients = cl.maxclients;
-	cl.refdef.time = cl.time;
-	cl.refdef.frametime = cl.time - cl.oldtime;
+	cl.refdef.time = (float)cl.time;
+	cl.refdef.frametime = (float)(cl.time - cl.oldtime);
 	cl.refdef.demoplayback = cls.demoplayback;
 	cl.refdef.smoothing = cl_smooth->integer;
-	cl.refdef.viewsize = scr_viewsize->integer;
-	cl.refdef.waterlevel = cl.frame.local.client.waterlevel;		
+	cl.refdef.viewsize = (float)scr_viewsize->integer;
+	cl.refdef.waterlevel = cl.frame.local.client.waterlevel;
 	cl.refdef.onlyClientDraw = 0;	// reset clientdraw
 	cl.refdef.hardware = true;	// always true
 	cl.refdef.spectator = (clent->curstate.spectator != 0);
@@ -84,14 +84,14 @@ void V_SetupRefDef( void )
 
 	// calc FOV
 	cl.refdef.fov_x = cl.data.fov; // this is a final fov value
-	cl.refdef.fov_y = V_CalcFov( &cl.refdef.fov_x, cl.refdef.viewport[2], cl.refdef.viewport[3] );
+	cl.refdef.fov_y = V_CalcFov( &cl.refdef.fov_x, (float)cl.refdef.viewport[2], (float)cl.refdef.viewport[3] );
 
 	// adjust FOV for widescreen
 	if( glState.wideScreen && r_adjust_fov->integer )
-		V_AdjustFov( &cl.refdef.fov_x, &cl.refdef.fov_y, cl.refdef.viewport[2], cl.refdef.viewport[3], false );
+		V_AdjustFov( &cl.refdef.fov_x, &cl.refdef.fov_y, (float)cl.refdef.viewport[2], (float)cl.refdef.viewport[3], false );
 
 //	if( CL_IsPredicted( ) && !cl.refdef.demoplayback )
-//	{	
+//	{
 		VectorCopy( cl.predicted_origin, cl.refdef.simorg );
 		VectorCopy( cl.predicted_velocity, cl.refdef.simvel );
 		VectorCopy( cl.predicted_viewofs, cl.refdef.viewheight );
@@ -226,8 +226,8 @@ void V_MergeOverviewRefdef( ref_params_t *fd )
 	// NOTE: Xash3D may use 16:9 or 16:10 aspects
 	aspect = (float)glState.width / (float)glState.height;
 
-	size_x = fabs( 8192.0f / ov->flZoom );
-	size_y = fabs( 8192.0f / (ov->flZoom * aspect ));
+	size_x = fabsf( 8192.0f / ov->flZoom );
+	size_y = fabsf( 8192.0f / (ov->flZoom * aspect ));
 
 	// compute rectangle
 	ov->xLeft = -(size_x / 2);
@@ -278,9 +278,9 @@ void V_ProcessShowTexturesCmds( usercmd_t *cmd )
 	released = changed & (~cmd->buttons);
 
 	if( released & ( IN_RIGHT|IN_MOVERIGHT ))
-		Cvar_SetFloat( "r_showtextures", gl_showtextures->integer + 1 );
+		Cvar_SetFloat( "r_showtextures", (float)(gl_showtextures->integer + 1) );
 	if( released & ( IN_LEFT|IN_MOVELEFT ))
-		Cvar_SetFloat( "r_showtextures", max( 1, gl_showtextures->integer - 1 ));
+		Cvar_SetFloat( "r_showtextures", max( 1, (float)(gl_showtextures->integer - 1) ));
 	oldbuttons = cmd->buttons;
 }
 
@@ -364,7 +364,7 @@ qboolean V_PreRender( void )
 		}
 		return false;
 	}
-	
+
 	R_BeginFrame( !cl.refdef.paused );
 
 	return true;
@@ -408,7 +408,7 @@ void V_PostRender( void )
 		R_ShowTextures();
 		CL_DrawHUD( CL_CHANGELEVEL );
 		Con_DrawConsole();
-		UI_UpdateMenu( host.realtime );
+		UI_UpdateMenu( (float)host.realtime );
 		Con_DrawVersion();
 		Con_DrawDebug(); // must be last
 		S_ExtraUpdate();

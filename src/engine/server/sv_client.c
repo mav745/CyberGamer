@@ -136,7 +136,7 @@ void SV_DirectConnect( netadr_t from )
 			break;
 		}
 	}
-		
+
 	// see if the challenge is valid (LAN clients don't need to challenge)
 	if( !NET_IsLocalAddress( from ))
 	{
@@ -202,7 +202,7 @@ void SV_DirectConnect( netadr_t from )
 
 	// build a new connection
 	// accept the new client
-gotnewcl:	
+gotnewcl:
 	// this is the only place a sv_client_t is ever initialized
 
 	if( sv_maxclients->integer == 1 ) // save physinfo for singleplayer
@@ -231,7 +231,7 @@ gotnewcl:
 	// get the game a chance to reject this connection or modify the userinfo
 	if( !( SV_ClientConnect( ent, userinfo )))
 	{
-		if( *Info_ValueForKey( userinfo, "rejmsg" )) 
+		if( *Info_ValueForKey( userinfo, "rejmsg" ))
 			Netchan_OutOfBandPrint( NS_SERVER, from, "print\n%s\nConnection refused.\n", Info_ValueForKey( userinfo, "rejmsg" ));
 		else Netchan_OutOfBandPrint( NS_SERVER, from, "print\nConnection refused.\n" );
 
@@ -372,7 +372,7 @@ edict_t *SV_FakeConnect( const char *netname )
 	newcl->lastmessage = host.realtime;	// don't timeout
 	newcl->lastconnect = host.realtime;
 	newcl->sendinfo = true;
-	
+
 	return ent;
 }
 
@@ -416,7 +416,7 @@ or crashing.
 void SV_DropClient( sv_client_t *drop )
 {
 	int	i;
-	
+
 	if( drop->state == cs_zombie )
 		return;	// already dropped
 
@@ -702,8 +702,8 @@ void SV_BuildNetAnswer( netadr_t from )
 			if( svs.clients[i].state >= cs_connected )
 			{
 				edict_t *ed = svs.clients[i].edict;
-				float time = host.realtime - svs.clients[i].lastconnect;
-				Q_strncat( string, va( "%c\\%s\\%i\\%f\\", count, svs.clients[i].name, ed->v.frags, time ), sizeof( string )); 
+				float time = (float)(host.realtime - svs.clients[i].lastconnect);
+				Q_strncat( string, va( "%c\\%s\\%i\\%f\\", count, svs.clients[i].name, ed->v.frags, time ), sizeof( string ));
 				count++;
 			}
 		}
@@ -823,14 +823,14 @@ int SV_CalcPing( sv_client_t *cl )
 	if( !count )
 		return 0;
 
-	return (( ping / count ) * 1000 );
+	return (int)(( ping / (float)count ) * 1000.f );
 }
 
 /*
 ===================
 SV_EstablishTimeBase
 
-Finangles latency and the like. 
+Finangles latency and the like.
 ===================
 */
 void SV_EstablishTimeBase( sv_client_t *cl, usercmd_t *ucmd, int numdrops, int numbackup, int newcmds )
@@ -875,7 +875,7 @@ Writes all update values to a bitbuf
 void SV_FullClientUpdate( sv_client_t *cl, sizebuf_t *msg )
 {
 	char	info[MAX_INFO_STRING];
-	int	i;	
+	int	i;
 
 	i = cl - svs.clients;
 
@@ -1008,7 +1008,7 @@ void SV_PutClientInServer( edict_t *ent )
 	ASSERT( client != NULL );
 
 	if( !sv.loadgame )
-	{	
+	{
 		client->hltv_proxy = Q_atoi( Info_ValueForKey( client->userinfo, "hltv" )) ? true : false;
 
 		if( client->hltv_proxy )
@@ -1018,7 +1018,7 @@ void SV_PutClientInServer( edict_t *ent )
 		ent->v.netname = MAKE_STRING( client->name );
 
 		// fisrt entering
-		svgame.globals->time = sv.time;
+		svgame.globals->time = (float)sv.time;
 		svgame.dllFuncs.pfnClientPutInServer( ent );
 
 		if( sv.background )	// don't attack player in background mode
@@ -1076,7 +1076,7 @@ void SV_PutClientInServer( edict_t *ent )
 		if( client->pViewEntity )
 			viewEnt = NUM_FOR_EDICT( client->pViewEntity );
 		else viewEnt = NUM_FOR_EDICT( client->edict );
-	
+
 		BF_WriteByte( &client->netchan.message, svc_setview );
 		BF_WriteWord( &client->netchan.message, viewEnt );
 	}
@@ -1262,7 +1262,7 @@ void SV_SendResourceList_f( sv_client_t *cl )
 	}
 
 	Msg( "Count res: %d\n", rescount );
-	Msg( "ResList size: %s\n", Q_memprint( BF_GetRealBytesWritten( &cl->netchan.message ) - msg_size ));
+	Msg( "ResList size: %s\n", Q_memprint( (float)(BF_GetRealBytesWritten( &cl->netchan.message ) - msg_size )));
 }
 
 /*
@@ -1288,7 +1288,7 @@ void SV_WriteModels_f( sv_client_t *cl )
 		SV_New_f( cl );
 		return;
 	}
-	
+
 	start = Q_atoi( Cmd_Argv( 2 ));
 
 	// write a packet full of data
@@ -1334,7 +1334,7 @@ void SV_WriteSounds_f( sv_client_t *cl )
 		SV_New_f( cl );
 		return;
 	}
-	
+
 	start = Q_atoi( Cmd_Argv( 2 ));
 
 	// write a packet full of data
@@ -1380,7 +1380,7 @@ void SV_WriteEvents_f( sv_client_t *cl )
 		SV_New_f( cl );
 		return;
 	}
-	
+
 	start = Q_atoi( Cmd_Argv( 2 ));
 
 	// write a packet full of data
@@ -1426,7 +1426,7 @@ void SV_WriteLightstyles_f( sv_client_t *cl )
 		SV_New_f( cl );
 		return;
 	}
-	
+
 	start = Q_atoi( Cmd_Argv( 2 ));
 
 	// write a packet full of data
@@ -1466,7 +1466,7 @@ void SV_UserMessages_f( sv_client_t *cl )
 		MsgDev( D_INFO, "usermessages is not valid from the console\n" );
 		return;
 	}
-	
+
 	// handle the case of a level changing while a client was connecting
 	if( Q_atoi( Cmd_Argv( 1 )) != svs.spawncount )
 	{
@@ -1474,7 +1474,7 @@ void SV_UserMessages_f( sv_client_t *cl )
 		SV_New_f( cl );
 		return;
 	}
-	
+
 	start = Q_atoi( Cmd_Argv( 2 ));
 
 	// write a packet full of data
@@ -1516,7 +1516,7 @@ void SV_DeltaInfo_f( sv_client_t *cl )
 		MsgDev( D_INFO, "deltainfo is not valid from the console\n" );
 		return;
 	}
-	
+
 	// handle the case of a level changing while a client was connecting
 	if( Q_atoi( Cmd_Argv( 1 )) != svs.spawncount )
 	{
@@ -1524,7 +1524,7 @@ void SV_DeltaInfo_f( sv_client_t *cl )
 		SV_New_f( cl );
 		return;
 	}
-	
+
 	tableIndex = Q_atoi( Cmd_Argv( 2 ));
 	fieldIndex = Q_atoi( Cmd_Argv( 3 ));
 
@@ -1579,7 +1579,7 @@ void SV_Baselines_f( sv_client_t *cl )
 		MsgDev( D_INFO, "baselines is not valid from the console\n" );
 		return;
 	}
-	
+
 	// handle the case of a level changing while a client was connecting
 	if( Q_atoi( Cmd_Argv( 1 )) != svs.spawncount )
 	{
@@ -1587,7 +1587,7 @@ void SV_Baselines_f( sv_client_t *cl )
 		SV_New_f( cl );
 		return;
 	}
-	
+
 	start = Q_atoi( Cmd_Argv( 2 ));
 
 	Q_memset( &nullstate, 0, sizeof( nullstate ));
@@ -1599,7 +1599,7 @@ void SV_Baselines_f( sv_client_t *cl )
 		if( base->number && ( base->modelindex || base->effects != EF_NODRAW ))
 		{
 			BF_WriteByte( &cl->netchan.message, svc_spawnbaseline );
-			MSG_WriteDeltaEntity( &nullstate, base, &cl->netchan.message, true, SV_IsPlayerIndex( base->number ), sv.time );
+			MSG_WriteDeltaEntity( &nullstate, base, &cl->netchan.message, true, SV_IsPlayerIndex( base->number ), (float)sv.time );
 		}
 		start++;
 	}
@@ -1654,7 +1654,7 @@ The client is going to disconnect, so remove the connection immediately
 */
 void SV_Disconnect_f( sv_client_t *cl )
 {
-	SV_DropClient( cl );	
+	SV_DropClient( cl );
 }
 
 /*
@@ -1711,7 +1711,7 @@ void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 {
 	int		i, dupc = 1;
 	edict_t		*ent = cl->edict;
-	string		temp1, temp2;	
+	string		temp1, temp2;
 	sv_client_t	*current;
 	char		*val;
 
@@ -1767,7 +1767,7 @@ void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 	if( Q_strlen( val ))
 		cl->netchan.rate = bound( MIN_RATE, Q_atoi( val ), MAX_RATE );
 	else cl->netchan.rate = DEFAULT_RATE;
-	
+
 	// msg command
 	val = Info_ValueForKey( cl->userinfo, "msg" );
 	if( Q_strlen( val )) cl->messagelevel = Q_atoi( val );
@@ -1807,7 +1807,7 @@ void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 	svgame.dllFuncs.pfnClientUserInfoChanged( cl->edict, cl->userinfo );
 	ent->v.netname = MAKE_STRING( cl->name );
 
-	if( cl->state >= cs_connected ) cl->sendinfo = true; // needs for update client info 
+	if( cl->state >= cs_connected ) cl->sendinfo = true; // needs for update client info
 }
 
 /*
@@ -2038,7 +2038,7 @@ void SV_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 ==================
 SV_ParseClientMove
 
-The message usually contains all the movement commands 
+The message usually contains all the movement commands
 that were in the last three packets, so that the information
 in dropped packets can be recovered.
 
@@ -2162,8 +2162,8 @@ static void SV_ParseClientMove( sv_client_t *cl, sizebuf_t *msg )
 	frame->latency -= cl->lastcmd.msec * 0.5f / 1000.0f;
 	frame->latency = max( 0.0f, frame->latency );
 
-	if( player->v.animtime > sv.time + host.frametime )
-		player->v.animtime = sv.time + host.frametime;
+	if( player->v.animtime > (float)(sv.time + host.frametime) )
+		player->v.animtime = (float)(sv.time + host.frametime);
 }
 
 /*
@@ -2183,7 +2183,7 @@ void SV_ParseResourceList( sv_client_t *cl, sizebuf_t *msg )
 ===================
 SV_ParseCvarValue
 
-Parse a requested value from client cvar 
+Parse a requested value from client cvar
 ===================
 */
 void SV_ParseCvarValue( sv_client_t *cl, sizebuf_t *msg )
@@ -2199,7 +2199,7 @@ void SV_ParseCvarValue( sv_client_t *cl, sizebuf_t *msg )
 ===================
 SV_ParseCvarValue2
 
-Parse a requested value from client cvar 
+Parse a requested value from client cvar
 ===================
 */
 void SV_ParseCvarValue2( sv_client_t *cl, sizebuf_t *msg )
@@ -2232,7 +2232,7 @@ void SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg )
 	frame = &cl->frames[cl->netchan.incoming_acknowledged & SV_UPDATE_MASK];
 
 	// raw ping doesn't factor in message interval, either
-	frame->raw_ping = host.realtime - frame->senttime;
+	frame->raw_ping = (float)(host.realtime - frame->senttime);
 
 	// on first frame ( no senttime ) don't skew ping
 	if( frame->senttime == 0.0f )
@@ -2242,7 +2242,7 @@ void SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg )
 	}
 
 	// don't skew ping based on signon stuff either
-	if(( host.realtime - cl->lastconnect ) < 2.0f && ( frame->latency > 0.0 ))
+	if(( host.realtime - cl->lastconnect ) < 2.0f && ( frame->latency > 0.0f ))
 	{
 		frame->latency = 0.0f;
 		frame->raw_ping = 0.0f;
@@ -2253,7 +2253,7 @@ void SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg )
 	// set the current client
 	svs.currentPlayer = cl;
 	svs.currentPlayerNum = (cl - svs.clients);
-				
+
 	// read optional clientCommand strings
 	while( cl->state != cs_zombie )
 	{
@@ -2285,7 +2285,7 @@ void SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg )
 			move_issued = true;
 			SV_ParseClientMove( cl, msg );
 			break;
-		case clc_stringcmd:	
+		case clc_stringcmd:
 			s = BF_ReadString( msg );
 			// malicious users may try using too many string commands
 			if( ++stringCmdCount < 8 ) SV_ExecuteClientCommand( cl, s );

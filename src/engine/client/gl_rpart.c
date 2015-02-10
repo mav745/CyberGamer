@@ -259,7 +259,7 @@ particle_t *CL_AllocParticle( void (*callback)( particle_t*, float ))
 	p->type = pt_static;
 	VectorClear( p->vel );
 	VectorClear( p->org );
-	p->die = cl.time;
+	p->die = (float)cl.time;
 	p->ramp = 0;
 
 	if( callback )
@@ -273,7 +273,7 @@ particle_t *CL_AllocParticle( void (*callback)( particle_t*, float ))
 
 static void CL_SparkTracerDraw( particle_t *p, float frametime )
 {
-	float	lifePerc = p->die - cl.time;
+	float	lifePerc = p->die - (float)cl.time;
 	float	grav = frametime * clgame.movevars.gravity * 0.05f;
 	float	length, width;
 	int	alpha = 255;
@@ -282,7 +282,7 @@ static void CL_SparkTracerDraw( particle_t *p, float frametime )
 	VectorScale( p->vel, p->ramp, delta );
 	length = VectorLength( delta );
 	width = ( length < TRACER_WIDTH ) ? length : TRACER_WIDTH;
-	if( lifePerc < 0.5f ) alpha = (lifePerc * 2) * 255;
+	if( lifePerc < 0.5f ) alpha = (int)((lifePerc * 2) * 255);
 
 	CL_DrawTracer( p->org, delta, width, clgame.palette[p->color], alpha, 0.0f, 0.8f );
 
@@ -292,14 +292,14 @@ static void CL_SparkTracerDraw( particle_t *p, float frametime )
 
 static void CL_TracerImplosion( particle_t *p, float frametime )
 {
-	float	lifePerc = p->die - cl.time;
+	float	lifePerc = p->die - (float)cl.time;
 	float	length;
 	int	alpha = 255;
 	vec3_t	delta;
 
 	VectorScale( p->vel, p->ramp, delta );
 	length = VectorLength( delta );
-	if( lifePerc < 0.5f ) alpha = (lifePerc * 2) * 255;
+	if( lifePerc < 0.5f ) alpha = (int)((lifePerc * 2) * 255);
 
 	CL_DrawTracer( p->org, delta, 1.5f, clgame.palette[p->color], alpha, 0.0f, 0.8f );
 
@@ -324,12 +324,12 @@ static void CL_BulletTracerDraw( particle_t *p, float frametime )
 
 	// calculate fraction
 	life = ( totalDist + length ) / ( max( 1.0f, tracerspeed->value ));
-	frac = life - ( p->die - cl.time ) + frametime;
+	frac = life - ( p->die - (float)cl.time ) + frametime;
 
 	// calculate our distance along our path
 	sDistance = tracerspeed->value * frac;
 	eDistance = sDistance - length;
-	
+
 	// clip to start
 	sDistance = max( 0.0f, sDistance );
 	eDistance = max( 0.0f, eDistance );
@@ -345,7 +345,7 @@ static void CL_BulletTracerDraw( particle_t *p, float frametime )
 	}
 
 	// get our delta to calculate the tc offset
-	dDistance	= fabs( sDistance - eDistance );
+	dDistance	= fabsf( sDistance - eDistance );
 	dTotal = ( length != 0.0f ) ? length : 0.01f;
 	fOffset = ( dDistance / dTotal );
 
@@ -356,7 +356,7 @@ static void CL_BulletTracerDraw( particle_t *p, float frametime )
 	// setup our info for drawing the line
 	VectorSubtract( vecEnd, vecStart, lineDir );
 	VectorSubtract( vecEnd, RI.vieworg, viewDir );
-	
+
 	CrossProduct( lineDir, viewDir, cross );
 	VectorNormalize( cross );
 
@@ -367,7 +367,7 @@ static void CL_BulletTracerDraw( particle_t *p, float frametime )
 
 	pglColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
 
-	VectorMA( vecStart, -width, cross, tmp );	
+	VectorMA( vecStart, -width, cross, tmp );
 	pglTexCoord2f( 1.0f, 0.0f );
 	pglVertex3fv( tmp );
 
@@ -395,9 +395,9 @@ update particle color, position etc
 */
 void CL_UpdateParticle( particle_t *p, float ft )
 {
-	float	time3 = 15.0 * ft;
-	float	time2 = 10.0 * ft;
-	float	time1 = 5.0 * ft;
+	float	time3 = 15.0f * ft;
+	float	time2 = 10.0f * ft;
+	float	time1 = 5.0f * ft;
 	float	dvel = 4 * ft;
 	float	grav = ft * clgame.movevars.gravity * 0.05f;
 	float	size = 1.5f;
@@ -452,10 +452,10 @@ void CL_UpdateParticle( particle_t *p, float ft )
 			p->ramp = 0.0f;
 			iRamp = 0;
 		}
-		
+
 		p->color = CL_LookupColor( gSparkRamp[iRamp][0], gSparkRamp[iRamp][1], gSparkRamp[iRamp][2] );
 
-		for( i = 0; i < 2; i++ )		
+		for( i = 0; i < 2; i++ )
 			p->vel[i] -= p->vel[i] * 0.5f * ft;
 		p->vel[2] -= grav * 5.0f;
 
@@ -493,7 +493,7 @@ void CL_UpdateParticle( particle_t *p, float ft )
 	if( size < 20.0f ) size = 1.0f;
 	else size = 1.0f + size * 0.004f;
 #endif
- 	// scale the axes by radius
+	// scale the axes by radius
 	VectorScale( RI.vright, size, right );
 	VectorScale( RI.vup, size, up );
 
@@ -539,7 +539,7 @@ void CL_DrawParticles( void )
 	// at same frame e.g. mirror rendering
 	if( framecount != tr.realframecount )
 	{
-		frametime = cl.time - cl.oldtime;
+		frametime = (float)(cl.time - cl.oldtime);
 		framecount = tr.realframecount;
 	}
 	else frametime = 0.0f;
@@ -552,7 +552,7 @@ void CL_DrawParticles( void )
 		tracerred->modified = tracergreen->modified = tracerblue->modified = false;
 	}
 
-	while( 1 ) 
+	while( 1 )
 	{
 		// free time-expired particles
 		kill = cl_active_particles;
@@ -606,7 +606,7 @@ void CL_EntityParticles( cl_entity_t *ent )
 {
 	float		angle;
 	float		sr, sp, sy, cr, cp, cy;
-	vec3_t		forward;	
+	vec3_t		forward;
 	particle_t	*p;
 	int		i;
 
@@ -615,21 +615,21 @@ void CL_EntityParticles( cl_entity_t *ent )
 		p = CL_AllocParticle( NULL );
 		if( !p ) return;
 
-		angle = cl.time * cl_avelocities[i][0];
+		angle = (float)cl.time * cl_avelocities[i][0];
 		SinCos( angle, &sy, &cy );
-		angle = cl.time * cl_avelocities[i][1];
+		angle = (float)cl.time * cl_avelocities[i][1];
 		SinCos( angle, &sp, &cp );
-		angle = cl.time * cl_avelocities[i][2];
+		angle = (float)cl.time * cl_avelocities[i][2];
 		SinCos( angle, &sr, &cr );
-	
-		VectorSet( forward, cp * cy, cp * sy, -sp ); 
+
+		VectorSet( forward, cp * cy, cp * sy, -sp );
 
 		p->die += 0.01f;
 		p->color = 111;		// yellow
 		p->type = pt_explode;
 
 		p->org[0] = ent->origin[0] + cl_avertexnormals[i][0] * 64.0f + forward[0] * 16.0f;
-		p->org[1] = ent->origin[1] + cl_avertexnormals[i][1] * 64.0f + forward[1] * 16.0f;		
+		p->org[1] = ent->origin[1] + cl_avertexnormals[i][1] * 64.0f + forward[1] * 16.0f;
 		p->org[2] = ent->origin[2] + cl_avertexnormals[i][2] * 64.0f + forward[2] * 16.0f;
 	}
 }
@@ -650,7 +650,7 @@ void CL_ParticleExplosion( const vec3_t org )
 
 	hSound = S_RegisterSound( "weapons/explode3.wav" );
 	S_StartSound( org, 0, CHAN_AUTO, hSound, VOL_NORM, ATTN_NORM, PITCH_NORM, 0 );
-	
+
 	for( i = 0; i < 1024; i++ )
 	{
 		p = CL_AllocParticle( NULL );
@@ -658,7 +658,7 @@ void CL_ParticleExplosion( const vec3_t org )
 
 		p->die += 5.0f;
 		p->color = ramp1[0];
-		p->ramp = rand() & 3;
+		p->ramp = (float)(rand() & 3);
 
 		if( i & 1 )
 		{
@@ -666,7 +666,7 @@ void CL_ParticleExplosion( const vec3_t org )
 			for( j = 0; j < 3; j++ )
 			{
 				p->org[j] = org[j] + ((rand() % 32) - 16);
-				p->vel[j] = (rand() % 512) - 256;
+				p->vel[j] = (float)((rand() % 512) - 256);
 			}
 		}
 		else
@@ -675,7 +675,7 @@ void CL_ParticleExplosion( const vec3_t org )
 			for( j = 0; j < 3; j++ )
 			{
 				p->org[j] = org[j] + ((rand() % 32) - 16);
-				p->vel[j] = (rand() % 512) - 256;
+				p->vel[j] = (float)((rand() % 512) - 256);
 			}
 		}
 	}
@@ -713,7 +713,7 @@ void CL_ParticleExplosion2( const vec3_t org, int colorStart, int colorLength )
 		for( j = 0; j < 3; j++ )
 		{
 			p->org[j] = org[j] + ((rand() % 32) - 16);
-			p->vel[j] = (rand() % 512) - 256;
+			p->vel[j] = (float)((rand() % 512) - 256);
 		}
 	}
 }
@@ -734,7 +734,7 @@ void CL_BlobExplosion( const vec3_t org )
 
 	hSound = S_RegisterSound( "weapons/explode3.wav" );
 	S_StartSound( org, 0, CHAN_AUTO, hSound, VOL_NORM, ATTN_NORM, PITCH_NORM, 0 );
-	
+
 	for( i = 0; i < 1024; i++ )
 	{
 		p = CL_AllocParticle( NULL );
@@ -750,7 +750,7 @@ void CL_BlobExplosion( const vec3_t org )
 			for( j = 0; j < 3; j++ )
 			{
 				p->org[j] = org[j] + ((rand() % 32) - 16);
-				p->vel[j] = (rand() % 512) - 256;
+				p->vel[j] = (float)((rand() % 512) - 256);
 			}
 		}
 		else
@@ -761,7 +761,7 @@ void CL_BlobExplosion( const vec3_t org )
 			for( j = 0; j < 3; j++ )
 			{
 				p->org[j] = org[j] + ((rand() % 32) - 16);
-				p->vel[j] = (rand() % 512) - 256;
+				p->vel[j] = (float)((rand() % 512) - 256);
 			}
 		}
 	}
@@ -785,7 +785,7 @@ void CL_RunParticleEffect( const vec3_t org, const vec3_t dir, int color, int co
 		CL_ParticleExplosion( org );
 		return;
 	}
-	
+
 	for( i = 0; i < count; i++ )
 	{
 		p = CL_AllocParticle( NULL );
@@ -886,7 +886,7 @@ void CL_LavaSplash( const vec3_t org )
 				p->die += 2.0f + (rand() & 31) * 0.02f;
 				p->color = 224 + (rand() & 7);
 				p->type = pt_slowgrav;
-				
+
 				dir[0] = j * 8.0f + (rand() & 7);
 				dir[1] = i * 8.0f + (rand() & 7);
 				dir[2] = 256;
@@ -896,7 +896,7 @@ void CL_LavaSplash( const vec3_t org )
 				p->org[2] = org[2] + (rand() & 63);
 
 				VectorNormalize( dir );
-				vel = 50 + (rand() & 63);
+				vel = (float)(50 + (rand() & 63));
 				VectorScale( dir, vel, p->vel );
 			}
 		}
@@ -928,7 +928,7 @@ void CL_ParticleBurst( const vec3_t org, int size, int color, float life )
 				p->die += life + (rand() & 31) * 0.02f;
 				p->color = color;
 				p->type = pt_slowgrav;
-				
+
 				dir[0] = j * 8.0f + (rand() & 7);
 				dir[1] = i * 8.0f + (rand() & 7);
 				dir[2] = 256;
@@ -938,7 +938,7 @@ void CL_ParticleBurst( const vec3_t org, int size, int color, float life )
 				p->org[2] = org[2] + (rand() & 63);
 
 				VectorNormalize( dir );
-				vel = 50 + (rand() & 63);
+				vel = (float)(50 + (rand() & 63));
 				VectorScale( dir, vel, p->vel );
 			}
 		}
@@ -965,19 +965,19 @@ void CL_TeleportSplash( const vec3_t org )
 			{
 				p = CL_AllocParticle( NULL );
 				if( !p ) return;
-		
+
 				p->die += 0.2f + (rand() & 7) * 0.02f;
 				p->color = 7 + (rand() & 7);
 				p->type = pt_slowgrav;
-				
+
 				dir[0] = j * 8.0f;
 				dir[1] = i * 8.0f;
 				dir[2] = k * 8.0f;
-	
+
 				p->org[0] = org[0] + i + (rand() & 3);
 				p->org[1] = org[1] + j + (rand() & 3);
 				p->org[2] = org[2] + k + (rand() & 3);
-	
+
 				VectorNormalize( dir );
 				VectorScale( dir, (50 + (rand() & 63)), p->vel );
 			}
@@ -1018,20 +1018,20 @@ void CL_RocketTrail( vec3_t start, vec3_t end, int type )
 
 		p = CL_AllocParticle( NULL );
 		if( !p ) return;
-		
+
 		p->die += 2.0f;
 
 		switch( type )
 		{
 		case 0:	// rocket trail
-			p->ramp = (rand() & 3);
+			p->ramp = (float)(rand() & 3);
 			p->color = ramp3[(int)p->ramp];
 			p->type = pt_fire;
 			for( j = 0; j < 3; j++ )
 				p->org[j] = start[j] + ((rand() % 6 ) - 3 );
 			break;
 		case 1:	// smoke smoke
-			p->ramp = (rand() & 3) + 2;
+			p->ramp = (float)((rand() & 3) + 2);
 			p->color = ramp3[(int)p->ramp];
 			p->type = pt_fire;
 			for( j = 0; j < 3; j++ )
@@ -1215,7 +1215,7 @@ void CL_BulletImpactParticles( const vec3_t org )
 	{
 		p = CL_AllocParticle( NULL );
 		if( !p ) return;
-            
+
 		p->die += 1.0f;
 		p->color = 0; // black
 
@@ -1304,7 +1304,7 @@ static qboolean CL_CullTracer( const vec3_t start, const vec3_t end )
 			mins[i] = end[i];
 			maxs[i] = start[i];
 		}
-		
+
 		// don't let it be zero sized
 		if( mins[i] == maxs[i] )
 		{
@@ -1338,7 +1338,7 @@ qboolean CL_TracerComputeVerts( const vec3_t start, const vec3_t delta, float wi
 	TriWorldToScreen( (float *)start, screenStart );
 	TriWorldToScreen( (float *)end, screenEnd );
 
-	VectorSubtract( screenStart, screenEnd, tmp );	
+	VectorSubtract( screenStart, screenEnd, tmp );
 	tmp[2] = 0; // we don't need Z, we're in screen space
 
 	VectorNormalize( tmp );
@@ -1350,10 +1350,10 @@ qboolean CL_TracerComputeVerts( const vec3_t start, const vec3_t delta, float wi
 
 	// compute four vertexes
 	VectorScale( normal, width, tmp );
-	VectorSubtract( start, tmp, pVerts[0] ); 
-	VectorAdd( start, tmp, pVerts[1] ); 
-	VectorAdd( pVerts[0], delta, pVerts[2] ); 
-	VectorAdd( pVerts[1], delta, pVerts[3] ); 
+	VectorSubtract( start, tmp, pVerts[0] );
+	VectorAdd( start, tmp, pVerts[1] );
+	VectorAdd( pVerts[0], delta, pVerts[2] );
+	VectorAdd( pVerts[1], delta, pVerts[3] );
 
 	return true;
 }
@@ -1441,7 +1441,7 @@ void CL_StreakTracer( const vec3_t pos, const vec3_t velocity, int colorIndex )
 		p->color = bound( 0, colorIndex, 255 );
 	}
 	else
-	{ 
+	{
 		color = gTracerColors[colorIndex];
 		p->color = CL_LookupColor( color[0], color[1], color[2] );
 	}
@@ -1509,7 +1509,7 @@ void CL_UserTracerParticle( float *org, float *vel, float life, int colorIndex, 
 		p->color = bound( 0, colorIndex, 255 );
 	}
 	else
-	{ 
+	{
 		color = gTracerColors[colorIndex];
 		p->color = CL_LookupColor( color[0], color[1], color[2] );
 	}
@@ -1570,7 +1570,7 @@ void CL_SparkShower( const vec3_t org )
 	pos[2] = org[2] + Com_RandomFloat( -2.0f, 2.0f );
 
 	pmodel = Mod_Handle( CL_FindModelIndex( "sprites/richo1.spr" ));
-	CL_RicochetSprite( pos, pmodel, 0.0f, Com_RandomFloat( 0.4, 0.6f ));
+	CL_RicochetSprite( pos, pmodel, 0.0f, Com_RandomFloat( 0.4f, 0.6f ));
 
 	// create a 8 random spakle tracers
 	for( i = 0; i < 8; i++ )
@@ -1643,7 +1643,7 @@ void CL_ReadPointFile_f( void )
 	particle_t	*p;
 	char		filename[64];
 	string		token;
-	
+
 	Q_snprintf( filename, sizeof( filename ), "maps/%s.pts", clgame.mapname );
 	afile = FS_LoadFile( filename, NULL, false );
 
@@ -1652,7 +1652,7 @@ void CL_ReadPointFile_f( void )
 		MsgDev( D_ERROR, "couldn't open %s\n", filename );
 		return;
 	}
-	
+
 	Msg( "Reading %s...\n", filename );
 
 	count = 0;
@@ -1673,7 +1673,7 @@ void CL_ReadPointFile_f( void )
 		org[2] = Q_atof( token );
 
 		count++;
-		
+
 		if( !cl_free_particles )
 		{
 			MsgDev( D_ERROR, "CL_ReadPointFile: not enough free particles!\n" );
@@ -1686,7 +1686,7 @@ void CL_ReadPointFile_f( void )
 		p->next = cl_active_particles;
 		cl_active_particles = p;
 
-		p->ramp = 0;		
+		p->ramp = 0;
 		p->die = 99999;
 		p->color = (-count) & 15;
 		p->type = pt_static;

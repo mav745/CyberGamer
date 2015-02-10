@@ -67,7 +67,7 @@ void Sound_Init( void )
 	{
 	case HOST_NORMAL:
 		sound.loadformats = load_game;
-		sound.streamformat = stream_game;		
+		sound.streamformat = stream_game;
 		break;
 	default:	// all other instances not using soundlib or will be reinstalling later
 		sound.loadformats = load_null;
@@ -90,7 +90,7 @@ byte *Sound_Copy( size_t size )
 	out = Mem_Alloc( host.soundpool, size );
 	Q_memcpy( out, sound.tempbuffer, size );
 
-	return out; 
+	return out;
 }
 
 uint Sound_GetApproxWavePlayLen( const char *filepath )
@@ -178,14 +178,14 @@ qboolean Sound_ResampleInternal( wavdata_t *sc, int inrate, int inwidth, int out
 
 	data = sc->buffer;
 	stepscale = (float)inrate / outrate;	// this is usually 0.5, 1, or 2
-	outcount = sc->samples / stepscale;
+	outcount = (int)((float)sc->samples / stepscale);
 	sc->size = outcount * outwidth * sc->channels;
 
 	sound.tempbuffer = (byte *)Mem_Realloc( host.soundpool, sound.tempbuffer, sc->size );
 
 	sc->samples = outcount;
 	if( sc->loopStart != -1 )
-		sc->loopStart = sc->loopStart / stepscale;
+		sc->loopStart = (int)((float)sc->loopStart / stepscale);
 
 	// resample / decimate to the current source rate
 	if( stepscale == 1.0f && inwidth == 1 && outwidth == 1 )
@@ -196,7 +196,7 @@ qboolean Sound_ResampleInternal( wavdata_t *sc, int inrate, int inwidth, int out
 	{
 		// general case
 		samplefrac = 0;
-		fracstep = stepscale * 256;
+		fracstep = (int)(stepscale * 256);
 
 		if( sc->channels == 2 )
 		{
@@ -256,7 +256,7 @@ qboolean Sound_Process( wavdata_t **wav, int rate, int width, uint flags )
 {
 	wavdata_t	*snd = *wav;
 	qboolean	result = true;
-				
+
 	// check for buffers
 	if( !snd || !snd->buffer )
 	{

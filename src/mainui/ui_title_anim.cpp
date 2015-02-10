@@ -43,7 +43,7 @@ void UI_PushPButtonStack( menuPicButton_s *button )
 
 float UI_GetTitleTransFraction( void )
 {
-	float fraction = (float)(uiStatic.realTime - transition_initial_time ) / TTT_PERIOD;
+	float fraction = static_cast<float>(uiStatic.realTime - transition_initial_time ) / TTT_PERIOD;
 
 	if( fraction > 1.0f )
 		fraction = 1.0f;
@@ -53,10 +53,10 @@ float UI_GetTitleTransFraction( void )
 
 void LerpQuad( quad_t a, quad_t b, float frac, quad_t *c )
 {
-	c->x = a.x + (b.x - a.x) * frac;
-	c->y = a.y + (b.y - a.y) * frac;
-	c->lx = a.lx + (b.lx - a.lx) * frac;
-	c->ly = a.ly + (b.ly - a.ly) * frac;
+	c->x = a.x + (int)((b.x - a.x) * frac);
+	c->y = a.y + (int)((b.y - a.y) * frac);
+	c->lx = a.lx + (int)((b.lx - a.lx) * frac);
+	c->ly = a.ly + (int)((b.ly - a.ly) * frac);
 }
 
 void UI_SetupTitleQuad()
@@ -85,7 +85,7 @@ void UI_DrawTitleAnim()
 #endif
 
 	quad_t c;
-	
+
 	int f_idx = (transition_state == AS_TO_TITLE) ? 0 : 1;
 	int s_idx = (transition_state == AS_TO_TITLE) ? 1 : 0;
 
@@ -101,15 +101,15 @@ void UI_SetTitleAnim( int anim_state, menuPicButton_s *button )
 	if( !button || PreClickDepth == uiStatic.menuDepth && anim_state == AS_TO_TITLE )
 		return;
 
-	// replace cancel\done button with button which called this menu 
-	if( PreClickDepth > uiStatic.menuDepth && anim_state == AS_TO_TITLE ) 
+	// replace cancel\done button with button which called this menu
+	if( PreClickDepth > uiStatic.menuDepth && anim_state == AS_TO_TITLE )
 	{
 		anim_state = AS_TO_BUTTON;
 
 		// HACK HACK HACK
 		if ( ButtonStack[ButtonStackDepth + 1] )
 			button = ButtonStack[ButtonStackDepth+1];
-	}	
+	}
 
 	// don't reset anim if dialog buttons pressed
 	if( button->generic.id == 130 || button->generic.id == 131 )
@@ -124,7 +124,7 @@ void UI_SetTitleAnim( int anim_state, menuPicButton_s *button )
 	TitleLerpQuads[0].y = button->generic.y;
 	TitleLerpQuads[0].lx = button->generic.width;
 	TitleLerpQuads[0].ly = button->generic.height;
-	
+
 	transition_initial_time = uiStatic.realTime;
 	TransPic = button->pic;
 }

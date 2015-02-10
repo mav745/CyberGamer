@@ -133,7 +133,7 @@ void CApache :: Spawn( void )
 
 	pev->sequence = 0;
 	ResetSequenceInfo( );
-	pev->frame = RANDOM_LONG(0, 0xFF);
+	pev->frame = static_cast<float>(RANDOM_LONG(0, 0xFF));
 
 	InitBoneControllers();
 
@@ -145,7 +145,7 @@ void CApache :: Spawn( void )
 	{
 		SetThink( &CApache::HuntThink );
 		SetTouch( &CApache::FlyTouch );
-		pev->nextthink = gpGlobals->time + 1.0;
+		pev->nextthink = gpGlobals->time + 1.0f;
 	}
 
 	m_iRockets = 10;
@@ -180,7 +180,7 @@ void CApache::Precache( void )
 void CApache::NullThink( void )
 {
 	StudioFrameAdvance( );
-	pev->nextthink = gpGlobals->time + 0.5;
+	pev->nextthink = gpGlobals->time + 0.5f;
 }
 
 
@@ -188,7 +188,7 @@ void CApache::StartupUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYP
 {
 	SetThink( &CApache::HuntThink );
 	SetTouch( &CApache::FlyTouch );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	SetUse( NULL );
 }
 
@@ -202,26 +202,26 @@ void CApache :: Killed( entvars_t *pevAttacker, int iGib )
 	UTIL_SetSize( pev, Vector( -32, -32, -64), Vector( 32, 32, 0) );
 	SetThink( &CApache::DyingThink );
 	SetTouch( &CApache::CrashTouch );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	pev->health = 0;
 	pev->takedamage = DAMAGE_NO;
 
 	if (pev->spawnflags & SF_NOWRECKAGE)
 	{
-		m_flNextRocket = gpGlobals->time + 4.0;
+		m_flNextRocket = gpGlobals->time + 4.0f;
 	}
 	else
 	{
-		m_flNextRocket = gpGlobals->time + 15.0;
+		m_flNextRocket = gpGlobals->time + 15.0f;
 	}
 }
 
 void CApache :: DyingThink( void )
 {
 	StudioFrameAdvance( );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
-	pev->avelocity = pev->avelocity * 1.02;
+	pev->avelocity = pev->avelocity * 1.02f;
 
 	// still falling?
 	if (m_flNextRocket > gpGlobals->time )
@@ -249,7 +249,7 @@ void CApache :: DyingThink( void )
 			WRITE_BYTE( 10  ); // framerate
 		MESSAGE_END();
 
-		Vector vecSpot = pev->origin + (pev->mins + pev->maxs) * 0.5;
+		Vector vecSpot = pev->origin + (pev->mins + pev->maxs) * 0.5f;
 		MESSAGE_BEGIN( MSG_PVS, SVC_TEMPENTITY, vecSpot );
 			WRITE_BYTE( TE_BREAKMODEL);
 
@@ -287,12 +287,12 @@ void CApache :: DyingThink( void )
 
 		// don't stop it we touch a entity
 		pev->flags &= ~FL_ONGROUND;
-		pev->nextthink = gpGlobals->time + 0.2;
+		pev->nextthink = gpGlobals->time + 0.2f;
 		return;
 	}
 	else
 	{
-		Vector vecSpot = pev->origin + (pev->mins + pev->maxs) * 0.5;
+		Vector vecSpot = pev->origin + (pev->mins + pev->maxs) * 0.5f;
 
 		/*
 		MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
@@ -350,7 +350,7 @@ void CApache :: DyingThink( void )
 			WRITE_BYTE( 0 );		// speed
 		MESSAGE_END();
 
-		EMIT_SOUND(ENT(pev), CHAN_STATIC, "weapons/mortarhit.wav", 1.0, 0.3);
+		EMIT_SOUND(ENT(pev), CHAN_STATIC, "weapons/mortarhit.wav", 1.0f, 0.3f);
 
 		RadiusDamage( pev->origin, pev, pev, 300, CLASS_NONE, DMG_BLAST );
 
@@ -366,7 +366,7 @@ void CApache :: DyingThink( void )
 		}
 
 		// gibs
-		vecSpot = pev->origin + (pev->mins + pev->maxs) * 0.5;
+		vecSpot = pev->origin + (pev->mins + pev->maxs) * 0.5f;
 		MESSAGE_BEGIN( MSG_PVS, SVC_TEMPENTITY, vecSpot );
 			WRITE_BYTE( TE_BREAKMODEL);
 
@@ -403,7 +403,7 @@ void CApache :: DyingThink( void )
 		MESSAGE_END();
 
 		SetThink( &CBaseEntity::SUB_Remove );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 }
 
@@ -443,7 +443,7 @@ void CApache :: GibMonster( void )
 void CApache :: HuntThink( void )
 {
 	StudioFrameAdvance( );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	ShowDamage( );
 
@@ -513,7 +513,7 @@ void CApache :: HuntThink( void )
 	{
 		// float flLength2 = (m_posTarget - pev->origin).Length() * (1.5 - DotProduct((m_posTarget - pev->origin).Normalize(), pev->velocity.Normalize() ));
 		// if (flLength2 < flLength)
-		if (m_flLastSeen + 90 > gpGlobals->time && DotProduct( (m_posTarget - pev->origin).Normalize(), (m_posDesired - pev->origin).Normalize( )) > 0.25)
+		if (m_flLastSeen + 90 > gpGlobals->time && DotProduct( (m_posTarget - pev->origin).Normalize(), (m_posDesired - pev->origin).Normalize( )) > 0.25f)
 		{
 			m_vecDesired = (m_posTarget - pev->origin).Normalize( );
 		}
@@ -541,7 +541,7 @@ void CApache :: HuntThink( void )
 
 		// don't fire rockets and gun on easy mode
 		if (g_iSkillLevel == SKILL_EASY)
-			m_flNextRocket = gpGlobals->time + 10.0;
+			m_flNextRocket = gpGlobals->time + 10.0f;
 	}
 
 	UTIL_MakeAimVectors( pev->angles );
@@ -551,7 +551,7 @@ void CApache :: HuntThink( void )
 	if ((m_iRockets % 2) == 1)
 	{
 		FireRocket( );
-		m_flNextRocket = gpGlobals->time + 0.5;
+		m_flNextRocket = gpGlobals->time + 0.5f;
 		if (m_iRockets <= 0)
 		{
 			m_flNextRocket = gpGlobals->time + 10;
@@ -565,7 +565,7 @@ void CApache :: HuntThink( void )
 			if (m_hEnemy != NULL)
 			{
 				// make sure it's a good shot
-				if (DotProduct( m_vecTarget, vecEst) > .965)
+				if (DotProduct( m_vecTarget, vecEst) > .965f)
 				{
 					TraceResult tr;
 
@@ -591,7 +591,7 @@ void CApache :: HuntThink( void )
 void CApache :: Flight( void )
 {
 	// tilt model 5 degrees
-	Vector vecAdj = Vector( 5.0, 0, 0 );
+	Vector vecAdj = Vector( 5.0f, 0, 0 );
 
 	// estimate where I'll be facing in one seconds
 	UTIL_MakeAimVectors( pev->angles + pev->avelocity * 2 + vecAdj);
@@ -614,11 +614,11 @@ void CApache :: Flight( void )
 			pev->avelocity.y -= 8; // 9 * (3.0/2.0);
 		}
 	}
-	pev->avelocity.y *= 0.98;
+	pev->avelocity.y *= 0.98f;
 
 	// estimate where I'll be in two seconds
 	UTIL_MakeAimVectors( pev->angles + pev->avelocity * 1 + vecAdj);
-	Vector vecEst = pev->origin + pev->velocity * 2.0 + gpGlobals->v_up * m_flForce * 20 - Vector( 0, 0, 384 * 2 );
+	Vector vecEst = pev->origin + pev->velocity * 2.0f + gpGlobals->v_up * m_flForce * 20 - Vector( 0, 0, 384 * 2 );
 
 	// add immediate force
 	UTIL_MakeAimVectors( pev->angles + vecAdj);
@@ -626,7 +626,7 @@ void CApache :: Flight( void )
 	pev->velocity.y += gpGlobals->v_up.y * m_flForce;
 	pev->velocity.z += gpGlobals->v_up.z * m_flForce;
 	// add gravity
-	pev->velocity.z -= 38.4; // 32ft/sec
+	pev->velocity.z -= 38.4f; // 32ft/sec
 
 
 	float flSpeed = pev->velocity.Length();
@@ -657,12 +657,12 @@ void CApache :: Flight( void )
 	}
 
 	// sideways drag
-	pev->velocity.x = pev->velocity.x * (1.0 - fabs( gpGlobals->v_right.x ) * 0.05);
-	pev->velocity.y = pev->velocity.y * (1.0 - fabs( gpGlobals->v_right.y ) * 0.05);
-	pev->velocity.z = pev->velocity.z * (1.0 - fabs( gpGlobals->v_right.z ) * 0.05);
+	pev->velocity.x = static_cast<float>(pev->velocity.x * (1. - fabs( gpGlobals->v_right.x ) * 0.05));
+	pev->velocity.y = static_cast<float>(pev->velocity.y * (1. - fabs( gpGlobals->v_right.y ) * 0.05));
+	pev->velocity.z = static_cast<float>(pev->velocity.z * (1. - fabs( gpGlobals->v_right.z ) * 0.05));
 
 	// general drag
-	pev->velocity = pev->velocity * 0.995;
+	pev->velocity = pev->velocity * 0.995f;
 
 	// apply power to stay correct height
 	if (m_flForce < 80 && vecEst.z < m_posDesired.z)
@@ -680,23 +680,23 @@ void CApache :: Flight( void )
 	{
 		// ALERT( at_console, "F " );
 		// lean forward
-		pev->avelocity.x -= 12.0;
+		pev->avelocity.x -= 12.0f;
 	}
 	else if (flDist < 0 && flSpeed > -50 && pev->angles.x + pev->avelocity.x  < 20)
 	{
 		// ALERT( at_console, "B " );
 		// lean backward
-		pev->avelocity.x += 12.0;
+		pev->avelocity.x += 12.0f;
 	}
 	else if (pev->angles.x + pev->avelocity.x > 0)
 	{
 		// ALERT( at_console, "f " );
-		pev->avelocity.x -= 4.0;
+		pev->avelocity.x -= 4.0f;
 	}
 	else if (pev->angles.x + pev->avelocity.x < 0)
 	{
 		// ALERT( at_console, "b " );
-		pev->avelocity.x += 4.0;
+		pev->avelocity.x += 4.0f;
 	}
 
 	// ALERT( at_console, "%.0f %.0f : %.0f %.0f : %.0f %.0f : %.0f\n", pev->origin.x, pev->velocity.x, flDist, flSpeed, pev->angles.x, pev->avelocity.x, m_flForce );
@@ -705,7 +705,7 @@ void CApache :: Flight( void )
 	// make rotor, engine sounds
 	if (m_iSoundState == 0)
 	{
-		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_rotor2.wav", 1.0, 0.3, 0, 110 );
+		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_rotor2.wav", 1.0f, 0.3f, 0, 110 );
 		// EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_whine1.wav", 0.5, 0.2, 0, 110 );
 
 		m_iSoundState = SND_CHANGE_PITCH; // hack for going through level transitions
@@ -721,7 +721,7 @@ void CApache :: Flight( void )
 
 			float pitch = DotProduct( pev->velocity - pPlayer->pev->velocity, (pPlayer->pev->origin - pev->origin).Normalize() );
 
-			pitch = (int)(100 + pitch / 50.0);
+			pitch = floorf(100.f + pitch / 50.0f);//(int)(100.f + pitch / 50.0f);
 
 			if (pitch > 250)
 				pitch = 250;
@@ -730,11 +730,11 @@ void CApache :: Flight( void )
 			if (pitch == 100)
 				pitch = 101;
 
-			float flVol = (m_flForce / 100.0) + .1;
-			if (flVol > 1.0)
-				flVol = 1.0;
+			float flVol = (m_flForce / 100.0f) + .1f;
+			if (flVol > 1.0f)
+				flVol = 1.0f;
 
-			EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_rotor2.wav", 1.0, 0.3, SND_CHANGE_PITCH | SND_CHANGE_VOL, pitch);
+			EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_rotor2.wav", 1.0f, 0.3f, SND_CHANGE_PITCH | SND_CHANGE_VOL, (int)pitch);
 		}
 		// EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, "apache/ap_whine1.wav", flVol, 0.2, SND_CHANGE_PITCH | SND_CHANGE_VOL, pitch);
 
@@ -745,14 +745,14 @@ void CApache :: Flight( void )
 
 void CApache :: FireRocket( void )
 {
-	static float side = 1.0;
+	static float side = 1.0f;
 	static int count;
 
 	if (m_iRockets <= 0)
 		return;
 
 	UTIL_MakeAimVectors( pev->angles );
-	Vector vecSrc = pev->origin + 1.5 * (gpGlobals->v_forward * 21 + gpGlobals->v_right * 70 * side + gpGlobals->v_up * -79);
+	Vector vecSrc = pev->origin + 1.5f * (gpGlobals->v_forward * 21 + gpGlobals->v_right * 70 * side + gpGlobals->v_up * -79);
 
 	switch( m_iRockets % 5)
 	{
@@ -827,11 +827,11 @@ BOOL CApache :: FireGun( )
 	GetAttachment( 0, posBarrel, angBarrel );
 	Vector vecGun = (posBarrel - posGun).Normalize( );
 
-	if (DotProduct( vecGun, vecTarget ) > 0.98)
+	if (DotProduct( vecGun, vecTarget ) > 0.98f)
 	{
 #if 1
 		FireBullets( 1, posGun, vecGun, VECTOR_CONE_4DEGREES, 8192, BULLET_MONSTER_12MM, 1 );
-		EMIT_SOUND(ENT(pev), CHAN_WEAPON, "turret/tu_fire1.wav", 1, 0.3);
+		EMIT_SOUND(ENT(pev), CHAN_WEAPON, "turret/tu_fire1.wav", 1, 0.3f);
 #else
 		static float flNext;
 		TraceResult tr;
@@ -923,13 +923,13 @@ void CApache::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir
 	{
 		// ALERT( at_console, "%.0f\n", flDamage );
 		AddMultiDamage( pevAttacker, this, flDamage, bitsDamageType );
-		m_iDoSmokePuff = 3 + (flDamage / 5.0);
+		m_iDoSmokePuff = 3 + static_cast<int>(flDamage / 5.0f);
 	}
 	else
 	{
 		// do half damage in the body
 		// AddMultiDamage( pevAttacker, this, flDamage / 2.0, bitsDamageType );
-		UTIL_Ricochet( ptr->vecEndPos, 2.0 );
+		UTIL_Ricochet( ptr->vecEndPos, 2.0f );
 	}
 }
 
@@ -979,7 +979,7 @@ void CApacheHVR :: Spawn( void )
 	m_vecForward = gpGlobals->v_forward;
 	pev->gravity = 0.5;
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	pev->dmg = 150;
 }
@@ -1020,7 +1020,7 @@ void CApacheHVR :: IgniteThink( void  )
 
 	// set to accelerate
 	SetThink( &CApacheHVR::AccelerateThink );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 
@@ -1043,7 +1043,7 @@ void CApacheHVR :: AccelerateThink( void  )
 	// re-aim
 	pev->angles = UTIL_VecToAngles( pev->velocity );
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 

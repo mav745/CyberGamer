@@ -129,7 +129,7 @@ float VectorNormalizeLength2( const vec3_t v, vec3_t out )
 	float	length, ilength;
 
 	length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-	length = sqrt( length );
+	length = sqrtf( length );
 
 	if( length )
 	{
@@ -218,15 +218,15 @@ void VectorAngles( const float *forward, float *angles )
 	}
 	else
 	{
-		yaw = ( atan2( forward[1], forward[0] ) * 180 / M_PI );
+		yaw = ( atan2f( forward[1], forward[0] ) * 180.f / (float)M_PI );
 		if( yaw < 0 ) yaw += 360;
 
-		tmp = sqrt( forward[0] * forward[0] + forward[1] * forward[1] );
-		pitch = ( atan2( forward[2], tmp ) * 180 / M_PI );
+		tmp = sqrtf( forward[0] * forward[0] + forward[1] * forward[1] );
+		pitch = ( atan2f( forward[2], tmp ) * 180.f / (float)M_PI );
 		if( pitch < 0 ) pitch += 360;
 	}
 
-	VectorSet( angles, pitch, yaw, 0 ); 
+	VectorSet( angles, pitch, yaw, 0 );
 }
 
 /*
@@ -239,10 +239,10 @@ void VectorsAngles( const vec3_t forward, const vec3_t right, const vec3_t up, v
 {
 	float	pitch, cpitch, yaw, roll;
 
-	pitch = -asin( forward[2] );
-	cpitch = cos( pitch );
+	pitch = -asinf( forward[2] );
+	cpitch = cosf( pitch );
 
-	if( fabs( cpitch ) > EQUAL_EPSILON )	// gimball lock?
+	if( fabsf( cpitch ) > EQUAL_EPSILON )	// gimball lock?
 	{
 		cpitch = 1.0f / cpitch;
 		pitch = RAD2DEG( pitch );
@@ -334,7 +334,7 @@ float RadiusFromBounds( const vec3_t mins, const vec3_t maxs )
 
 	for( i = 0; i < 3; i++ )
 	{
-		corner[i] = fabs( mins[i] ) > fabs( maxs[i] ) ? fabs( mins[i] ) : fabs( maxs[i] );
+		corner[i] = fabsf( mins[i] ) > fabsf( maxs[i] ) ? fabsf( mins[i] ) : fabsf( maxs[i] );
 	}
 	return VectorLength( corner );
 }
@@ -358,20 +358,20 @@ void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, 
 	t0 = vr[0] *  c + vu[0] * -s;
 	t1 = vr[0] *  s + vu[0] *  c;
 	dst[0] = (t0 * vr[0] + t1 * vu[0] + vf[0] * vf[0]) * point[0]
-	       + (t0 * vr[1] + t1 * vu[1] + vf[0] * vf[1]) * point[1]
-	       + (t0 * vr[2] + t1 * vu[2] + vf[0] * vf[2]) * point[2];
+		   + (t0 * vr[1] + t1 * vu[1] + vf[0] * vf[1]) * point[1]
+		   + (t0 * vr[2] + t1 * vu[2] + vf[0] * vf[2]) * point[2];
 
 	t0 = vr[1] *  c + vu[1] * -s;
 	t1 = vr[1] *  s + vu[1] *  c;
 	dst[1] = (t0 * vr[0] + t1 * vu[0] + vf[1] * vf[0]) * point[0]
-	       + (t0 * vr[1] + t1 * vu[1] + vf[1] * vf[1]) * point[1]
-	       + (t0 * vr[2] + t1 * vu[2] + vf[1] * vf[2]) * point[2];
+		   + (t0 * vr[1] + t1 * vu[1] + vf[1] * vf[1]) * point[1]
+		   + (t0 * vr[2] + t1 * vu[2] + vf[1] * vf[2]) * point[2];
 
 	t0 = vr[2] *  c + vu[2] * -s;
 	t1 = vr[2] *  s + vu[2] *  c;
 	dst[2] = (t0 * vr[0] + t1 * vu[0] + vf[2] * vf[0]) * point[0]
-	       + (t0 * vr[1] + t1 * vu[1] + vf[2] * vf[1]) * point[1]
-	       + (t0 * vr[2] + t1 * vu[2] + vf[2] * vf[2]) * point[2];
+		   + (t0 * vr[1] + t1 * vu[1] + vf[2] * vf[1]) * point[1]
+		   + (t0 * vr[2] + t1 * vu[2] + vf[2] * vf[2]) * point[2];
 }
 
 //
@@ -436,10 +436,10 @@ void QuaternionSlerp( const vec4_t p, vec4_t q, float t, vec4_t qt )
 	{
 		if(( 1.0f - cosom ) > 0.000001f )
 		{
-			omega = acos( cosom );
-			sinom = sin( omega );
-			sclp = sin(( 1.0f - t ) * omega ) / sinom;
-			sclq = sin( t * omega ) / sinom;
+			omega = acosf( cosom );
+			sinom = sinf( omega );
+			sclp = sinf(( 1.0f - t ) * omega ) / sinom;
+			sclq = sinf( t * omega ) / sinom;
 		}
 		else
 		{
@@ -456,8 +456,8 @@ void QuaternionSlerp( const vec4_t p, vec4_t q, float t, vec4_t qt )
 		qt[1] = q[0];
 		qt[2] = -q[3];
 		qt[3] = q[2];
-		sclp = sin(( 1.0f - t ) * ( 0.5f * M_PI ));
-		sclq = sin( t * ( 0.5f * M_PI ));
+		sclp = sinf(( 1.0f - t ) * ( 0.5f * (float)M_PI ));
+		sclq = sinf( t * ( 0.5f * (float)M_PI ));
 
 		for( i = 0; i < 3; i++ )
 			qt[i] = sclp * p[i] + sclq * qt[i];

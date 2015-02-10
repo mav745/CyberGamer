@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -37,7 +37,7 @@ public:
 LINK_ENTITY_TO_CLASS( monster_rat, CRat );
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CRat :: Classify ( void )
@@ -61,7 +61,7 @@ void CRat :: SetYawSpeed ( void )
 		break;
 	}
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = (float)ys;
 }
 
 //=========================================================
@@ -91,7 +91,7 @@ void CRat :: Spawn()
 void CRat :: Precache()
 {
 	PRECACHE_MODEL("models/bigrat.mdl");
-}	
+}
 
 //=========================================================
 // AI Schedules Specific to this monster

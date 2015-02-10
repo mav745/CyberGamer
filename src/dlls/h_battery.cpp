@@ -92,7 +92,7 @@ void CRecharge::Spawn()
 	UTIL_SetOrigin(pev, pev->origin);		// set size and link into world
 	UTIL_SetSize(pev, pev->mins, pev->maxs);
 	SET_MODEL(ENT(pev), STRING(pev->model) );
-	m_iJuice = gSkillData.suitchargerCapacity;
+	m_iJuice = static_cast<int>(gSkillData.suitchargerCapacity);
 	pev->frame = 0;
 }
 
@@ -122,13 +122,13 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	{
 		if (m_flSoundTime <= gpGlobals->time)
 		{
-			m_flSoundTime = gpGlobals->time + 0.62;
-			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/suitchargeno1.wav", 0.85, ATTN_NORM );
+			m_flSoundTime = gpGlobals->time + 0.62f;
+			EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/suitchargeno1.wav", 0.85f, ATTN_NORM );
 		}
 		return;
 	}
 
-	pev->nextthink = pev->ltime + 0.25;
+	pev->nextthink = pev->ltime + 0.25f;
 	SetThink(&CRecharge::Off);
 
 	// Time to recharge yet?
@@ -151,13 +151,13 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	if (!m_iOn)
 	{
 		m_iOn++;
-		EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/suitchargeok1.wav", 0.85, ATTN_NORM );
-		m_flSoundTime = 0.56 + gpGlobals->time;
+		EMIT_SOUND(ENT(pev), CHAN_ITEM, "items/suitchargeok1.wav", 0.85f, ATTN_NORM );
+		m_flSoundTime = 0.56f + gpGlobals->time;
 	}
 	if ((m_iOn == 1) && (m_flSoundTime <= gpGlobals->time))
 	{
 		m_iOn++;
-		EMIT_SOUND(ENT(pev), CHAN_STATIC, "items/suitcharge1.wav", 0.85, ATTN_NORM );
+		EMIT_SOUND(ENT(pev), CHAN_STATIC, "items/suitcharge1.wav", 0.85f, ATTN_NORM );
 	}
 
 
@@ -172,12 +172,12 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 	}
 
 	// govern the rate of charge
-	m_flNextCharge = gpGlobals->time + 0.1;
+	m_flNextCharge = gpGlobals->time + 0.1f;
 }
 
 void CRecharge::Recharge(void)
 {
-	m_iJuice = gSkillData.suitchargerCapacity;
+	m_iJuice = static_cast<int>(gSkillData.suitchargerCapacity);
 	pev->frame = 0;
 	SetThink( &CBaseEntity::SUB_DoNothing );
 }
@@ -190,7 +190,7 @@ void CRecharge::Off(void)
 
 	m_iOn = 0;
 
-	if ((!m_iJuice) &&  ( ( m_iReactivate = g_pGameRules->FlHEVChargerRechargeTime() ) > 0) )
+	if ((!m_iJuice) &&  ( ( m_iReactivate = static_cast<int>(g_pGameRules->FlHEVChargerRechargeTime()) ) > 0) )
 	{
 		pev->nextthink = pev->ltime + m_iReactivate;
 		SetThink(&CRecharge::Recharge);

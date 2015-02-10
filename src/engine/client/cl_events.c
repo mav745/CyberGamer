@@ -66,7 +66,7 @@ CL_EventIndex
 word CL_EventIndex( const char *name )
 {
 	int	i;
-	
+
 	if( !name || !name[0] )
 		return 0;
 
@@ -138,7 +138,7 @@ qboolean CL_FireEvent( event_info_t *ei )
 	// get the func pointer
 	for( i = 0; i < MAX_EVENTS; i++ )
 	{
-		ev = clgame.events[i];		
+		ev = clgame.events[i];
 
 		if( !ev )
 		{
@@ -157,7 +157,7 @@ qboolean CL_FireEvent( event_info_t *ei )
 
 			name = cl.event_precache[ei->index];
 			MsgDev( D_ERROR, "CL_FireEvent: %s not hooked\n", name );
-			break;			
+			break;
 		}
 	}
 
@@ -282,7 +282,7 @@ void CL_QueueEvent( int flags, int index, float delay, event_args_t *args )
 	}
 
 	ei->index	= index;
-	ei->fire_time = delay ? (cl.time + delay) : 0.0f;
+	ei->fire_time = delay ? ((float)cl.time + delay) : 0.0f;
 	ei->flags	= flags;
 	ei->args = *args;
 }
@@ -447,7 +447,7 @@ void CL_PlaybackEvent( int flags, const edict_t *pInvoker, word eventindex, floa
 	if( !CL_EventIndex( cl.event_precache[eventindex] ))
 	{
 		MsgDev( D_ERROR, "CL_PlaybackEvent: event %i was not precached\n", eventindex );
-		return;		
+		return;
 	}
 
 	flags |= FEV_CLIENT; // it's a client event

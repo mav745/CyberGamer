@@ -49,7 +49,7 @@ bool CEngineSurface :: hasFocus( void )
 {
 	return host.state != HOST_NOFOCUS;
 }
-	
+
 void CEngineSurface :: setCursor( Cursor *cursor )
 {
 	_currentCursor = cursor;
@@ -60,14 +60,14 @@ void CEngineSurface :: SetupPaintState( const paintState_t &paintState )
 {
 	_translateX = paintState.iTranslateX;
 	_translateY = paintState.iTranslateY;
-	SetScissorRect( paintState.iScissorLeft, paintState.iScissorTop, 
+	SetScissorRect( paintState.iScissorLeft, paintState.iScissorTop,
 	paintState.iScissorRight, paintState.iScissorBottom );
 }
 
 void CEngineSurface :: InitVertex( vpoint_t &vertex, int x, int y, float u, float v )
 {
-	vertex.point[0] = x + _translateX;
-	vertex.point[1] = y + _translateY;
+	vertex.point[0] = static_cast<float>(x + _translateX);
+	vertex.point[1] = static_cast<float>(y + _translateY);
 	vertex.coord[0] = u;
 	vertex.coord[1] = v;
 }
@@ -105,9 +105,9 @@ void CEngineSurface :: drawFilledRect( int x0, int y0, int x1, int y1 )
 
 	// fully clipped?
 	if( !ClipRect( rect[0], rect[1], &clippedRect[0], &clippedRect[1] ))
-		return;	
+		return;
 
-	VGUI_SetupDrawingRect( _drawColor );	
+	VGUI_SetupDrawingRect( _drawColor );
 	VGUI_EnableTexture( false );
 	VGUI_DrawQuad( &clippedRect[0], &clippedRect[1] );
 	VGUI_EnableTexture( true );
@@ -122,7 +122,7 @@ void CEngineSurface :: drawOutlinedRect( int x0, int y0, int x1, int y1 )
 	drawFilledRect( x0, y0 + 1, x0 + 1, y1 - 1 );	// left
 	drawFilledRect( x1 - 1, y0 + 1, x1, y1 - 1 );	// right
 }
-	
+
 void CEngineSurface :: drawSetTextFont( Font *font )
 {
 	_hCurrentFont = font;
@@ -155,9 +155,9 @@ void CEngineSurface :: drawPrintText( const char* text, int textLen )
 	{
 		for( j = 0; j < 3; j++ ) // grab predefined color
 			curTextColor[j] = g_color_table[numColor][j];
-          }
-          else
-          {
+		  }
+		  else
+		  {
 		for( j = 0; j < 3; j++ ) // revert default color
 			curTextColor[j] = _drawTextColor[j];
 	}
@@ -202,8 +202,8 @@ void CEngineSurface :: drawPrintText( const char* text, int textLen )
 
 			vpoint_t ul, lr;
 
-			ul.point[0] = x + iTotalWidth;
-			ul.point[1] = y;
+			ul.point[0] = static_cast<float>(x + iTotalWidth);
+			ul.point[1] = static_cast<float>(y);
 			lr.point[0] = ul.point[0] + iWide;
 			lr.point[1] = ul.point[1] + iTall;
 
@@ -217,7 +217,7 @@ void CEngineSurface :: drawPrintText( const char* text, int textLen )
 
 			if( !ClipRect( ul, lr, &clippedRect[0], &clippedRect[1] ))
 				continue;
-                                        
+
 			drawSetTexture( iTexId );
 			VGUI_SetupDrawingText( curTextColor );
 			VGUI_DrawQuad(  &clippedRect[0], &clippedRect[1] ); // draw the letter
@@ -233,12 +233,12 @@ void CEngineSurface :: drawSetTextureRGBA( int id, const char* rgba, int wide, i
 {
 	VGUI_UploadTexture( id, rgba, wide, tall );
 }
-	
+
 void CEngineSurface :: drawSetTexture( int id )
 {
 	VGUI_BindTexture( id );
 }
-	
+
 void CEngineSurface :: drawTexturedRect( int x0, int y0, int x1, int y1 )
 {
 	vpoint_t rect[2];
@@ -249,12 +249,12 @@ void CEngineSurface :: drawTexturedRect( int x0, int y0, int x1, int y1 )
 
 	// fully clipped?
 	if( !ClipRect( rect[0], rect[1], &clippedRect[0], &clippedRect[1] ))
-		return;	
+		return;
 
-	VGUI_SetupDrawingImage( _drawColor );	
+	VGUI_SetupDrawingImage( _drawColor );
 	VGUI_DrawQuad( &clippedRect[0], &clippedRect[1] );
 }
-	
+
 void CEngineSurface :: pushMakeCurrent( Panel* panel, bool useInsets )
 {
 	int inSets[4] = { 0, 0, 0, 0 };
@@ -274,7 +274,7 @@ void CEngineSurface :: pushMakeCurrent( Panel* panel, bool useInsets )
 	paintState.m_pPanel = panel;
 
 	// determine corrected top left origin
-	paintState.iTranslateX = inSets[0] + absExtents[0] - _surfaceExtents[0];	
+	paintState.iTranslateX = inSets[0] + absExtents[0] - _surfaceExtents[0];
 	paintState.iTranslateY = inSets[1] + absExtents[1] - _surfaceExtents[1];
 
 	// setup clipping rectangle for scissoring
@@ -285,7 +285,7 @@ void CEngineSurface :: pushMakeCurrent( Panel* panel, bool useInsets )
 
 	SetupPaintState( paintState );
 }
-	
+
 void CEngineSurface :: popMakeCurrent( Panel *panel )
 {
 	int top = _paintStack.Count() - 1;
@@ -297,7 +297,7 @@ void CEngineSurface :: popMakeCurrent( Panel *panel )
 	Assert( _paintStack[top].m_pPanel == panel );
 
 	_paintStack.Remove( top );
-	
+
 	if( top > 0 ) SetupPaintState( _paintStack[top-1] );
 }
 
@@ -311,7 +311,7 @@ bool CEngineSurface :: setFullscreenMode( int wide, int tall, int bpp )
 	}
 	return false;
 }
-	
+
 void CEngineSurface :: setWindowedMode( void )
 {
 	Cvar_SetFloat( "fullscreen", 0.0f );

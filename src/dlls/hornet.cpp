@@ -70,14 +70,14 @@ void CHornet :: Spawn( void )
 	if ( g_pGameRules->IsMultiplayer() )
 	{
 		// hornets don't live as long in multiplayer
-		m_flStopAttack = gpGlobals->time + 3.5;
+		m_flStopAttack = gpGlobals->time + 3.5f;
 	}
 	else
 	{
-		m_flStopAttack	= gpGlobals->time + 5.0;
+		m_flStopAttack	= gpGlobals->time + 5.0f;
 	}
 
-	m_flFieldOfView = 0.9; // +- 25 degrees
+	m_flFieldOfView = 0.9f; // +- 25 degrees
 
 	if ( RANDOM_LONG ( 1, 5 ) <= 2 )
 	{
@@ -110,7 +110,7 @@ void CHornet :: Spawn( void )
 		pev->dmg = gSkillData.monDmgHornet;
 	}
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	ResetSequenceInfo( );
 }
 
@@ -172,7 +172,7 @@ void CHornet :: StartTrack ( void )
 	SetTouch( &CHornet::TrackTouch );
 	SetThink( &CHornet::TrackTarget );
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 //=========================================================
@@ -258,7 +258,7 @@ void CHornet :: TrackTarget ( void )
 	{
 		SetTouch( NULL );
 		SetThink( &CBaseEntity::SUB_Remove );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 		return;
 	}
 
@@ -309,20 +309,20 @@ void CHornet :: TrackTarget ( void )
 	{
 		// random pattern only applies to hornets fired by monsters, not players.
 
-		pev->velocity.x += RANDOM_FLOAT ( -0.10, 0.10 );// scramble the flight dir a bit.
-		pev->velocity.y += RANDOM_FLOAT ( -0.10, 0.10 );
-		pev->velocity.z += RANDOM_FLOAT ( -0.10, 0.10 );
+		pev->velocity.x += RANDOM_FLOAT ( -0.10f, 0.10f );// scramble the flight dir a bit.
+		pev->velocity.y += RANDOM_FLOAT ( -0.10f, 0.10f );
+		pev->velocity.z += RANDOM_FLOAT ( -0.10f, 0.10f );
 	}
 
 	switch ( m_iHornetType )
 	{
 		case HORNET_TYPE_RED:
 			pev->velocity = pev->velocity * ( m_flFlySpeed * flDelta );// scale the dir by the ( speed * width of turn )
-			pev->nextthink = gpGlobals->time + RANDOM_FLOAT( 0.1, 0.3 );
+			pev->nextthink = gpGlobals->time + RANDOM_FLOAT( 0.1f, 0.3f );
 			break;
 		case HORNET_TYPE_ORANGE:
 			pev->velocity = pev->velocity * m_flFlySpeed;// do not have to slow down to turn.
-			pev->nextthink = gpGlobals->time + 0.1;// fixed think time
+			pev->nextthink = gpGlobals->time + 0.1f;// fixed think time
 			break;
 	}
 
@@ -334,7 +334,7 @@ void CHornet :: TrackTarget ( void )
 	// (only in the single player game)
 	if ( m_hEnemy != NULL && !g_pGameRules->IsMultiplayer() )
 	{
-		if ( flDelta >= 0.4 && ( pev->origin - m_vecEnemyLKP ).Length() <= 300 )
+		if ( flDelta >= 0.4f && ( pev->origin - m_vecEnemyLKP ).Length() <= 300 )
 		{
 			MESSAGE_BEGIN( MSG_PVS, SVC_TEMPENTITY, pev->origin );
 				WRITE_BYTE( TE_SPRITE );
@@ -354,7 +354,7 @@ void CHornet :: TrackTarget ( void )
 			case 2:	EMIT_SOUND( ENT(pev), CHAN_VOICE, "hornet/ag_buzz3.wav", HORNET_BUZZ_VOLUME, ATTN_NORM);	break;
 			}
 			pev->velocity = pev->velocity * 2;
-			pev->nextthink = gpGlobals->time + 1.0;
+			pev->nextthink = gpGlobals->time + 1.0f;
 			// don't attack again
 			m_flStopAttack = gpGlobals->time;
 		}

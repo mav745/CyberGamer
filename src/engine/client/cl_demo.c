@@ -129,9 +129,9 @@ CL_GetDemoRecordClock
 write time while demo is recording
 ====================
 */
-float CL_GetDemoRecordClock( void ) 
+float CL_GetDemoRecordClock( void )
 {
-	return cl.mtime[0];
+	return (float)cl.mtime[0];
 }
 
 /*
@@ -141,9 +141,9 @@ CL_GetDemoPlaybackClock
 overwrite host.realtime
 ====================
 */
-float CL_GetDemoPlaybackClock( void ) 
+float CL_GetDemoPlaybackClock( void )
 {
-	return host.realtime + host.frametime;
+	return (float)(host.realtime + host.frametime);
 }
 
 /*
@@ -316,7 +316,7 @@ void CL_WriteDemoHeader( const char *name )
 	fs_offset_t	copysize;
 	fs_offset_t	savepos;
 	fs_offset_t	curpos;
-	
+
 	MsgDev( D_INFO, "recording to %s.\n", name );
 	cls.demofile = FS_Open( name, "wb", false );
 	cls.demotime = 0.0;
@@ -430,7 +430,7 @@ void CL_StopRecord( void )
 	demo.header.directory_offset = curpos;
 	FS_Seek( cls.demofile, 0, SEEK_SET );
 	FS_Write( cls.demofile, &demo.header, sizeof( demo.header ));
-	
+
 	FS_Close( cls.demofile );
 	cls.demofile = NULL;
 	cls.demorecording = false;
@@ -598,9 +598,9 @@ qboolean CL_DemoMoveToNextSection( void )
 
 	// switch to next section, we got a dem_stop
 	demo.entry = &demo.directory.entries[demo.entryIndex];
-	
+
 	// ready to continue reading, reset clock.
-	FS_Seek( cls.demofile, demo.entry->offset, SEEK_SET ); 
+	FS_Seek( cls.demofile, demo.entry->offset, SEEK_SET );
 
 	// time is now relative to this chunk's clock.
 	demo.starttime = CL_GetDemoPlaybackClock();
@@ -611,7 +611,7 @@ qboolean CL_DemoMoveToNextSection( void )
 
 qboolean CL_ReadRawNetworkData( byte *buffer, size_t *length )
 {
-	int	msglen = 0;	
+	int	msglen = 0;
 
 	ASSERT( buffer != NULL );
 	ASSERT( length != NULL );
@@ -625,7 +625,7 @@ qboolean CL_ReadRawNetworkData( byte *buffer, size_t *length )
 		CL_DemoCompleted();
 		return false;
 	}
-	
+
 	if( msglen < 8 )
 	{
 		MsgDev( D_NOTE, "read runt demo message\n" );
@@ -686,7 +686,7 @@ qboolean CL_DemoReadMessage( byte *buffer, size_t *length )
 
 	if(( !cl.background && ( cl.refdef.paused || cls.key_dest != key_game )) || cls.key_dest == key_console )
 	{
-		demo.starttime += host.frametime;
+		demo.starttime += (float)host.frametime;
 		return false; // paused
 	}
 
@@ -760,7 +760,7 @@ qboolean CL_DemoReadMessage( byte *buffer, size_t *length )
 		{
 			// cheat by moving the relative start time forward.
 			demo.starttime = CL_GetDemoPlaybackClock();
-		}	
+		}
 	}
 
 	demo.framecount++;
@@ -800,7 +800,7 @@ void CL_StopPlayback( void )
 
 	if( !cls.changedemo )
 	{
-		// let game known about demo state	
+		// let game known about demo state
 		Cvar_FullSet( "cl_background", "0", CVAR_READ_ONLY );
 		cls.state = ca_disconnected;
 		cl.background = 0;
@@ -808,11 +808,11 @@ void CL_StopPlayback( void )
 	}
 }
 
-/* 
-================== 
+/*
+==================
 CL_GetComment
-================== 
-*/  
+==================
+*/
 qboolean CL_GetComment( const char *demoname, char *comment )
 {
 	file_t		*demfile;
@@ -821,7 +821,7 @@ qboolean CL_GetComment( const char *demoname, char *comment )
 	demoentry_t	entry;
 	float		playtime = 0.0f;
 	int		i;
-	
+
 	if( !comment ) return false;
 
 	demfile = FS_Open( demoname, "rb", false );
@@ -829,7 +829,7 @@ qboolean CL_GetComment( const char *demoname, char *comment )
 	{
 		Q_strncpy( comment, "", MAX_STRING );
 		return false;
-          }
+		  }
 
 	// read in the m_DemoHeader
 	FS_Read( demfile, &demohdr, sizeof( demoheader_t ));
@@ -872,7 +872,7 @@ qboolean CL_GetComment( const char *demoname, char *comment )
 
 	// all done
 	FS_Close( demfile );
-		
+
 	return true;
 }
 
@@ -911,11 +911,11 @@ qboolean CL_NextDemo( void )
 	return true;
 }
 
-/* 
-================== 
+/*
+==================
 CL_DemoGetName
-================== 
-*/  
+==================
+*/
 void CL_DemoGetName( int lastnum, char *filename )
 {
 	int	a, b, c, d;
@@ -1015,7 +1015,7 @@ void CL_Record_f( void )
 	Cbuf_AddText( va( "demoshot \"%s\"\n", demoname ));
 	Q_strncpy( cls.demoname, demoname, sizeof( cls.demoname ));
 	Q_strncpy( menu.globals->demoname, demoname, sizeof( menu.globals->demoname ));
-	
+
 	CL_WriteDemoHeader( demopath );
 }
 
@@ -1080,7 +1080,7 @@ void CL_PlayDemo_f( void )
 		MsgDev( D_ERROR, "demo protocol outdated\n"
 			"Demo file protocols Network(%i), Demo(%i)\n"
 			"Server protocol is at Network(%i), Demo(%i)\n",
-			demo.header.net_protocol, 
+			demo.header.net_protocol,
 			demo.header.dem_protocol,
 			PROTOCOL_VERSION,
 			DEMO_PROTOCOL
@@ -1143,11 +1143,11 @@ void CL_PlayDemo_f( void )
 
 	demo.starttime = CL_GetDemoPlaybackClock(); // for determining whether to read another message
 
-	Netchan_Setup( NS_CLIENT, &cls.netchan, net_from, Cvar_VariableValue( "net_qport" ));
+	Netchan_Setup( NS_CLIENT, &cls.netchan, net_from, (int)Cvar_VariableValue( "net_qport" ));
 
 	demo.framecount = 0;
 	cls.lastoutgoingcommand = -1;
- 	cls.nextcmdtime = host.realtime;
+	cls.nextcmdtime = (float)host.realtime;
 
 	// g-cont. is this need?
 	Q_strncpy( cls.servername, demoname, sizeof( cls.servername ));

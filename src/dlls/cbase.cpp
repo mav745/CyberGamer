@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -31,7 +31,7 @@ extern Vector VecBModelOrigin( entvars_t* pevBModel );
 extern DLL_GLOBAL Vector		g_vecAttackDir;
 extern DLL_GLOBAL int			g_iSkillLevel;
 
-static DLL_FUNCTIONS gFunctionTable = 
+static DLL_FUNCTIONS gFunctionTable =
 {
 	GameDLLInit,				//pfnGameInit
 	DispatchSpawn,				//pfnSpawn
@@ -79,7 +79,7 @@ static DLL_FUNCTIONS gFunctionTable =
 	PM_Move,					//pfnPM_Move
 	PM_Init,					//pfnPM_Init				Server version of player movement initialization
 	PM_FindTextureType,			//pfnPM_FindTextureType
-	
+
 	SetupVisibility,			//pfnSetupVisibility        Set up PVS and PAS for networking for this client
 	UpdateClientData,			//pfnUpdateClientData       Set up data sent only to specific client
 	AddToFullPack,				//pfnAddToFullPack
@@ -106,7 +106,7 @@ int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion )
 	{
 		return FALSE;
 	}
-	
+
 	memcpy( pFunctionTable, &gFunctionTable, sizeof( DLL_FUNCTIONS ) );
 	return TRUE;
 }
@@ -119,7 +119,7 @@ int GetEntityAPI2( DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion )
 		*interfaceVersion = INTERFACE_VERSION;
 		return FALSE;
 	}
-	
+
 	memcpy( pFunctionTable, &gFunctionTable, sizeof( DLL_FUNCTIONS ) );
 	return TRUE;
 }
@@ -156,7 +156,7 @@ int DispatchSpawn( edict_t *pent )
 
 
 		// Handle global stuff here
-		if ( pEntity && pEntity->pev->globalname ) 
+		if ( pEntity && pEntity->pev->globalname )
 		{
 			const globalentity_t *pGlobal = gGlobalState.EntityFromTable( pEntity->pev->globalname );
 			if ( pGlobal )
@@ -235,7 +235,7 @@ void DispatchThink( edict_t *pent )
 	{
 		if ( FBitSet( pEntity->pev->flags, FL_DORMANT ) )
 			ALERT( at_error, "Dormant entity %s is thinking!!\n", STRING(pEntity->pev->classname) );
-				
+
 		pEntity->Think();
 	}
 }
@@ -252,7 +252,7 @@ void DispatchBlocked( edict_t *pentBlocked, edict_t *pentOther )
 void DispatchSave( edict_t *pent, SAVERESTOREDATA *pSaveData )
 {
 	CBaseEntity *pEntity = (CBaseEntity *)GET_PRIVATE(pent);
-	
+
 	if ( pEntity && pSaveData )
 	{
 		ENTITYTABLE *pTable = &pSaveData->pTable[ pSaveData->currentIndex ];
@@ -324,7 +324,7 @@ int DispatchRestore( edict_t *pent, SAVERESTOREDATA *pSaveData, int globalEntity
 
 
 			const globalentity_t *pGlobal = gGlobalState.EntityFromTable( tmpVars.globalname );
-			
+
 			// Don't overlay any instance of the global that isn't the latest
 			// pSaveData->szCurrentMapName is the level this entity is coming from
 			// pGlobla->levelName is the last level the global entity was active in.
@@ -370,7 +370,7 @@ int DispatchRestore( edict_t *pent, SAVERESTOREDATA *pSaveData, int globalEntity
 		pEntity = (CBaseEntity *)GET_PRIVATE(pent);
 
 #if 0
-		if ( pEntity && pEntity->pev->globalname && globalEntity ) 
+		if ( pEntity && pEntity->pev->globalname && globalEntity )
 		{
 			ALERT( at_console, "Global %s is %s\n", STRING(pEntity->pev->globalname), STRING(pEntity->pev->model) );
 		}
@@ -387,7 +387,7 @@ int DispatchRestore( edict_t *pent, SAVERESTOREDATA *pSaveData, int globalEntity
 				pEntity->OverrideReset();
 			}
 		}
-		else if ( pEntity && pEntity->pev->globalname ) 
+		else if ( pEntity && pEntity->pev->globalname )
 		{
 			const globalentity_t *pGlobal = gGlobalState.EntityFromTable( pEntity->pev->globalname );
 			if ( pGlobal )
@@ -439,30 +439,30 @@ void SaveReadFields( SAVERESTOREDATA *pSaveData, const char *pname, void *pBaseD
 }
 
 
-edict_t * EHANDLE::Get( void ) 
-{ 
+edict_t * EHANDLE::Get( void )
+{
 	if (m_pent)
 	{
-		if (m_pent->serialnumber == m_serialnumber) 
-			return m_pent; 
+		if (m_pent->serialnumber == m_serialnumber)
+			return m_pent;
 		else
 			return NULL;
 	}
-	return NULL; 
+	return NULL;
 };
 
-edict_t * EHANDLE::Set( edict_t *pent ) 
-{ 
-	m_pent = pent;  
-	if (pent) 
-		m_serialnumber = m_pent->serialnumber; 
-	return pent; 
+edict_t * EHANDLE::Set( edict_t *pent )
+{
+	m_pent = pent;
+	if (pent)
+		m_serialnumber = m_pent->serialnumber;
+	return pent;
 };
 
 
-EHANDLE :: operator CBaseEntity *() 
-{ 
-	return (CBaseEntity *)GET_PRIVATE( Get( ) ); 
+EHANDLE :: operator CBaseEntity *()
+{
+	return (CBaseEntity *)GET_PRIVATE( Get( ) );
 };
 
 
@@ -489,7 +489,7 @@ EHANDLE :: operator int ()
 
 CBaseEntity * EHANDLE :: operator -> ()
 {
-	return (CBaseEntity *)GET_PRIVATE( Get( ) ); 
+	return (CBaseEntity *)GET_PRIVATE( Get( ) );
 }
 
 
@@ -521,10 +521,10 @@ int CBaseEntity :: TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, 
 		return 0;
 
 	// UNDONE: some entity types may be immune or resistant to some bitsDamageType
-	
+
 	// if Attacker == Inflictor, the attack was a melee or other instant-hit attack.
-	// (that is, no actual entity projectile was involved in the attack so use the shooter's origin). 
-	if ( pevAttacker == pevInflictor )	
+	// (that is, no actual entity projectile was involved in the attack so use the shooter's origin).
+	if ( pevAttacker == pevInflictor )
 	{
 		vecTemp = pevInflictor->origin - ( VecBModelOrigin(pev) );
 	}
@@ -536,7 +536,7 @@ int CBaseEntity :: TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, 
 
 // this global is still used for glass and other non-monster killables, along with decals.
 	g_vecAttackDir = vecTemp.Normalize();
-		
+
 // save damage based on the target's armor level
 
 // figure momentum add (don't let hurt brushes or other triggers move player)
@@ -545,10 +545,10 @@ int CBaseEntity :: TakeDamage( entvars_t* pevInflictor, entvars_t* pevAttacker, 
 		Vector vecDir = pev->origin - (pevInflictor->absmin + pevInflictor->absmax) * 0.5;
 		vecDir = vecDir.Normalize();
 
-		float flForce = flDamage * ((32 * 32 * 72.0) / (pev->size.x * pev->size.y * pev->size.z)) * 5;
-		
-		if (flForce > 1000.0) 
-			flForce = 1000.0;
+		float flForce = flDamage * ((32 * 32 * 72.0f) / (pev->size.x * pev->size.y * pev->size.z)) * 5;
+
+		if (flForce > 1000.0f)
+			flForce = 1000.0f;
 		pev->velocity = pev->velocity + vecDir * flForce;
 	}
 
@@ -584,7 +584,7 @@ CBaseEntity *CBaseEntity::GetNextTarget( void )
 }
 
 // Global Savedata for Delay
-TYPEDESCRIPTION	CBaseEntity::m_SaveData[] = 
+TYPEDESCRIPTION	CBaseEntity::m_SaveData[] =
 {
 	DEFINE_FIELD( CBaseEntity, m_pGoalEnt, FIELD_CLASSPTR ),
 
@@ -611,7 +611,7 @@ int CBaseEntity::Restore( CRestore &restore )
 	if ( status )
 		status = restore.ReadFields( "BASE", this, m_SaveData, VARRAYSIZE(m_SaveData) );
 
-    if ( pev->modelindex != 0 && !FStringNull(pev->model) )
+	if ( pev->modelindex != 0 && !FStringNull(pev->model) )
 	{
 		Vector mins, maxs;
 		mins = pev->mins;	// Set model is about to destroy these
@@ -630,7 +630,7 @@ int CBaseEntity::Restore( CRestore &restore )
 // Initialize absmin & absmax to the appropriate box
 void SetObjectCollisionBox( entvars_t *pev )
 {
-	if ( (pev->solid == SOLID_BSP) && 
+	if ( (pev->solid == SOLID_BSP) &&
 		 (pev->angles.x || pev->angles.y|| pev->angles.z) )
 	{	// expand for rotation
 		float		max, v;
@@ -688,7 +688,7 @@ int	CBaseEntity :: Intersects( CBaseEntity *pOther )
 void CBaseEntity :: MakeDormant( void )
 {
 	SetBits( pev->flags, FL_DORMANT );
-	
+
 	// Don't touch
 	pev->solid = SOLID_NOT;
 	// Don't move
@@ -708,7 +708,7 @@ int CBaseEntity :: IsDormant( void )
 
 BOOL CBaseEntity :: IsInWorld( void )
 {
-	// position 
+	// position
 	if (pev->origin.x >= 4096) return FALSE;
 	if (pev->origin.y >= 4096) return FALSE;
 	if (pev->origin.z >= 4096) return FALSE;

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define UI_CREDITS_PATH		"credits.txt"
 #define UI_CREDITS_MAXLINES		2048
 
-static const char *uiCreditsDefault[] = 
+static const char *uiCreditsDefault[] =
 {
 	"",
 	"Copyright XashXT Group 2014 (C)",
@@ -65,7 +65,7 @@ static void UI_Credits_DrawFunc( void )
 
 	// draw the background first
 	if( !uiCredits.finalCredits && !CVAR_GET_FLOAT( "cl_background" ))
-		UI_DrawPic( 0, 0, 1024 * uiStatic.scaleX, 768 * uiStatic.scaleY, uiColorWhite, ART_BACKGROUND );
+		UI_DrawPic( 0, 0, (int)(1024.f * uiStatic.scaleX), (int)(768.f * uiStatic.scaleY), uiColorWhite, ART_BACKGROUND );
 	else speed = 45.0f;	// syncronize with final background track :-)
 
 	// otherwise running on cutscene
@@ -74,7 +74,7 @@ static void UI_Credits_DrawFunc( void )
 	// now draw the credits
 	UI_ScaleCoords( NULL, NULL, &w, &h );
 
-	y = ScreenHeight - (((gpGlobals->time * 1000) - uiCredits.startTime ) / speed );
+	y = ScreenHeight - (int)(((gpGlobals->time * 1000.f) - (float)uiCredits.startTime ) / speed );
 
 	// draw the credits
 	for ( i = 0; i < uiCredits.numLines && uiCredits.credits[i]; i++, y += h )
@@ -84,12 +84,12 @@ static void UI_Credits_DrawFunc( void )
 
 		if(( y < ( ScreenHeight - h ) / 2 ) && i == uiCredits.numLines - 1 )
 		{
-			if( !uiCredits.fadeTime ) uiCredits.fadeTime = (gpGlobals->time * 1000);
+			if( !uiCredits.fadeTime ) uiCredits.fadeTime = (int)(gpGlobals->time * 1000.f);
 			color = UI_FadeAlpha( uiCredits.fadeTime, uiCredits.showTime );
 			if( UnpackAlpha( color ))
-				UI_DrawString( 0, ( ScreenHeight - h ) / 2, 1024 * uiStatic.scaleX, h, uiCredits.credits[i], color, true, w, h, 1, true );
+				UI_DrawString( 0, ( ScreenHeight - h ) / 2, (int)(1024.f * uiStatic.scaleX), h, uiCredits.credits[i], color, true, w, h, 1, true );
 		}
-		else UI_DrawString( 0, y, 1024 * uiStatic.scaleX, h, uiCredits.credits[i], uiColorWhite, false, w, h, 1, true );
+		else UI_DrawString( 0, y, (int)(1024.f * uiStatic.scaleX), h, uiCredits.credits[i], uiColorWhite, false, w, h, 1, true );
 	}
 
 	if( y < 0 && UnpackAlpha( color ) == 0 )
@@ -142,12 +142,12 @@ static void UI_Credits_Init( void )
 			if( uiCredits.buffer[count - 1] != '\n' && uiCredits.buffer[count - 1] != '\r' )
 			{
 				char *tmp = (char *)MALLOC( count + 2 );
-				memcpy( tmp, uiCredits.buffer, count ); 
+				memcpy( tmp, uiCredits.buffer, count );
 				FREE_FILE( uiCredits.buffer );
-				uiCredits.buffer = tmp; 
+				uiCredits.buffer = tmp;
 				strncpy( uiCredits.buffer + count, "\r", 1 ); // add terminator
 				count += 2; // added "\r\0"
-                    	}
+						}
 			p = uiCredits.buffer;
 
 			// convert customs credits to 'ideal' strings array
@@ -182,7 +182,7 @@ static void UI_Credits_Init( void )
 	}
 
 	// run credits
-	uiCredits.startTime = (gpGlobals->time * 1000) + 500; // make half-seconds delay
+	uiCredits.startTime = (int)((gpGlobals->time * 1000) + 500); // make half-seconds delay
 	uiCredits.showTime = bound( 1000, strlen( uiCredits.credits[uiCredits.numLines - 1]) * 1000, 10000 );
 	uiCredits.fadeTime = 0; // will be determined later
 	uiCredits.active = true;

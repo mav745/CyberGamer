@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -29,13 +29,13 @@
 class CLight : public CPointEntity
 {
 public:
-	virtual void	KeyValue( KeyValueData* pkvd ); 
+	virtual void	KeyValue( KeyValueData* pkvd );
 	virtual void	Spawn( void );
 	void	Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
 
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
-	
+
 	static	TYPEDESCRIPTION m_SaveData[];
 
 private:
@@ -44,7 +44,7 @@ private:
 };
 LINK_ENTITY_TO_CLASS( light, CLight );
 
-TYPEDESCRIPTION	CLight::m_SaveData[] = 
+TYPEDESCRIPTION	CLight::m_SaveData[] =
 {
 	DEFINE_FIELD( CLight, m_iStyle, FIELD_INTEGER ),
 	DEFINE_FIELD( CLight, m_iszPattern, FIELD_STRING ),
@@ -65,7 +65,7 @@ void CLight :: KeyValue( KeyValueData* pkvd)
 	}
 	else if (FStrEq(pkvd->szKeyName, "pitch"))
 	{
-		pev->angles.x = atof(pkvd->szValue);
+		pev->angles.x = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "pattern"))
@@ -93,7 +93,7 @@ void CLight :: Spawn( void )
 		REMOVE_ENTITY(ENT(pev));
 		return;
 	}
-	
+
 	if (m_iStyle >= 32)
 	{
 //		CHANGE_METHOD(ENT(pev), em_use, light_use);
@@ -139,7 +139,7 @@ LINK_ENTITY_TO_CLASS( light_spot, CLight );
 class CEnvLight : public CLight
 {
 public:
-	void	KeyValue( KeyValueData* pkvd ); 
+	void	KeyValue( KeyValueData* pkvd );
 	void	Spawn( void );
 };
 
@@ -158,15 +158,15 @@ void CEnvLight::KeyValue( KeyValueData* pkvd )
 		}
 		else if (j == 4)
 		{
-			r = r * (v / 255.0);
-			g = g * (v / 255.0);
-			b = b * (v / 255.0);
+			r = static_cast<int>(r * (static_cast<float>(v) / 255.0f));
+			g = static_cast<int>(g * (static_cast<float>(v) / 255.0f));
+			b = static_cast<int>(b * (static_cast<float>(v) / 255.0f));
 		}
 
 		// simulate qrad direct, ambient,and gamma adjustments, as well as engine scaling
-		r = pow( r / 114.0, 0.6 ) * 264;
-		g = pow( g / 114.0, 0.6 ) * 264;
-		b = pow( b / 114.0, 0.6 ) * 264;
+		r = static_cast<int>(powf( static_cast<float>(r) / 114.0f, 0.6f ) * 264);
+		g = static_cast<int>(powf( static_cast<float>(g) / 114.0f, 0.6f ) * 264);
+		b = static_cast<int>(powf( static_cast<float>(b) / 114.0f, 0.6f ) * 264);
 
 		pkvd->fHandled = TRUE;
 		sprintf( szColor, "%d", r );

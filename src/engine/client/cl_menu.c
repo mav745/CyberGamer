@@ -130,7 +130,7 @@ static void UI_DrawLogo( const char *filename, float x, float y, float width, fl
 	{
 		string		path;
 		const char	*fullpath;
-	
+
 		// run cinematic if not
 		Q_snprintf( path, sizeof( path ), "media/%s", filename );
 		FS_DefaultExtension( path, ".avi" );
@@ -164,7 +164,7 @@ static void UI_DrawLogo( const char *filename, float x, float y, float width, fl
 	}
 
 	// advances cinematic time (ignores maxfps and host_framerate settings)
-	cin_time += host.realframetime;
+	cin_time += (float)host.realframetime;
 
 	// restarts the cinematic
 	if( cin_time > menu.logo_length )
@@ -211,7 +211,7 @@ static void UI_UpdateUserinfo( void )
 	player->topcolor = Q_atoi( Info_ValueForKey( player->userinfo, "topcolor" ));
 	player->bottomcolor = Q_atoi( Info_ValueForKey( player->userinfo, "bottomcolor" ));
 }
-	
+
 void Host_Credits( void )
 {
 	if( !menu.hInstance ) return;
@@ -228,7 +228,7 @@ static void UI_ConvertGameInfo( GAMEINFO *out, gameinfo_t *in )
 
 	Q_strncpy( out->game_url, in->game_url, sizeof( out->game_url ));
 	Q_strncpy( out->update_url, in->update_url, sizeof( out->update_url ));
-	Q_strncpy( out->size, Q_pretifymem( in->size, 0 ), sizeof( out->size ));
+	Q_strncpy( out->size, Q_pretifymem( (float)in->size, 0 ), sizeof( out->size ));
 	Q_strncpy( out->type, in->type, sizeof( out->type ));
 	Q_strncpy( out->date, in->date, sizeof( out->date ));
 
@@ -262,7 +262,7 @@ static qboolean PIC_Scissor( float *x, float *y, float *width, float *height, fl
 	{
 		*u0 += (menu.ds.scissor_x - *x) * dudx;
 		*width -= menu.ds.scissor_x - *x;
-		*x = menu.ds.scissor_x;
+		*x = (float)menu.ds.scissor_x;
 	}
 
 	if( *x + *width > menu.ds.scissor_x + menu.ds.scissor_width )
@@ -275,7 +275,7 @@ static qboolean PIC_Scissor( float *x, float *y, float *width, float *height, fl
 	{
 		*v0 += (menu.ds.scissor_y - *y) * dvdy;
 		*height -= menu.ds.scissor_y - *y;
-		*y = menu.ds.scissor_y;
+		*y = (float)menu.ds.scissor_y;
 	}
 
 	if( *y + *height > menu.ds.scissor_y + menu.ds.scissor_height )
@@ -311,8 +311,8 @@ static void PIC_DrawGeneric( float x, float y, float width, float height, const 
 
 		if( width == -1 && height == -1 )
 		{
-			width = prc->right - prc->left;
-			height = prc->bottom - prc->top;
+			width = (float)(prc->right - prc->left);
+			height = (float)(prc->bottom - prc->top);
 		}
 	}
 	else
@@ -323,8 +323,8 @@ static void PIC_DrawGeneric( float x, float y, float width, float height, const 
 
 	if( width == -1 && height == -1 )
 	{
-		width = w;
-		height = h;
+		width = (float)w;
+		height = (float)h;
 	}
 
 	// pass scissor test if supposed
@@ -423,7 +423,7 @@ pfnPIC_Draw
 void pfnPIC_Draw( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderNormal );
-	PIC_DrawGeneric( x, y, width, height, prc );
+	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
 }
 
 /*
@@ -435,7 +435,7 @@ pfnPIC_DrawTrans
 void pfnPIC_DrawTrans( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransTexture );
-	PIC_DrawGeneric( x, y, width, height, prc );
+	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
 }
 
 /*
@@ -447,7 +447,7 @@ pfnPIC_DrawHoles
 void pfnPIC_DrawHoles( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransAlpha );
-	PIC_DrawGeneric( x, y, width, height, prc );
+	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
 }
 
 /*
@@ -459,7 +459,7 @@ pfnPIC_DrawAdditive
 void pfnPIC_DrawAdditive( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransAdd );
-	PIC_DrawGeneric( x, y, width, height, prc );
+	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
 }
 
 /*
@@ -512,7 +512,7 @@ static void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int 
 	a = bound( 0, a, 255 );
 	pglColor4ub( r, g, b, a );
 	GL_SetRenderMode( kRenderTransTexture );
-	R_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, cls.fillImage );
+	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
 	pglColor4ub( 255, 255, 255, 255 );
 }
 
@@ -558,9 +558,9 @@ static void pfnDrawCharacter( int ix, int iy, int iwidth, int iheight, int ch, i
 	rgba_t	color;
 	float	row, col, size;
 	float	s1, t1, s2, t2;
-	float	x = ix, y = iy;
-	float	width = iwidth;
-	float	height = iheight;
+	float	x = (float)ix, y = (float)iy;
+	float	width = (float)iwidth;
+	float	height = (float)iheight;
 
 	ch &= 255;
 
@@ -595,7 +595,7 @@ static void pfnDrawCharacter( int ix, int iy, int iwidth, int iheight, int ch, i
 =============
 UI_DrawConsoleString
 
-drawing string like a console string 
+drawing string like a console string
 =============
 */
 static int UI_DrawConsoleString( int x, int y, const char *string )
@@ -877,7 +877,7 @@ static void pfnStartBackgroundTrack( const char *introTrack, const char *mainTra
 }
 
 // engine callbacks
-static ui_enginefuncs_t gEngfuncs = 
+static ui_enginefuncs_t gEngfuncs =
 {
 	pfnPIC_Load,
 	GL_FreeImage,
@@ -918,7 +918,7 @@ static ui_enginefuncs_t gEngfuncs =
 	Con_DefaultColor,
 	pfnGetPlayerModel,
 	pfnSetPlayerModel,
-	R_ClearScene,	
+	R_ClearScene,
 	pfnRenderScene,
 	CL_AddEntity,
 	Host_Error,

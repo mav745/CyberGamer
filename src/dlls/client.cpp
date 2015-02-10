@@ -392,7 +392,7 @@ void ClientCommand( edict_t *pEntity )
 	entvars_t *pev = &pEntity->v;
 
 	//ALERT(at_console,"pcmd %s",pcmd);
-	
+
 	if ( FStrEq(pcmd, "say" ) )
 	{
 		Host_Say( pEntity, 0 );
@@ -1082,7 +1082,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	//
 
 	// Round animtime to nearest millisecond
-	state->animtime   = (int)(1000.0 * ent->v.animtime ) / 1000.0;
+	state->animtime   = floorf(ent->v.animtime * 1000.f) * 0.001f; //(int)(1000.0 * ent->v.animtime ) / 1000.0;
 
 	memcpy( state->origin, ent->v.origin, 3 * sizeof( float ) );
 	memcpy( state->angles, ent->v.angles, 3 * sizeof( float ) );
@@ -1134,11 +1134,11 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	}
 
 	state->rendermode    = ent->v.rendermode;
-	state->renderamt     = ent->v.renderamt;
+	state->renderamt     = static_cast<int>(ent->v.renderamt);
 	state->renderfx      = ent->v.renderfx;
-	state->rendercolor.r = ent->v.rendercolor.x;
-	state->rendercolor.g = ent->v.rendercolor.y;
-	state->rendercolor.b = ent->v.rendercolor.z;
+	state->rendercolor.r = static_cast<byte>(ent->v.rendercolor.x);
+	state->rendercolor.g = static_cast<byte>(ent->v.rendercolor.y);
+	state->rendercolor.b = static_cast<byte>(ent->v.rendercolor.z);
 
 	state->aiment = 0;
 	if ( ent->v.aiment )
@@ -1185,7 +1185,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 //		state->team			= ent->v.team;
 //
 		state->usehull      = ( ent->v.flags & FL_DUCKING ) ? 1 : 0;
-		state->health		= ent->v.health;
+		state->health		= static_cast<int>(ent->v.health);
 		state->oldbuttons = ent->v.oldbuttons;
 	}
 
@@ -1543,12 +1543,12 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 						item->m_iId						= II.iId;
 						item->m_iClip					= gun->m_iClip;
 
-						item->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle, -0.001 );
-						item->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack, -0.001 );
-						item->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack, -0.001 );
+						item->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle, -0.001f );
+						item->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack, -0.001f );
+						item->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack, -0.001f );
 						item->m_fInReload				= gun->m_fInReload;
 						item->m_fInSpecialReload		= gun->m_fInSpecialReload;
-						item->fuser1					= max( gun->pev->fuser1, -0.001 );
+						item->fuser1					= max( gun->pev->fuser1, -0.001f );
 						item->fuser2					= gun->m_flStartThrow;
 						item->fuser3					= gun->m_flReleaseThrow;
 						item->iuser1					= gun->m_chargeReady;
@@ -1587,8 +1587,8 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 	cd->waterlevel		= ent->v.waterlevel;
 	cd->watertype		= ent->v.watertype;
 	cd->weapons			= ent->v.weapons;
-	
-	
+
+
 
 	// Vectors
 	cd->origin			= ent->v.origin;
@@ -1600,7 +1600,7 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 	cd->flTimeStepSound = ent->v.flTimeStepSound;
 	cd->flDuckTime		= ent->v.flDuckTime;
 	cd->flSwimTime		= ent->v.flSwimTime;
-	cd->waterjumptime	= ent->v.teleport_time;
+	cd->waterjumptime	= static_cast<int>(ent->v.teleport_time);
 
 	strcpy( cd->physinfo, ENGINE_GETPHYSINFO( ent ) );
 
@@ -1621,14 +1621,14 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 			cd->m_flNextAttack	= pl->m_flNextAttack;
 			cd->fuser2			= pl->m_flNextAmmoBurn;
 			cd->fuser3			= pl->m_flAmmoStartCharge;
-			cd->vuser1.x		= pl->ammo_9mm;
-			cd->vuser1.y		= pl->ammo_357;
-			cd->vuser1.z		= pl->ammo_argrens;
+			cd->vuser1.x		= static_cast<float>(pl->ammo_9mm);
+			cd->vuser1.y		= static_cast<float>(pl->ammo_357);
+			cd->vuser1.z		= static_cast<float>(pl->ammo_argrens);
 			cd->ammo_nails		= pl->ammo_bolts;
 			cd->ammo_shells		= pl->ammo_buckshot;
 			cd->ammo_rockets	= pl->ammo_rockets;
 			cd->ammo_cells		= pl->ammo_uranium;
-			cd->vuser2.x		= pl->ammo_hornets;
+			cd->vuser2.x		= static_cast<float>(pl->ammo_hornets);
 
 
 			if ( pl->m_pActiveItem )
@@ -1643,15 +1643,15 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 
 					cd->m_iId = II.iId;
 
-					cd->vuser3.z	= gun->m_iSecondaryAmmoType;
-					cd->vuser4.x	= gun->m_iPrimaryAmmoType;
-					cd->vuser4.y	= pl->m_rgAmmo[gun->m_iPrimaryAmmoType];
-					cd->vuser4.z	= pl->m_rgAmmo[gun->m_iSecondaryAmmoType];
+					cd->vuser3.z	= static_cast<float>(gun->m_iSecondaryAmmoType);
+					cd->vuser4.x	= static_cast<float>(gun->m_iPrimaryAmmoType);
+					cd->vuser4.y	= static_cast<float>(pl->m_rgAmmo[gun->m_iPrimaryAmmoType]);
+					cd->vuser4.z	= static_cast<float>(pl->m_rgAmmo[gun->m_iSecondaryAmmoType]);
 
 					if ( pl->m_pActiveItem->m_iId == WEAPON_RPG )
 					{
-						cd->vuser2.y = ( ( CRpg * )pl->m_pActiveItem)->m_fSpotActive;
-						cd->vuser2.z = ( ( CRpg * )pl->m_pActiveItem)->m_cActiveRockets;
+						cd->vuser2.y = static_cast<float>(dynamic_cast<CRpg *>(pl->m_pActiveItem)->m_fSpotActive);
+						cd->vuser2.z = static_cast<float>(dynamic_cast<CRpg *>(pl->m_pActiveItem)->m_cActiveRockets);
 					}
 				}
 			}

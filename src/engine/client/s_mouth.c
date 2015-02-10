@@ -71,13 +71,13 @@ void SND_MoveMouth8( channel_t *ch, wavdata_t *pSource, int count )
 	if( ch->isSentence )
 	{
 		if( ch->currentWord )
-			pos = ch->currentWord->sample;
+			pos = (int)ch->currentWord->sample;
 	}
-	else pos = ch->pMixer.sample;
+	else pos = (int)ch->pMixer.sample;
 
 	count = S_GetOutputData( pSource, &pdata, pos, count, ch->use_loop );
 	if( pdata == NULL ) return;
-	
+
 	i = 0;
 	scount = pMouth->sndcount;
 	savg = 0;
@@ -85,7 +85,7 @@ void SND_MoveMouth8( channel_t *ch, wavdata_t *pSource, int count )
 	while( i < count && scount < CAVGSAMPLES )
 	{
 		data = pdata[i];
-		savg += abs( data );	
+		savg += abs( data );
 
 		i += 80 + ((byte)data & 0x1F);
 		scount++;
@@ -94,7 +94,7 @@ void SND_MoveMouth8( channel_t *ch, wavdata_t *pSource, int count )
 	pMouth->sndavg += savg;
 	pMouth->sndcount = (byte)scount;
 
-	if( pMouth->sndcount >= CAVGSAMPLES ) 
+	if( pMouth->sndcount >= CAVGSAMPLES )
 	{
 		pMouth->mouthopen = pMouth->sndavg / CAVGSAMPLES;
 		pMouth->sndavg = 0;
@@ -119,13 +119,13 @@ void SND_MoveMouth16( channel_t *ch, wavdata_t *pSource, int count )
 	if( ch->isSentence )
 	{
 		if( ch->currentWord )
-			pos = ch->currentWord->sample;
+			pos = (int)ch->currentWord->sample;
 	}
-	else pos = ch->pMixer.sample;
+	else pos = (int)ch->pMixer.sample;
 
 	count = S_GetOutputData( pSource, &pdata, pos, count, ch->use_loop );
 	if( pdata == NULL ) return;
-	
+
 	i = 0;
 	scount = pMouth->sndcount;
 	savg = 0;
@@ -134,7 +134,7 @@ void SND_MoveMouth16( channel_t *ch, wavdata_t *pSource, int count )
 	{
 		data = pdata[i];
 		data = (bound( -32767, data, 0x7ffe ) >> 8);
-		savg += abs( data );	
+		savg += abs( data );
 
 		i += 80 + ((byte)data & 0x1F);
 		scount++;
@@ -143,7 +143,7 @@ void SND_MoveMouth16( channel_t *ch, wavdata_t *pSource, int count )
 	pMouth->sndavg += savg;
 	pMouth->sndcount = (byte)scount;
 
-	if( pMouth->sndcount >= CAVGSAMPLES ) 
+	if( pMouth->sndcount >= CAVGSAMPLES )
 	{
 		pMouth->mouthopen = pMouth->sndavg / CAVGSAMPLES;
 		pMouth->sndavg = 0;

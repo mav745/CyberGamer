@@ -141,7 +141,7 @@ Task_t	tlBarneyEnemyDraw[] =
 {
 	{ TASK_STOP_MOVING,					0				},
 	{ TASK_FACE_ENEMY,					0				},
-	{ TASK_PLAY_SEQUENCE_FACE_ENEMY,	(float) ACT_ARM },
+	{ TASK_PLAY_SEQUENCE_FACE_ENEMY,	static_cast<float>(ACT_ARM) },
 };
 
 Schedule_t slBarneyEnemyDraw[] =
@@ -312,7 +312,7 @@ void CBarney :: SetYawSpeed ( void )
 		break;
 	}
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 
@@ -332,11 +332,11 @@ BOOL CBarney :: CheckRangeAttack1 ( float flDot, float flDist )
 			Vector shootTarget = ( (pEnemy->BodyTarget( shootOrigin ) - pEnemy->pev->origin) + m_vecEnemyLKP );
 			UTIL_TraceLine( shootOrigin, shootTarget, dont_ignore_monsters, ENT(pev), &tr );
 			m_checkAttackTime = gpGlobals->time + 1;
-			if ( tr.flFraction == 1.0 || (tr.pHit != NULL && CBaseEntity::Instance(tr.pHit) == pEnemy) )
+			if ( tr.flFraction == 1.0f || (tr.pHit != NULL && CBaseEntity::Instance(tr.pHit) == pEnemy) )
 				m_lastAttackCheck = TRUE;
 			else
 				m_lastAttackCheck = FALSE;
-			m_checkAttackTime = gpGlobals->time + 1.5;
+			m_checkAttackTime = gpGlobals->time + 1.5f;
 		}
 		return m_lastAttackCheck;
 	}

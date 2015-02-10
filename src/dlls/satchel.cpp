@@ -80,10 +80,10 @@ void CSatchelCharge :: Spawn( void )
 	SetTouch( &CSatchelCharge::SatchelSlide );
 	SetUse( &CSatchelCharge::DetonateUse );
 	SetThink( &CSatchelCharge::SatchelThink );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
-	pev->gravity = 0.5;
-	pev->friction = 0.8;
+	pev->gravity = 0.5f;
+	pev->friction = 0.8f;
 
 	pev->dmg = gSkillData.plrDmgSatchel;
 	// ResetSequenceInfo( );
@@ -124,7 +124,7 @@ void CSatchelCharge::SatchelSlide( CBaseEntity *pOther )
 void CSatchelCharge :: SatchelThink( void )
 {
 	StudioFrameAdvance( );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	if (!IsInWorld())
 	{
@@ -135,8 +135,8 @@ void CSatchelCharge :: SatchelThink( void )
 	if (pev->waterlevel == 3)
 	{
 		pev->movetype = MOVETYPE_FLY;
-		pev->velocity = pev->velocity * 0.8;
-		pev->avelocity = pev->avelocity * 0.9;
+		pev->velocity = pev->velocity * 0.8f;
+		pev->avelocity = pev->avelocity * 0.9f;
 		pev->velocity.z += 8;
 	}
 	else if (pev->waterlevel == 0)
@@ -292,7 +292,7 @@ BOOL CSatchel::CanDeploy( void )
 BOOL CSatchel::Deploy( )
 {
 
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0f;
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 
 	if ( m_chargeReady )
@@ -307,7 +307,7 @@ BOOL CSatchel::Deploy( )
 
 void CSatchel::Holster( int skiplocal /* = 0 */ )
 {
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
 
 	if ( m_chargeReady )
 	{
@@ -317,13 +317,13 @@ void CSatchel::Holster( int skiplocal /* = 0 */ )
 	{
 		SendWeaponAnim( SATCHEL_DROP );
 	}
-	EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_WEAPON, "common/null.wav", 1.0, ATTN_NORM);
+	EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
 
 	if ( !m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] && !m_chargeReady )
 	{
 		m_pPlayer->pev->weapons &= ~(1<<WEAPON_SATCHEL);
 		SetThink( &CSatchel::DestroyItem );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 }
 
@@ -359,9 +359,9 @@ void CSatchel::PrimaryAttack()
 		}
 
 		m_chargeReady = 2;
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5;
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5;
+		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.5f;
 		break;
 		}
 
@@ -411,8 +411,8 @@ void CSatchel::Throw( void )
 
 		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]--;
 
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 1.0;
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 1.0f;
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 	}
 }
 
@@ -455,8 +455,8 @@ void CSatchel::WeaponIdle( void )
 		// use tripmine animations
 		strcpy( m_pPlayer->m_szAnimExtention, "trip" );
 
-		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5;
-		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+		m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+		m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
 		m_chargeReady = 0;
 		break;
 	}

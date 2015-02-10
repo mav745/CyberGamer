@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -95,10 +95,10 @@ static void UI_CreateGame_Begin( void )
 		HOST_ENDGAME( "end of the game" );
 
 	CVAR_SET_FLOAT( "deathmatch", 1.0f );	// start deathmatch as default
-	CVAR_SET_FLOAT( "maxplayers", atoi( uiCreateGame.maxClients.buffer ));
+	CVAR_SET_FLOAT( "maxplayers", (float)atoi( uiCreateGame.maxClients.buffer ));
 	CVAR_SET_STRING( "hostname", uiCreateGame.hostName.buffer );
 	CVAR_SET_STRING( "defaultmap", uiCreateGame.mapName[uiCreateGame.mapsList.curItem] );
-	CVAR_SET_FLOAT( "hltv", uiCreateGame.hltv.enabled );
+	CVAR_SET_FLOAT( "hltv", (float)uiCreateGame.hltv.enabled );
 
 	BACKGROUND_TRACK( NULL, NULL );
 
@@ -120,7 +120,7 @@ static void UI_CreateGame_Begin( void )
 
 		char cmd[128];
 		sprintf( cmd, "exec %s\nmap %s\n", CVAR_GET_STRING( "lservercfgfile" ), CVAR_GET_STRING( "defaultmap" ));
-	
+
 		CLIENT_COMMAND( FALSE, cmd );
 	}
 }
@@ -132,10 +132,10 @@ static void UI_PromptDialog( void )
 		UI_CreateGame_Begin();
 		return;
 	}
-	
+
 	// toggle main menu between active\inactive
 	// show\hide quit dialog
-	uiCreateGame.advOptions.generic.flags ^= QMF_INACTIVE; 
+	uiCreateGame.advOptions.generic.flags ^= QMF_INACTIVE;
 	uiCreateGame.done.generic.flags ^= QMF_INACTIVE;
 	uiCreateGame.cancel.generic.flags ^= QMF_INACTIVE;
 	uiCreateGame.maxClients.generic.flags ^= QMF_INACTIVE;
@@ -200,7 +200,7 @@ static void UI_CreateGame_GetMapsList( void )
 	char *pfile = afile;
 	char token[1024];
 	int numMaps = 0;
-	
+
 	while(( pfile = COM_ParseFile( pfile, token )) != NULL )
 	{
 		if( numMaps >= UI_MAXGAMES ) break;

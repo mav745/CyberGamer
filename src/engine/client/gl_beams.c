@@ -51,7 +51,7 @@ VIEWBEAMS DRAW METHODS
 static void FracNoise( float *noise, int divs, float scale )
 {
 	int	div2;
-	
+
 	div2 = divs >> 1;
 	if( divs < 2 ) return;
 
@@ -73,7 +73,7 @@ static void SineNoise( float *noise, int divs )
 
 	for( i = 0; i < divs; i++ )
 	{
-		noise[i] = sin( freq );
+		noise[i] = sinf( freq );
 		freq += step;
 	}
 }
@@ -88,7 +88,7 @@ static cl_entity_t *CL_GetBeamEntityByIndex( int index )
 	return ent;
 }
 
-void BeamNormalizeColor( BEAM *pBeam, float r, float g, float b, float brightness ) 
+void BeamNormalizeColor( BEAM *pBeam, float r, float g, float b, float brightness )
 {
 	float	max, scale;
 
@@ -195,8 +195,8 @@ static void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3
 
 	if( !cl_draw_beams->integer )
 		return;
-	
-	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), frame );
+
+	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), (int)frame );
 
 	if( !m_hSprite || segments < 2  )
 		return;
@@ -220,7 +220,7 @@ static void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3
 	vStep = length * div;	// Texture length texels per space pixel
 
 	// Scroll speed 3.5 -- initial texture position, scrolls 3.5/sec (1.0 is entire texture)
-	vLast = fmod( freq * speed, 1 );
+	vLast = fmodf( freq * speed, 1.f );
 
 	if( flags & FBEAM_SINENOISE )
 	{
@@ -240,7 +240,7 @@ static void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3
 	// Iterator to resample noise waveform (it needs to be generated in powers of 2)
 	noiseStep = (int)((float)( NOISE_DIVISIONS - 1 ) * div * 65536.0f );
 	noiseIndex = 0;
-	
+
 	if( flags & FBEAM_SINENOISE )
 	{
 		noiseIndex = 0;
@@ -267,7 +267,7 @@ static void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3
 	{
 		beamseg_t	nextSeg;
 		vec3_t	vPoint1, vPoint2;
-	
+
 		ASSERT( noiseIndex < ( NOISE_DIVISIONS << 16 ));
 		nextSeg.alpha = 1.0f;
 
@@ -324,7 +324,7 @@ static void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3
 		nextSeg.width = width * 2.0f;
 		nextSeg.texcoord = vLast;
 
- 		if( segs_drawn > 0 )
+		if( segs_drawn > 0 )
 		{
 			// Get a vector that is perpendicular to us and perpendicular to the beam.
 			// This is used to fatten the beam.
@@ -364,7 +364,7 @@ static void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3
 		curSeg = nextSeg;
 		segs_drawn++;
 
- 		if( segs_drawn == total_segs )
+		if( segs_drawn == total_segs )
 		{
 			// draw the last segment
 			VectorMA( curSeg.pos, ( curSeg.width * 0.5f ), vLastNormal, vPoint1 );
@@ -405,7 +405,7 @@ static void CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3
 	vec3_t	point;
 	int	i;
 
-	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), frame );
+	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), (int)frame );
 
 	if( !m_hSprite || segments < 2 )
 		return;
@@ -415,12 +415,12 @@ static void CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3
 
 	length = VectorLength( delta ) * 0.01f;
 	if( length < 0.5f ) length = 0.5f;	// don't lose all of the noise/texture on short beams
-		
+
 	div = 1.0f / (segments - 1);
 	vStep = length * div;		// Texture length texels per space pixel
-	
+
 	// Scroll speed 3.5 -- initial texture position, scrolls 3.5/sec (1.0 is entire texture)
-	vLast = fmod( freq * speed, 1 );
+	vLast = fmodf( freq * speed, 1.f );
 	scale = scale * length;
 
 	w = freq * delta[2];
@@ -473,7 +473,7 @@ static void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const 
 	vec3_t	point;
 	int	i;
 
-	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), frame );
+	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), (int)frame );
 
 	if( !m_hSprite || segments < 2 )
 		return;
@@ -483,14 +483,14 @@ static void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const 
 
 	length = VectorLength( delta ) * 0.01f;
 	if( length < 0.5f ) length = 0.5f;	// Don't lose all of the noise/texture on short beams
-	
+
 	div = 1.0f / (segments - 1);
 	vStep = length * div;		// Texture length texels per space pixel
-	
+
 	// Scroll speed 3.5 -- initial texture position, scrolls 3.5/sec (1.0 is entire texture)
-	vLast = fmod( freq * speed, 1.0f );
+	vLast = fmodf( freq * speed, 1.0f );
 	scale = scale * length;
-	
+
 	GL_Cull( GL_NONE );	// draw both sides
 	SetBeamRenderMode( rendermode );
 	GL_Bind( GL_TEXTURE0, m_hSprite );
@@ -522,7 +522,7 @@ static void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const 
 
 		vLast += vStep;	// Advance texture scroll (v axis only)
 	}
-	
+
 	pglEnd();
 	GL_Cull( GL_FRONT );
 }
@@ -534,7 +534,7 @@ CL_DrawRing
 Draw beamring
 ================
 */
-void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta, float width, 
+void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta, float width,
 	float amplitude, float freq, float speed, int segments, float *color )
 {
 	int	i, j, noiseIndex, noiseStep;
@@ -545,7 +545,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 	VHSPRITE	m_hSprite;
 	vec3_t	d;
 
-	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), frame );
+	m_hSprite = R_GetSpriteTexture( Mod_Handle( modelIndex ), (int)frame );
 
 	if( !m_hSprite || segments < 2 )
 		return;
@@ -553,20 +553,20 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 	VectorCopy( delta, d );
 
 	VectorClear( screenLast );
-	segments = segments * M_PI;
-	
+	segments = (int)((double)segments * M_PI);
+
 	if( segments > NOISE_DIVISIONS * 8 )
 		segments = NOISE_DIVISIONS * 8;
 
 	length = VectorLength( d ) * 0.01f * M_PI;
 	if( length < 0.5f ) length = 0.5f;		// Don't lose all of the noise/texture on short beams
-		
-	div = 1.0 / ( segments - 1 );
+
+	div = 1.0f / (float)( segments - 1 );
 
 	vStep = length * div / 8.0f;			// Texture length texels per space pixel
-	
+
 	// Scroll speed 3.5 -- initial texture position, scrolls 3.5/sec (1.0 is entire texture)
-	vLast = fmod( freq * speed, 1.0f );
+	vLast = fmodf( freq * speed, 1.0f );
 	scale = amplitude * length / 8.0f;
 
 	// Iterator to resample noise waveform (it needs to be generated in powers of 2)
@@ -579,7 +579,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 
 	VectorCopy( d, xaxis );
 	radius = VectorLength( xaxis );
-	
+
 	// cull beamring
 	// --------------------------------
 	// Compute box center +/- radius
@@ -591,7 +591,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 	VectorSubtract( center, last1, screen );
 
 	// Is that box in PVS && frustum?
-	if( !Mod_BoxVisible( screen, tmp, Mod_GetCurrentVis( )) || R_CullBox( screen, tmp, RI.clipFlags ))	
+	if( !Mod_BoxVisible( screen, tmp, Mod_GetCurrentVis( )) || R_CullBox( screen, tmp, RI.clipFlags ))
 	{
 		return;
 	}
@@ -615,7 +615,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 		fraction = i * div;
 		SinCos( fraction * M_PI2, &x, &y );
 
-		VectorMAMAM( x, xaxis, y, yaxis, 1.0f, center, point ); 
+		VectorMAMAM( x, xaxis, y, yaxis, 1.0f, center, point );
 
 		// Distort using noise
 		factor = rgNoise[(noiseIndex >> 16) & (NOISE_DIVISIONS - 1)] * scale;
@@ -623,7 +623,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 
 		// Rotate the noise along the perpendicluar axis a bit to keep the bolt from looking diagonal
 		factor = rgNoise[(noiseIndex>>16) & (NOISE_DIVISIONS - 1)] * scale;
-		factor *= cos( fraction * M_PI * 24 + freq );
+		factor *= cosf( fraction * (float)M_PI * 24.f + freq );
 		VectorMA( point, factor, RI.vright, point );
 
 		// Transform point into screen space
@@ -641,7 +641,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 			// Build point along normal line (normal is -y, x)
 			VectorScale( RI.vup, tmp[0], normal );
 			VectorMA( normal, tmp[1], RI.vright, normal );
-			
+
 			// make a wide line
 			VectorMA( point, width, normal, last1 );
 			VectorMA( point, -width, normal, last2 );
@@ -682,7 +682,7 @@ void CL_DrawLaser( BEAM *pbeam, int frame, int rendermode, float *color, int spr
 	float	color2[3];
 	vec3_t	beamDir;
 	float	flDot;
-	
+
 	VectorCopy( color, color2 );
 
 	VectorSubtract( pbeam->target, pbeam->source, beamDir );
@@ -698,7 +698,7 @@ void CL_DrawLaser( BEAM *pbeam, int frame, int rendermode, float *color, int spr
 	else
 	{
 		// Fade the beam if the player's not looking at the source
-		float	flFade = pow( flDot, 10 );
+		float	flFade = powf( flDot, 10.f );
 		vec3_t	localDir, vecProjection, tmp;
 		float	flDistance;
 
@@ -714,7 +714,7 @@ void CL_DrawLaser( BEAM *pbeam, int frame, int rendermode, float *color, int spr
 			flDistance = 1.0f - (( flDistance - 30.0f ) / 64.0f );
 
 			if( flDistance <= 0 ) flFade = 0;
-			else flFade *= pow( flDistance, 3 );
+			else flFade *= powf( flDistance, 3.f );
 		}
 
 		if( flFade < ( 1.0f / 255.0f ))
@@ -723,7 +723,7 @@ void CL_DrawLaser( BEAM *pbeam, int frame, int rendermode, float *color, int spr
 		VectorScale( color2, flFade, color2 );
 	}
 
-	CL_DrawSegs( spriteIndex, frame, rendermode, pbeam->source, pbeam->delta, pbeam->width, pbeam->amplitude,
+	CL_DrawSegs( spriteIndex, (float)frame, rendermode, pbeam->source, pbeam->delta, pbeam->width, pbeam->amplitude,
 		pbeam->freq, pbeam->speed, pbeam->segments, pbeam->flags, color2 );
 
 }
@@ -768,7 +768,7 @@ static void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int re
 	VectorMA( delta, -width, normal, last2 );
 
 	div = 1.0f / amplitude;
-	fraction = ( die - cl.time ) * div;
+	fraction = ( die - (float)cl.time ) * div;
 
 	VectorScale( color, fraction, scaledColor );
 	nColor[0] = (byte)bound( 0, (int)(scaledColor[0] * 255.0f), 255 );
@@ -811,7 +811,7 @@ static void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int re
 
 		if( pHead->next != NULL )
 		{
-			fraction = (pHead->die - cl.time ) * div;
+			fraction = (pHead->die - (float)cl.time ) * div;
 			VectorScale( color, fraction, scaledColor );
 			nColor[0] = (byte)bound( 0, (int)(scaledColor[0] * 255.0f), 255 );
 			nColor[1] = (byte)bound( 0, (int)(scaledColor[1] * 255.0f), 255 );
@@ -822,7 +822,7 @@ static void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int re
 			VectorClear( nColor );
 			fraction = 0.0;
 		}
-	
+
 		pglColor4ub( nColor[0], nColor[1], nColor[2], 255 );
 		pglTexCoord2f( 0.0f, 0.0f );
 		pglVertex3fv( last1 );
@@ -830,7 +830,7 @@ static void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int re
 		pglColor4ub( nColor[0], nColor[1], nColor[2], 255 );
 		pglTexCoord2f( 1.0f, 0.0f );
 		pglVertex3fv( last2 );
-		
+
 		VectorCopy( screen, screenLast );
 
 		pHead = pHead->next;
@@ -950,7 +950,7 @@ void CL_FreeDeadTrails( particle_t **trail )
 	particle_t	*p;
 
 	// kill all the ones hanging direcly off the base pointer
-	while( 1 ) 
+	while( 1 )
 	{
 		kill = *trail;
 		if( kill && kill->die < cl.time )
@@ -1002,7 +1002,7 @@ BEAM *CL_AllocBeam( void )
 	pBeam->next = cl_active_beams;
 	cl_active_beams = pBeam;
 
-	pBeam->die = cl.time;
+	pBeam->die = (float)cl.time;
 
 	return pBeam;
 }
@@ -1038,7 +1038,7 @@ void CL_KillDeadBeams( cl_entity_t *pDeadEntity )
 
 	pbeam = cl_active_beams;	// old list.
 	pnewlist = NULL;		// new list.
-	
+
 	while( pbeam )
 	{
 		pnext = pbeam->next;
@@ -1058,13 +1058,13 @@ void CL_KillDeadBeams( cl_entity_t *pDeadEntity )
 		if( pbeam->type != TE_BEAMFOLLOW )
 		{
 			// remove beam
-			pbeam->die = cl.time - 0.1f;  
+			pbeam->die = (float)cl.time - 0.1f;
 
 			// kill off particles
 			pHead = pbeam->particles;
 			while( pHead )
 			{
-				pHead->die = cl.time - 0.1f;
+				pHead->die = (float)cl.time - 0.1f;
 				pHead = pHead->next;
 			}
 
@@ -1120,7 +1120,7 @@ qboolean CL_CullBeam( const vec3_t start, const vec3_t end, qboolean pvsOnly )
 			mins[i] = end[i];
 			maxs[i] = start[i];
 		}
-		
+
 		// don't let it be zero sized
 		if( mins[i] == maxs[i] )
 			maxs[i] += 1.0f;
@@ -1132,7 +1132,7 @@ qboolean CL_CullBeam( const vec3_t start, const vec3_t end, qboolean pvsOnly )
 		if( pvsOnly || !R_CullBox( mins, maxs, RI.clipFlags ))
 		{
 			// beam is visible
-			return false;	
+			return false;
 		}
 	}
 
@@ -1179,7 +1179,7 @@ qboolean CL_RecomputeBeamEndpoints( BEAM *pbeam )
 		else if( !( pbeam->flags & FBEAM_FOREVER ))
 		{
 			pbeam->flags &= ~(FBEAM_ENDENTITY);
-			pbeam->die = cl.time;
+			pbeam->die = (float)cl.time;
 			return false;
 		}
 		else
@@ -1236,7 +1236,7 @@ void CL_UpdateBeam( BEAM *pbeam, float frametime )
 	if( Mod_GetType( pbeam->modelIndex ) == mod_bad )
 	{
 		pbeam->flags &= ~FBEAM_ISACTIVE; // force to ignore
-		pbeam->die = cl.time;
+		pbeam->die = (float)cl.time;
 		return;
 	}
 
@@ -1276,8 +1276,8 @@ void CL_UpdateBeam( BEAM *pbeam, float frametime )
 		VectorSubtract( pbeam->target, pbeam->source, pbeam->delta );
 
 		if( pbeam->amplitude >= 0.50f )
-			pbeam->segments = VectorLength( pbeam->delta ) * 0.25f + 3.0f; // one per 4 pixels
-		else pbeam->segments = VectorLength( pbeam->delta ) * 0.075f + 3.0f; // one per 16 pixels
+			pbeam->segments = (int)(VectorLength( pbeam->delta ) * 0.25f + 3.0f); // one per 4 pixels
+		else pbeam->segments = (int)(VectorLength( pbeam->delta ) * 0.075f + 3.0f); // one per 16 pixels
 	}
 
 	// get position data for spline beam
@@ -1295,7 +1295,7 @@ void CL_UpdateBeam( BEAM *pbeam, float frametime )
 	if( pbeam->flags & ( FBEAM_FADEIN|FBEAM_FADEOUT ))
 	{
 		// update life cycle
-		pbeam->t = pbeam->freq + ( pbeam->die - cl.time );
+		pbeam->t = pbeam->freq + ( pbeam->die - (float)cl.time );
 		if( pbeam->t != 0.0f ) pbeam->t = 1.0f - pbeam->freq / pbeam->t;
 	}
 }
@@ -1346,7 +1346,7 @@ void CL_DrawBeamFollow( int spriteIndex, BEAM *pbeam, int frame, int rendermode,
 	if( pnew )
 	{
 		VectorCopy( pbeam->source, pnew->org );
-		pnew->die = cl.time + pbeam->amplitude;
+		pnew->die = (float)cl.time + pbeam->amplitude;
 		VectorClear( pnew->vel );
 
 		pnew->next = particles;
@@ -1376,10 +1376,10 @@ void CL_DrawBeamFollow( int spriteIndex, BEAM *pbeam, int frame, int rendermode,
 	}
 
 	// draw it
-	DrawBeamFollow( spriteIndex, pbeam->particles, frame, rendermode, delta, screen, screenLast, 
-		pbeam->die, pbeam->source, pbeam->flags, pbeam->width, 
+	DrawBeamFollow( spriteIndex, pbeam->particles, frame, rendermode, delta, screen, screenLast,
+		pbeam->die, pbeam->source, pbeam->flags, pbeam->width,
 		pbeam->amplitude, pbeam->freq, color );
-	
+
 	// drift popcorn trail if there is a velocity
 	particles = pbeam->particles;
 
@@ -1411,7 +1411,7 @@ void CL_DrawBeam( BEAM *pbeam )
 	if( Mod_GetType( pbeam->modelIndex ) == mod_bad )
 	{
 		// don't draw beams without models
-		pbeam->die = cl.time;
+		pbeam->die = (float)cl.time;
 		return;
 	}
 
@@ -1439,9 +1439,9 @@ void CL_DrawBeam( BEAM *pbeam )
 		cl_entity_t	*pStart;
 
 		// HACKHACK: get brightness from head entity
-		pStart = CL_GetBeamEntityByIndex( pbeam->startEntity ); 
+		pStart = CL_GetBeamEntityByIndex( pbeam->startEntity );
 		if( pStart && pStart->curstate.rendermode != kRenderNormal )
-			pbeam->brightness = pStart->curstate.renderamt;
+			pbeam->brightness = (float)pStart->curstate.renderamt;
 	}
 
 	VectorScale( color, ( pbeam->brightness / 255.0f ), color );
@@ -1452,23 +1452,23 @@ void CL_DrawBeam( BEAM *pbeam )
 	switch( pbeam->type )
 	{
 	case TE_BEAMDISK:
-		CL_DrawDisk( pbeam->modelIndex, frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
+		CL_DrawDisk( pbeam->modelIndex, (float)frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
 			pbeam->amplitude, pbeam->freq, pbeam->speed, pbeam->segments, color );
 		break;
 	case TE_BEAMTORUS:
 	case TE_BEAMCYLINDER:
-		CL_DrawCylinder( pbeam->modelIndex, frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
+		CL_DrawCylinder( pbeam->modelIndex, (float)frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
 			pbeam->amplitude, pbeam->freq, pbeam->speed, pbeam->segments, color );
 		break;
 	case TE_BEAMPOINTS:
-		CL_DrawSegs( pbeam->modelIndex, frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
+		CL_DrawSegs( pbeam->modelIndex, (float)frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
 			pbeam->amplitude, pbeam->freq, pbeam->speed, pbeam->segments, pbeam->flags, color );
 		break;
 	case TE_BEAMFOLLOW:
-		CL_DrawBeamFollow( pbeam->modelIndex, pbeam, frame, rendermode, cl.time - cl.oldtime, color );
+		CL_DrawBeamFollow( pbeam->modelIndex, pbeam, frame, rendermode, (float)(cl.time - cl.oldtime), color );
 		break;
 	case TE_BEAMRING:
-		CL_DrawRing( pbeam->modelIndex, frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
+		CL_DrawRing( pbeam->modelIndex, (float)frame, rendermode, pbeam->source, pbeam->delta, pbeam->width,
 			pbeam->amplitude, pbeam->freq, pbeam->speed, pbeam->segments, color );
 		break;
 	case TE_BEAMHOSE:
@@ -1511,12 +1511,12 @@ void CL_DrawCustomBeam( cl_entity_t *pbeam )
 	Mod_GetFrames( beam.modelIndex, &beam.frameCount );
 	VectorCopy( pbeam->origin, beam.source );
 	VectorCopy( pbeam->angles, beam.target );
-	beam.freq	= cl.time * beam.speed;
+	beam.freq	= (float)cl.time * beam.speed;
 	beam.startEntity = pbeam->curstate.sequence;
 	beam.endEntity = pbeam->curstate.skin;
 	beam.width = pbeam->curstate.scale;
 	beam.amplitude = (float)(pbeam->curstate.body * 0.1f);
-	beam.brightness = pbeam->curstate.renderamt;
+	beam.brightness = (float)pbeam->curstate.renderamt;
 	beam.r = pbeam->curstate.rendercolor.r;
 	beam.g = pbeam->curstate.rendercolor.g;
 	beam.b = pbeam->curstate.rendercolor.b;
@@ -1525,8 +1525,8 @@ void CL_DrawCustomBeam( cl_entity_t *pbeam )
 	VectorSubtract( beam.target, beam.source, beam.delta );
 
 	if( beam.amplitude >= 0.50f )
-		beam.segments = VectorLength( beam.delta ) * 0.25f + 3; // one per 4 pixels
-	else beam.segments = VectorLength( beam.delta ) * 0.075f + 3; // one per 16 pixels
+		beam.segments = (int)(VectorLength( beam.delta ) * 0.25f) + 3; // one per 4 pixels
+	else beam.segments = (int)(VectorLength( beam.delta ) * 0.075f) + 3; // one per 16 pixels
 
 	// handle code from relinking.
 	switch( beamType )
@@ -1552,7 +1552,7 @@ void CL_DrawCustomBeam( cl_entity_t *pbeam )
 	beam.flags |= beamFlags & ( FBEAM_SINENOISE|FBEAM_SOLID|FBEAM_SHADEIN|FBEAM_SHADEOUT );
 
 	// draw it
-	CL_UpdateBeam( &beam, cl.time - cl.oldtime );
+	CL_UpdateBeam( &beam, (float)(cl.time - cl.oldtime) );
 	CL_DrawBeam( &beam );
 }
 
@@ -1561,7 +1561,7 @@ void CL_DrawBeams( int fTrans )
 	BEAM	*pBeam, *pNext;
 	BEAM	*pPrev = NULL;
 	int	i;
-	
+
 	// server beams don't allocate beam chains
 	// all params are stored in cl_entity_t
 	for( i = 0; i < cl.num_custombeams; i++ )
@@ -1609,7 +1609,7 @@ void CL_DrawBeams( int fTrans )
 		}
 
 		// update beam state
-		CL_UpdateBeam( pBeam, cl.time - cl.oldtime );
+		CL_UpdateBeam( pBeam, (float)(cl.time - cl.oldtime) );
 		r_stats.c_view_beams_count++;
 		CL_DrawBeam( pBeam );
 
@@ -1666,10 +1666,10 @@ BEAM *CL_BeamEnts( int startEnt, int endEnt, int modelIndex, float life, float w
 	pBeam->modelIndex = modelIndex;
 	pBeam->startEntity = startEnt;
 	pBeam->endEntity = endEnt;
-	pBeam->frame = startFrame;
+	pBeam->frame = (float)startFrame;
 	pBeam->frameRate = framerate;
 	Mod_GetFrames( modelIndex, &pBeam->frameCount );
-	pBeam->freq = cl.time * speed;
+	pBeam->freq = (float)cl.time * speed;
 	pBeam->flags = FBEAM_STARTENTITY|FBEAM_ENDENTITY;
 	if( life == 0.0f ) pBeam->flags |= FBEAM_FOREVER;
 	pBeam->die += life;
@@ -1710,10 +1710,10 @@ BEAM *CL_BeamPoints( const vec3_t start, const vec3_t end, int modelIndex, float
 	pBeam->modelIndex = modelIndex;
 	VectorCopy( start, pBeam->source );
 	VectorCopy( end, pBeam->target );
-	pBeam->frame = startFrame;
+	pBeam->frame = (float)startFrame;
 	pBeam->frameRate = framerate;
 	Mod_GetFrames( modelIndex, &pBeam->frameCount );
-	pBeam->freq = cl.time * speed;
+	pBeam->freq = (float)cl.time * speed;
 	if( life == 0.0f ) pBeam->flags |= FBEAM_FOREVER;
 	pBeam->die += life;
 	pBeam->width = width;
@@ -1724,8 +1724,8 @@ BEAM *CL_BeamPoints( const vec3_t start, const vec3_t end, int modelIndex, float
 	VectorSubtract( pBeam->target, pBeam->source, pBeam->delta );
 
 	if( pBeam->amplitude >= 0.50f )
-		pBeam->segments = VectorLength( pBeam->delta ) * 0.25f + 3; // one per 4 pixels
-	else pBeam->segments = VectorLength( pBeam->delta ) * 0.075f + 3; // one per 16 pixels
+		pBeam->segments = (int)(VectorLength( pBeam->delta ) * 0.25f) + 3; // one per 4 pixels
+	else pBeam->segments = (int)(VectorLength( pBeam->delta ) * 0.075f) + 3; // one per 16 pixels
 
 	CL_UpdateBeam( pBeam, 0.0f );
 
@@ -1769,10 +1769,10 @@ BEAM *CL_BeamCirclePoints( int type, const vec3_t start, const vec3_t end, int m
 	pBeam->modelIndex = modelIndex;
 	VectorCopy( start, pBeam->source );
 	VectorCopy( end, pBeam->target );
-	pBeam->frame = startFrame;
+	pBeam->frame = (float)startFrame;
 	pBeam->frameRate = framerate;
 	Mod_GetFrames( modelIndex, &pBeam->frameCount );
-	pBeam->freq = cl.time * speed;
+	pBeam->freq = (float)cl.time * speed;
 	if( life == 0.0f ) pBeam->flags |= FBEAM_FOREVER;
 	pBeam->die += life;
 	pBeam->width = width;
@@ -1783,8 +1783,8 @@ BEAM *CL_BeamCirclePoints( int type, const vec3_t start, const vec3_t end, int m
 	VectorSubtract( pBeam->target, pBeam->source, pBeam->delta );
 
 	if( pBeam->amplitude >= 0.50f )
-		pBeam->segments = VectorLength( pBeam->delta ) * 0.25f + 3; // one per 4 pixels
-	else pBeam->segments = VectorLength( pBeam->delta ) * 0.075f + 3; // one per 16 pixels
+		pBeam->segments = (int)(VectorLength( pBeam->delta ) * 0.25f) + 3; // one per 4 pixels
+	else pBeam->segments = (int)(VectorLength( pBeam->delta ) * 0.075f) + 3; // one per 16 pixels
 
 	CL_UpdateBeam( pBeam, 0.0f );
 
@@ -1824,10 +1824,10 @@ BEAM *CL_BeamEntPoint( int startEnt, const vec3_t end, int modelIndex, float lif
 	pBeam->pFollowModel = Mod_Handle( modelIndex );
 	pBeam->startEntity = startEnt;
 	VectorCopy( end, pBeam->target );
-	pBeam->frame = startFrame;
+	pBeam->frame = (float)startFrame;
 	pBeam->frameRate = framerate;
 	Mod_GetFrames( modelIndex, &pBeam->frameCount );
-	pBeam->freq = cl.time * speed;
+	pBeam->freq = (float)cl.time * speed;
 	if( life == 0.0f ) pBeam->flags |= FBEAM_FOREVER;
 	pBeam->die += life;
 	pBeam->width = width;
@@ -1838,8 +1838,8 @@ BEAM *CL_BeamEntPoint( int startEnt, const vec3_t end, int modelIndex, float lif
 	VectorSubtract( pBeam->target, pBeam->source, pBeam->delta );
 
 	if( pBeam->amplitude >= 0.50f )
-		pBeam->segments = VectorLength( pBeam->delta ) * 0.25f + 3; // one per 4 pixels
-	else pBeam->segments = VectorLength( pBeam->delta ) * 0.075f + 3; // one per 16 pixels
+		pBeam->segments = (int)(VectorLength( pBeam->delta ) * 0.25f) + 3; // one per 4 pixels
+	else pBeam->segments = (int)(VectorLength( pBeam->delta ) * 0.075f) + 3; // one per 16 pixels
 
 	CL_UpdateBeam( pBeam, 0.0f );
 
@@ -1877,10 +1877,10 @@ BEAM *CL_BeamRing( int startEnt, int endEnt, int modelIndex, float life, float w
 	pBeam->modelIndex = modelIndex;
 	pBeam->startEntity = startEnt;
 	pBeam->endEntity = endEnt;
-	pBeam->frame = startFrame;
+	pBeam->frame = (float)startFrame;
 	pBeam->frameRate = framerate;
 	Mod_GetFrames( modelIndex, &pBeam->frameCount );
-	pBeam->freq = cl.time * speed;
+	pBeam->freq = (float)cl.time * speed;
 	pBeam->flags = FBEAM_STARTENTITY|FBEAM_ENDENTITY;
 	if( life == 0.0f ) pBeam->flags |= FBEAM_FOREVER;
 	pBeam->die += life;
@@ -1928,7 +1928,7 @@ BEAM *CL_BeamFollow( int startEnt, int modelIndex, float life, float width, floa
 	pBeam->frameRate = 1.0f;
 	Mod_GetFrames( modelIndex, &pBeam->frameCount );
 	if( life == 0.0f ) pBeam->flags |= FBEAM_FOREVER;
-	pBeam->freq = cl.time;
+	pBeam->freq = (float)cl.time;
 	pBeam->die += life;
 	pBeam->width = width;
 	pBeam->amplitude = life;	// partilces lifetime
@@ -2131,7 +2131,7 @@ void CL_ReadLineFile_f( void )
 	int		count, modelIndex;
 	char		filename[64];
 	string		token;
-	
+
 	Q_snprintf( filename, sizeof( filename ), "maps/%s.lin", clgame.mapname );
 	afile = FS_LoadFile( filename, NULL, false );
 
@@ -2140,7 +2140,7 @@ void CL_ReadLineFile_f( void )
 		MsgDev( D_ERROR, "couldn't open %s\n", filename );
 		return;
 	}
-	
+
 	Msg( "Reading %s...\n", filename );
 
 	count = 0;
@@ -2183,7 +2183,7 @@ void CL_ReadLineFile_f( void )
 		p2[2] = Q_atof( token );
 
 		count++;
-		
+
 		if( !CL_BeamPoints( p1, p2, modelIndex, 99999, 2, 0, 255, 0, 0, 0, 255.0f, 0.0f, 0.0f ))
 		{
 			if( Mod_GetType( modelIndex ) != mod_sprite )

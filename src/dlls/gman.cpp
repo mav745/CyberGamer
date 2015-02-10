@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -36,7 +36,7 @@ public:
 	void HandleAnimEvent( MonsterEvent_t *pEvent );
 	int ISoundMask ( void );
 
-	int	Save( CSave &save ); 
+	int	Save( CSave &save );
 	int Restore( CRestore &restore );
 	static TYPEDESCRIPTION m_SaveData[];
 
@@ -54,7 +54,7 @@ public:
 LINK_ENTITY_TO_CLASS( monster_gman, CGMan );
 
 
-TYPEDESCRIPTION	CGMan::m_SaveData[] = 
+TYPEDESCRIPTION	CGMan::m_SaveData[] =
 {
 	DEFINE_FIELD( CGMan, m_hTalkTarget, FIELD_EHANDLE ),
 	DEFINE_FIELD( CGMan, m_flTalkTime, FIELD_TIME ),
@@ -63,7 +63,7 @@ IMPLEMENT_SAVERESTORE( CGMan, CBaseMonster );
 
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CGMan :: Classify ( void )
@@ -86,7 +86,7 @@ void CGMan :: SetYawSpeed ( void )
 		ys = 90;
 	}
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 //=========================================================
@@ -138,7 +138,7 @@ void CGMan :: Spawn()
 void CGMan :: Precache()
 {
 	PRECACHE_MODEL( "models/gman.mdl" );
-}	
+}
 
 
 //=========================================================
@@ -187,7 +187,7 @@ void CGMan :: RunTask( Task_t *pTask )
 			// turn towards vector
 			SetBoneController( 0, yaw );
 		}
-		else 
+		else
 		{
 			SetBoneController( 0, 0 );
 		}

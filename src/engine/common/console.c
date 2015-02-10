@@ -88,7 +88,7 @@ typedef struct
 	// conchars
 	cl_font_t		chars[CON_NUMFONTS];// fonts.wad/font1.fnt
 	cl_font_t		*curFont, *lastUsedFont;
-	
+
 	// console input
 	field_t		input;
 
@@ -147,18 +147,18 @@ void Con_SetColor_f( void )
 	case 2:
 		VectorSet( color, g_color_table[7][0], g_color_table[7][1], g_color_table[7][2] );
 		Q_atov( color, Cmd_Argv( 1 ), 3 );
-		Con_DefaultColor( color[0], color[1], color[2] );
+		Con_DefaultColor( (int)color[0], (int)color[1], (int)color[2] );
 		break;
 	case 4:
 		VectorSet( color, Q_atof( Cmd_Argv( 1 )), Q_atof( Cmd_Argv( 2 )), Q_atof( Cmd_Argv( 3 )));
-		Con_DefaultColor( color[0], color[1], color[2] );
+		Con_DefaultColor( (int)color[0], (int)color[1], (int)color[2] );
 		break;
 	default:
 		Msg( "Usage: con_color \"r g b\"\n" );
 		break;
 	}
 }
-						
+
 /*
 ================
 Con_ClearNotify
@@ -167,7 +167,7 @@ Con_ClearNotify
 void Con_ClearNotify( void )
 {
 	int	i;
-	
+
 	for( i = 0; i < CON_TIMES; i++ )
 		con.times[i] = 0;
 }
@@ -343,7 +343,7 @@ void Con_CheckResize( void )
 			numlines = con.totallines;
 
 		numchars = oldwidth;
-	
+
 		if( con.linewidth < numchars )
 			numchars = con.linewidth;
 
@@ -447,21 +447,21 @@ static void Con_LoadConsoleFont( int fontNumber, cl_font_t *font )
 	// loading conchars
 	font->hFontTexture = GL_LoadTexture( va( "fonts.wad/font%i", fontNumber ), NULL, 0, TF_FONT|TF_NEAREST, NULL );
 	R_GetTextureParms( &fontWidth, NULL, font->hFontTexture );
-		
+
 	// setup creditsfont
 	if( FS_FileExists( va( "fonts.wad/font%i.fnt", fontNumber ), false ) && fontWidth != 0 )
 	{
 		byte	*buffer;
 		size_t	length;
 		qfont_t	*src;
-	
+
 		// half-life font with variable chars witdh
 		buffer = FS_LoadFile( va( "fonts.wad/font%i", fontNumber ), &length, false );
 
 		if( buffer && length >= sizeof( qfont_t ))
 		{
 			int	i;
-	
+
 			src = (qfont_t *)buffer;
 			font->charHeight = src->rowheight;
 
@@ -472,7 +472,7 @@ static void Con_LoadConsoleFont( int fontNumber, cl_font_t *font )
 				font->fontRc[i].right = font->fontRc[i].left + src->fontinfo[i].charwidth;
 				font->fontRc[i].top = (word)src->fontinfo[i].startoffset / fontWidth;
 				font->fontRc[i].bottom = font->fontRc[i].top + src->rowheight;
-				font->charWidths[i] = src->fontinfo[i].charwidth;
+				font->charWidths[i] = (byte)src->fontinfo[i].charwidth;
 			}
 			font->valid = true;
 		}
@@ -502,7 +502,7 @@ static void Con_LoadConchars( void )
 
 	// sets the current font
 	con.lastUsedFont = con.curFont = &con.chars[fontSize];
-	
+
 }
 
 static int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
@@ -534,7 +534,7 @@ static int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
 	height = rc->bottom - rc->top;
 
 	TextAdjustSize( &x, &y, &width, &height );
-	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, con.curFont->hFontTexture );		
+	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, s1, t1, s2, t2, con.curFont->hFontTexture );
 	pglColor4ub( 255, 255, 255, 255 ); // don't forget reset color
 
 	return con.curFont->charWidths[number];
@@ -542,7 +542,7 @@ static int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
 
 void Con_SetFont( int fontNum )
 {
-	fontNum = bound( 0, fontNum, 2 ); 
+	fontNum = bound( 0, fontNum, 2 );
 	con.curFont = &con.chars[fontNum];
 }
 
@@ -651,7 +651,7 @@ int Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qb
 		numDraws++;
 		s++;
 	}
-          
+
 	pglColor4ub( 255, 255, 255, 255 );
 	return drawLen;
 }
@@ -740,8 +740,8 @@ void Con_Print( const char *txt )
 
 	// client not running
 	if( host.type == HOST_DEDICATED ) return;
-          if( !con.initialized ) return;
-	
+		  if( !con.initialized ) return;
+
 	color = ColorIndex( COLOR_DEFAULT );
 
 	while(( c = *txt ) != 0 )
@@ -809,7 +809,7 @@ void Con_NPrintf( int idx, char *fmt, ... )
 
 	// reset values
 	con.notify[idx].key_dest = key_game;
-	con.notify[idx].expire = host.realtime + 4.0f;
+	con.notify[idx].expire = (float)host.realtime + 4.0f;
 	MakeRGBA( con.notify[idx].color, 255, 255, 255, 255 );
 	con.draw_notify = true;
 }
@@ -838,7 +838,7 @@ void Con_NXPrintf( con_nprint_t *info, char *fmt, ... )
 
 	// setup values
 	con.notify[info->index].key_dest = key_game;
-	con.notify[info->index].expire = host.realtime + info->time_to_live;
+	con.notify[info->index].expire = (float)host.realtime + info->time_to_live;
 	MakeRGBA( con.notify[info->index].color, (byte)(info->color[0] * 255), (byte)(info->color[1] * 255), (byte)(info->color[2] * 255), 255 );
 	con.draw_notify = true;
 }
@@ -865,7 +865,7 @@ void UI_NPrintf( int idx, char *fmt, ... )
 
 	// reset values
 	con.notify[idx].key_dest = key_menu;
-	con.notify[idx].expire = host.realtime + 4.0f;
+	con.notify[idx].expire = (float)host.realtime + 4.0f;
 	MakeRGBA( con.notify[idx].color, 255, 255, 255, 255 );
 	con.draw_notify = true;
 }
@@ -894,7 +894,7 @@ void UI_NXPrintf( con_nprint_t *info, char *fmt, ... )
 
 	// setup values
 	con.notify[info->index].key_dest = key_menu;
-	con.notify[info->index].expire = host.realtime + info->time_to_live;
+	con.notify[info->index].expire = (float)host.realtime + info->time_to_live;
 	MakeRGBA( con.notify[info->index].color, (byte)(info->color[0] * 255), (byte)(info->color[1] * 255), (byte)(info->color[2] * 255), 255 );
 	con.draw_notify = true;
 }
@@ -1055,20 +1055,20 @@ void Con_CompleteCommand( field_t *field )
 		{
 			if( Cmd_CheckName( list->name ))
 			{
-				result = list->func( Cmd_Argv( 1 ), filename, MAX_STRING ); 
+				result = list->func( Cmd_Argv( 1 ), filename, MAX_STRING );
 				break;
 			}
 		}
 
 		if( result )
-		{         
-			Q_sprintf( con.completionField->buffer, "%s %s", Cmd_Argv( 0 ), filename ); 
+		{
+			Q_sprintf( con.completionField->buffer, "%s %s", Cmd_Argv( 0 ), filename );
 			con.completionField->cursor = Q_strlen( con.completionField->buffer );
 		}
 
 		// don't adjusting cursor pos if we nothing found
 		return;
-	}  
+	}
 	else if( Cmd_Argc() >= 3 )
 	{
 		// disable autocomplete for all next args
@@ -1178,7 +1178,7 @@ void Field_KeyDownEvent( field_t *edit, int key )
 		return;
 	}
 
-	if( key == K_RIGHTARROW ) 
+	if( key == K_RIGHTARROW )
 	{
 		if( edit->cursor < len ) edit->cursor++;
 		if( edit->cursor >= edit->scroll + edit->widthInChars && edit->cursor <= len )
@@ -1186,7 +1186,7 @@ void Field_KeyDownEvent( field_t *edit, int key )
 		return;
 	}
 
-	if( key == K_LEFTARROW ) 
+	if( key == K_LEFTARROW )
 	{
 		if( edit->cursor > 0 ) edit->cursor--;
 		if( edit->cursor < edit->scroll ) edit->scroll--;
@@ -1257,7 +1257,7 @@ void Field_CharEvent( field_t *edit, int ch )
 	if( ch < 32 ) return;
 
 	if( host.key_overstrike )
-	{	
+	{
 		if ( edit->cursor == MAX_STRING - 1 ) return;
 		edit->buffer[edit->cursor] = ch;
 		edit->cursor++;
@@ -1322,7 +1322,7 @@ void Field_DrawInputLine( int x, int y, field_t *edit )
 
 	if( host.key_overstrike && cursorChar && !((int)( host.realtime * 4 ) & 1 ))
 		hideChar = edit->cursor - prestep; // skip this char
-	
+
 	// draw it
 	Con_DrawGenericString( x, y, str, colorDefault, false, hideChar );
 
@@ -1454,7 +1454,7 @@ void Key_Console( int key )
 	}
 
 	if( key == K_MWHEELDOWN )
-	{	
+	{
 		if( Key_IsDown( K_CTRL ))
 			Con_PageDown( 8 );
 		else Con_PageDown( 2 );
@@ -1558,7 +1558,7 @@ int Con_DrawDebugLines( void )
 	int	defaultX;
 
 	defaultX = glState.width / 4;
-	
+
 	for( i = 0; i < MAX_DBG_NOTIFY; i++ )
 	{
 		if( host.realtime < con.notify[i].expire && con.notify[i].key_dest == cls.key_dest )
@@ -1625,9 +1625,9 @@ void Con_DrawNotify( void )
 		for( i = con.current - CON_TIMES + 1; i <= con.current; i++ )
 		{
 			if( i < 0 ) continue;
-			time = con.times[i % CON_TIMES];
+			time = (float)con.times[i % CON_TIMES];
 			if( time == 0 ) continue;
-			time = host.realtime - time;
+			time = (float)host.realtime - time;
 
 			if( time > con_notifytime->value )
 				continue;	// expired
@@ -1644,7 +1644,7 @@ void Con_DrawNotify( void )
 			v += con.curFont->charHeight;
 		}
 	}
-	
+
 	if( cls.key_dest == key_message )
 	{
 		string	buf;
@@ -1687,18 +1687,18 @@ void Con_DrawSolidConsole( float frac )
 	int	currentColor;
 	string	curbuild;
 
-	lines = scr_height->integer * frac;
+	lines = (int)((float)scr_height->integer * frac);
 	if( lines <= 0 ) return;
 	if( lines > scr_height->integer )
 		lines = scr_height->integer;
 
 	// draw the background
-	y = frac * scr_height->integer;
+	y = (int)(frac * (float)scr_height->integer);
 
 	if( y >= 1 )
 	{
 		GL_SetRenderMode( kRenderNormal );
-		R_DrawStretchPic( 0, y - scr_height->integer, scr_width->integer, scr_height->integer, 0, 0, 1, 1, con.background );
+		R_DrawStretchPic( 0, (float)(y - scr_height->integer), (float)scr_width->integer, (float)scr_height->integer, 0, 0, 1, 1, con.background );
 	}
 	else y = 0;
 
@@ -1735,7 +1735,7 @@ void Con_DrawSolidConsole( float frac )
 		y -= con.curFont->charHeight;
 		rows--;
 	}
-	
+
 	row = con.display;
 	if( con.x == 0 ) row--;
 
@@ -1748,7 +1748,7 @@ void Con_DrawSolidConsole( float frac )
 		if( con.current - row >= con.totallines )
 		{
 			// past scrollback wrap point
-			continue;	
+			continue;
 		}
 
 		text = con.text + ( row % con.totallines ) * con.linewidth;
@@ -1820,14 +1820,14 @@ void Con_DrawConsole( void )
 		break;
 	case ca_connected:
 	case ca_connecting:
-		// force to show console always for -dev 3 and higher 
+		// force to show console always for -dev 3 and higher
 		if( con.displayFrac ) Con_DrawSolidConsole( con.displayFrac );
 		break;
 	case ca_active:
-	case ca_cinematic: 
+	case ca_cinematic:
 		if( Cvar_VariableInteger( "cl_background" ) || Cvar_VariableInteger( "sv_background" ))
 		{
-			if( cls.key_dest == key_console ) 
+			if( cls.key_dest == key_console )
 				Con_DrawSolidConsole( 1.0f );
 		}
 		else
@@ -1873,11 +1873,11 @@ void Con_DrawVersion( void )
 
 	if( host.force_draw_version || draw_version )
 		Q_snprintf( curbuild, MAX_STRING, "Xash3D v%i/%g (build %i)", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum( ));
-	else Q_snprintf( curbuild, MAX_STRING, "v%i/%g (build %i)", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum( )); 
+	else Q_snprintf( curbuild, MAX_STRING, "v%i/%g (build %i)", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum( ));
 	Con_DrawStringLen( curbuild, &stringLen, &charH );
-	start = scr_width->integer - stringLen * 1.05f;
+	start = (int)((float)scr_width->integer - (float)stringLen * 1.05f);
 	stringLen = Con_StringLength( curbuild );
-	height -= charH * 1.05f;
+	height -= (int)((float)charH * 1.05f);
 
 	for( i = 0; i < stringLen; i++ )
 		width += Con_DrawCharacter( start + width, height, curbuild[i], color );
@@ -1897,7 +1897,7 @@ void Con_RunConsole( void )
 	{
 		if( cls.state == ca_disconnected )
 			con.finalFrac = 1.0f;// full screen
-		else con.finalFrac = 0.5f;	// half screen	
+		else con.finalFrac = 0.5f;	// half screen
 	}
 	else con.finalFrac = 0; // none visible
 
@@ -1907,13 +1907,13 @@ void Con_RunConsole( void )
 
 	if( con.finalFrac < con.displayFrac )
 	{
-		con.displayFrac -= fabs( scr_conspeed->value ) * 0.002f * host.realframetime;
+		con.displayFrac -= fabsf( scr_conspeed->value ) * 0.002f * (float)host.realframetime;
 		if( con.finalFrac > con.displayFrac )
 			con.displayFrac = con.finalFrac;
 	}
 	else if( con.finalFrac > con.displayFrac )
 	{
-		con.displayFrac += fabs( scr_conspeed->value ) * 0.002f * host.realframetime;
+		con.displayFrac += fabsf( scr_conspeed->value ) * 0.002f * (float)host.realframetime;
 		if( con.finalFrac < con.displayFrac )
 			con.displayFrac = con.finalFrac;
 	}

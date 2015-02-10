@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -38,7 +38,7 @@ enum
 //=========================================================
 // monster-specific tasks
 //=========================================================
-enum 
+enum
 {
 	TASK_AGRUNT_SETUP_HIDE_ATTACK = LAST_COMMON_TASK + 1,
 	TASK_AGRUNT_GET_PATH_TO_ENEMY_CORPSE,
@@ -66,7 +66,7 @@ int iAgruntMuzzleFlash;
 
 
 
-#define		AGRUNT_MELEE_DIST	100
+#define		AGRUNT_MELEE_DIST	100.f
 
 class CAGrunt : public CSquadMonster
 {
@@ -124,7 +124,7 @@ public:
 };
 LINK_ENTITY_TO_CLASS( monster_alien_grunt, CAGrunt );
 
-TYPEDESCRIPTION	CAGrunt::m_SaveData[] = 
+TYPEDESCRIPTION	CAGrunt::m_SaveData[] =
 {
 	DEFINE_FIELD( CAGrunt, m_fCanHornetAttack, FIELD_BOOLEAN ),
 	DEFINE_FIELD( CAGrunt, m_flNextHornetAttackCheck, FIELD_TIME ),
@@ -136,14 +136,14 @@ TYPEDESCRIPTION	CAGrunt::m_SaveData[] =
 
 IMPLEMENT_SAVERESTORE( CAGrunt, CSquadMonster );
 
-const char *CAGrunt::pAttackHitSounds[] = 
+const char *CAGrunt::pAttackHitSounds[] =
 {
 	"zombie/claw_strike1.wav",
 	"zombie/claw_strike2.wav",
 	"zombie/claw_strike3.wav",
 };
 
-const char *CAGrunt::pAttackMissSounds[] = 
+const char *CAGrunt::pAttackMissSounds[] =
 {
 	"zombie/claw_miss1.wav",
 	"zombie/claw_miss2.wav",
@@ -189,7 +189,7 @@ const char *CAGrunt::pAlertSounds[] =
 };
 
 //=========================================================
-// IRelationship - overridden because Human Grunts are 
+// IRelationship - overridden because Human Grunts are
 // Alien Grunt's nemesis.
 //=========================================================
 int CAGrunt::IRelationship ( CBaseEntity *pTarget )
@@ -203,7 +203,7 @@ int CAGrunt::IRelationship ( CBaseEntity *pTarget )
 }
 
 //=========================================================
-// ISoundMask 
+// ISoundMask
 //=========================================================
 int CAGrunt :: ISoundMask ( void )
 {
@@ -286,8 +286,8 @@ BOOL CAGrunt::ShouldSpeak( void )
 		if ( m_MonsterState != MONSTERSTATE_COMBAT )
 		{
 			// if gagged, don't talk outside of combat.
-			// if not going to talk because of this, put the talk time 
-			// into the future a bit, so we don't talk immediately after 
+			// if not going to talk because of this, put the talk time
+			// into the future a bit, so we don't talk immediately after
 			// going into combat
 			m_flNextSpeakTime = gpGlobals->time + 3;
 			return FALSE;
@@ -298,7 +298,7 @@ BOOL CAGrunt::ShouldSpeak( void )
 }
 
 //=========================================================
-// PrescheduleThink 
+// PrescheduleThink
 //=========================================================
 void CAGrunt :: PrescheduleThink ( void )
 {
@@ -359,7 +359,7 @@ void CAGrunt :: AttackSound ( void )
 {
 	StopTalking();
 
-	EMIT_SOUND ( ENT(pev), CHAN_VOICE, pAttackSounds[RANDOM_LONG(0,VARRAYSIZE(pAttackSounds)-1)], 1.0, ATTN_NORM );
+	EMIT_SOUND ( ENT(pev), CHAN_VOICE, pAttackSounds[RANDOM_LONG(0,VARRAYSIZE(pAttackSounds)-1)], 1.0f, ATTN_NORM );
 }
 
 //=========================================================
@@ -372,15 +372,15 @@ void CAGrunt :: PainSound ( void )
 		return;
 	}
 
-	m_flNextPainTime = gpGlobals->time + 0.6;
+	m_flNextPainTime = gpGlobals->time + 0.6f;
 
 	StopTalking();
 
-	EMIT_SOUND ( ENT(pev), CHAN_VOICE, pPainSounds[RANDOM_LONG(0,VARRAYSIZE(pPainSounds)-1)], 1.0, ATTN_NORM );
+	EMIT_SOUND ( ENT(pev), CHAN_VOICE, pPainSounds[RANDOM_LONG(0,VARRAYSIZE(pPainSounds)-1)], 1.0f, ATTN_NORM );
 }
 
 //=========================================================
-// Classify - indicates this monster's place in the 
+// Classify - indicates this monster's place in the
 // relationship table.
 //=========================================================
 int	CAGrunt :: Classify ( void )
@@ -405,7 +405,7 @@ void CAGrunt :: SetYawSpeed ( void )
 	default:			ys = 100;
 	}
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 //=========================================================
@@ -457,8 +457,8 @@ void CAGrunt :: HandleAnimEvent( MonsterEvent_t *pEvent )
 			MESSAGE_BEGIN( MSG_PVS, SVC_TEMPENTITY, vecArmPos );
 				WRITE_BYTE( TE_SPRITE );
 				WRITE_COORD( vecArmPos.x );	// pos
-				WRITE_COORD( vecArmPos.y );	
-				WRITE_COORD( vecArmPos.z );	
+				WRITE_COORD( vecArmPos.y );
+				WRITE_COORD( vecArmPos.z );
 				WRITE_SHORT( iAgruntMuzzleFlash );		// model
 				WRITE_BYTE( 6 );				// size * 10
 				WRITE_BYTE( 128 );			// brightness
@@ -467,9 +467,9 @@ void CAGrunt :: HandleAnimEvent( MonsterEvent_t *pEvent )
 			CBaseEntity *pHornet = CBaseEntity::Create( "hornet", vecArmPos, UTIL_VecToAngles( vecDirToEnemy ), edict() );
 			UTIL_MakeVectors ( pHornet->pev->angles );
 			pHornet->pev->velocity = gpGlobals->v_forward * 300;
-			
-			
-			
+
+
+
 			switch ( RANDOM_LONG ( 0 , 2 ) )
 			{
 				case 0:	EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, "agrunt/ag_fire1.wav", 1.0, ATTN_NORM, 0, 100 );	break;
@@ -505,8 +505,8 @@ void CAGrunt :: HandleAnimEvent( MonsterEvent_t *pEvent )
 
 	case AGRUNT_AE_LEFT_PUNCH:
 		{
-			CBaseEntity *pHurt = CheckTraceHullAttack( AGRUNT_MELEE_DIST, gSkillData.agruntDmgPunch, DMG_CLUB );
-			
+			CBaseEntity *pHurt = CheckTraceHullAttack( AGRUNT_MELEE_DIST, static_cast<int>(gSkillData.agruntDmgPunch), DMG_CLUB );
+
 			if ( pHurt )
 			{
 				pHurt->pev->punchangle.y = -25;
@@ -519,7 +519,7 @@ void CAGrunt :: HandleAnimEvent( MonsterEvent_t *pEvent )
 					pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_right * 250;
 				}
 
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackHitSounds)-1) ], 1.0, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackHitSounds)-1) ], 1.0f, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
 
 				Vector vecArmPos, vecArmAng;
 				GetAttachment( 0, vecArmPos, vecArmAng );
@@ -528,14 +528,14 @@ void CAGrunt :: HandleAnimEvent( MonsterEvent_t *pEvent )
 			else
 			{
 				// Play a random attack miss sound
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackMissSounds)-1) ], 1.0, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackMissSounds)-1) ], 1.0f, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
 			}
 		}
 		break;
 
 	case AGRUNT_AE_RIGHT_PUNCH:
 		{
-			CBaseEntity *pHurt = CheckTraceHullAttack( AGRUNT_MELEE_DIST, gSkillData.agruntDmgPunch, DMG_CLUB );
+			CBaseEntity *pHurt = CheckTraceHullAttack( AGRUNT_MELEE_DIST, static_cast<int>(gSkillData.agruntDmgPunch), DMG_CLUB );
 
 			if ( pHurt )
 			{
@@ -549,7 +549,7 @@ void CAGrunt :: HandleAnimEvent( MonsterEvent_t *pEvent )
 					pHurt->pev->velocity = pHurt->pev->velocity + gpGlobals->v_right * -250;
 				}
 
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackHitSounds)-1) ], 1.0, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackHitSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackHitSounds)-1) ], 1.0f, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
 
 				Vector vecArmPos, vecArmAng;
 				GetAttachment( 0, vecArmPos, vecArmAng );
@@ -558,7 +558,7 @@ void CAGrunt :: HandleAnimEvent( MonsterEvent_t *pEvent )
 			else
 			{
 				// Play a random attack miss sound
-				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackMissSounds)-1) ], 1.0, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
+				EMIT_SOUND_DYN ( ENT(pev), CHAN_WEAPON, pAttackMissSounds[ RANDOM_LONG(0,VARRAYSIZE(pAttackMissSounds)-1) ], 1.0f, ATTN_NORM, 0, 100 + RANDOM_LONG(-5,5) );
 			}
 		}
 		break;
@@ -633,8 +633,8 @@ void CAGrunt :: Precache()
 	iAgruntMuzzleFlash = PRECACHE_MODEL( "sprites/muz4.spr" );
 
 	UTIL_PrecacheOther( "hornet" );
-}	
-	
+}
+
 //=========================================================
 // AI Schedules Specific to this monster
 //=========================================================
@@ -686,8 +686,8 @@ Schedule_t	slAGruntCombatFail[] =
 };
 
 //=========================================================
-// Standoff schedule. Used in combat when a monster is 
-// hiding in cover or the enemy has moved out of sight. 
+// Standoff schedule. Used in combat when a monster is
+// hiding in cover or the enemy has moved out of sight.
 // Should we look around in this schedule?
 //=========================================================
 Task_t	tlAGruntStandoff[] =
@@ -697,7 +697,7 @@ Task_t	tlAGruntStandoff[] =
 	{ TASK_WAIT_FACE_ENEMY,			(float)2					},
 };
 
-Schedule_t slAGruntStandoff[] = 
+Schedule_t slAGruntStandoff[] =
 {
 	{
 		tlAGruntStandoff,
@@ -707,7 +707,7 @@ Schedule_t slAGruntStandoff[] =
 		bits_COND_SEE_ENEMY				|
 		bits_COND_NEW_ENEMY				|
 		bits_COND_HEAR_SOUND,
-		
+
 		bits_SOUND_DANGER,
 		"Agrunt Standoff"
 	}
@@ -745,13 +745,13 @@ Task_t	tlAGruntRangeAttack1[] =
 
 Schedule_t	slAGruntRangeAttack1[] =
 {
-	{ 
+	{
 		tlAGruntRangeAttack1,
-		VARRAYSIZE ( tlAGruntRangeAttack1 ), 
+		VARRAYSIZE ( tlAGruntRangeAttack1 ),
 		bits_COND_NEW_ENEMY			|
 		bits_COND_ENEMY_DEAD		|
 		bits_COND_HEAVY_DAMAGE,
-		
+
 		0,
 		"AGrunt Range Attack1"
 	},
@@ -769,21 +769,21 @@ Task_t	tlAGruntHiddenRangeAttack1[] =
 
 Schedule_t	slAGruntHiddenRangeAttack[] =
 {
-	{ 
+	{
 		tlAGruntHiddenRangeAttack1,
-		VARRAYSIZE ( tlAGruntHiddenRangeAttack1 ), 
+		VARRAYSIZE ( tlAGruntHiddenRangeAttack1 ),
 		bits_COND_NEW_ENEMY			|
 		bits_COND_HEAVY_DAMAGE		|
 		bits_COND_HEAR_SOUND,
-		
+
 		bits_SOUND_DANGER,
 		"AGrunt Hidden Range Attack1"
 	},
 };
 
 //=========================================================
-// Take cover from enemy! Tries lateral cover before node 
-// cover! 
+// Take cover from enemy! Tries lateral cover before node
+// cover!
 //=========================================================
 Task_t	tlAGruntTakeCoverFromEnemy[] =
 {
@@ -798,9 +798,9 @@ Task_t	tlAGruntTakeCoverFromEnemy[] =
 
 Schedule_t	slAGruntTakeCoverFromEnemy[] =
 {
-	{ 
+	{
 		tlAGruntTakeCoverFromEnemy,
-		VARRAYSIZE ( tlAGruntTakeCoverFromEnemy ), 
+		VARRAYSIZE ( tlAGruntTakeCoverFromEnemy ),
 		bits_COND_NEW_ENEMY,
 		0,
 		"AGruntTakeCoverFromEnemy"
@@ -835,9 +835,9 @@ Task_t	tlAGruntVictoryDance[] =
 
 Schedule_t	slAGruntVictoryDance[] =
 {
-	{ 
+	{
 		tlAGruntVictoryDance,
-		VARRAYSIZE ( tlAGruntVictoryDance ), 
+		VARRAYSIZE ( tlAGruntVictoryDance ),
 		bits_COND_NEW_ENEMY		|
 		bits_COND_LIGHT_DAMAGE	|
 		bits_COND_HEAVY_DAMAGE,
@@ -857,13 +857,13 @@ Task_t	tlAGruntThreatDisplay[] =
 
 Schedule_t	slAGruntThreatDisplay[] =
 {
-	{ 
+	{
 		tlAGruntThreatDisplay,
-		VARRAYSIZE ( tlAGruntThreatDisplay ), 
+		VARRAYSIZE ( tlAGruntThreatDisplay ),
 		bits_COND_NEW_ENEMY			|
 		bits_COND_LIGHT_DAMAGE		|
 		bits_COND_HEAVY_DAMAGE,
-		
+
 		bits_SOUND_PLAYER			|
 		bits_SOUND_COMBAT			|
 		bits_SOUND_WORLD,
@@ -904,8 +904,8 @@ BOOL CAGrunt :: FCanCheckAttacks ( void )
 }
 
 //=========================================================
-// CheckMeleeAttack1 - alien grunts zap the crap out of 
-// any enemy that gets too close. 
+// CheckMeleeAttack1 - alien grunts zap the crap out of
+// any enemy that gets too close.
 //=========================================================
 BOOL CAGrunt :: CheckMeleeAttack1 ( float flDot, float flDist )
 {
@@ -917,11 +917,11 @@ BOOL CAGrunt :: CheckMeleeAttack1 ( float flDot, float flDist )
 }
 
 //=========================================================
-// CheckRangeAttack1 
+// CheckRangeAttack1
 //
 // !!!LATER - we may want to load balance this. Several
 // tracelines are done, so we may not want to do this every
-// server frame. Definitely not while firing. 
+// server frame. Definitely not while firing.
 //=========================================================
 BOOL CAGrunt :: CheckRangeAttack1 ( float flDot, float flDist )
 {
@@ -949,8 +949,8 @@ BOOL CAGrunt :: CheckRangeAttack1 ( float flDot, float flDist )
 			return m_fCanHornetAttack;
 		}
 	}
-	
-	m_flNextHornetAttackCheck = gpGlobals->time + 0.2;// don't check for half second if this check wasn't successful
+
+	m_flNextHornetAttackCheck = gpGlobals->time + 0.2f;// don't check for half second if this check wasn't successful
 	m_fCanHornetAttack = FALSE;
 	return m_fCanHornetAttack;
 }
@@ -978,7 +978,7 @@ void CAGrunt :: StartTask ( Task_t *pTask )
 		break;
 
 	case TASK_AGRUNT_SETUP_HIDE_ATTACK:
-		// alien grunt shoots hornets back out into the open from a concealed location. 
+		// alien grunt shoots hornets back out into the open from a concealed location.
 		// try to find a spot to throw that gives the smart weapon a good chance of finding the enemy.
 		// ideally, this spot is along a line that is perpendicular to a line drawn from the agrunt to the enemy.
 
@@ -1004,7 +1004,7 @@ void CAGrunt :: StartTask ( Task_t *pTask )
 				fSkip = TRUE;
 				TaskComplete();
 			}
-			
+
 			if ( !fSkip )
 			{
 				UTIL_TraceLine( Center() - gpGlobals->v_forward * 128, m_vecEnemyLKP, ignore_monsters, ENT(pev), &tr);
@@ -1015,7 +1015,7 @@ void CAGrunt :: StartTask ( Task_t *pTask )
 					TaskComplete();
 				}
 			}
-			
+
 			if ( !fSkip )
 			{
 				UTIL_TraceLine( Center() + gpGlobals->v_forward * 256, m_vecEnemyLKP, ignore_monsters, ENT(pev), &tr);
@@ -1026,7 +1026,7 @@ void CAGrunt :: StartTask ( Task_t *pTask )
 					TaskComplete();
 				}
 			}
-			
+
 			if ( !fSkip )
 			{
 				UTIL_TraceLine( Center() - gpGlobals->v_forward * 256, m_vecEnemyLKP, ignore_monsters, ENT(pev), &tr);
@@ -1037,7 +1037,7 @@ void CAGrunt :: StartTask ( Task_t *pTask )
 					TaskComplete();
 				}
 			}
-			
+
 			if ( !fSkip )
 			{
 				TaskFail();
@@ -1125,14 +1125,14 @@ Schedule_t *CAGrunt :: GetSchedule ( void )
 
 //=========================================================
 //=========================================================
-Schedule_t* CAGrunt :: GetScheduleOfType ( int Type ) 
+Schedule_t* CAGrunt :: GetScheduleOfType ( int Type )
 {
 	switch	( Type )
 	{
 	case SCHED_TAKE_COVER_FROM_ENEMY:
 		return &slAGruntTakeCoverFromEnemy[ 0 ];
 		break;
-	
+
 	case SCHED_RANGE_ATTACK1:
 		if ( HasConditions( bits_COND_SEE_ENEMY ) )
 		{
@@ -1170,7 +1170,7 @@ Schedule_t* CAGrunt :: GetScheduleOfType ( int Type )
 			{
 				// I have an enemy
 				// !!!LATER - what if this enemy is really far away and i'm chasing him?
-				// this schedule will make me stop, face his last known position for 2 
+				// this schedule will make me stop, face his last known position for 2
 				// seconds, and then try to move again
 				return &slAGruntCombatFail[ 0 ];
 			}

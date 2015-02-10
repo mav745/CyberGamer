@@ -439,7 +439,7 @@ void R_TextureList_f( void )
 			break;
 		case GL_DEPTH_COMPONENT:
 			Msg( "DEPTH " );
-			break;			
+			break;
 		case GL_LUMINANCE16F_ARB:
 			Msg( "L16F  " );
 			break;
@@ -511,7 +511,7 @@ void R_TextureList_f( void )
 
 	Msg( "---------------------------------------------------------\n" );
 	Msg( "%i total textures\n", texCount );
-	Msg( "%s total memory used\n", Q_memprint( bytes ));
+	Msg( "%s total memory used\n", Q_memprint( (float)bytes ));
 	Msg( "\n" );
 }
 
@@ -687,7 +687,7 @@ static GLenum GL_TextureFormat( gltexture_t *tex, int *samples )
 			case 16: format = GL_RGB16F_ARB; break;
 			default: format = GL_RGB32F_ARB; break;
 			}
-			break;		
+			break;
 		case 4:
 		default:
 			switch( bits )
@@ -741,7 +741,7 @@ static GLenum GL_TextureFormat( gltexture_t *tex, int *samples )
 				default: format = GL_RGB; break;
 				}
 			}
-			break;		
+			break;
 		case 4:
 		default:
 			if( gl_luminance_textures->integer )
@@ -960,7 +960,7 @@ void GL_GenerateMipmaps( byte *buffer, rgbdata_t *pic, gltexture_t *tex, GLenum 
 		pglHint( GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST );
 		pglTexParameteri( glTarget, GL_GENERATE_MIPMAP_SGIS, GL_TRUE );
 		pglGetError(); // clear error queue on mips generate
-		return; 
+		return;
 	}
 
 	// screen texture?
@@ -1052,7 +1052,7 @@ static void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImag
 		// will be resample, just tell me for debug targets
 		MsgDev( D_NOTE, "GL_Upload: %s s&3 [%d x %d]\n", tex->name, tex->srcWidth, tex->srcHeight );
 	}
-			
+
 	// copy flag about luma pixels
 	if( pic->flags & IMAGE_HAS_LUMA )
 		tex->flags |= TF_HAS_LUMA;
@@ -1110,7 +1110,7 @@ static void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImag
 	if( pic->flags & IMAGE_CUBEMAP )
 	{
 		if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
-		{		
+		{
 			numSides = 6;
 			tex->target = glTarget = GL_TEXTURE_CUBE_MAP_ARB;
 			tex->flags |= TF_CUBEMAP;
@@ -1182,7 +1182,7 @@ static void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImag
 		{
 			if(!( tex->flags & TF_NOMIPMAP ) && !( tex->flags & TF_SKYSIDE ) && !( tex->flags & TF_TEXTURE_3D ))
 				data = GL_ApplyGamma( data, tex->width * tex->height, ( tex->flags & TF_NORMALMAP ));
-		}		
+		}
 
 		if( glTarget == GL_TEXTURE_1D )
 		{
@@ -1263,7 +1263,7 @@ int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, i
 		picFlags |= IL_DONTFLIP_TGA;
 
 	if( flags & TF_KEEP_8BIT )
-		picFlags |= IL_KEEP_8BIT;	
+		picFlags |= IL_KEEP_8BIT;
 
 	// set some image flags
 	Image_SetForceFlags( picFlags );
@@ -1416,7 +1416,7 @@ int GL_LoadTextureInternal( const char *name, rgbdata_t *pic, texFlags_t flags, 
 	GL_TexFilter( tex, update ); // update texture filter, wrap etc
 
 	if( !update )
-          {
+		  {
 		// add to hash table
 		hash = Com_HashKey( tex->name, TEXTURES_HASH_SIZE );
 		tex->nextHash = r_texturesHashTable[hash];
@@ -1691,10 +1691,10 @@ static rgbdata_t *R_MultiplyImages( rgbdata_t *in1, rgbdata_t *in2 )
 	{
 		for( x = 0; x < width; x++ )
 		{
-			r = in1->buffer[4*(y*width+x)+0] * (in2->buffer[4*(y*width+x)+0] * (1.0f/255));
-			g = in1->buffer[4*(y*width+x)+1] * (in2->buffer[4*(y*width+x)+1] * (1.0f/255));
-			b = in1->buffer[4*(y*width+x)+2] * (in2->buffer[4*(y*width+x)+2] * (1.0f/255));
-			a = in1->buffer[4*(y*width+x)+3] * (in2->buffer[4*(y*width+x)+3] * (1.0f/255));
+			r = (int)(in1->buffer[4*(y*width+x)+0] * (in2->buffer[4*(y*width+x)+0] * (1.0f/255)));
+			g = (int)(in1->buffer[4*(y*width+x)+1] * (in2->buffer[4*(y*width+x)+1] * (1.0f/255)));
+			b = (int)(in1->buffer[4*(y*width+x)+2] * (in2->buffer[4*(y*width+x)+2] * (1.0f/255)));
+			a = (int)(in1->buffer[4*(y*width+x)+3] * (in2->buffer[4*(y*width+x)+3] * (1.0f/255)));
 			out->buffer[4*(y*width+x)+0] = bound( 0, r, 255 );
 			out->buffer[4*(y*width+x)+1] = bound( 0, g, 255 );
 			out->buffer[4*(y*width+x)+2] = bound( 0, b, 255 );
@@ -1729,10 +1729,10 @@ static rgbdata_t *R_BiasImage( rgbdata_t *in, const vec4_t bias )
 	{
 		for( x = 0; x < width; x++ )
 		{
-			r = in->buffer[4*(y*width+x)+0] + (255 * bias[0]);
-			g = in->buffer[4*(y*width+x)+1] + (255 * bias[1]);
-			b = in->buffer[4*(y*width+x)+2] + (255 * bias[2]);
-			a = in->buffer[4*(y*width+x)+3] + (255 * bias[3]);
+			r = (int)(in->buffer[4*(y*width+x)+0] + (255 * bias[0]));
+			g = (int)(in->buffer[4*(y*width+x)+1] + (255 * bias[1]));
+			b = (int)(in->buffer[4*(y*width+x)+2] + (255 * bias[2]));
+			a = (int)(in->buffer[4*(y*width+x)+3] + (255 * bias[3]));
 			out->buffer[4*(y*width+x)+0] = bound( 0, r, 255 );
 			out->buffer[4*(y*width+x)+1] = bound( 0, g, 255 );
 			out->buffer[4*(y*width+x)+2] = bound( 0, b, 255 );
@@ -1766,10 +1766,10 @@ static rgbdata_t *R_ScaleImage( rgbdata_t *in, const vec4_t scale )
 	{
 		for( x = 0; x < width; x++ )
 		{
-			r = in->buffer[4*(y*width+x)+0] * scale[0];
-			g = in->buffer[4*(y*width+x)+1] * scale[1];
-			b = in->buffer[4*(y*width+x)+2] * scale[2];
-			a = in->buffer[4*(y*width+x)+3] * scale[3];
+			r = (int)(in->buffer[4*(y*width+x)+0] * scale[0]);
+			g = (int)(in->buffer[4*(y*width+x)+1] * scale[1]);
+			b = (int)(in->buffer[4*(y*width+x)+2] * scale[2]);
+			a = (int)(in->buffer[4*(y*width+x)+3] * scale[3]);
 			out->buffer[4*(y*width+x)+0] = bound( 0, r, 255 );
 			out->buffer[4*(y*width+x)+1] = bound( 0, g, 255 );
 			out->buffer[4*(y*width+x)+2] = bound( 0, b, 255 );
@@ -1956,7 +1956,7 @@ static rgbdata_t *R_MakeImageBlock( rgbdata_t *in, int block[4] )
 	yh = yl + h;
 
 	out = fout = Mem_Alloc( r_temppool, w * h * 4 );
-          
+
 	fin = in->buffer + (yl * in->width + xl) * 4;
 	linedelta = (in->width - w) * 4;
 
@@ -2299,7 +2299,7 @@ static rgbdata_t *R_MovePixels( rgbdata_t *in, qboolean alphaToColor )
 		for( i = 0; i < in->width * in->height; i++ )
 		{
 			// convert to grayscale
-			pic[(i<<2)+3] = (pic[(i<<2)+0] * 0.32f) + (pic[(i<<2)+0] * 0.59f) + (pic[(i<<2)+0] * 0.09f);
+			pic[(i<<2)+3] = (byte)((pic[(i<<2)+0] * 0.32f) + (pic[(i<<2)+0] * 0.59f) + (pic[(i<<2)+0] * 0.09f));
 			pic[(i<<2)+0] = pic[(i<<2)+1] = pic[(i<<2)+2] = 0x00; // clear RGB channels
 		}
 	}
@@ -2885,7 +2885,7 @@ static rgbdata_t *R_ParseStudioSkin( char **script, const byte *buf, size_t size
 		pic = R_LoadImage( script, va( "#%s.mdl", skinname ), buf, size, samples, flags );
 		if( !pic ) return NULL;
 		goto studio_done;
-          }
+		  }
 
 	FS_DefaultExtension( skinname, ".bmp" );
 	f = FS_Open( model_path, "rb", false );
@@ -2900,7 +2900,7 @@ static rgbdata_t *R_ParseStudioSkin( char **script, const byte *buf, size_t size
 	{
 		MsgDev( D_WARN, "'Studio' %s probably corrupted\n", model_path );
 		FS_Close( f );
-		return NULL;		
+		return NULL;
 	}
 
 	if( hdr.numtextures == 0 )
@@ -2919,7 +2919,7 @@ static rgbdata_t *R_ParseStudioSkin( char **script, const byte *buf, size_t size
 		{
 			MsgDev( D_WARN, "'Studio' %s probably corrupted\n", modelT_path );
 			FS_Close( f );
-			return NULL;		
+			return NULL;
 		}
 	}
 
@@ -2984,7 +2984,7 @@ static rgbdata_t *R_ParseStudioSkin( char **script, const byte *buf, size_t size
 	{
 		MsgDev( D_WARN, "'Studio' %s has invalid skin count\n", model_path );
 		FS_Close( f );
-		return NULL;		
+		return NULL;
 	}
 
 studio_done:
@@ -3089,14 +3089,14 @@ static rgbdata_t *R_ParseScrapBlock( char **script, int *samples, texFlags_t *fl
 			return NULL;
 		}
 
-		if((( i + 1 ) & 1 ) && block[i] > pic->width ) 
+		if((( i + 1 ) & 1 ) && block[i] > pic->width )
 		{
 			MsgDev( D_WARN, "invalid argument %i for 'block'\n", i + 1 );
 			FS_FreeImage( pic );
 			return NULL;
 		}
 
-		if((( i + 1 ) & 2 ) && block[i] > pic->height ) 
+		if((( i + 1 ) & 2 ) && block[i] > pic->height )
 		{
 			MsgDev( D_WARN, "invalid argument %i for 'block'\n", i + 1 );
 			FS_FreeImage( pic );
@@ -3420,7 +3420,7 @@ static rgbdata_t *R_ParseClearPixels( char **script, int *samples, texFlags_t *f
 		clearAlpha = false;	// clear color as default
 	}
 	else *script = COM_ParseFile( *script, token ); // skip unknown token
-	
+
 	if( Q_stricmp( token, ")" ))
 	{
 		MsgDev( D_WARN, "expected ')', found '%s' instead for 'clearPixels'\n", token );
@@ -3478,7 +3478,7 @@ static rgbdata_t *R_ParseMovePixels( char **script, int *samples, texFlags_t *fl
 		alphaToColor = true; // move alpha to color as default
 	}
 	else *script = COM_ParseFile( *script, token ); // skip unknown token
-	
+
 	if( Q_stricmp( token, ")" ))
 	{
 		MsgDev( D_WARN, "expected ')', found '%s' instead for 'movePixels'\n", token );
@@ -3539,7 +3539,7 @@ static rgbdata_t *R_LoadImage( char **script, const char *name, const byte *buf,
 	else if( !Q_stricmp( name, "Sprite" ))
 		return R_ParseSpriteFrame( script, buf, size, samples, flags );
 	else
-	{	
+	{
 		// loading form disk
 		rgbdata_t	*image = FS_LoadImage( name, buf, size );
 		if( image ) *samples = GL_CalcTextureSamples( image->flags );
@@ -3659,7 +3659,7 @@ static rgbdata_t *R_InitParticleTexture( texFlags_t *flags )
 		for( y = 0; y < 16; y++ )
 		{
 			dy = y - 8;
-			d = 255 - 35 * sqrt( dx2 + dy * dy );
+			d = 255 - (int)(35.f * sqrtf( dx2 + dy * dy ));
 			data2D[( y*16 + x ) * 4 + 3] = bound( 0, d, 255 );
 		}
 	}
@@ -3864,7 +3864,7 @@ static rgbdata_t *R_InitAttenTextureGamma( texFlags_t *flags, float gamma )
 
 	for( i = 0; i < r_image.width; i++ )
 	{
-		float atten = 255 - bound( 0, 255 * pow((i + 0.5f) / r_image.width, gamma ) + 0.5f, 255 );
+		float atten = 255 - bound( 0.f, 255 * powf((i + 0.5f) / r_image.width, gamma ) + 0.5f, 255.f );
 
 		// clear attenuation at ends to prevent light go outside
 		if( i == (r_image.width - 1) || i == 0 )
@@ -3937,7 +3937,7 @@ static rgbdata_t *R_InitAttenTexture3D( texFlags_t *flags )
 
 	size = 32;
 	halfsize = size / 2;
-	intensity = halfsize * halfsize;
+	intensity = (float)(halfsize * halfsize);
 	size2 = size * size;
 
 	for( x = 0; x < r_image.width; x++ )
@@ -3950,9 +3950,9 @@ static rgbdata_t *R_InitAttenTexture3D( texFlags_t *flags )
 				v[1] = (( y + 0.5f ) * ( 2.0f / (float)size ) - 1.0f );
 				if( r_image.depth > 1 ) v[2] = (( z + 0.5f ) * ( 2.0f / (float)size ) - 1.0f );
 
-				intensity = 1.0f - sqrt( DotProduct( v, v ) );
+				intensity = 1.0f - sqrtf( DotProduct( v, v ) );
 				if( intensity > 0 ) intensity = intensity * intensity * 215.5f;
-				d = bound( 0, intensity, 255 );
+				d = (int)bound( 0, intensity, 255 );
 
 				data2D[((z * size + y) * size + x) * 4 + 0] = d;
 				data2D[((z * size + y) * size + x) * 4 + 1] = d;
@@ -3969,7 +3969,7 @@ static rgbdata_t *R_InitAttenTexture3D( texFlags_t *flags )
 static rgbdata_t *R_InitDlightTexture( texFlags_t *flags )
 {
 	// solid color texture
-	r_image.width = BLOCK_SIZE_DEFAULT; 
+	r_image.width = BLOCK_SIZE_DEFAULT;
 	r_image.height = BLOCK_SIZE_DEFAULT;
 	r_image.flags = IMAGE_HAS_COLOR;
 	r_image.type = PF_RGBA_32;
@@ -3986,7 +3986,7 @@ static rgbdata_t *R_InitDlightTexture( texFlags_t *flags )
 static rgbdata_t *R_InitDlightTexture2( texFlags_t *flags )
 {
 	// solid color texture
-	r_image.width = BLOCK_SIZE_MAX; 
+	r_image.width = BLOCK_SIZE_MAX;
 	r_image.height = BLOCK_SIZE_MAX;
 	r_image.flags = IMAGE_HAS_COLOR;
 	r_image.type = PF_RGBA_32;
@@ -4082,7 +4082,7 @@ static rgbdata_t *R_InitDlightCubemap( texFlags_t *flags )
 			for( y = 0; y < size; y++ )
 			{
 				dy = y - size / 2;
-				d = 255 - 35 * sqrt( dx2 + dy * dy );
+				d = 255 - (int)(35.f * sqrtf( dx2 + dy * dy ));
 				dataCM[( y * size + x ) * 4 + 0] = bound( 0, d, 255 );
 				dataCM[( y * size + x ) * 4 + 1] = bound( 0, d, 255 );
 				dataCM[( y * size + x ) * 4 + 2] = bound( 0, d, 255 );

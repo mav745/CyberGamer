@@ -1051,7 +1051,7 @@ void R_SaveVideoMode( int vid_mode )
 
 	Cvar_FullSet( "width", va( "%i", vidmode[mode].width ), CVAR_READ_ONLY );
 	Cvar_FullSet( "height", va( "%i", vidmode[mode].height ), CVAR_READ_ONLY );
-	Cvar_SetFloat( "vid_mode", mode ); // merge if it out of bounds
+	Cvar_SetFloat( "vid_mode", (float)mode ); // merge if it out of bounds
 
 	MsgDev( D_NOTE, "Set: %s [%dx%d]\n", vidmode[mode].desc, vidmode[mode].width, vidmode[mode].height );
 }
@@ -1065,7 +1065,7 @@ qboolean R_DescribeVIDMode( int width, int height )
 		if( vidmode[i].width == width && vidmode[i].height == height )
 		{
 			// found specified mode
-			Cvar_SetFloat( "vid_mode", i );
+			Cvar_SetFloat( "vid_mode", (float)i );
 			return true;
 		}
 	}
@@ -1379,7 +1379,7 @@ qboolean VID_SetMode( void )
 		}
 		else if( err == rserr_invalid_mode )
 		{
-			Cvar_SetFloat( "vid_mode", glConfig.prev_mode );
+			Cvar_SetFloat( "vid_mode", (float)glConfig.prev_mode );
 			MsgDev( D_ERROR, "VID_SetMode: invalid mode\n" );
 		}
 

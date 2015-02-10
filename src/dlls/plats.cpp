@@ -62,37 +62,37 @@ void CBasePlatTrain :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "lip"))
 	{
-		m_flLip = atof(pkvd->szValue);
+		m_flLip = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = atof(pkvd->szValue);
+		m_flWait = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "height"))
 	{
-		m_flHeight = atof(pkvd->szValue);
+		m_flHeight = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "rotation"))
 	{
-		m_vecFinalAngle.x = atof(pkvd->szValue);
+		m_vecFinalAngle.x = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "movesnd"))
 	{
-		m_bMoveSnd = atof(pkvd->szValue);
+		m_bMoveSnd = (BYTE)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "stopsnd"))
 	{
-		m_bStopSnd = atof(pkvd->szValue);
+		m_bStopSnd = (BYTE)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_volume = atof(pkvd->szValue);
+		m_volume = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -678,7 +678,7 @@ void CFuncTrain :: Blocked( CBaseEntity *pOther )
 	if ( gpGlobals->time < m_flActivateFinished)
 		return;
 
-	m_flActivateFinished = gpGlobals->time + 0.5;
+	m_flActivateFinished = gpGlobals->time + 0.5f;
 
 	pOther->TakeDamage(pev, pev, pev->dmg, DMG_CRUSH);
 }
@@ -819,11 +819,11 @@ void CFuncTrain :: Activate( void )
 		pev->target = pevTarg->target;
 		m_pevCurrentTarget = pevTarg;// keep track of this since path corners change our target for us.
 
-		UTIL_SetOrigin	(pev, pevTarg->origin - (pev->mins + pev->maxs) * 0.5 );
+		UTIL_SetOrigin	(pev, pevTarg->origin - (pev->mins + pev->maxs) * 0.5f );
 
 		if ( FStringNull(pev->targetname) )
 		{	// not triggered, so start immediately
-			pev->nextthink = pev->ltime + 0.1;
+			pev->nextthink = pev->ltime + 0.1f;
 			SetThink( &CFuncTrain::Next );
 		}
 		else
@@ -921,7 +921,7 @@ void CFuncTrain::OverrideReset( void )
 		else	// Keep moving for 0.1 secs, then find path_corner again and restart
 		{
 			SetThink( &CFuncTrain::Next );
-			pev->nextthink = pev->ltime + 0.1;
+			pev->nextthink = pev->ltime + 0.1f;
 		}
 	}
 }
@@ -958,17 +958,17 @@ void CFuncTrackTrain :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "wheels"))
 	{
-		m_length = atof(pkvd->szValue);
+		m_length = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "height"))
 	{
-		m_height = atof(pkvd->szValue);
+		m_height = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "startspeed"))
 	{
-		m_startSpeed = atof(pkvd->szValue);
+		m_startSpeed = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "sounds"))
@@ -978,13 +978,13 @@ void CFuncTrackTrain :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_flVolume = (float) (atoi(pkvd->szValue));
-		m_flVolume *= 0.1;
+		m_flVolume = (float)atoi(pkvd->szValue);
+		m_flVolume *= 0.1f;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "bank"))
 	{
-		m_flBank = atof(pkvd->szValue);
+		m_flBank = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1054,7 +1054,7 @@ void CFuncTrackTrain :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_
 	{
 		float delta = value;
 
-		delta = ((int)(pev->speed * 4) / (int)m_speed)*0.25 + 0.25 * delta;
+		delta = ((int)(pev->speed * 4) / (int)m_speed)*0.25f + 0.25f * delta;
 		if ( delta > 1 )
 			delta = 1;
 		else if ( delta < -1 )
@@ -1184,7 +1184,7 @@ void CFuncTrackTrain :: Next( void )
 	Vector nextPos = pev->origin;
 
 	nextPos.z -= m_height;
-	CPathTrack *pnext = m_ppath->LookAhead( &nextPos, pev->speed * 0.1, 1 );
+	CPathTrack *pnext = m_ppath->LookAhead( &nextPos, pev->speed * 0.1f, 1 );
 	nextPos.z += m_height;
 
 	pev->velocity = (nextPos - pev->origin) * 10;
@@ -1401,7 +1401,7 @@ void CFuncTrackTrain :: Find( void )
 	if ( pev->spawnflags & SF_TRACKTRAIN_NOPITCH )
 		pev->angles.x = 0;
 	UTIL_SetOrigin( pev, nextPos );
-	NextThink( pev->ltime + 0.1, FALSE );
+	NextThink( pev->ltime + 0.1f, FALSE );
 	SetThink( &CFuncTrackTrain::Next );
 	pev->speed = m_startSpeed;
 
@@ -1451,7 +1451,7 @@ void CFuncTrackTrain :: NearestPath( void )
 
 	if ( pev->speed != 0 )
 	{
-		NextThink( pev->ltime + 0.1, FALSE );
+		NextThink( pev->ltime + 0.1f, FALSE );
 		SetThink( &CFuncTrackTrain::Next );
 	}
 }
@@ -1459,7 +1459,7 @@ void CFuncTrackTrain :: NearestPath( void )
 
 void CFuncTrackTrain::OverrideReset( void )
 {
-	NextThink( pev->ltime + 0.1, FALSE );
+	NextThink( pev->ltime + 0.1f, FALSE );
 	SetThink( &CFuncTrackTrain::NearestPath );
 }
 
@@ -1485,14 +1485,14 @@ sounds
 void CFuncTrackTrain :: Spawn( void )
 {
 	if ( pev->speed == 0 )
-		m_speed = 100;
+		m_speed = 100.f;
 	else
 		m_speed = pev->speed;
 
-	pev->speed = 0;
+	pev->speed = 0.f;
 	pev->velocity = g_vecZero;
 	pev->avelocity = g_vecZero;
-	pev->impulse = m_speed;
+	pev->impulse = (int)m_speed;
 
 	m_dir = 1;
 
@@ -1518,15 +1518,15 @@ void CFuncTrackTrain :: Spawn( void )
 	m_controlMaxs.z += 72;
 // start trains on the next frame, to make sure their targets have had
 // a chance to spawn/activate
-	NextThink( pev->ltime + 0.1, FALSE );
+	NextThink( pev->ltime + 0.1f, FALSE );
 	SetThink( &CFuncTrackTrain::Find );
 	Precache();
 }
 
 void CFuncTrackTrain :: Precache( void )
 {
-	if (m_flVolume == 0.0)
-		m_flVolume = 1.0;
+	if (m_flVolume == 0.0f)
+		m_flVolume = 1.0f;
 
 	switch (m_sounds)
 	{
@@ -1700,7 +1700,7 @@ void CFuncTrackChange :: Spawn( void )
 	}
 
 	EnableUse();
-	pev->nextthink = pev->ltime + 2.0;
+	pev->nextthink = pev->ltime + 2.0f;
 	SetThink( &CFuncTrackTrain::Find );
 	Precache();
 }
@@ -1751,7 +1751,7 @@ void CFuncTrackChange :: KeyValue( KeyValueData *pkvd )
 
 void CFuncTrackChange::OverrideReset( void )
 {
-	pev->nextthink = pev->ltime + 1.0;
+	pev->nextthink = pev->ltime + 1.0f;
 	SetThink( &CFuncTrackTrain::Find );
 }
 
@@ -1847,7 +1847,7 @@ void CFuncTrackChange :: UpdateTrain( Vector &dest )
 	local.z = DotProduct( offset, gpGlobals->v_up );
 
 	local = local - offset;
-	m_train->pev->velocity = pev->velocity + (local * (1.0/time));
+	m_train->pev->velocity = pev->velocity + (local * (1.0f/time));
 }
 
 void CFuncTrackChange :: GoDown( void )
@@ -2161,7 +2161,7 @@ void CGunTarget::Spawn( void )
 	if ( pev->spawnflags & FGUNTARGET_START_ON )
 	{
 		SetThink( &CGunTarget::Start );
-		pev->nextthink = pev->ltime + 0.3;
+		pev->nextthink = pev->ltime + 0.3f;
 	}
 }
 
@@ -2175,7 +2175,7 @@ void CGunTarget::Activate( void )
 	if ( pTarg )
 	{
 		m_hTargetEnt = pTarg;
-		UTIL_SetOrigin( pev, pTarg->pev->origin - (pev->mins + pev->maxs) * 0.5 );
+		UTIL_SetOrigin( pev, pTarg->pev->origin - (pev->mins + pev->maxs) * 0.5f );
 	}
 }
 

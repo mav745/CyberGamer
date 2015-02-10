@@ -318,7 +318,7 @@ void CBaseMonster :: Look ( int iDistance )
 	{
 		CBaseEntity *pList[100];
 
-		Vector delta = Vector( iDistance, iDistance, iDistance );
+		Vector delta = Vector( (float)iDistance, (float)iDistance, (float)iDistance );
 
 		// Find only monsters/clients in box, NOT limited to PVS
 		int count = UTIL_EntitiesInBox( pList, 100, pev->origin - delta, pev->origin + delta, FL_CLIENT|FL_MONSTER );
@@ -521,7 +521,7 @@ CSound* CBaseMonster :: PBestScent ( void )
 //=========================================================
 void CBaseMonster :: MonsterThink ( void )
 {
-	pev->nextthink = gpGlobals->time + 0.1;// keep monster thinking.
+	pev->nextthink = gpGlobals->time + 0.1f;// keep monster thinking.
 
 
 	RunAI();
@@ -1081,7 +1081,7 @@ int CBaseMonster :: CheckEnemy ( CBaseEntity *pEnemy )
 	Vector vecEnemyPos = pEnemy->pev->origin;
 	// distance to enemy's origin
 	flDistToEnemy = ( vecEnemyPos - pev->origin ).Length();
-	vecEnemyPos.z += pEnemy->pev->size.z * 0.5;
+	vecEnemyPos.z += pEnemy->pev->size.z * 0.5f;
 	// distance to enemy's head
 	float flDistToEnemy2 = (vecEnemyPos - pev->origin).Length();
 	if (flDistToEnemy2 < flDistToEnemy)
@@ -1847,7 +1847,7 @@ void CBaseMonster :: Move ( float flInterval )
 	flWaypointDist = ( m_Route[ m_iRouteIndex ].vecLocation - pev->origin ).Length2D();
 
 	MakeIdealYaw ( m_Route[ m_iRouteIndex ].vecLocation );
-	ChangeYaw ( pev->yaw_speed );
+	ChangeYaw ( (int)pev->yaw_speed );
 
 	// if the waypoint is closer than CheckDist, CheckDist is the dist to waypoint
 	if ( flWaypointDist < DIST_TO_CHECK )
@@ -1920,10 +1920,10 @@ void CBaseMonster :: Move ( float flInterval )
 					else
 					{
 						// Don't get stuck
-						if ( (gpGlobals->time - m_flMoveWaitFinished) < 0.2 )
+						if ( (gpGlobals->time - m_flMoveWaitFinished) < 0.2f )
 							Remember( bits_MEMORY_MOVE_FAILED );
 
-						m_flMoveWaitFinished = gpGlobals->time + 0.1;
+						m_flMoveWaitFinished = gpGlobals->time + 0.1f;
 					}
 				}
 				else
@@ -1988,10 +1988,10 @@ void CBaseMonster::MoveExecute( CBaseEntity *pTargetEnt, const Vector &vecDir, f
 
 	float flTotal = m_flGroundSpeed * pev->framerate * flInterval;
 	float flStep;
-	while (flTotal > 0.001)
+	while (flTotal > 0.001f)
 	{
 		// don't walk more than 16 units or stairs stop working
-		flStep = min( 16.0, flTotal );
+		flStep = min( 16.0f, flTotal );
 		UTIL_MoveToOrigin ( ENT(pev), m_Route[ m_iRouteIndex ].vecLocation, flStep, MOVE_NORMAL );
 		flTotal -= flStep;
 	}
@@ -2040,14 +2040,14 @@ void CBaseMonster :: MonsterInit ( void )
 
 	m_hEnemy			= NULL;
 
-	m_flDistTooFar		= 1024.0;
-	m_flDistLook		= 2048.0;
+	m_flDistTooFar		= 1024.0f;
+	m_flDistLook		= 2048.0f;
 
 	// set eye position
 	SetEyePosition();
 
 	SetThink( &CBaseMonster::MonsterInitThink );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	SetUse ( &CBaseMonster::MonsterUse );
 }
 
@@ -2255,7 +2255,7 @@ BOOL CBaseMonster :: FindCover ( Vector vecThreat, Vector vecViewOffset, float f
 #if _DEBUG
 		ALERT ( at_console, "FindCover MinDist (%.0f) too close to MaxDist (%.0f)\n", flMinDist, flMaxDist );
 #endif
-		flMinDist = 0.5 * flMaxDist;
+		flMinDist = 0.5f * flMaxDist;
 	}
 
 	if ( !WorldGraph.m_fGraphPresent || !WorldGraph.m_fGraphPointersSet )
@@ -2355,12 +2355,12 @@ BOOL CBaseMonster :: BuildNearestRoute ( Vector vecThreat, Vector vecViewOffset,
 		flMaxDist = 784;
 	}
 
-	if ( flMinDist > 0.5 * flMaxDist)
+	if ( flMinDist > 0.5f * flMaxDist)
 	{
 #if _DEBUG
 		ALERT ( at_console, "FindCover MinDist (%.0f) too close to MaxDist (%.0f)\n", flMinDist, flMaxDist );
 #endif
-		flMinDist = 0.5 * flMaxDist;
+		flMinDist = 0.5f * flMaxDist;
 	}
 
 	if ( !WorldGraph.m_fGraphPresent || !WorldGraph.m_fGraphPointersSet )
@@ -2450,7 +2450,7 @@ CBaseEntity *CBaseMonster :: BestVisibleEnemy ( void )
 				// currently think is the best visible enemy. No need to do
 				// a distance check, just get mad at this one for now.
 				iBestRelationship = IRelationship ( pNextEnt );
-				iNearest = ( pNextEnt->pev->origin - pev->origin ).Length();
+				iNearest = (int)(( pNextEnt->pev->origin - pev->origin ).Length());
 				pReturn = pNextEnt;
 			}
 			else if ( IRelationship( pNextEnt) == iBestRelationship )
@@ -2458,7 +2458,7 @@ CBaseEntity *CBaseMonster :: BestVisibleEnemy ( void )
 				// this entity is disliked just as much as the entity that
 				// we currently think is the best visible enemy, so we only
 				// get mad at it if it is closer.
-				iDist = ( pNextEnt->pev->origin - pev->origin ).Length();
+				iDist = (int)(( pNextEnt->pev->origin - pev->origin ).Length());
 
 				if ( iDist <= iNearest )
 				{
@@ -3253,7 +3253,7 @@ void CBaseMonster::PlayScriptedSentence( const char *pszSentence, float duration
 
 void CBaseMonster::SentenceStop( void )
 {
-	EMIT_SOUND( edict(), CHAN_VOICE, "common/null.wav", 1.0, ATTN_IDLE );
+	EMIT_SOUND( edict(), CHAN_VOICE, "common/null.wav", 1.0f, ATTN_IDLE );
 }
 
 
@@ -3267,7 +3267,7 @@ void CBaseMonster::CorpseFallThink( void )
 		UTIL_SetOrigin( pev, pev->origin );// link into world.
 	}
 	else
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 // Call after animation/pose is set up
@@ -3292,7 +3292,7 @@ void CBaseMonster :: MonsterInitDead( void )
 	// Setup health counters, etc.
 	BecomeDead();
 	SetThink( &CBaseMonster::CorpseFallThink );
-	pev->nextthink = gpGlobals->time + 0.5;
+	pev->nextthink = gpGlobals->time + 0.5f;
 }
 
 //=========================================================

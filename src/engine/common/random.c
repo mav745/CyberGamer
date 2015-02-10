@@ -31,7 +31,7 @@ static long idum = 0;
 void COM_SetRandomSeed( long lSeed )
 {
 	if( lSeed ) idum = lSeed;
-	else idum = -time( NULL );
+	else idum = -(long)time( NULL );
 
 	if( 1000 < idum )
 		idum = -idum;
@@ -46,7 +46,7 @@ long lran1( void )
 
 	static long iy = 0;
 	static long iv[NTAB];
-	
+
 	if( idum <= 0 || !iy )
 	{
 		if(-(idum) < 1) idum=1;
@@ -94,7 +94,7 @@ float Com_RandomFloat( float flLow, float flHigh )
 long Com_RandomLong( long lLow, long lHigh )
 {
 	dword	maxAcceptable;
-	dword	n, x = lHigh-lLow + 1; 	
+	dword	n, x = lHigh-lLow + 1;
 
 	if( idum == 0 ) COM_SetRandomSeed(0);
 

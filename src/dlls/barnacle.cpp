@@ -138,7 +138,7 @@ void CBarnacle :: Spawn()
 	SetActivity ( ACT_IDLE );
 
 	SetThink ( &CBarnacle::BarnacleThink );
-	pev->nextthink = gpGlobals->time + 0.5;
+	pev->nextthink = gpGlobals->time + 0.5f;
 
 	UTIL_SetOrigin ( pev, pev->origin );
 }
@@ -169,7 +169,7 @@ void CBarnacle :: BarnacleThink ( void )
 		UTIL_SetOrigin( pev, pev->origin );
 	}
 #endif
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	if ( m_hEnemy != NULL )
 	{
@@ -199,8 +199,8 @@ void CBarnacle :: BarnacleThink ( void )
 			vecNewEnemyOrigin.y = pev->origin.y;
 
 			// guess as to where their neck is
-			vecNewEnemyOrigin.x -= 6 * cos(m_hEnemy->pev->angles.y * M_PI/180.0);
-			vecNewEnemyOrigin.y -= 6 * sin(m_hEnemy->pev->angles.y * M_PI/180.0);
+			vecNewEnemyOrigin.x -= static_cast<float>(6. * cos(m_hEnemy->pev->angles.y * M_PI/180.));
+			vecNewEnemyOrigin.y -= static_cast<float>(6. * sin(m_hEnemy->pev->angles.y * M_PI/180.));
 
 			m_flAltitude -= BARNACLE_PULL_SPEED;
 			vecNewEnemyOrigin.z += BARNACLE_PULL_SPEED;
@@ -367,9 +367,9 @@ void CBarnacle :: Killed( entvars_t *pevAttacker, int iGib )
 	SetActivity ( ACT_DIESIMPLE );
 	SetBoneController( 0, 0 );
 
-	StudioFrameAdvance( 0.1 );
+	StudioFrameAdvance( 0.1f );
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 	SetThink ( &CBarnacle::WaitTillDead );
 }
 
@@ -377,9 +377,9 @@ void CBarnacle :: Killed( entvars_t *pevAttacker, int iGib )
 //=========================================================
 void CBarnacle :: WaitTillDead ( void )
 {
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
-	float flInterval = StudioFrameAdvance( 0.1 );
+	float flInterval = StudioFrameAdvance( 0.1f );
 	DispatchAnimEvents ( flInterval );
 
 	if ( m_fSequenceFinished )

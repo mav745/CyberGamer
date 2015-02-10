@@ -66,36 +66,36 @@ void R_AnimateLight( void )
 
 		if( !ls->length )
 		{
-			RI.lightstylevalue[i] = 256 * scale;
+			RI.lightstylevalue[i] = (int)(256 * scale);
 			RI.lightcache[i] = 3.0f * scale;
 			continue;
 		}
 		else if( ls->length == 1 )
 		{
 			// single length style so don't bother interpolating
-			RI.lightstylevalue[i] = ls->map[0] * 22 * scale;
+			RI.lightstylevalue[i] = (int)(ls->map[0] * 22 * scale);
 			RI.lightcache[i] = ( ls->map[0] / 12.0f ) * 3.0f * scale;
 			continue;
 		}
 		else if( !ls->interp || !cl_lightstyle_lerping->integer )
 		{
-			RI.lightstylevalue[i] = ls->map[flight%ls->length] * 22 * scale;
+			RI.lightstylevalue[i] = (int)(ls->map[flight%ls->length] * 22 * scale);
 			RI.lightcache[i] = ( ls->map[flight%ls->length] / 12.0f ) * 3.0f * scale;
 			continue;
 		}
 
 		// interpolate animating light
 		// frame just gone
-		k = ls->map[flight % ls->length];
+		k = (int)ls->map[flight % ls->length];
 		l = (float)( k * 22.0f ) * backlerp;
 		c = (float)( k / 12.0f ) * backlerp;
 
 		// upcoming frame
-		k = ls->map[clight % ls->length];
+		k = (int)ls->map[clight % ls->length];
 		l += (float)( k * 22.0f ) * lerpfrac;
 		c += (float)( k / 12.0f ) * lerpfrac;
 
-		RI.lightstylevalue[i] = (int)l * scale;
+		RI.lightstylevalue[i] = (int)(floorf(l) * scale);
 		RI.lightcache[i] = c * 3.0f * scale;
 	}
 }
@@ -110,7 +110,7 @@ void R_MarkLights( dlight_t *light, int bit, mnode_t *node )
 	float		dist;
 	msurface_t	*surf;
 	int		i;
-	
+
 	if( node->contents < 0 )
 		return;
 
@@ -126,7 +126,7 @@ void R_MarkLights( dlight_t *light, int bit, mnode_t *node )
 		R_MarkLights( light, bit, node->children[1] );
 		return;
 	}
-		
+
 	// mark the polygons
 	surf = RI.currentmodel->surfaces + node->firstsurface;
 
@@ -258,7 +258,7 @@ static qboolean R_RecursiveLightPoint( model_t *model, mnode_t *node, const vec3
 
 	VectorLerp( start, frac, end, mid );
 
-	// co down front side	
+	// co down front side
 	if( R_RecursiveLightPoint( model, node->children[side], start, mid ))
 		return true; // hit something
 
@@ -277,8 +277,8 @@ static qboolean R_RecursiveLightPoint( model_t *model, mnode_t *node, const vec3
 		if( surf->flags & ( SURF_DRAWSKY|SURF_DRAWTURB ))
 			continue;	// no lightmaps
 
-		s = DotProduct( mid, tex->vecs[0] ) + tex->vecs[0][3] - surf->texturemins[0];
-		t = DotProduct( mid, tex->vecs[1] ) + tex->vecs[1][3] - surf->texturemins[1];
+		s = (int)(DotProduct( mid, tex->vecs[0] ) + tex->vecs[0][3] - surf->texturemins[0]);
+		t = (int)(DotProduct( mid, tex->vecs[1] ) + tex->vecs[1][3] - surf->texturemins[1]);
 
 		if(( s < 0 || s > surf->extents[0] ) || ( t < 0 || t > surf->extents[1] ))
 			continue;
@@ -346,9 +346,9 @@ void R_LightForPoint( const vec3_t point, color24 *ambientLight, qboolean invLig
 	// set to full bright if no light data
 	if( !cl.worldmodel || !cl.worldmodel->lightdata )
 	{
-		ambientLight->r = TextureToTexGamma( cl.refdef.movevars->skycolor_r );
-		ambientLight->g = TextureToTexGamma( cl.refdef.movevars->skycolor_g );
-		ambientLight->b = TextureToTexGamma( cl.refdef.movevars->skycolor_b );
+		ambientLight->r = TextureToTexGamma( (byte)cl.refdef.movevars->skycolor_r );
+		ambientLight->g = TextureToTexGamma( (byte)cl.refdef.movevars->skycolor_g );
+		ambientLight->b = TextureToTexGamma( (byte)cl.refdef.movevars->skycolor_b );
 		return;
 	}
 
@@ -425,9 +425,9 @@ get_light:
 		// R_RecursiveLightPoint didn't hit anything, so use default value
 		ambient = bound( 0.1f, r_lighting_ambient->value, 1.0f );
 		if( !useAmbient ) ambient = 0.0f; // clear ambient
-		ambientLight->r = 255 * ambient;
-		ambientLight->g = 255 * ambient;
-		ambientLight->b = 255 * ambient;
+		ambientLight->r = (byte)(255 * ambient);
+		ambientLight->g = (byte)(255 * ambient);
+		ambientLight->b = (byte)(255 * ambient);
 	}
 
 	if( ambientLight->r == 0 && ambientLight->g == 0 && ambientLight->b == 0 && !secondpass )
@@ -441,7 +441,7 @@ get_light:
 	// add dynamic lights
 	if( radius && r_dynamic->integer )
 	{
-		int	lnum, total; 
+		int	lnum, total;
 		float	f;
 
 		VectorClear( r_pointColor );
@@ -458,9 +458,9 @@ get_light:
 				continue;
 
 			add = 1.0f - (dist / ( dl->radius + radius ));
-			r_pointColor[0] += TextureToTexGamma( dl->color.r ) * add;
-			r_pointColor[1] += TextureToTexGamma( dl->color.g ) * add;
-			r_pointColor[2] += TextureToTexGamma( dl->color.b ) * add;
+			r_pointColor[0] += (uint)((float)TextureToTexGamma( dl->color.r ) * add);
+			r_pointColor[1] += (uint)((float)TextureToTexGamma( dl->color.g ) * add);
+			r_pointColor[2] += (uint)((float)TextureToTexGamma( dl->color.b ) * add);
 			total++;
 		}
 
@@ -470,8 +470,8 @@ get_light:
 			r_pointColor[1] += ambientLight->g;
 			r_pointColor[2] += ambientLight->b;
 
-			f = max( max( r_pointColor[0], r_pointColor[1] ), r_pointColor[2] );
-			if( f > 1.0f ) VectorScale( r_pointColor, ( 255.0f / f ), r_pointColor );
+			f = (float)max( max( r_pointColor[0], r_pointColor[1] ), r_pointColor[2] );
+			if( f > 1.0f ) VectorScale( r_pointColor, (uint)( 255.0f / f ), r_pointColor );
 
 			ambientLight->r = r_pointColor[0];
 			ambientLight->g = r_pointColor[1];

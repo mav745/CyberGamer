@@ -254,7 +254,7 @@ int UI_FadeAlpha( int starttime, int endtime )
 		return 0xFFFFFFFF;
 	}
 
-	time = ( gpGlobals->time * 1000 ) - starttime;
+	time = (int)( gpGlobals->time * 1000.f ) - starttime;
 
 	if( time >= endtime )
 	{
@@ -269,7 +269,10 @@ int UI_FadeAlpha( int starttime, int endtime )
 
 	// fade out
 	if(( endtime - time ) < fade_time )
-		alpha = bound( 0, (( endtime - time ) * 1.0f / fade_time ) * 255, 255 );
+	{
+		int a1 = (int)((( endtime - time ) * 1.0 / fade_time ) * 255.);
+		alpha = bound( 0, a1, 255 );
+	}
 	else alpha = 255;
 
 	return PackRGBA( 255, 255, 255, alpha );
@@ -714,7 +717,7 @@ void UI_ScrollList_Draw( menuScrollList_s *sl )
 			{
 				int	color;
 
-				color = PackAlpha( sl->generic.color, 255 * (0.5 + 0.5 * sin( static_cast<float>(uiStatic.realTime / UI_PULSE_DIVISOR) )));
+				color = PackAlpha( sl->generic.color, (unsigned)(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 
 				UI_DrawPic( upX, upY, arrowWidth, arrowHeight, (upFocus) ? color : sl->generic.color, (upFocus) ? sl->upArrowFocus : sl->upArrow );
 				UI_DrawPic( downX, downY, arrowWidth, arrowHeight, (downFocus) ? color : sl->generic.color, (downFocus) ? sl->downArrowFocus : sl->downArrow );
@@ -763,7 +766,7 @@ void UI_ScrollList_Draw( menuScrollList_s *sl )
 		{
 			int	color;
 
-			color = PackAlpha( sl->generic.color, 255 * (0.5 + 0.5 * sin( static_cast<float>(uiStatic.realTime / UI_PULSE_DIVISOR) )));
+			color = PackAlpha( sl->generic.color, (unsigned)(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 
 			UI_DrawString( x, y, w, h, sl->itemNames[i], color, false, sl->generic.charWidth, sl->generic.charHeight, justify, shadow );
 		}
@@ -1007,7 +1010,7 @@ void UI_SpinControl_Draw( menuSpinControl_s *sc )
 	{
 		int	color;
 
-		color = PackAlpha( sc->generic.color, 255 * (0.5 + 0.5 * sin( static_cast<float>(uiStatic.realTime / UI_PULSE_DIVISOR) )));
+		color = PackAlpha( sc->generic.color, (int)(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 
 		UI_DrawString( x, y, w, h, sc->generic.name, color, false, sc->generic.charWidth, sc->generic.charHeight, justify, shadow );
 		UI_DrawPic( leftX, leftY, arrowWidth, arrowHeight, (leftFocus) ? color : sc->generic.color, (leftFocus) ? sc->leftArrowFocus : sc->leftArrow );
@@ -1073,7 +1076,7 @@ void UI_Slider_Init( menuSlider_s *sl )
 	sl->generic.y2 -= uiStatic.sliderWidth;
 
 	sl->drawStep = (sl->generic.width - sl->generic.width2) / ((sl->maxValue - sl->minValue) / sl->range);
-	sl->numSteps = ((sl->maxValue - sl->minValue) / sl->range) + 1;
+	sl->numSteps = (int)(((sl->maxValue - sl->minValue) / sl->range) + 1);
 }
 
 /*
@@ -1104,7 +1107,7 @@ const char *UI_Slider_Key( menuSlider_s *sl, int key, int down )
 			return uiSoundNull;
 
 		// find the current slider position
-		sliderX = sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps));
+		sliderX = (int)(sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps)));
 					if( UI_CursorInRect( sliderX, sl->generic.y2, sl->generic.width2, sl->generic.height ))
 					{
 			sl->keepSlider = true;
@@ -1164,12 +1167,12 @@ void UI_Slider_Draw( menuSlider_s *sl )
 	sl->curValue = bound( sl->minValue, sl->curValue, sl->maxValue );
 
 	// calc slider position
-	sliderX = sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps));
+	sliderX = (int)(sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps)));
 
 	UI_DrawRectangleExt( sl->generic.x, sl->generic.y + uiStatic.sliderWidth, sl->generic.width, sl->generic.height2, uiInputBgColor, uiStatic.sliderWidth );
 	UI_DrawPic( sliderX, sl->generic.y2, sl->generic.width2, sl->generic.height, uiColorWhite, UI_SLIDER_MAIN );
 
-	textHeight = sl->generic.y - (sl->generic.charHeight * 1.5f);
+	textHeight = (int)(sl->generic.y - (sl->generic.charHeight * 1.5f));
 	UI_DrawString( sl->generic.x, textHeight, sl->generic.width, sl->generic.charHeight, sl->generic.name, uiColorHelp, true, sl->generic.charWidth, sl->generic.charHeight, justify, shadow );
 }
 
@@ -1291,7 +1294,7 @@ void UI_CheckBox_Draw( menuCheckBox_s *cb )
 	shadow = (cb->generic.flags & QMF_DROPSHADOW);
 
 	y = cb->generic.y + (cb->generic.height>>2);
-	textOffset = cb->generic.x + (cb->generic.width * 1.7f);
+	textOffset = (int)(cb->generic.x + (cb->generic.width * 1.7f));
 	UI_DrawString( textOffset, y, strlen( cb->generic.name ) * cb->generic.charWidth, cb->generic.charHeight, cb->generic.name, uiColorHelp, true, cb->generic.charWidth, cb->generic.charHeight, justify, shadow );
 
 	if( cb->generic.statusText && cb->generic.flags & QMF_NOTIFY )
@@ -1676,7 +1679,7 @@ void UI_Field_Draw( menuField_s *f )
 		UI_DrawRectangle( f->generic.x, f->generic.y, f->generic.width, f->generic.height, uiInputFgColor );
 	}
 
-	textHeight = f->generic.y - (f->generic.charHeight * 1.5f);
+	textHeight = (int)(f->generic.y - (f->generic.charHeight * 1.5f));
 	UI_DrawString( f->generic.x, textHeight, f->generic.width, f->generic.charHeight, f->generic.name, uiColorHelp, true, f->generic.charWidth, f->generic.charHeight, 0, shadow );
 
 	if( f->generic.flags & QMF_GRAYED )
@@ -1710,7 +1713,7 @@ void UI_Field_Draw( menuField_s *f )
 	{
 		int	color;
 
-		color = PackAlpha( f->generic.color, 255 * (0.5 + 0.5 * sin( static_cast<float>(uiStatic.realTime / UI_PULSE_DIVISOR) )));
+		color = PackAlpha( f->generic.color, (unsigned)(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 		UI_DrawString( f->generic.x, f->generic.y, f->generic.width, f->generic.height, text, color, false, f->generic.charWidth, f->generic.charHeight, justify, shadow );
 
 		if(( uiStatic.realTime & 499 ) < 250 )
@@ -1771,7 +1774,7 @@ void UI_Action_Init( menuAction_s *a )
 				a->generic.width = a->generic.charWidth * strlen( a->generic.name );
 
 			if( a->generic.height < 1 )
-				a->generic.height = a->generic.charHeight * 1.5;
+				a->generic.height = (int)(a->generic.charHeight * 1.5f);
 		}
 	}
 
@@ -1896,7 +1899,7 @@ void UI_Action_Draw( menuAction_s *a )
 	{
 		int	color;
 
-		color = PackAlpha( a->generic.color, 255 * (0.5 + 0.5 * sin( static_cast<float>(uiStatic.realTime / UI_PULSE_DIVISOR) )));
+		color = PackAlpha( a->generic.color, (unsigned)(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 
 		UI_DrawString( a->generic.x, a->generic.y, a->generic.width, a->generic.height, a->generic.name, color, false, a->generic.charWidth, a->generic.charHeight, justify, shadow );
 	}
@@ -2027,7 +2030,7 @@ void UI_Bitmap_Draw( menuBitmap_s *b )
 	{
 		int	color;
 
-		color = PackAlpha( b->generic.color, 255 * (0.5 + 0.5 * sin( static_cast<float>(uiStatic.realTime / UI_PULSE_DIVISOR) )));
+		color = PackAlpha( b->generic.color, (unsigned)(255 * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 		UI_DrawPic( b->generic.x, b->generic.y, b->generic.width, b->generic.height, color, b->focusPic );
 	}
 
@@ -2072,7 +2075,7 @@ void UI_PicButton_Init( menuPicButton_s *pb )
 			pb->generic.width = pb->generic.charWidth * strlen( pb->generic.name );
 
 		if( pb->generic.height < 1 )
-			pb->generic.height = pb->generic.charHeight * 1.5;
+			pb->generic.height = (int)(pb->generic.charHeight * 1.5f);
 	}
 
 	UI_ScaleCoords( &pb->generic.x, &pb->generic.y, &pb->generic.width, &pb->generic.height );
@@ -2229,7 +2232,7 @@ void UI_PicButton_Draw( menuPicButton_s *item )
 		{
 			int	color;
 
-			color = PackAlpha( item->generic.color, 255 * (0.5 + 0.5 * sin( static_cast<float>(uiStatic.realTime / UI_PULSE_DIVISOR) )));
+			color = PackAlpha( item->generic.color, (unsigned)(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 
 			UI_DrawString( item->generic.x, item->generic.y, item->generic.width, item->generic.height, item->generic.name, color, false, item->generic.charWidth, item->generic.charHeight, justify, shadow );
 		}

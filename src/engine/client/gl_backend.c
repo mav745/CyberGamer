@@ -73,7 +73,7 @@ void GL_BackendEndFrame( void )
 	case 1:
 		Q_snprintf( r_speeds_msg, sizeof( r_speeds_msg ), "%3i wpoly, %3i bpoly\n%3i epoly, %3i spoly",
 		r_stats.c_world_polys, r_stats.c_brush_polys, r_stats.c_studio_polys, r_stats.c_sprite_polys );
-		break;		
+		break;
 	case 2:
 		Q_snprintf( r_speeds_msg, sizeof( r_speeds_msg ), "visible leafs:\n%3i leafs\ncurrent leaf %3i",
 		r_stats.c_world_leafs, r_viewleaf - cl.worldmodel->leafs );
@@ -167,7 +167,7 @@ void GL_SelectTexture( GLint tmu )
 	if( tmu >= GL_MaxTextureUnits( ))
 	{
 		MsgDev( D_ERROR, "GL_SelectTexture: bad tmu state %i\n", tmu );
-		return; 
+		return;
 	}
 
 	if( glState.activeTMU == tmu )
@@ -254,7 +254,7 @@ void GL_TextureTarget( uint target )
 	if( glState.activeTMU < 0 || glState.activeTMU >= GL_MaxTextureUnits( ))
 	{
 		MsgDev( D_ERROR, "GL_TextureTarget: bad tmu state %i\n", glState.activeTMU );
-		return; 
+		return;
 	}
 
 	if( glState.currentTextureTargets[glState.activeTMU] != target )
@@ -456,11 +456,15 @@ void VID_ImageAdjustGamma( byte *in, uint width, uint height )
 	if( !gl_compensate_gamma_screenshots->integer )
 		return;
 
-	// rebuild the gamma table	
+	// rebuild the gamma table
 	for( i = 0; i < 256; i++ )
 	{
 		if( g == 1.0f ) r_gammaTable[i] = i;
-		else r_gammaTable[i] = bound( 0, 255 * pow((i + 0.5) / 255.5f, g ) + 0.5f, 255 );
+		else
+		{
+			byte rgti = (byte)(255.f * powf((i + 0.5f) / 255.5f, g ) + 0.5f);
+			r_gammaTable[i] = bound( 0, rgti, 255 );
+		}
 	}
 
 	// adjust screenshots gamma
@@ -588,7 +592,7 @@ qboolean VID_CubemapShot( const char *base, uint size, const float *vieworg, qbo
 		{
 			R_DrawCubemapView( vieworg, r_envMapInfo[i].angles, size );
 			flags = r_envMapInfo[i].flags;
-                    }
+					}
 
 		pglReadPixels( 0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, temp );
 		r_side->flags = IMAGE_HAS_COLOR;
@@ -667,8 +671,8 @@ rebuild_page:
 	end = total * gl_showtextures->integer;
 	if( end > MAX_TEXTURES ) end = MAX_TEXTURES;
 
-	w = glState.width / base_w;
-	h = glState.height / base_h;
+	w = (float)glState.width / (float)base_w;
+	h = (float)glState.height / (float)base_h;
 
 	Con_DrawStringLen( NULL, NULL, &charHeight );
 
@@ -682,7 +686,7 @@ rebuild_page:
 	if( i == MAX_TEXTURES && gl_showtextures->integer != 1 )
 	{
 		// bad case, rewind to one and try again
-		Cvar_SetFloat( "r_showtextures", max( 1, gl_showtextures->integer - 1 ));
+		Cvar_SetFloat( "r_showtextures", max( 1.f, (float)(gl_showtextures->integer - 1) ));
 		if( ++numTries < 2 ) goto rebuild_page;	// to prevent infinite loop
 	}
 
@@ -731,7 +735,7 @@ rebuild_page:
 			shortname[17] = '.';
 			shortname[18] = '\0';
 		}
-		Con_DrawString( x + 1, y + h - charHeight, shortname, color );
+		Con_DrawString( (int)(x + 1), (int)(y + h - charHeight), shortname, color );
 		j++, k++;
 	}
 

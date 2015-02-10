@@ -66,16 +66,21 @@ public:
 	inline void SetTransparency( int rendermode, int r, int g, int b, int a, int fx )
 	{
 		pev->rendermode = rendermode;
-		pev->rendercolor.x = r;
-		pev->rendercolor.y = g;
-		pev->rendercolor.z = b;
-		pev->renderamt = a;
+		pev->rendercolor.x = static_cast<float>(r);
+		pev->rendercolor.y = static_cast<float>(g);
+		pev->rendercolor.z = static_cast<float>(b);
+		pev->renderamt = static_cast<float>(a);
 		pev->renderfx = fx;
 	}
 	inline void SetTexture( int spriteIndex ) { pev->modelindex = spriteIndex; }
 	inline void SetScale( float scale ) { pev->scale = scale; }
-	inline void SetColor( int r, int g, int b ) { pev->rendercolor.x = r; pev->rendercolor.y = g; pev->rendercolor.z = b; }
-	inline void SetBrightness( int brightness ) { pev->renderamt = brightness; }
+	inline void SetColor( int r, int g, int b )
+	{
+		pev->rendercolor.x = static_cast<float>(r);
+		pev->rendercolor.y = static_cast<float>(g);
+		pev->rendercolor.z = static_cast<float>(b);
+	}
+	inline void SetBrightness( int brightness ) { pev->renderamt = (float)brightness; }
 
 	inline void AnimateAndDie( float framerate )
 	{
@@ -127,12 +132,17 @@ public:
 	inline void SetEndAttachment( int attachment ) { pev->skin = (pev->skin & 0x0FFF) | ((attachment&0xF)<<12); }
 
 	inline void SetTexture( int spriteIndex ) { pev->modelindex = spriteIndex; }
-	inline void SetWidth( int width ) { pev->scale = width; }
+	inline void SetWidth( int width ) { pev->scale = static_cast<float>(width); }
 	inline void SetNoise( int amplitude ) { pev->body = amplitude; }
-	inline void SetColor( int r, int g, int b ) { pev->rendercolor.x = r; pev->rendercolor.y = g; pev->rendercolor.z = b; }
-	inline void SetBrightness( int brightness ) { pev->renderamt = brightness; }
+	inline void SetColor( int r, int g, int b )
+	{
+		pev->rendercolor.x = static_cast<float>(r);
+		pev->rendercolor.y = static_cast<float>(g);
+		pev->rendercolor.z = static_cast<float>(b);
+	}
+	inline void SetBrightness( int brightness ) { pev->renderamt = static_cast<float>(brightness); }
 	inline void SetFrame( float frame ) { pev->frame = frame; }
-	inline void SetScrollRate( int speed ) { pev->animtime = speed; }
+	inline void SetScrollRate( int speed ) { pev->animtime = static_cast<float>(speed); }
 
 	inline int	GetType( void ) { return pev->rendermode & 0x0F; }
 	inline int	GetFlags( void ) { return pev->rendermode & 0xF0; }
@@ -142,15 +152,15 @@ public:
 	const Vector &GetStartPos( void );
 	const Vector &GetEndPos( void );
 
-	Vector Center( void ) { return (GetStartPos() + GetEndPos()) * 0.5; }; // center point of beam
+	Vector Center( void ) { return (GetStartPos() + GetEndPos()) * 0.5f; } // center point of beam
 
 	inline int  GetTexture( void ) { return pev->modelindex; }
-	inline int  GetWidth( void ) { return pev->scale; }
+	inline int  GetWidth( void ) { return static_cast<int>(pev->scale); }
 	inline int  GetNoise( void ) { return pev->body; }
 	// inline void GetColor( int r, int g, int b ) { pev->rendercolor.x = r; pev->rendercolor.y = g; pev->rendercolor.z = b; }
-	inline int  GetBrightness( void ) { return pev->renderamt; }
-	inline int  GetFrame( void ) { return pev->frame; }
-	inline int  GetScrollRate( void ) { return pev->animtime; }
+	inline int  GetBrightness( void ) { return static_cast<int>(pev->renderamt); }
+	inline int  GetFrame( void ) { return static_cast<int>(pev->frame); }
+	inline int  GetScrollRate( void ) { return static_cast<int>(pev->animtime); }
 
 	// Call after you change start/end positions
 	void		RelinkBeam( void );

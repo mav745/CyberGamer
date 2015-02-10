@@ -105,14 +105,14 @@ void R_DrawTileClear( int x, int y, int w, int h )
 	th = glt->srcHeight;
 
 	pglBegin( GL_QUADS );
-		pglTexCoord2f( x / tw, y / th );
-		pglVertex2f( x, y );
-		pglTexCoord2f((x + w) / tw, y / th );
-		pglVertex2f( x + w, y );
-		pglTexCoord2f((x + w) / tw, (y + h) / th );
-		pglVertex2f( x + w, y + h );
-		pglTexCoord2f( x / tw, (y + h) / th );
-		pglVertex2f( x, y + h );
+		pglTexCoord2f( (float)x / tw, (float)y / th );
+		pglVertex2f( (float)x, (float)y );
+		pglTexCoord2f((float)(x + w) / tw, (float)y / th );
+		pglVertex2f( (float)(x + w), (float)y );
+		pglTexCoord2f((float)(x + w) / tw, (float)(y + h) / th );
+		pglVertex2f( (float)(x + w), (float)(y + h) );
+		pglTexCoord2f( (float)x / tw, (float)(y + h) / th );
+		pglVertex2f( (float)x, (float)(y + h) );
 	pglEnd ();
 }
 
@@ -129,7 +129,7 @@ void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, c
 	if( !GL_Support( GL_ARB_TEXTURE_NPOT_EXT ))
 	{
 		int	width = 1, height = 1;
-	
+
 		// check the dimensions
 		width = NearestPOW( cols, true );
 		height = NearestPOW( rows, false );

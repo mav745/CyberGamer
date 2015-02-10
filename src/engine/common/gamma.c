@@ -33,17 +33,17 @@ void BuildGammaTable( float gamma, float texGamma )
 	texGamma = bound( 1.8f, texGamma, 3.0f );
 
 	g = 1.0f / g;
-	g1 = texGamma * g; 
+	g1 = texGamma * g;
 
 	for( i = 0; i < 256; i++ )
 	{
-		inf = 255 * pow( i / 255.f, g1 ); 
+		inf = (int)(255.f * powf( (float)i / 255.f, g1 ));
 		texgammatable[i] = bound( 0, inf, 255 );
 	}
 
 	for( i = 0; i < 256; i++ )
 	{
-		f = 255.0 * pow(( float )i / 255.0f, 2.2f / texGamma );
+		f = 255.0f * powf((float)i / 255.0f, 2.2f / texGamma );
 		inf = (int)(f + 0.5f);
 		gammatable[i] = bound( 0, inf, 255 );
 	}

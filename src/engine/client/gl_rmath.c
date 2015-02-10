@@ -34,8 +34,8 @@ float V_CalcFov( float *fov_x, float width, float height )
 		*fov_x = 90.0f;
 	}
 
-	x = width / tan( DEG2RAD( *fov_x ) * 0.5f );
-	half_fov_y = atan( height / x );
+	x = width / tanf( DEG2RAD( *fov_x ) * 0.5f );
+	half_fov_y = atanf( height / x );
 
 	return RAD2DEG( half_fov_y ) * 2;
 }
@@ -57,7 +57,7 @@ void V_AdjustFov( float *fov_x, float *fov_y, float width, float height, qboolea
 
 	if( lock_x )
 	{
-		*fov_y = 2 * atan((width * 3) / (height * 4) * tan( *fov_y * M_PI / 360.0 * 0.5 )) * 360 / M_PI;
+		*fov_y = 2 * atanf((width * 3) / (height * 4) * tanf( *fov_y * (float)M_PI / 360.0f * 0.5f )) * 360.f / (float)M_PI;
 		return;
 	}
 
@@ -72,7 +72,7 @@ void V_AdjustFov( float *fov_x, float *fov_y, float width, float height, qboolea
 /*
 ========================================================================
 
-	       Matrix4x4 operations (private to renderer)
+		   Matrix4x4 operations (private to renderer)
 
 ========================================================================
 */
@@ -217,7 +217,7 @@ void Matrix4x4_CreateRotate( matrix4x4 out, float angle, float x, float y, float
 	float	len, c, s;
 
 	len = x * x + y * y + z * z;
-	if( len != 0.0f ) len = 1.0f / sqrt( len );
+	if( len != 0.0f ) len = 1.0f / sqrtf( len );
 	x *= len;
 	y *= len;
 	z *= len;

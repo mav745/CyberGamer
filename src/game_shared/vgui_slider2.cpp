@@ -110,10 +110,10 @@ void Slider2::recomputeNobPosFromValue()
 
 	float fwide=(float)wide;
 	float ftall=(float)tall;
-	float frange=(float)(_range[1]-_range[0]);
-	float fvalue=(float)(_value-_range[0]);
+	float frange=static_cast<float>(_range[1]-_range[0]);
+	float fvalue=static_cast<float>(_value-_range[0]);
 	float fper=fvalue/frange;
-	float frangewindow=(float)(_rangeWindow);
+	float frangewindow=static_cast<float>(_rangeWindow);
 
 	if(frangewindow<0)
 	{
@@ -171,10 +171,10 @@ void Slider2::recomputeValueFromNobPos()
 
 	float fwide=(float)wide;
 	float ftall=(float)tall;
-	float frange=(float)(_range[1]-_range[0]);
-	float fvalue=(float)(_value-_range[0]);
+	float frange=static_cast<float>(_range[1]-_range[0]);
+	float fvalue=static_cast<float>(_value-_range[0]);
 	float fnob=(float)_nobPos[0];
-	float frangewindow=(float)(_rangeWindow);
+	float frangewindow=static_cast<float>(_rangeWindow);
 
 	if(frangewindow<0)
 	{
@@ -213,8 +213,8 @@ bool Slider2::hasFullRange()
 
 	float fwide=(float)wide;
 	float ftall=(float)tall;
-	float frange=(float)(_range[1]-_range[0]);
-	float frangewindow=(float)(_rangeWindow);
+	float frange=static_cast<float>(_range[1]-_range[0]);
+	float frangewindow=static_cast<float>(_rangeWindow);
 
 	if(frangewindow<0)
 	{

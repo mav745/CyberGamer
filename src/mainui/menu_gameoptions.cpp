@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -77,10 +77,10 @@ static void UI_GameOptions_UpdateConfig( void )
 	sprintf( fpsText, "%.f", uiGameOptions.maxFPS.curValue );
 	uiGameOptions.maxFPS.generic.name = fpsText;
 
-	CVAR_SET_FLOAT( "hand", uiGameOptions.hand.enabled );
-	CVAR_SET_FLOAT( "sv_allow_download", uiGameOptions.allowDownload.enabled );
+	CVAR_SET_FLOAT( "hand", (float)uiGameOptions.hand.enabled );
+	CVAR_SET_FLOAT( "sv_allow_download", (float)uiGameOptions.allowDownload.enabled );
 	CVAR_SET_FLOAT( "fps_max", uiGameOptions.maxFPS.curValue );
-	CVAR_SET_FLOAT( "cl_run", uiGameOptions.alwaysRun.enabled );
+	CVAR_SET_FLOAT( "cl_run", (float)uiGameOptions.alwaysRun.enabled );
 }
 
 /*
@@ -90,10 +90,10 @@ UI_GameOptions_DiscardChanges
 */
 static void UI_GameOptions_DiscardChanges( void )
 {
-	CVAR_SET_FLOAT( "hand", uiGameInitial.hand );
-	CVAR_SET_FLOAT( "sv_allow_download", uiGameInitial.allowDownload );
+	CVAR_SET_FLOAT( "hand", (float)uiGameInitial.hand );
+	CVAR_SET_FLOAT( "sv_allow_download", (float)uiGameInitial.allowDownload );
 	CVAR_SET_FLOAT( "fps_max", uiGameInitial.maxFPS );
-	CVAR_SET_FLOAT( "cl_run", uiGameInitial.alwaysRun );
+	CVAR_SET_FLOAT( "cl_run", (float)uiGameInitial.alwaysRun );
 }
 
 /*
@@ -203,7 +203,7 @@ static void UI_GameOptions_Init( void )
 
 	uiGameOptions.done.generic.id	= ID_DONE;
 	uiGameOptions.done.generic.type = QMTYPE_BM_BUTTON;
-	uiGameOptions.done.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW; 
+	uiGameOptions.done.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW;
 	uiGameOptions.done.generic.x = 72;
 	uiGameOptions.done.generic.y = 230;
 	uiGameOptions.done.generic.name = "Done";

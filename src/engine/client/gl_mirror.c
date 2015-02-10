@@ -46,10 +46,10 @@ void R_BeginDrawMirror( msurface_t *fa )
 
 	for( i = 0; i < 4; i++ )
 	{
-		genVector[0][i] = i == 0 ? 1 : 0;
-		genVector[1][i] = i == 1 ? 1 : 0;
-		genVector[2][i] = i == 2 ? 1 : 0;
-		genVector[3][i] = i == 3 ? 1 : 0;
+		genVector[0][i] = i == 0 ? 1.f : 0.f;
+		genVector[1][i] = i == 1 ? 1.f : 0.f;
+		genVector[2][i] = i == 2 ? 1.f : 0.f;
+		genVector[3][i] = i == 3 ? 1.f : 0.f;
 	}
 
 	GL_TexGen( GL_S, GL_OBJECT_LINEAR );
@@ -241,7 +241,7 @@ void R_DrawMirrors( void )
 					es->mirrortexturenum = tmp->mirrortexturenum;
 					continue;	// pass skiped
 				}
-			} 
+			}
 
 			R_PlaneForMirror( surf, &plane, mirrormatrix );
 
@@ -324,7 +324,7 @@ void R_DrawMirrors( void )
 			{
 				Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, mirrormatrix );
 				Matrix4x4_Concat( es->mirrormatrix, RI.projectionMatrix, RI.modelviewMatrix );
-			}			
+			}
 
 			RI = oldRI; // restore ref instance
 		}
@@ -529,7 +529,7 @@ void R_CheckEntitiesOnList( void )
 	{
 		RI.currententity = tr.static_entities[i];
 		RI.currentmodel = RI.currententity->model;
-	
+
 		ASSERT( RI.currententity != NULL );
 		ASSERT( RI.currententity->model != NULL );
 
@@ -553,7 +553,7 @@ void R_CheckEntitiesOnList( void )
 	{
 		RI.currententity = tr.solid_entities[i];
 		RI.currentmodel = RI.currententity->model;
-	
+
 		ASSERT( RI.currententity != NULL );
 		ASSERT( RI.currententity->model != NULL );
 
@@ -570,7 +570,7 @@ void R_CheckEntitiesOnList( void )
 	{
 		RI.currententity = tr.trans_entities[i];
 		RI.currentmodel = RI.currententity->model;
-	
+
 		ASSERT( RI.currententity != NULL );
 		ASSERT( RI.currententity->model != NULL );
 

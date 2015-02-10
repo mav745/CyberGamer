@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -35,21 +35,21 @@ extern globalvars_t				*gpGlobals;
 #define STRING(offset)		(const char *)(gpGlobals->pStringBase + (int)offset)
 #define MAKE_STRING(str)	((int)str - (int)STRING(0))
 
-inline edict_t *FIND_ENTITY_BY_CLASSNAME(edict_t *entStart, const char *pszName) 
+inline edict_t *FIND_ENTITY_BY_CLASSNAME(edict_t *entStart, const char *pszName)
 {
 	return FIND_ENTITY_BY_STRING(entStart, "classname", pszName);
-}	
+}
 
-inline edict_t *FIND_ENTITY_BY_TARGETNAME(edict_t *entStart, const char *pszName) 
+inline edict_t *FIND_ENTITY_BY_TARGETNAME(edict_t *entStart, const char *pszName)
 {
 	return FIND_ENTITY_BY_STRING(entStart, "targetname", pszName);
-}	
+}
 
 // for doing a reverse lookup. Say you have a door, and want to find its button.
-inline edict_t *FIND_ENTITY_BY_TARGET(edict_t *entStart, const char *pszName) 
+inline edict_t *FIND_ENTITY_BY_TARGET(edict_t *entStart, const char *pszName)
 {
 	return FIND_ENTITY_BY_STRING(entStart, "target", pszName);
-}	
+}
 
 // Keeps clutter down a bit, when writing key-value pairs
 #define WRITEKEY_INT(pf, szKeyName, iKeyValue) ENGINE_FPRINTF(pf, "\"%s\" \"%d\"\n", szKeyName, iKeyValue)
@@ -110,30 +110,30 @@ typedef int BOOL;
 inline edict_t *ENT(edict_t *pent)		{ return pent; }
 inline edict_t *ENT(EOFFSET eoffset)			{ return (*g_engfuncs.pfnPEntityOfEntOffset)(eoffset); }
 inline EOFFSET OFFSET(EOFFSET eoffset)			{ return eoffset; }
-inline EOFFSET OFFSET(const edict_t *pent)	
-{ 
+inline EOFFSET OFFSET(const edict_t *pent)
+{
 #if _DEBUG
 	if ( !pent )
 		ALERT( at_error, "Bad ent in OFFSET()\n" );
 #endif
-	return (*g_engfuncs.pfnEntOffsetOfPEntity)(pent); 
+	return (*g_engfuncs.pfnEntOffsetOfPEntity)(pent);
 }
-inline EOFFSET OFFSET(entvars_t *pev)				
-{ 
+inline EOFFSET OFFSET(entvars_t *pev)
+{
 #if _DEBUG
 	if ( !pev )
 		ALERT( at_error, "Bad pev in OFFSET()\n" );
 #endif
-	return OFFSET(ENT(pev)); 
+	return OFFSET(ENT(pev));
 }
 inline entvars_t *VARS(entvars_t *pev)					{ return pev; }
 
-inline entvars_t *VARS(edict_t *pent)			
-{ 
+inline entvars_t *VARS(edict_t *pent)
+{
 	if ( !pent )
 		return NULL;
 
-	return &pent->v; 
+	return &pent->v;
 }
 
 inline entvars_t* VARS(EOFFSET eoffset)				{ return VARS(ENT(eoffset)); }
@@ -156,10 +156,10 @@ inline BOOL FStringNull(int iString)			{ return iString == iStringNull; }
 #define cchMapNameMost 32
 
 // Dot products for view cone checking
-#define VIEW_FIELD_FULL		(float)-1.0 // +-180 degrees
-#define	VIEW_FIELD_WIDE		(float)-0.7 // +-135 degrees 0.1 // +-85 degrees, used for full FOV checks 
-#define	VIEW_FIELD_NARROW	(float)0.7 // +-45 degrees, more narrow check used to set up ranged attacks
-#define	VIEW_FIELD_ULTRA_NARROW	(float)0.9 // +-25 degrees, more narrow check used to set up ranged attacks
+#define VIEW_FIELD_FULL		-1.0f // +-180 degrees
+#define	VIEW_FIELD_WIDE		-0.7f // +-135 degrees 0.1 // +-85 degrees, used for full FOV checks
+#define	VIEW_FIELD_NARROW	0.7f // +-45 degrees, more narrow check used to set up ranged attacks
+#define	VIEW_FIELD_ULTRA_NARROW	0.9f // +-25 degrees, more narrow check used to set up ranged attacks
 
 // All monsters need this data
 #define		DONT_BLEED			-1
@@ -167,7 +167,7 @@ inline BOOL FStringNull(int iString)			{ return iString == iStringNull; }
 #define		BLOOD_COLOR_YELLOW	(BYTE)195
 #define		BLOOD_COLOR_GREEN	BLOOD_COLOR_YELLOW
 
-typedef enum 
+typedef enum
 {
 
 	MONSTERSTATE_NONE = 0,
@@ -293,7 +293,7 @@ extern void			UTIL_PrecacheOther( const char *szClassname );
 
 // prints a message to each client
 extern void			UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1 = NULL, const char *param2 = NULL, const char *param3 = NULL, const char *param4 = NULL );
-inline void			UTIL_CenterPrintAll( const char *msg_name, const char *param1 = NULL, const char *param2 = NULL, const char *param3 = NULL, const char *param4 = NULL ) 
+inline void			UTIL_CenterPrintAll( const char *msg_name, const char *param1 = NULL, const char *param2 = NULL, const char *param3 = NULL, const char *param4 = NULL )
 {
 	UTIL_ClientPrintAll( HUD_PRINTCENTER, msg_name, param1, param2, param3, param4 );
 }
@@ -337,7 +337,7 @@ extern char *UTIL_dtos4( int d );
 // Writes message to console with timestamp and FragLog header.
 extern void			UTIL_LogPrintf( char *fmt, ... );
 
-// Sorta like FInViewCone, but for nonmonsters. 
+// Sorta like FInViewCone, but for nonmonsters.
 extern float UTIL_DotPoints ( const Vector &vecSrc, const Vector &vecCheck, const Vector &vecDir );
 
 extern void UTIL_StripToken( const char *pKey, char *pDest );// for redundant keynames
@@ -384,7 +384,7 @@ extern DLL_GLOBAL int			g_Language;
 
 #define SPEAKER_START_SILENT			1	// wait for trigger 'on' to start announcements
 
-#define SND_SPAWNING		(1<<8)		// duplicated in protocol.h we're spawing, used in some cases for ambients 
+#define SND_SPAWNING		(1<<8)		// duplicated in protocol.h we're spawing, used in some cases for ambients
 #define SND_STOP			(1<<5)		// duplicated in protocol.h stop sound
 #define SND_CHANGE_VOL		(1<<6)		// duplicated in protocol.h change sound vol
 #define SND_CHANGE_PITCH	(1<<7)		// duplicated in protocol.h change sound pitch
@@ -513,7 +513,7 @@ void EMIT_GROUPNAME_SUIT(edict_t *entity, const char *groupname);
 	{ for (int i = 0; i < VARRAYSIZE( a ); i++ ) PRECACHE_SOUND((char *) a [i]); }
 
 #define EMIT_SOUND_ARRAY_DYN( chan, array ) \
-	EMIT_SOUND_DYN ( ENT(pev), chan , array [ RANDOM_LONG(0,VARRAYSIZE( array )-1) ], 1.0, ATTN_NORM, 0, RANDOM_LONG(95,105) ); 
+	EMIT_SOUND_DYN ( ENT(pev), chan , array [ RANDOM_LONG(0,VARRAYSIZE( array )-1) ], 1.0, ATTN_NORM, 0, RANDOM_LONG(95,105) );
 
 #define RANDOM_SOUND_ARRAY( array ) (array) [ RANDOM_LONG(0,VARRAYSIZE( (array) )-1) ]
 

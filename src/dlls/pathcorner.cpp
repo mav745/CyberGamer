@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -31,7 +31,7 @@ public:
 //	void Touch( CBaseEntity *pOther );
 	virtual int		Save( CSave &save );
 	virtual int		Restore( CRestore &restore );
-	
+
 	static	TYPEDESCRIPTION m_SaveData[];
 
 private:
@@ -41,7 +41,7 @@ private:
 LINK_ENTITY_TO_CLASS( path_corner, CPathCorner );
 
 // Global Savedata for Delay
-TYPEDESCRIPTION	CPathCorner::m_SaveData[] = 
+TYPEDESCRIPTION	CPathCorner::m_SaveData[] =
 {
 	DEFINE_FIELD( CPathCorner, m_flWait, FIELD_FLOAT ),
 };
@@ -55,10 +55,10 @@ void CPathCorner :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = atof(pkvd->szValue);
+		m_flWait = (float)atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
-	else 
+	else
 		CPointEntity::KeyValue( pkvd );
 }
 
@@ -72,7 +72,7 @@ void CPathCorner :: Spawn( )
 void CPathCorner :: Touch( CBaseEntity *pOther )
 {
 	entvars_t*		pevToucher = pOther->pev;
-		
+
 	if ( FBitSet ( pevToucher->flags, FL_MONSTER ) )
 	{// monsters don't navigate path corners based on touch anymore
 		return;
@@ -89,7 +89,7 @@ void CPathCorner :: Touch( CBaseEntity *pOther )
 	{
 		return;		// fighting, not following a path
 	}
-	
+
 	// UNDONE: support non-zero flWait
 	/*
 	if (m_flWait != 0)
@@ -118,7 +118,7 @@ void CPathCorner :: Touch( CBaseEntity *pOther )
 
 
 
-TYPEDESCRIPTION	CPathTrack::m_SaveData[] = 
+TYPEDESCRIPTION	CPathTrack::m_SaveData[] =
 {
 	DEFINE_FIELD( CPathTrack, m_length, FIELD_FLOAT ),
 	DEFINE_FIELD( CPathTrack, m_pnext, FIELD_CLASSPTR ),
@@ -259,7 +259,7 @@ CPathTrack *CPathTrack::GetNext( void )
 {
 	if ( m_paltpath && FBitSet( pev->spawnflags, SF_PATH_ALTERNATE ) && !FBitSet( pev->spawnflags, SF_PATH_ALTREVERSE ) )
 		return m_paltpath;
-	
+
 	return m_pnext;
 }
 
@@ -269,7 +269,7 @@ CPathTrack *CPathTrack::GetPrevious( void )
 {
 	if ( m_paltpath && FBitSet( pev->spawnflags, SF_PATH_ALTERNATE ) && FBitSet( pev->spawnflags, SF_PATH_ALTREVERSE ) )
 		return m_paltpath;
-	
+
 	return m_pprevious;
 }
 
@@ -288,7 +288,7 @@ CPathTrack *CPathTrack :: LookAhead( Vector *origin, float dist, int move )
 {
 	CPathTrack *pcurrent;
 	float originalDist = dist;
-	
+
 	pcurrent = this;
 	Vector currentPos = *origin;
 
@@ -328,7 +328,7 @@ CPathTrack *CPathTrack :: LookAhead( Vector *origin, float dist, int move )
 		*origin = currentPos;
 		return pcurrent;
 	}
-	else 
+	else
 	{
 		while ( dist > 0 )
 		{
@@ -365,7 +365,7 @@ CPathTrack *CPathTrack :: LookAhead( Vector *origin, float dist, int move )
 	return pcurrent;
 }
 
-	
+
 // Assumes this is ALWAYS enabled
 CPathTrack *CPathTrack :: Nearest( Vector origin )
 {
@@ -406,7 +406,7 @@ CPathTrack *CPathTrack :: Nearest( Vector origin )
 
 
 CPathTrack *CPathTrack::Instance( edict_t *pent )
-{ 
+{
 	if ( FClassnameIs( pent, "path_track" ) )
 		return (CPathTrack *)GET_PRIVATE(pent);
 	return NULL;

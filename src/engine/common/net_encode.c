@@ -880,10 +880,10 @@ prevent data to out of range
 int Delta_ClampIntegerField( int iValue, qboolean bSigned, int bits )
 {
 //	char txt[128];
-	
+
 //	long long int shifted = 1;
 //	int lmin, lmax;
-	
+
 //	int myValue;
 //	if (bits == 32)
 //	{
@@ -893,15 +893,15 @@ int Delta_ClampIntegerField( int iValue, qboolean bSigned, int bits )
 //	{
 //		if (bits == 1) myValue = (byte)iValue;
 //		else if (bits <= 16) myValue = bSigned? (short)iValue : (word)iValue;
-//		else myValue = bSigned? iValue : (uint)iValue; 
-		
+//		else myValue = bSigned? iValue : (uint)iValue;
+
 //		lmin = bSigned? -((shifted<<bits)>>1)+1: 0;
 //		lmax = bSigned? (shifted<<bits)>>1: (shifted<<bits)-1;
 //		myValue = bound( lmin, myValue, lmax);
 //	}
-	
+
 	switch( bits )
-	{ 
+	{
 	case 1:
 		iValue = bound( 0, (byte)iValue, 1 );
 		break;
@@ -966,7 +966,7 @@ int Delta_ClampIntegerField( int iValue, qboolean bSigned, int bits )
 		else iValue = bound( 0, (word)iValue, 65535 );
 		break;
 	}
-	
+
 //	if (myValue != iValue)
 //	{
 //		//sprintf(txt,"initValue %i, myValue %i, iValue %i, bits %i, bSigned %i\n",
@@ -974,7 +974,7 @@ int Delta_ClampIntegerField( int iValue, qboolean bSigned, int bits )
 //		sprintf(txt," myValue %i, iValue %i, lmin %i, lmax %i, bits %i, bSigned %i\n",
 //				  myValue,iValue,lmin,lmax,bits,bSigned);
 //		Sys_Print(txt);
-//	} 
+//	}
 	return iValue; // clamped;
 }
 
@@ -1142,7 +1142,7 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 //			int wpns[32];
 //			char txt[256];
 //			int i;
-//			for(i=0;i<32;i++) wpns[i] = !!(iValue & (1<<i)); 
+//			for(i=0;i<32;i++) wpns[i] = !!(iValue & (1<<i));
 //			sprintf(txt,"write weapons, %f, %i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i\n",
 //					pField->multiplier, wpns[ 0],wpns[ 1],wpns[ 2],wpns[ 3],wpns[ 4],
 //					wpns[ 5],wpns[ 6],wpns[ 7],wpns[ 8],wpns[ 9],
@@ -1153,8 +1153,8 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 //					wpns[30],wpns[31]);
 //			Sys_Print(txt);
 //		}
-		
-		
+
+
 		BF_WriteBitLong( msg, iValue, pField->bits, bSigned );
 	}
 	else if( pField->flags & DT_FLOAT )
@@ -1175,7 +1175,7 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 	{
 		flValue = *(float *)((byte *)to + pField->offset );
 		flTime = (timebase * 100.0f) - (flValue * 100.0f);
-		iValue = (uint)abs( flTime );
+		iValue = (uint)abs( (int)flTime );
 
 		BF_WriteBitLong( msg, iValue, pField->bits, bSigned );
 	}
@@ -1183,7 +1183,7 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 	{
 		flValue = *(float *)((byte *)to + pField->offset );
 		flTime = (timebase * pField->multiplier) - (flValue * pField->multiplier);
-		iValue = (uint)abs( flTime );
+		iValue = (uint)abs( (int)flTime );
 
 		BF_WriteBitLong( msg, iValue, pField->bits, bSigned );
 	}

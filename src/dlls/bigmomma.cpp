@@ -76,12 +76,12 @@ void CInfoBM::KeyValue( KeyValueData* pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		pev->scale = atof(pkvd->szValue);
+		pev->scale = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "reachdelay"))
 	{
-		pev->speed = atof(pkvd->szValue);
+		pev->speed = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "reachtarget"))
@@ -433,7 +433,7 @@ void CBigMomma :: SetYawSpeed ( void )
 	default:
 		ys = 90;
 	}
-	pev->yaw_speed = ys;
+	pev->yaw_speed = (float)ys;
 }
 
 //=========================================================
@@ -1118,7 +1118,7 @@ Vector VecCheckSplatToss( entvars_t *pev, const Vector &vecSpot1, Vector vecSpot
 	// How high should the grenade travel (subtract 15 so the grenade doesn't hit the ceiling)?
 	float height = (vecApex.z - vecSpot1.z) - 15;
 	// How fast does the grenade need to travel to reach that height given gravity?
-	float speed = sqrt( 2 * flGravity * height );
+	float speed = sqrtf( 2.f * flGravity * height );
 
 	// How much time does it take to get there?
 	float time = speed / flGravity;
@@ -1127,7 +1127,7 @@ Vector VecCheckSplatToss( entvars_t *pev, const Vector &vecSpot1, Vector vecSpot
 	float distance = vecGrenadeVel.Length();
 
 	// Travel half the distance to the target in that time (apex is at the midpoint)
-	vecGrenadeVel = vecGrenadeVel * ( 0.5 / time );
+	vecGrenadeVel = vecGrenadeVel * ( 0.5f / time );
 	// Speed to offset gravity at the desired height
 	vecGrenadeVel.z = speed;
 
@@ -1176,17 +1176,17 @@ void CBMortar:: Spawn( void )
 
 	UTIL_SetSize( pev, Vector( 0, 0, 0), Vector(0, 0, 0) );
 
-	m_maxFrame = (float) MODEL_FRAMES( pev->modelindex ) - 1;
-	pev->dmgtime = gpGlobals->time + 0.4;
+	m_maxFrame = MODEL_FRAMES( pev->modelindex ) - 1;
+	pev->dmgtime = gpGlobals->time + 0.4f;
 }
 
 void CBMortar::Animate( void )
 {
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	if ( gpGlobals->time > pev->dmgtime )
 	{
-		pev->dmgtime = gpGlobals->time + 0.2;
+		pev->dmgtime = gpGlobals->time + 0.2f;
 		MortarSpray( pev->origin, -pev->velocity.Normalize(), gSpitSprite, 3 );
 	}
 	if ( pev->frame++ )
@@ -1208,7 +1208,7 @@ CBMortar *CBMortar::Shoot( edict_t *pOwner, Vector vecStart, Vector vecVelocity 
 	pSpit->pev->owner = pOwner;
 	pSpit->pev->scale = 2.5;
 	pSpit->SetThink ( &CBMortar::Animate );
-	pSpit->pev->nextthink = gpGlobals->time + 0.1;
+	pSpit->pev->nextthink = gpGlobals->time + 0.1f;
 
 	return pSpit;
 }
@@ -1220,7 +1220,7 @@ void CBMortar::Touch( CBaseEntity *pOther )
 	int		iPitch;
 
 	// splat sound
-	iPitch = RANDOM_FLOAT( 90, 110 );
+	iPitch = static_cast<int>(RANDOM_FLOAT( 90, 110 ));
 
 	EMIT_SOUND_DYN( ENT(pev), CHAN_VOICE, "bullchicken/bc_acid1.wav", 1, ATTN_NORM, 0, iPitch );
 

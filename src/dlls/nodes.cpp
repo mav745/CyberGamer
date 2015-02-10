@@ -827,24 +827,24 @@ void CGraph :: CheckNode(Vector vecOrigin, int iNode)
 		// make sure that vecOrigin can trace to this node!
 		UTIL_TraceLine ( vecOrigin, m_pNodes[ iNode ].m_vecOriginPeek, ignore_monsters, 0, &tr );
 
-		if ( tr.flFraction == 1.0 )
+		if ( tr.flFraction == 1.0f )
 		{
 			m_iNearest = iNode;
 			m_flShortest = flDist;
 
-			UpdateRange(m_minX, m_maxX, CALC_RANGE(vecOrigin.x, m_RegionMin[0], m_RegionMax[0]), m_pNodes[iNode].m_Region[0]);
-			UpdateRange(m_minY, m_maxY, CALC_RANGE(vecOrigin.y, m_RegionMin[1], m_RegionMax[1]), m_pNodes[iNode].m_Region[1]);
-			UpdateRange(m_minZ, m_maxZ, CALC_RANGE(vecOrigin.z, m_RegionMin[2], m_RegionMax[2]), m_pNodes[iNode].m_Region[2]);
+			UpdateRange(m_minX, m_maxX, CALC_RANGE((int)(vecOrigin.x), (int)m_RegionMin[0], (int)m_RegionMax[0]), (int)m_pNodes[iNode].m_Region[0]);
+			UpdateRange(m_minY, m_maxY, CALC_RANGE((int)(vecOrigin.y), (int)m_RegionMin[1], (int)m_RegionMax[1]), (int)m_pNodes[iNode].m_Region[1]);
+			UpdateRange(m_minZ, m_maxZ, CALC_RANGE((int)(vecOrigin.z), (int)m_RegionMin[2], (int)m_RegionMax[2]), (int)m_pNodes[iNode].m_Region[2]);
 
 			// From maxCircle, calculate maximum bounds box. All points must be
 			// simultaneously inside all bounds of the box.
 			//
-			m_minBoxX = CALC_RANGE(vecOrigin.x - flDist, m_RegionMin[0], m_RegionMax[0]);
-			m_maxBoxX = CALC_RANGE(vecOrigin.x + flDist, m_RegionMin[0], m_RegionMax[0]);
-			m_minBoxY = CALC_RANGE(vecOrigin.y - flDist, m_RegionMin[1], m_RegionMax[1]);
-			m_maxBoxY = CALC_RANGE(vecOrigin.y + flDist, m_RegionMin[1], m_RegionMax[1]);
-			m_minBoxZ = CALC_RANGE(vecOrigin.z - flDist, m_RegionMin[2], m_RegionMax[2]);
-			m_maxBoxZ = CALC_RANGE(vecOrigin.z + flDist, m_RegionMin[2], m_RegionMax[2]);
+			m_minBoxX = CALC_RANGE((int)(vecOrigin.x - flDist), (int)m_RegionMin[0], (int)m_RegionMax[0]);
+			m_maxBoxX = CALC_RANGE((int)(vecOrigin.x + flDist), (int)m_RegionMin[0], (int)m_RegionMax[0]);
+			m_minBoxY = CALC_RANGE((int)(vecOrigin.y - flDist), (int)m_RegionMin[1], (int)m_RegionMax[1]);
+			m_maxBoxY = CALC_RANGE((int)(vecOrigin.y + flDist), (int)m_RegionMin[1], (int)m_RegionMax[1]);
+			m_minBoxZ = CALC_RANGE((int)(vecOrigin.z - flDist), (int)m_RegionMin[2], (int)m_RegionMax[2]);
+			m_maxBoxZ = CALC_RANGE((int)(vecOrigin.z + flDist), (int)m_RegionMin[2], (int)m_RegionMax[2]);
 		}
 	}
 }
@@ -1570,7 +1570,7 @@ void CTestHull :: ShowBadNode( void )
 	UTIL_ParticleEffect ( pev->origin + gpGlobals->v_right * 64, g_vecZero, 255, 25 );
 	UTIL_ParticleEffect ( pev->origin - gpGlobals->v_right * 64, g_vecZero, 255, 25 );
 
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 extern BOOL gTouchDisabled;
@@ -2921,9 +2921,9 @@ int i;	for ( i = 0; i < 3; i++)
 	}
 	for (i = 0; i < m_cNodes; i++)
 	{
-		m_pNodes[i].m_Region[0] = CALC_RANGE(m_pNodes[i].m_vecOrigin.x, m_RegionMin[0], m_RegionMax[0]);
-		m_pNodes[i].m_Region[1] = CALC_RANGE(m_pNodes[i].m_vecOrigin.y, m_RegionMin[1], m_RegionMax[1]);
-		m_pNodes[i].m_Region[2] = CALC_RANGE(m_pNodes[i].m_vecOrigin.z, m_RegionMin[2], m_RegionMax[2]);
+		m_pNodes[i].m_Region[0] = CALC_RANGE((int)(m_pNodes[i].m_vecOrigin.x), (int)m_RegionMin[0], (int)m_RegionMax[0]);
+		m_pNodes[i].m_Region[1] = CALC_RANGE((int)(m_pNodes[i].m_vecOrigin.y), (int)m_RegionMin[1], (int)m_RegionMax[1]);
+		m_pNodes[i].m_Region[2] = CALC_RANGE((int)(m_pNodes[i].m_vecOrigin.z), (int)m_RegionMin[2], (int)m_RegionMax[2]);
 	}
 
 	for (i = 0; i < 3; i++)
@@ -3635,9 +3635,9 @@ int i;	for ( i = 0; i < 10; i++)
 			WRITE_BYTE( 250 ); // life
 			WRITE_BYTE( 40 );  // width
 			WRITE_BYTE( 0 );   // noise
-			WRITE_BYTE( m_vecColor.x );   // r, g, b
-			WRITE_BYTE( m_vecColor.y );   // r, g, b
-			WRITE_BYTE( m_vecColor.z );   // r, g, b
+			WRITE_BYTE( (int)m_vecColor.x );   // r, g, b
+			WRITE_BYTE( (int)m_vecColor.y );   // r, g, b
+			WRITE_BYTE( (int)m_vecColor.z );   // r, g, b
 			WRITE_BYTE( 128 );	// brightness
 			WRITE_BYTE( 0 );		// speed
 		MESSAGE_END();

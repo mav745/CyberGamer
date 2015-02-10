@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -85,7 +85,7 @@ static void UI_ResetToDefaultsDialog( void )
 {
 	// toggle main menu between active\inactive
 	// show\hide reset to defaults dialog
-	uiControls.defaults.generic.flags ^= QMF_INACTIVE; 
+	uiControls.defaults.generic.flags ^= QMF_INACTIVE;
 	uiControls.advanced.generic.flags ^= QMF_INACTIVE;
 	uiControls.done.generic.flags ^= QMF_INACTIVE;
 	uiControls.cancel.generic.flags ^= QMF_INACTIVE;
@@ -161,7 +161,7 @@ static void UI_Controls_ParseKeysList( void )
 	{
 		for( ; i < MAX_KEYS; i++ ) uiControls.keysDescriptionPtr[i] = NULL;
 		uiControls.keysList.itemNames = (const char **)uiControls.keysDescriptionPtr;
-	
+
 		Con_Printf( "UI_Parse_KeysList: kb_act.lst not found\n" );
 		return;
 	}
@@ -201,7 +201,7 @@ static void UI_Controls_ParseKeysList( void )
 			if( keys[0] == -1 ) strcpy( uiControls.firstKey[i], "" );
 			else strncpy( uiControls.firstKey[i], KEY_KeynumToString( keys[0] ), sizeof( uiControls.firstKey[i] ));
 
-			if( keys[1] == -1 ) strcpy( uiControls.secondKey[i], "" ); 
+			if( keys[1] == -1 ) strcpy( uiControls.secondKey[i], "" );
 			else strncpy( uiControls.secondKey[i], KEY_KeynumToString( keys[1] ), sizeof( uiControls.secondKey[i] ));
 
 			StringConcat( uiControls.keysDescription[i], str, CMD_LENGTH );
@@ -236,7 +236,7 @@ static void UI_PromptDialog( void )
 {
 	// toggle main menu between active\inactive
 	// show\hide quit dialog
-	uiControls.defaults.generic.flags ^= QMF_INACTIVE; 
+	uiControls.defaults.generic.flags ^= QMF_INACTIVE;
 	uiControls.advanced.generic.flags ^= QMF_INACTIVE;
 	uiControls.done.generic.flags ^= QMF_INACTIVE;
 	uiControls.cancel.generic.flags ^= QMF_INACTIVE;
@@ -271,7 +271,7 @@ static void UI_Controls_ResetKeysList( void )
 	char *afile = (char *)LOAD_FILE( "gfx/shell/kb_def.lst", NULL );
 	char *pfile = afile;
 	char token[1024];
-	int i = 0;
+//	int i = 0;
 
 	if( !afile )
 	{
@@ -323,7 +323,7 @@ static const char *UI_Controls_KeyFunc( int key, int down )
 			return uiSoundNull;
 		}
 	}
-	
+
 	if( down )
 	{
 		if( uiControls.bind_grab )	// assume we are in grab-mode
@@ -357,7 +357,7 @@ static const char *UI_Controls_KeyFunc( int key, int down )
 			// entering to grab-mode
 			const char *bindName = uiControls.keysBind[uiControls.keysList.curItem];
 			int keys[2];
-	
+
 			UI_Controls_GetKeyBindings( bindName, keys );
 			if( keys[1] != -1 ) UI_UnbindCommand( bindName );
 			uiControls.bind_grab = true;

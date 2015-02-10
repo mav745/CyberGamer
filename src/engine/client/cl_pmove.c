@@ -216,7 +216,7 @@ void CL_SetSolidPlayers( int playernum )
 		// the player object never gets added
 		if( j == playernum ) continue;
 
-		ent = CL_GetEntityByIndex( j + 1 );		
+		ent = CL_GetEntityByIndex( j + 1 );
 
 		if( !ent || !ent->player )
 			continue; // not present this frame
@@ -271,7 +271,7 @@ int CL_TruePointContents( const vec3_t p )
 		if( (pe->model->flags & MODEL_HAS_ORIGIN) && !VectorIsNull( pe->angles ))
 		{
 			matrix4x4	matrix;
-	
+
 			Matrix4x4_CreateFromEntity( matrix, pe->angles, offset, 1.0f );
 			Matrix4x4_VectorITransform( matrix, p, test );
 		}
@@ -327,7 +327,7 @@ int CL_WaterEntity( const float *rgflPos )
 		if( (pe->model->flags & MODEL_HAS_ORIGIN) && !VectorIsNull( pe->angles ))
 		{
 			matrix4x4	matrix;
-	
+
 			Matrix4x4_CreateFromEntity( matrix, pe->angles, offset, 1.0f );
 			Matrix4x4_VectorITransform( matrix, rgflPos, test );
 		}
@@ -353,7 +353,7 @@ pmtrace_t CL_TraceLine( vec3_t start, vec3_t end, int flags )
 {
 	int	old_usehull;
 	pmtrace_t	tr;
-	
+
 	old_usehull = clgame.pmove->usehull;
 	clgame.pmove->usehull = 2;
 	tr = PM_PlayerTraceExt( clgame.pmove, start, end, flags, clgame.pmove->numphysent, clgame.pmove->physents, -1, NULL );
@@ -382,7 +382,7 @@ cl_entity_t *CL_GetWaterEntity( const float *rgflPos )
 static void pfnParticle( float *origin, int color, float life, int zpos, int zvel )
 {
 	particle_t	*p;
-		
+
 	if( !origin )
 	{
 		MsgDev( D_ERROR, "CL_StartParticle: NULL origin. Ignored\n" );
@@ -397,7 +397,7 @@ static void pfnParticle( float *origin, int color, float life, int zpos, int zve
 	p->type = pt_static;
 
 	VectorCopy( origin, p->org );
-	VectorSet( p->vel, 0.0f, 0.0f, ( zpos * zvel ));
+	VectorSet( p->vel, 0.0f, 0.0f, (float)( zpos * zvel ));
 }
 
 static int pfnTestPlayerPosition( float *pos, pmtrace_t *ptrace )
@@ -460,7 +460,7 @@ static pmtrace_t *pfnTraceLine( float *start, float *end, int flags, int usehull
 	int		old_usehull;
 
 	old_usehull = clgame.pmove->usehull;
-	clgame.pmove->usehull = usehull;	
+	clgame.pmove->usehull = usehull;
 
 	switch( flags )
 	{
@@ -502,17 +502,17 @@ static float pfnTraceModel( physent_t *pe, float *start, float *end, trace_t *tr
 		rotated = true;
 	else rotated = false;
 
- 	if( rotated )
- 	{
- 		Matrix4x4_CreateFromEntity( matrix, pe->angles, offset, 1.0f );
- 		Matrix4x4_VectorITransform( matrix, start, start_l );
- 		Matrix4x4_VectorITransform( matrix, end, end_l );
- 	}
- 	else
- 	{
- 		VectorSubtract( start, offset, start_l );
- 		VectorSubtract( end, offset, end_l );
- 	}
+	if( rotated )
+	{
+		Matrix4x4_CreateFromEntity( matrix, pe->angles, offset, 1.0f );
+		Matrix4x4_VectorITransform( matrix, start, start_l );
+		Matrix4x4_VectorITransform( matrix, end, end_l );
+	}
+	else
+	{
+		VectorSubtract( start, offset, start_l );
+		VectorSubtract( end, offset, end_l );
+	}
 
 	SV_RecursiveHullCheck( hull, hull->firstclipnode, 0, 1, start_l, end_l, trace );
 	trace->ent = NULL;
@@ -537,7 +537,7 @@ static const char *pfnTraceTexture( int ground, float *vstart, float *vend )
 
 	pe = &clgame.pmove->physents[ground];
 	return PM_TraceTexture( pe, vstart, vend );
-}			
+}
 
 static void pfnPlaySound( int channel, const char *sample, float volume, float attenuation, int fFlags, int pitch )
 {
@@ -577,7 +577,7 @@ static pmtrace_t *pfnTraceLineEx( float *start, float *end, int flags, int usehu
 	int		old_usehull;
 
 	old_usehull = clgame.pmove->usehull;
-	clgame.pmove->usehull = usehull;	
+	clgame.pmove->usehull = usehull;
 
 	switch( flags )
 	{
@@ -635,13 +635,13 @@ void CL_InitClientMove( void )
 	clgame.pmove->PM_StuckTouch = pfnStuckTouch;
 	clgame.pmove->PM_PointContents = pfnPointContents;
 	clgame.pmove->PM_TruePointContents = pfnTruePointContents;
-	clgame.pmove->PM_HullPointContents = pfnHullPointContents; 
+	clgame.pmove->PM_HullPointContents = pfnHullPointContents;
 	clgame.pmove->PM_PlayerTrace = pfnPlayerTrace;
 	clgame.pmove->PM_TraceLine = pfnTraceLine;
 	clgame.pmove->RandomLong = Com_RandomLong;
 	clgame.pmove->RandomFloat = Com_RandomFloat;
 	clgame.pmove->PM_GetModelType = pfnGetModelType;
-	clgame.pmove->PM_GetModelBounds = pfnGetModelBounds;	
+	clgame.pmove->PM_GetModelBounds = pfnGetModelBounds;
 	clgame.pmove->PM_HullForBsp = pfnHullForBsp;
 	clgame.pmove->PM_TraceModel = pfnTraceModel;
 	clgame.pmove->COM_FileSize = COM_FileSize;
@@ -684,7 +684,7 @@ void CL_SetSolidEntities( void )
 	CL_CopyEntityToPhysEnt( &clgame.pmove->physents[0], &clgame.entities[0] );
 	clgame.pmove->visents[0] = clgame.pmove->physents[0];
 	clgame.pmove->numphysent = 1;	// always have world
-	clgame.pmove->numvisent = 1;	
+	clgame.pmove->numvisent = 1;
 
 	if( cls.state == ca_active && cl.frame.valid )
 	{
@@ -696,7 +696,7 @@ void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state
 {
 	pmove->player_index = cl.playernum;
 	pmove->multiplayer = (cl.maxclients > 1) ? true : false;
-	pmove->time = cl.time; // probably never used
+	pmove->time = (float)cl.time; // probably never used
 	VectorCopy( cd->origin, pmove->origin );
 	VectorCopy( cl.refdef.cl_viewangles, pmove->angles );
 	VectorCopy( cl.refdef.cl_viewangles, pmove->oldangles );
@@ -704,22 +704,22 @@ void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state
 	VectorCopy( state->basevelocity, pmove->basevelocity );
 	VectorCopy( cd->view_ofs, pmove->view_ofs );
 	VectorClear( pmove->movedir );
-	pmove->flDuckTime = cd->flDuckTime;
+	pmove->flDuckTime = (float)cd->flDuckTime;
 	pmove->bInDuck = cd->bInDuck;
 	pmove->usehull = (cd->flags & FL_DUCKING) ? 1 : 0; // reset hull
 	pmove->flTimeStepSound = cd->flTimeStepSound;
 	pmove->iStepLeft = state->iStepLeft;
 	pmove->flFallVelocity = state->flFallVelocity;
-	pmove->flSwimTime = cd->flSwimTime;
+	pmove->flSwimTime = (float)cd->flSwimTime;
 	VectorCopy( cd->punchangle, pmove->punchangle );
-	pmove->flSwimTime = cd->flSwimTime;
+	pmove->flSwimTime = (float)cd->flSwimTime;
 	pmove->flNextPrimaryAttack = 0.0f; // not used by PM_ code
 	pmove->effects = state->effects;
 	pmove->flags = cd->flags;
 	pmove->gravity = state->gravity;
 	pmove->friction = state->friction;
 	pmove->oldbuttons = state->oldbuttons;
-	pmove->waterjumptime = cd->waterjumptime;
+	pmove->waterjumptime = (float)cd->waterjumptime;
 	pmove->dead = (cd->health <= 0.0f ) ? true : false;
 	pmove->deadflag = cd->deadflag;
 	pmove->spectator = (state->spectator != 0);
@@ -741,7 +741,7 @@ void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state
 	VectorCopy( cd->vuser2, pmove->vuser2 );
 	VectorCopy( cd->vuser3, pmove->vuser3 );
 	VectorCopy( cd->vuser4, pmove->vuser4 );
-	pmove->cmd = *ucmd;	// setup current cmds	
+	pmove->cmd = *ucmd;	// setup current cmds
 
 	Q_strncpy( pmove->physinfo, cd->physinfo, MAX_INFO_STRING );
 }
@@ -783,7 +783,7 @@ void CL_PredictMovement( void )
 	int		current_command_mod;
 	cl_entity_t	*player, *viewent;
 	clientdata_t	*cd;
-	char txt[64];
+	//char txt[64];
 
 	if( cls.state != ca_active ) return;
 
@@ -803,7 +803,7 @@ void CL_PredictMovement( void )
 	AngleVectors( cl.refdef.cl_viewangles, cl.refdef.forward, cl.refdef.right, cl.refdef.up );
 
 	/*if( !CL_IsPredicted( ))
-	{	
+	{
 		// run commands even if client predicting is disabled - client expected it
 		clgame.pmove->runfuncs = true;
 		CL_PostRunCmd( cl.refdef.cmd, cls.lastoutgoingcommand );
@@ -812,7 +812,7 @@ void CL_PredictMovement( void )
 
 //	if (cls.netchan.incoming_acknowledged != cls.netchan.incoming_acknowledged_prev)
 //		cls.netchan.last_predicted = -1;
-//	cls.netchan.incoming_acknowledged_prev = cls.netchan.incoming_acknowledged; 
+//	cls.netchan.incoming_acknowledged_prev = cls.netchan.incoming_acknowledged;
 	ack = cls.netchan.incoming_acknowledged;
 	outgoing_command = cls.netchan.outgoing_sequence;
 
@@ -821,13 +821,13 @@ void CL_PredictMovement( void )
 	// setup initial pmove state
 //	sprintf(txt,"start(%i): ",outgoing_command);
 //	Sys_Print(txt);
-	
+
 //	sprintf(txt,"%.2f / ",cd->view_ofs[2]);
 //	Sys_Print(txt);
-	
+
 	CL_SetupPMove( clgame.pmove, cd, &player->curstate, cl.refdef.cmd );
 	clgame.pmove->runfuncs = false;
-	
+
 	while( 1 )
 	{
 		// we've run too far forward
@@ -841,16 +841,16 @@ void CL_PredictMovement( void )
 		//sprintf(txt,"current_command %i, outgoing_command %i\n",
 		//		  current_command,outgoing_command);
 		//Sys_Print(txt);
-		
+
 		// we've caught up to the current command.
 		if( current_command >= outgoing_command )
 			break;
-		
+
 		clgame.pmove->cmd = cl.cmds[current_command_mod/*frame*/];
-		
+
 		//sprintf(txt,"%i,",clgame.pmove->cmd.buttons);
 		//Sys_Print(txt);
-		
+
 		// motor!
 		clgame.dllFuncs.pfnPlayerMove( clgame.pmove, false ); // run frames
 		clgame.pmove->runfuncs = ( current_command > outgoing_command - 1 ) ? true : false;
@@ -862,7 +862,7 @@ void CL_PredictMovement( void )
 	}
 	//Sys_Print("\n");
 	CL_PostRunCmd( cl.refdef.cmd, current_command );
-	
+
 	// copy results out for rendering
 	//player->curstate.oldbuttons = clgame.pmove->oldbuttons;
 	VectorCopy( clgame.pmove->view_ofs, cl.predicted_viewofs );

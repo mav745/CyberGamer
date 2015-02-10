@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   This source code contains proprietary and confidential information of
@@ -65,16 +65,16 @@ BOOL CFlyingMonster :: FTriangulate ( const Vector &vecStart , const Vector &vec
 
 
 Activity CFlyingMonster :: GetStoppedActivity( void )
-{ 
+{
 	if ( pev->movetype != MOVETYPE_FLY )		// UNDONE: Ground idle here, IDLE may be something else
 		return ACT_IDLE;
 
-	return ACT_HOVER; 
+	return ACT_HOVER;
 }
 
 
-void CFlyingMonster :: Stop( void ) 
-{ 
+void CFlyingMonster :: Stop( void )
+{
 	Activity stopped = GetStoppedActivity();
 	if ( m_IdealActivity != stopped )
 	{
@@ -101,7 +101,7 @@ float CFlyingMonster :: ChangeYaw( int speed )
 			else if ( diff > 20 )
 				target = -90;
 		}
-		pev->angles.z = UTIL_Approach( target, pev->angles.z, 220.0 * gpGlobals->frametime );
+		pev->angles.z = UTIL_Approach( target, pev->angles.z, 220.0f * gpGlobals->frametime );
 	}
 	return CBaseMonster::ChangeYaw( speed );
 }
@@ -127,7 +127,7 @@ void CFlyingMonster :: HandleAnimEvent( MonsterEvent_t *pEvent )
 
 	case FLYING_AE_FLAPSOUND:
 		if ( m_pFlapSound )
-			EMIT_SOUND( edict(), CHAN_BODY, m_pFlapSound, 1, ATTN_NORM );	
+			EMIT_SOUND( edict(), CHAN_BODY, m_pFlapSound, 1, ATTN_NORM );
 		break;
 
 	default:
@@ -180,7 +180,7 @@ void CFlyingMonster::MoveExecute( CBaseEntity *pTargetEnt, const Vector &vecDir,
 		}
 		else
 			m_flightSpeed = UTIL_Approach( 20, m_flightSpeed, 300 * gpGlobals->frametime );
-		
+
 		if ( CheckLocalMove ( pev->origin, vecMove, pTargetEnt, NULL ) )
 		{
 			m_vecTravel = (vecMove - pev->origin);
@@ -242,12 +242,12 @@ BOOL CFlyingMonster::ProbeZ( const Vector &position, const Vector &probe, float 
 	Vector ProbeUnit = (probe-position).Normalize();
 	float ProbeLength = (probe-position).Length();
 	float maxProbeLength = ProbeLength;
-	float minProbeLength = 0;
+	float minProbeLength = 0.f;
 
 	float diff = maxProbeLength - minProbeLength;
-	while (diff > 1.0)
+	while (diff > 1.0f)
 	{
-		float midProbeLength = minProbeLength + diff/2.0;
+		float midProbeLength = minProbeLength + diff/2.0f;
 		Vector midProbeVec = midProbeLength * ProbeUnit;
 		if (UTIL_PointContents(position+midProbeVec) == conPosition)
 		{

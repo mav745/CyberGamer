@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -53,7 +53,7 @@ typedef struct
 
 	ref_params_t	refdef;
 	cl_entity_t	*ent;
-	
+
 	menuFramework_s	menu;
 
 	menuBitmap_s	background;
@@ -100,12 +100,12 @@ static void UI_PlayerSetup_FindModels( void )
 	char	name[256], path[256];
 	char	**filenames;
 	int	i, numFiles;
-	
+
 	uiPlayerSetup.num_models = 0;
 
 	// Get file list
 	filenames = FS_SEARCH(  "models/player/*", &numFiles, TRUE );
-	if( !numFiles ) filenames = FS_SEARCH(  "models/player/*", &numFiles, FALSE ); 
+	if( !numFiles ) filenames = FS_SEARCH(  "models/player/*", &numFiles, FALSE );
 #if 1
 	// add default singleplayer model
 	strcpy( uiPlayerSetup.models[uiPlayerSetup.num_models], "player" );
@@ -151,7 +151,7 @@ static void UI_PlayerSetup_GetConfig( void )
 		uiPlayerSetup.model.curValue = 0.0f; // force to default
 
 	strcpy( uiPlayerSetup.currentModel, uiPlayerSetup.models[(int)uiPlayerSetup.model.curValue] );
-	uiPlayerSetup.model.maxValue = (float)(uiPlayerSetup.num_models - 1);
+	uiPlayerSetup.model.maxValue = static_cast<float>(uiPlayerSetup.num_models - 1);
 
 	uiPlayerSetup.topColor.curValue = CVAR_GET_FLOAT( "topcolor" ) / 255;
 	uiPlayerSetup.bottomColor.curValue = CVAR_GET_FLOAT( "bottomcolor" ) / 255;
@@ -172,10 +172,10 @@ static void UI_PlayerSetup_SetConfig( void )
 {
 	CVAR_SET_STRING( "name", uiPlayerSetup.name.buffer );
 	CVAR_SET_STRING( "model", uiPlayerSetup.currentModel );
-	CVAR_SET_FLOAT( "topcolor", (int)(uiPlayerSetup.topColor.curValue * 255 ));
-	CVAR_SET_FLOAT( "bottomcolor", (int)(uiPlayerSetup.bottomColor.curValue * 255 ));
-	CVAR_SET_FLOAT( "cl_himodels", uiPlayerSetup.hiModels.enabled );
-	CVAR_SET_FLOAT( "ui_showmodels", uiPlayerSetup.showModels.enabled );
+	CVAR_SET_FLOAT( "topcolor", floorf(uiPlayerSetup.topColor.curValue * 255.f ));
+	CVAR_SET_FLOAT( "bottomcolor", floorf(uiPlayerSetup.bottomColor.curValue * 255.f ));
+	CVAR_SET_FLOAT( "cl_himodels", (float)uiPlayerSetup.hiModels.enabled );
+	CVAR_SET_FLOAT( "ui_showmodels", (float)uiPlayerSetup.showModels.enabled );
 }
 
 /*
@@ -213,10 +213,10 @@ static void UI_PlayerSetup_UpdateConfig( void )
 	bottomColor = (int)(uiPlayerSetup.bottomColor.curValue * 255 );
 
 	CVAR_SET_STRING( "model", uiPlayerSetup.currentModel );
-	CVAR_SET_FLOAT( "cl_himodels", uiPlayerSetup.hiModels.enabled );
-	CVAR_SET_FLOAT( "ui_showmodels", uiPlayerSetup.showModels.enabled );
-	CVAR_SET_FLOAT( "topcolor", topColor );
-	CVAR_SET_FLOAT( "bottomcolor", bottomColor );
+	CVAR_SET_FLOAT( "cl_himodels", (float)uiPlayerSetup.hiModels.enabled );
+	CVAR_SET_FLOAT( "ui_showmodels", (float)uiPlayerSetup.showModels.enabled );
+	CVAR_SET_FLOAT( "topcolor", (float)topColor );
+	CVAR_SET_FLOAT( "bottomcolor", (float)bottomColor );
 
 	// IMPORTANT: always set default model becuase we need to have something valid here
 	// if you wish draw your playermodel as normal studiomodel please change "models/player.mdl" to path

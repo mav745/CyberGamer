@@ -79,12 +79,12 @@ void CCineMonster :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flRepeat"))
 	{
-		m_flRepeat = atof( pkvd->szValue );
+		m_flRepeat = (float)atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flRadius"))
 	{
-		m_flRadius = atof( pkvd->szValue );
+		m_flRadius = (float)atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_iFinishSchedule"))
@@ -143,10 +143,10 @@ void CCineMonster :: Spawn( void )
 	if ( FStringNull(pev->targetname) || !FStringNull( m_iszIdle ) )
 	{
 		SetThink( &CCineMonster::CineThink );
-		pev->nextthink = gpGlobals->time + 1.0;
+		pev->nextthink = gpGlobals->time + 1.0f;
 		// Wait to be used?
 		if ( pev->targetname )
-			m_startTime = gpGlobals->time + 1E6;
+			m_startTime = gpGlobals->time + 1E6f;
 	}
 	if ( pev->spawnflags & SF_SCRIPT_NOINTERRUPT )
 		m_interruptable = FALSE;
@@ -193,7 +193,7 @@ void CCineMonster :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYP
 		if ( pTarget->m_scriptState == SCRIPT_PLAYING )
 			return;
 
-		m_startTime = gpGlobals->time + 0.05;
+		m_startTime = gpGlobals->time + 0.05f;
 	}
 	else
 	{
@@ -370,7 +370,7 @@ void CCineMonster :: PossessEntity( void )
 			pTarget->pev->effects |= EF_NOINTERP;
 			pTarget->pev->angles.y = pev->angles.y;
 			pTarget->m_scriptState = SCRIPT_WAIT;
-			m_startTime = gpGlobals->time + 1E6;
+			m_startTime = gpGlobals->time + 1E6f;
 			// UNDONE: Add a flag to do this so people can fixup physics after teleporting monsters
 			//			pTarget->pev->flags &= ~FL_ONGROUND;
 			break;
@@ -441,7 +441,7 @@ void CCineAI :: PossessEntity( void )
 			pTarget->pev->effects |= EF_NOINTERP;
 			pTarget->pev->angles.y = pev->angles.y;
 			pTarget->m_scriptState = SCRIPT_WAIT;
-			m_startTime = gpGlobals->time + 1E6;
+			m_startTime = gpGlobals->time + 1E6f;
 			// UNDONE: Add a flag to do this so people can fixup physics after teleporting monsters
 			pTarget->pev->flags &= ~FL_ONGROUND;
 			break;
@@ -484,7 +484,7 @@ void CCineMonster :: CineThink( void )
 	{
 		CancelScript( );
 		ALERT( at_aiconsole, "script \"%s\" can't find monster \"%s\"\n", STRING( pev->targetname ), STRING( m_iszEntity ) );
-		pev->nextthink = gpGlobals->time + 1.0;
+		pev->nextthink = gpGlobals->time + 1.0f;
 	}
 }
 
@@ -565,7 +565,7 @@ void CCineMonster :: SequenceDone ( CBaseMonster *pMonster )
 	if ( !( pev->spawnflags & SF_SCRIPT_REPEATABLE ) )
 	{
 		SetThink( &CBaseEntity::SUB_Remove );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 
 	// This is done so that another sequence can take over the monster when triggered by the first
@@ -739,7 +739,7 @@ void CCineMonster :: DelayStart( int state )
 			{
 				pTarget->m_iDelay--;
 				if (pTarget->m_iDelay <= 0)
-					pTarget->m_startTime = gpGlobals->time + 0.05;
+					pTarget->m_startTime = gpGlobals->time + 0.05f;
 			}
 		}
 		pentCine = FIND_ENTITY_BY_TARGETNAME(pentCine, STRING(pev->targetname));
@@ -988,17 +988,17 @@ void CScriptedSentence :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		m_flDuration = atof( pkvd->szValue );
+		m_flDuration = (float)atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		m_flRadius = atof( pkvd->szValue );
+		m_flRadius = (float)atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "refire"))
 	{
-		m_flRepeat = atof( pkvd->szValue );
+		m_flRepeat = (float)atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else if(FStrEq(pkvd->szKeyName, "attenuation"))
@@ -1008,7 +1008,7 @@ void CScriptedSentence :: KeyValue( KeyValueData *pkvd )
 	}
 	else if(FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_flVolume = atof( pkvd->szValue ) * 0.1;
+		m_flVolume = (float)atof( pkvd->szValue ) * 0.1f;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "listener"))
@@ -1040,7 +1040,7 @@ void CScriptedSentence :: Spawn( void )
 	if ( !pev->targetname )
 	{
 		SetThink( &CScriptedSentence::FindThink );
-		pev->nextthink = gpGlobals->time + 1.0;
+		pev->nextthink = gpGlobals->time + 1.0f;
 	}
 
 	switch( pev->impulse )
@@ -1086,7 +1086,7 @@ void CScriptedSentence :: FindThink( void )
 	else
 	{
 //		ALERT( at_console, "%s: can't find monster %s\n", STRING(m_iszSentence), STRING(m_iszEntity) );
-		pev->nextthink = gpGlobals->time + m_flRepeat + 0.5;
+		pev->nextthink = gpGlobals->time + m_flRepeat + 0.5f;
 	}
 }
 
@@ -1095,7 +1095,7 @@ void CScriptedSentence :: DelayThink( void )
 {
 	m_active = TRUE;
 	if ( !pev->targetname )
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	SetThink( &CScriptedSentence::FindThink );
 }
 

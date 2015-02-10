@@ -88,7 +88,7 @@ static dllfunc_t avifile_funcs[] =
 };
 
 dll_info_t avifile_dll = { "avifil32.dll", avifile_funcs, false };
-			  
+
 typedef struct movie_state_s
 {
 	qboolean		active;
@@ -274,7 +274,7 @@ long AVI_GetVideoFrameNumber( movie_state_t *Avi, float time )
 	if( !Avi->active )
 		return 0;
 
-	return (time * Avi->video_fps);
+	return (long)(time * Avi->video_fps);
 }
 
 // gets the raw frame data
@@ -317,8 +317,8 @@ qboolean AVI_GetAudioInfo( movie_state_t *Avi, wavdata_t *snd_info )
 		return false;
 	}
 
-	snd_info->rate = Avi->audio_header->nSamplesPerSec;
-	snd_info->channels = Avi->audio_header->nChannels;
+	snd_info->rate = (word)Avi->audio_header->nSamplesPerSec;
+	snd_info->channels = (byte)Avi->audio_header->nChannels;
 
 	if( Avi->audio_codec == WAVE_FORMAT_PCM ) // uncompressed audio!
 		snd_info->width = ( Avi->audio_bytes_per_sample > Avi->audio_header->nChannels ) ? 2 : 1;
@@ -421,7 +421,7 @@ fs_offset_t AVI_GetAudioChunk( movie_state_t *Avi, char *audiodata, long offset,
 		result = 0;
 
 		// seek to correct chunk and all that stuff
-		if( !AVI_SeekPosition( Avi, offset )) 
+		if( !AVI_SeekPosition( Avi, offset ))
 			return 0; // don't continue if we're waiting for the play pointer to catch up
 
 		while( length > 0 )
@@ -532,7 +532,7 @@ void AVI_OpenVideo( movie_state_t *Avi, const char *filename, qboolean load_audi
 
 	Avi->video_stream = Avi->audio_stream = NULL;
 
-	// open the streams until a stream is not available. 
+	// open the streams until a stream is not available.
 	while( 1 )
 	{
 		PAVISTREAM	stream = NULL;
@@ -582,17 +582,17 @@ void AVI_OpenVideo( movie_state_t *Avi, const char *filename, qboolean load_audi
 			}
 			else Avi->audio_bytes_per_sample = Avi->audio_header->nBlockAlign;
 			Avi->audio_length *= Avi->audio_bytes_per_sample;
-		} 
+		}
 		else
 		{
 			pAVIStreamRelease( stream );
 		}
 	}
 
-	// display error message-stream not found. 
+	// display error message-stream not found.
 	if( Avi->video_stream == NULL )
 	{
-		if( Avi->pfile ) // if file is open, close it 
+		if( Avi->pfile ) // if file is open, close it
 			pAVIFileRelease( Avi->pfile );
 		if( !Avi->quiet ) MsgDev( D_ERROR, "couldn't find a valid video stream.\n" );
 		return;
@@ -610,9 +610,9 @@ void AVI_OpenVideo( movie_state_t *Avi, const char *filename, qboolean load_audi
 	Avi->ignore_hwgamma = ignore_hwgamma;
 
 	bmih.biSize = sizeof( BITMAPINFOHEADER );
-	bmih.biPlanes = 1;	
+	bmih.biPlanes = 1;
 	bmih.biBitCount = 32;
-	bmih.biCompression = BI_RGB;	
+	bmih.biCompression = BI_RGB;
 	bmih.biWidth = Avi->video_xres;
 	bmih.biHeight = -Avi->video_yres; // invert height to flip image upside down
 
@@ -653,7 +653,7 @@ movie_state_t *AVI_LoadVideo( const char *filename, qboolean load_audio, qboolea
 	{
 		MsgDev( D_ERROR, "AVI_LoadVideo: movie support is disabled\n" );
 		return NULL;
-	}	
+	}
 
 	// open cinematic
 	Q_snprintf( path, sizeof( path ), "media/%s", filename );
@@ -727,7 +727,7 @@ qboolean AVI_Initailize( void )
 	pAVIFileInit();
 	avi_initialized = true;
 	MsgDev( D_NOTE, "AVI_Initailize: done\n" );
-		
+
 	return true;
 }
 

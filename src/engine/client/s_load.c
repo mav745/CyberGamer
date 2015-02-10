@@ -54,14 +54,14 @@ void S_SoundList_f( void )
 
 			if( sc->loopStart >= 0 ) Msg( "L" );
 			else Msg( " " );
-			Msg( " (%2db) %s : sound/%s\n", sc->width * 8, Q_memprint( sc->size ), sfx->name );
+			Msg( " (%2db) %s : sound/%s\n", sc->width * 8, Q_memprint( (float)sc->size ), sfx->name );
 			totalSfx++;
 		}
 	}
 
 	Msg( "-------------------------------------------\n" );
 	Msg( "%i total sounds\n", totalSfx );
-	Msg( "%s total memory\n", Q_memprint( totalSize ));
+	Msg( "%s total memory\n", Q_memprint( (float)totalSize ));
 	Msg( "\n" );
 }
 
@@ -214,7 +214,7 @@ sfx_t *S_FindName( const char *pname, int *pfInCache )
 		}
 		s_numSfx++;
 	}
-	
+
 	sfx = &s_knownSfx[i];
 	Q_memset( sfx, 0, sizeof( *sfx ));
 	if( pfInCache ) *pfInCache = false;
@@ -225,7 +225,7 @@ sfx_t *S_FindName( const char *pname, int *pfInCache )
 	// link it in
 	sfx->hashNext = s_sfxHashList[sfx->hashValue];
 	s_sfxHashList[sfx->hashValue] = sfx;
-		
+
 	return sfx;
 }
 
@@ -304,7 +304,7 @@ void S_EndRegistration( void )
 	int	i;
 
 	if( !dma.initialized ) return;
-	
+
 	// free any sounds not from this registration sequence
 	for( i = 0, sfx = s_knownSfx; i < s_numSfx; i++, sfx++ )
 	{

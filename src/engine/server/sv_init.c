@@ -50,7 +50,7 @@ int SV_ModelIndex( const char *filename )
 	Q_strncpy( sv.model_precache[i], name, sizeof( sv.model_precache[i] ));
 
 	if( sv.state != ss_loading )
-	{	
+	{
 		// send the update to everyone
 		BF_WriteByte( &sv.reliable_datagram, svc_modelindex );
 		BF_WriteUBitLong( &sv.reliable_datagram, i, MAX_MODEL_BITS );
@@ -88,7 +88,7 @@ int SV_SoundIndex( const char *filename )
 	Q_strncpy( sv.sound_precache[i], name, sizeof( sv.sound_precache[i] ));
 
 	if( sv.state != ss_loading )
-	{	
+	{
 		// send the update to everyone
 		BF_WriteByte( &sv.reliable_datagram, svc_soundindex );
 		BF_WriteUBitLong( &sv.reliable_datagram, i, MAX_SOUND_BITS );
@@ -200,7 +200,7 @@ char *SV_EntityScript( void )
 	{
 		if( ft1 > ft2 )
 		{
-			MsgDev( D_INFO, "^1Entity patch is older than bsp. Ignored.\n", entfilename );			
+			MsgDev( D_INFO, "^1Entity patch is older than bsp. Ignored.\n", entfilename );
 		}
 		else if(( ents = FS_LoadFile( entfilename, NULL, true )) != NULL )
 		{
@@ -225,7 +225,7 @@ baseline will be transmitted
 void SV_CreateBaseline( void )
 {
 	edict_t	*pEdict;
-	int	e;	
+	int	e;
 
 	for( e = 0; e < svgame.numEntities; e++ )
 	{
@@ -250,7 +250,7 @@ void SV_FreeOldEntities( void )
 	edict_t	*ent;
 	int	i;
 
-	// at end of frame kill all entities which supposed to it 
+	// at end of frame kill all entities which supposed to it
 	for( i = svgame.globals->maxClients + 1; i < svgame.numEntities; i++ )
 	{
 		ent = EDICT_NUM( i );
@@ -311,7 +311,7 @@ void SV_ActivateServer( void )
 
 	numFrames = (sv.loadgame) ? 1 : 2;
 	if( !sv.loadgame || svgame.globals->changelevel )
-		host.frametime = 0.1f;			
+		host.frametime = 0.1f;
 
 	// GoldSrc rules
 	// NOTE: this stuff is breaking sound from func_rotating in multiplayer
@@ -507,8 +507,8 @@ qboolean SV_SpawnServer( const char *mapname, const char *startspot )
 	sv.background = background;
 	sv.changelevel = changelevel;
 	sv.time = 1.0f;			// server spawn time it's always 1.0 second
-	svgame.globals->time = sv.time;
-	
+	svgame.globals->time = (float)sv.time;
+
 	// initialize buffers
 	BF_Init( &sv.datagram, "Datagram", sv.datagram_buf, sizeof( sv.datagram_buf ));
 	BF_Init( &sv.reliable_datagram, "Datagram R", sv.reliable_datagram_buf, sizeof( sv.reliable_datagram_buf ));
@@ -585,7 +585,7 @@ void SV_InitGame( void )
 {
 	edict_t	*ent;
 	int	i;
-	
+
 	if( svs.initialized )
 	{
 		// cause any connected clients to reconnect
@@ -639,7 +639,7 @@ void SV_InitGame( void )
 		if( sv_maxclients->integer <= 1 || sv_maxclients->integer > 4 )
 			Cvar_FullSet( "maxplayers", "4", CVAR_LATCH );
 	}
-	else	
+	else
 	{
 		// non-deathmatch, non-coop is one player
 		Cvar_FullSet( "maxplayers", "1", CVAR_LATCH );
@@ -659,9 +659,9 @@ void SV_InitGame( void )
 	NET_Config(( sv_maxclients->integer > 1 ));
 
 	// copy gamemode into svgame.globals
-	svgame.globals->deathmatch = Cvar_VariableInteger( "deathmatch" );
-	svgame.globals->teamplay = Cvar_VariableInteger( "teamplay" );
-	svgame.globals->coop = Cvar_VariableInteger( "coop" );
+	svgame.globals->deathmatch = (float)Cvar_VariableInteger( "deathmatch" );
+	svgame.globals->teamplay = (float)Cvar_VariableInteger( "teamplay" );
+	svgame.globals->coop = (float)Cvar_VariableInteger( "coop" );
 
 	// heartbeats will always be sent to the id master
 	svs.last_heartbeat = MAX_HEARTBEAT; // send immediately

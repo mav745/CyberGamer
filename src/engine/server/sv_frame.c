@@ -21,7 +21,7 @@ GNU General Public License for more details.
 typedef struct
 {
 	int		num_entities;
-	entity_state_t	entities[MAX_VISIBLE_PACKET];	
+	entity_state_t	entities[MAX_VISIBLE_PACKET];
 } sv_ents_t;
 
 static byte *clientpvs;	// FatPVS
@@ -133,7 +133,7 @@ static void SV_AddEntitiesToPacket( edict_t *pViewEnt, edict_t *pClient, client_
 			{
 				ents->num_entities++;	// entity accepted
 				c_fullsend++;		// debug counter
-				
+
 			}
 			else
 			{
@@ -238,34 +238,34 @@ void SV_EmitPacketEntities( sv_client_t *cl, client_frame_t *to, sizebuf_t *msg 
 		}
 
 		if( newnum == oldnum )
-		{	
+		{
 			// delta update from old position
 			// because the force parm is false, this will not result
 			// in any bytes being emited if the entity has not changed at all
-			MSG_WriteDeltaEntity( oldent, newent, msg, false, SV_IsPlayerIndex( newent->number ), sv.time );
+			MSG_WriteDeltaEntity( oldent, newent, msg, false, SV_IsPlayerIndex( newent->number ), (float)sv.time );
 			oldindex++;
 			newindex++;
 			continue;
 		}
 
 		if( newnum < oldnum )
-		{	
+		{
 			// this is a new entity, send it from the baseline
-			MSG_WriteDeltaEntity( &svs.baselines[newnum], newent, msg, true, SV_IsPlayerIndex( newent->number ), sv.time );
+			MSG_WriteDeltaEntity( &svs.baselines[newnum], newent, msg, true, SV_IsPlayerIndex( newent->number ), (float)sv.time );
 			newindex++;
 			continue;
 		}
 
 		if( newnum > oldnum )
-		{	
+		{
 			qboolean	force;
 
 			if( EDICT_NUM( oldent->number )->free )
 				force = true;	// entity completely removed from server
-			else force = false;		// just removed from delta-message 
+			else force = false;		// just removed from delta-message
 
 			// remove from message
-			MSG_WriteDeltaEntity( oldent, NULL, msg, force, false, sv.time );
+			MSG_WriteDeltaEntity( oldent, NULL, msg, force, false, (float)sv.time );
 			oldindex++;
 			continue;
 		}
@@ -444,7 +444,7 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 	int		i;
 //	int wpns[32];
 //	char txt[256];
-	
+
 	Q_memset( &nullcd, 0, sizeof( nullcd ));
 
 	clent = cl->edict;
@@ -484,7 +484,7 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 
 	// update clientdata_t
 	svgame.dllFuncs.pfnUpdateClientData( clent, cl->local_weapons, &frame->clientdata );
-	
+
 	BF_WriteByte( msg, svc_clientdata );
 	if( cl->hltv_proxy ) return;	// don't send more nothing
 
@@ -503,8 +503,8 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 	}
 
 	// write clientdata_t
-	MSG_WriteClientData( msg, from_cd, to_cd, sv.time );
-	
+	MSG_WriteClientData( msg, from_cd, to_cd, (float)sv.time );
+
 	if( cl->local_weapons && svgame.dllFuncs.pfnGetWeaponData( clent, frame->weapondata ))
 	{
 		Q_memset( &nullwd, 0, sizeof( nullwd ));
@@ -515,13 +515,13 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 			else from_wd = &cl->frames[cl->delta_sequence & SV_UPDATE_MASK].weapondata[i];
 			to_wd = &frame->weapondata[i];
 
-			MSG_WriteWeaponData( msg, from_wd, to_wd, sv.time, i );
+			MSG_WriteWeaponData( msg, from_wd, to_wd, (float)sv.time, i );
 		}
 	}
 
 	// end marker
 	BF_WriteOneBit( msg, 0 );
-	
+
 //	for(i=0;i<32;i++) wpns[i] = !!(to_cd->weapons & (1<<i));
 //	sprintf(txt,"out.n weapons %i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i\n",
 //			wpns[ 0],wpns[ 1],wpns[ 2],wpns[ 3],wpns[ 4],
@@ -565,7 +565,7 @@ void SV_WriteEntitiesToClient( sv_client_t *cl, sizebuf_t *msg )
 	// add all the entities directly visible to the eye, which
 	// may include portal entities that merge other viewpoints
 	SV_AddEntitiesToPacket( viewent, clent, frame, &frame_ents );
-   
+
 	// if there were portals visible, there may be out of order entities
 	// in the list which will need to be resorted for the delta compression
 	// to work correctly.  This also catches the error condition
@@ -618,7 +618,7 @@ void SV_SendClientDatagram( sv_client_t *cl )
 
 	// always send servertime at new frame
 	BF_WriteByte( &msg, svc_time );
-	BF_WriteFloat( &msg, sv.time );
+	BF_WriteFloat( &msg, (float)sv.time );
 
 	SV_WriteClientdataToMessage( cl, &msg );
 	SV_WriteEntitiesToClient( cl, &msg );
@@ -630,7 +630,7 @@ void SV_SendClientDatagram( sv_client_t *cl )
 	BF_Clear( &cl->datagram );
 
 	if( BF_CheckOverflow( &msg ))
-	{	
+	{
 		// must have room left for the packet header
 		MsgDev( D_WARN, "msg overflowed for %s\n", cl->name );
 		BF_Clear( &msg );
@@ -668,7 +668,7 @@ void SV_UpdateToReliableMessages( void )
 		{
 			cl->sendmovevars = false;
 			SV_FullUpdateMovevars( cl, &cl->netchan.message );
-                    }
+					}
 	}
 
 	// 1% chanse for simulate random network bugs
@@ -755,7 +755,7 @@ void SV_SendClientMessages( void )
 			// If the target time for sending is within the next frame interval ( based on last frame ),
 			// trigger the send now. Note that in single player,
 			// send_message is also set to true any time a packet arrives from the client.
-			float	time_unti_next_message = cl->next_messagetime - (host.realtime + host.frametime);
+			float	time_unti_next_message = (float)(cl->next_messagetime - host.realtime + host.frametime);
 
 			if( time_unti_next_message <= 0.0f )
 				cl->send_message = true;
@@ -836,7 +836,7 @@ void SV_SendMessagesToAll( void )
 	{
 		if( cl->state >= cs_connected )
 			cl->send_message = true;
-	}	
+	}
 	SV_SendClientMessages();
 }
 
@@ -883,7 +883,7 @@ void SV_InactivateClients( void )
 	{
 		if( !cl->state || !cl->edict )
 			continue;
-			
+
 		if( !cl->edict || (cl->edict->v.flags & FL_FAKECLIENT))
 			continue;
 

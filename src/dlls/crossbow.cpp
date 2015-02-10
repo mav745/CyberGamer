@@ -73,7 +73,7 @@ void CCrossbowBolt::Spawn( )
 
 	SetTouch( &CCrossbowBolt::BoltTouch );
 	SetThink( &CCrossbowBolt::BubbleThink );
-	pev->nextthink = gpGlobals->time + 0.2;
+	pev->nextthink = gpGlobals->time + 0.2f;
 }
 
 
@@ -152,8 +152,8 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			pev->movetype = MOVETYPE_FLY;
 			pev->velocity = Vector( 0, 0, 0 );
 			pev->avelocity.z = 0;
-			pev->angles.z = RANDOM_LONG(0,360);
-			pev->nextthink = gpGlobals->time + 10.0;
+			pev->angles.z = static_cast<float>(RANDOM_LONG(0,360));
+			pev->nextthink = gpGlobals->time + 10.0f;
 		}
 		else if ( pOther->pev->movetype == MOVETYPE_PUSH || pOther->pev->movetype == MOVETYPE_PUSHSTEP )
 		{
@@ -163,8 +163,8 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			pev->solid = SOLID_NOT;
 			pev->velocity = Vector( 0, 0, 0 );
 			pev->avelocity.z = 0;
-			pev->angles.z = RANDOM_LONG(0,360);
-			pev->nextthink = gpGlobals->time + 10.0;
+			pev->angles.z = static_cast<float>(RANDOM_LONG(0,360));
+			pev->nextthink = gpGlobals->time + 10.0f;
 
 			// g-cont. Setup movewith feature
 			pev->movetype = MOVETYPE_COMPOUND;	// set movewith type
@@ -180,13 +180,13 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 	if ( g_pGameRules->IsMultiplayer() )
 	{
 		SetThink( &CCrossbowBolt::ExplodeThink );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 }
 
 void CCrossbowBolt::BubbleThink( void )
 {
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	if (pev->waterlevel == 0)
 		return;
@@ -324,7 +324,7 @@ void CCrossbow::Holster( int skiplocal /* = 0 */ )
 		SecondaryAttack( );
 	}
 
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
 	if (m_iClip)
 		SendWeaponAnim( CROSSBOW_HOLSTER1 );
 	else
@@ -350,7 +350,7 @@ void CCrossbow::PrimaryAttack( void )
 // this function only gets called in multiplayer
 void CCrossbow::FireSniperBolt()
 {
-	m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.75;
+	m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.75f;
 
 	if (m_iClip == 0)
 	{
@@ -448,32 +448,34 @@ void CCrossbow::FireBolt()
 		// HEV suit - indicate out of ammo condition
 		m_pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 
-	m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.75;
+	m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.75f;
 
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.75;
+	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.75f;
 
 	if (m_iClip != 0)
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 5.0;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 5.0f;
 	else
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.75;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.75f;
 }
 
 
 void CCrossbow::SecondaryAttack()
 {
-	if ( m_pPlayer->pev->fov != 0 )
+	if ( m_pPlayer->pev->fov != 0.f )
 	{
-		m_pPlayer->pev->fov = m_pPlayer->m_iFOV = 0; // 0 means reset to default fov
+		m_pPlayer->m_iFOV =  0; // 0 means reset to default fov
+		m_pPlayer->pev->fov = 0.f;
 		m_fInZoom = 0;
 	}
-	else if ( m_pPlayer->pev->fov != 20 )
+	else if ( m_pPlayer->pev->fov != 20.f )
 	{
-		m_pPlayer->pev->fov = m_pPlayer->m_iFOV = 20;
+		m_pPlayer->m_iFOV = 20;
+		m_pPlayer->pev->fov = (float)m_pPlayer->m_iFOV;
 		m_fInZoom = 1;
 	}
 
-	pev->nextthink = UTIL_WeaponTimeBase() + 0.1;
-	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0;
+	pev->nextthink = UTIL_WeaponTimeBase() + 0.1f;
+	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 1.0f;
 }
 
 
@@ -487,9 +489,9 @@ void CCrossbow::Reload( void )
 		SecondaryAttack();
 	}
 
-	if ( DefaultReload( 5, CROSSBOW_RELOAD, 4.5 ) )
+	if ( DefaultReload( 5, CROSSBOW_RELOAD, 4.5f ) )
 	{
-		EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/xbow_reload1.wav", RANDOM_FLOAT(0.95, 1.0), ATTN_NORM, 0, 93 + RANDOM_LONG(0,0xF));
+		EMIT_SOUND_DYN(ENT(m_pPlayer->pev), CHAN_ITEM, "weapons/xbow_reload1.wav", RANDOM_FLOAT(0.95f, 1.0f), ATTN_NORM, 0, 93 + RANDOM_LONG(0,0xF));
 	}
 }
 
@@ -520,12 +522,12 @@ void CCrossbow::WeaponIdle( void )
 			if (m_iClip)
 			{
 				SendWeaponAnim( CROSSBOW_FIDGET1 );
-				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 90.0 / 30.0;
+				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 90.0f / 30.0f;
 			}
 			else
 			{
 				SendWeaponAnim( CROSSBOW_FIDGET2 );
-				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 80.0 / 30.0;
+				m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 80.0f / 30.0f;
 			}
 			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 		}

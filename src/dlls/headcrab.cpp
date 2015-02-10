@@ -204,7 +204,7 @@ void CHeadCrab :: SetYawSpeed ( void )
 		break;
 	}
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 //=========================================================
@@ -238,7 +238,7 @@ void CHeadCrab :: HandleAnimEvent( MonsterEvent_t *pEvent )
 
 				// Scale the sideways velocity to get there at the right time
 				vecJumpDir = (m_hEnemy->pev->origin + m_hEnemy->pev->view_ofs - pev->origin);
-				vecJumpDir = vecJumpDir * ( 1.0 / time );
+				vecJumpDir = vecJumpDir * ( 1.0f / time );
 
 				// Speed to offset gravity at the desired height
 				vecJumpDir.z = speed;
@@ -248,7 +248,7 @@ void CHeadCrab :: HandleAnimEvent( MonsterEvent_t *pEvent )
 
 				if (distance > 650)
 				{
-					vecJumpDir = vecJumpDir * ( 650.0 / distance );
+					vecJumpDir = vecJumpDir * ( 650.0f / distance );
 				}
 			}
 			else
@@ -487,7 +487,7 @@ public:
 	void Spawn( void );
 	void Precache( void );
 	void SetYawSpeed ( void );
-	float GetDamageAmount( void ) { return gSkillData.headcrabDmgBite * 0.3; }
+	float GetDamageAmount( void ) { return gSkillData.headcrabDmgBite * 0.3f; }
 	BOOL CheckRangeAttack1 ( float flDot, float flDist );
 	Schedule_t* GetScheduleOfType ( int Type );
 	virtual int GetVoicePitch( void ) { return PITCH_NORM + RANDOM_LONG(40,50); }
@@ -503,7 +503,7 @@ void CBabyCrab :: Spawn( void )
 	pev->renderamt = 192;
 	UTIL_SetSize(pev, Vector(-12, -12, 0), Vector(12, 12, 24));
 
-	pev->health	= gSkillData.headcrabHealth * 0.25;	// less health than full grown
+	pev->health	= gSkillData.headcrabHealth * 0.25f;	// less health than full grown
 }
 
 void CBabyCrab :: Precache( void )

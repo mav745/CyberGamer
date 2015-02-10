@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ID_DONE	  	2
 #define ID_SCREEN_SIZE	3
 #define ID_GAMMA		4
-#define ID_GLARE_REDUCTION	5 
+#define ID_GLARE_REDUCTION	5
 #define ID_SIMPLE_SKY	6
 #define ID_ALLOW_MATERIALS	7
 
@@ -94,8 +94,8 @@ static void UI_VidOptions_UpdateConfig( void )
 {
 	CVAR_SET_FLOAT( "viewsize", RemapVal( uiVidOptions.screenSize.curValue, 0.0f, 1.0f, 30.0f, 120.0f ));
 	CVAR_SET_FLOAT( "r_flaresize", (uiVidOptions.glareReduction.curValue * 200.0f ) + 100.0f );
-	CVAR_SET_FLOAT( "r_fastsky", uiVidOptions.fastSky.enabled );
-	CVAR_SET_FLOAT( "host_allow_materials", uiVidOptions.hiTextures.enabled );
+	CVAR_SET_FLOAT( "r_fastsky", (float)uiVidOptions.fastSky.enabled );
+	CVAR_SET_FLOAT( "host_allow_materials", (float)uiVidOptions.hiTextures.enabled );
 
 	if( CVAR_GET_FLOAT( "gl_ignorehwgamma" ))
 		PIC_SetGamma( uiVidOptions.hTestImage, RemapVal( uiVidOptions.gammaIntensity.curValue, 0.0f, 1.0f, 1.8f, 3.0f ));
@@ -106,8 +106,8 @@ static void UI_VidOptions_SetConfig( void )
 {
 	CVAR_SET_FLOAT( "viewsize", RemapVal( uiVidOptions.screenSize.curValue, 0.0f, 1.0f, 30.0f, 120.0f ));
 	CVAR_SET_FLOAT( "r_flaresize", (uiVidOptions.glareReduction.curValue * 200.0f ) + 100.0f );
-	CVAR_SET_FLOAT( "r_fastsky", uiVidOptions.fastSky.enabled );
-	CVAR_SET_FLOAT( "host_allow_materials", uiVidOptions.hiTextures.enabled );
+	CVAR_SET_FLOAT( "r_fastsky", (float)uiVidOptions.fastSky.enabled );
+	CVAR_SET_FLOAT( "host_allow_materials", (float)uiVidOptions.hiTextures.enabled );
 
 	if( CVAR_GET_FLOAT( "gl_ignorehwgamma" ))
 		CVAR_SET_FLOAT( "gamma", RemapVal( uiVidOptions.gammaIntensity.curValue, 0.0f, 1.0f, 1.8f, 3.0f ));
@@ -126,7 +126,7 @@ static void UI_VidOptions_Ownerdraw( void *self )
 	int		viewport[4];
 	int		viewsize, size, sb_lines;
 
-	viewsize = CVAR_GET_FLOAT( "viewsize" );
+	viewsize = (int)CVAR_GET_FLOAT( "viewsize" );
 
 	if( viewsize >= 120 )
 		sb_lines = 0;	// no status bar at all

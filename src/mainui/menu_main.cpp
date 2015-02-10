@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ID_NEWGAME		3
 #define ID_HAZARDCOURSE	4
 #define ID_CONFIGURATION	5
-#define ID_SAVERESTORE	6	
+#define ID_SAVERESTORE	6
 #define ID_MULTIPLAYER	7
 #define ID_CUSTOMGAME	8
 #define ID_PREVIEWS		9
@@ -98,7 +98,7 @@ UI_Background_Ownerdraw
 */
 static void UI_Background_Ownerdraw( void *self )
 {
-	menuCommon_s	*item = (menuCommon_s *)self;
+//	menuCommon_s	*item = (menuCommon_s *)self;
 
 	// map has background
 	if( CVAR_GET_FLOAT( "cl_background" ))
@@ -129,7 +129,7 @@ static void UI_QuitDialog( void )
 {
 	// toggle main menu between active\inactive
 	// show\hide quit dialog
-	uiMain.console.generic.flags ^= QMF_INACTIVE; 
+	uiMain.console.generic.flags ^= QMF_INACTIVE;
 	uiMain.resumeGame.generic.flags ^= QMF_INACTIVE;
 	uiMain.newGame.generic.flags ^= QMF_INACTIVE;
 	uiMain.hazardCourse.generic.flags ^= QMF_INACTIVE;
@@ -153,7 +153,7 @@ static void UI_PromptDialog( void )
 {
 	// toggle main menu between active\inactive
 	// show\hide quit dialog
-	uiMain.console.generic.flags ^= QMF_INACTIVE; 
+	uiMain.console.generic.flags ^= QMF_INACTIVE;
 	uiMain.resumeGame.generic.flags ^= QMF_INACTIVE;
 	uiMain.newGame.generic.flags ^= QMF_INACTIVE;
 	uiMain.hazardCourse.generic.flags ^= QMF_INACTIVE;
@@ -395,7 +395,7 @@ static void UI_Main_Init( void )
 	uiMain.hazardCourse.generic.x = 72;
 	uiMain.hazardCourse.generic.y = 330;
 	uiMain.hazardCourse.generic.callback = UI_Main_Callback;
-	
+
 	UI_UtilSetupPicButton( &uiMain.hazardCourse, PC_HAZARD_COURSE );
 
 	uiMain.saveRestore.generic.id = ID_SAVERESTORE;
@@ -562,7 +562,7 @@ static void UI_Main_Init( void )
 	uiMain.no.generic.x = 530;
 	uiMain.no.generic.y = 460;
 	uiMain.no.generic.callback = UI_Main_Callback;
-	
+
 	UI_UtilSetupPicButton( &uiMain.no, PC_CANCEL );
 
 	UI_AddItem( &uiMain.menu, (void *)&uiMain.background );

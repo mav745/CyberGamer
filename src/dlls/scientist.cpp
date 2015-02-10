@@ -573,7 +573,7 @@ void CScientist :: RunTask( Task_t *pTask )
 			if ( TargetDistance() > 90 )
 				TaskComplete();
 			pev->ideal_yaw = UTIL_VecToYaw( m_hTargetEnt->pev->origin - pev->origin );
-			ChangeYaw( pev->yaw_speed );
+			ChangeYaw( (int)pev->yaw_speed );
 		}
 		break;
 	default:
@@ -619,7 +619,7 @@ void CScientist :: SetYawSpeed ( void )
 		break;
 	}
 
-	pev->yaw_speed = ys;
+	pev->yaw_speed = (float)ys;
 }
 
 //=========================================================
@@ -1241,7 +1241,7 @@ void CSittingScientist :: Spawn( )
 	ResetSequenceInfo( );
 
 	SetThink (&CSittingScientist::SittingThink);
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	DROP_TO_FLOOR ( ENT(pev) );
 }
@@ -1366,9 +1366,9 @@ void CSittingScientist :: SittingThink( void )
 
 		ResetSequenceInfo( );
 		pev->frame = 0;
-		SetBoneController( 0, m_headTurn );
+		SetBoneController( 0, (float)m_headTurn );
 	}
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 }
 
 // prepare sitting scientist to answer a question

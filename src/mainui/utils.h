@@ -26,8 +26,8 @@ extern ui_enginefuncs_t g_engfuncs;
 
 #define MAX_INFO_STRING	256	// engine limit
 
-#define RAD2DEG( x )	((float)(x) * (float)(180.f / M_PI))
-#define DEG2RAD( x )	((float)(x) * (float)(M_PI / 180.f))
+#define RAD2DEG( x )	(static_cast<float>((x) * (180. / M_PI)))
+#define DEG2RAD( x )	(static_cast<float>((x) * (M_PI / 180.)))
 
 //
 // How did I ever live without ASSERT?
@@ -100,7 +100,7 @@ inline int PackAlpha( unsigned int ulRGB, unsigned int ulAlpha )
 
 inline int UnpackAlpha( unsigned int ulRGBA )
 {
-	return ((ulRGBA & 0xFF000000) >> 24);	
+	return ((ulRGBA & 0xFF000000) >> 24);
 }
 
 inline float RemapVal( float val, float A, float B, float C, float D)

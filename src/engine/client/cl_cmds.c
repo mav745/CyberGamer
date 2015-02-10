@@ -117,7 +117,7 @@ void CL_PlayCDTrack_f( void )
 
 		for( maxTrack = i = 0; i < MAX_CDTRACKS; i++ )
 			if( Q_strlen( clgame.cdtracks[i] )) maxTrack++;
-			
+
 		Msg( "%u tracks\n", maxTrack );
 		if( track )
 		{
@@ -130,11 +130,11 @@ void CL_PlayCDTrack_f( void )
 	else Msg( "cd: unknown command %s\n", command );
 }
 
-/* 
-================== 
+/*
+==================
 CL_ScreenshotGetName
-================== 
-*/  
+==================
+*/
 void CL_ScreenshotGetName( int lastnum, char *filename )
 {
 	int	a, b, c, d;
@@ -157,11 +157,11 @@ void CL_ScreenshotGetName( int lastnum, char *filename )
 	Q_sprintf( filename, "scrshots/%s_shot%i%i%i%i.bmp", clgame.mapname, a, b, c, d );
 }
 
-/* 
-================== 
+/*
+==================
 CL_SnapshotGetName
-================== 
-*/  
+==================
+*/
 qboolean CL_SnapshotGetName( int lastnum, char *filename )
 {
 	int	a, b, c, d;
@@ -186,21 +186,21 @@ qboolean CL_SnapshotGetName( int lastnum, char *filename )
 	return true;
 }
 
-/* 
-============================================================================== 
- 
-			SCREEN SHOTS 
- 
-============================================================================== 
+/*
+==============================================================================
+
+			SCREEN SHOTS
+
+==============================================================================
 */
-/* 
-================== 
+/*
+==================
 CL_ScreenShot_f
 
 normal screenshot
-================== 
+==================
 */
-void CL_ScreenShot_f( void ) 
+void CL_ScreenShot_f( void )
 {
 	int	i;
 	string	checkname;
@@ -229,14 +229,14 @@ void CL_ScreenShot_f( void )
 	cls.envshot_viewsize = 0;
 }
 
-/* 
-================== 
+/*
+==================
 CL_SnapShot_f
 
 save screenshots into root dir
-================== 
+==================
 */
-void CL_SnapShot_f( void ) 
+void CL_SnapShot_f( void )
 {
 	int	i;
 	string	checkname;
@@ -270,12 +270,12 @@ void CL_SnapShot_f( void )
 	cls.envshot_viewsize = 0;
 }
 
-/* 
-================== 
+/*
+==================
 CL_EnvShot_f
 
 cubemap view
-================== 
+==================
 */
 void CL_EnvShot_f( void )
 {
@@ -291,12 +291,12 @@ void CL_EnvShot_f( void )
 	cls.envshot_viewsize = 0;
 }
 
-/* 
-================== 
+/*
+==================
 CL_SkyShot_f
 
 skybox view
-================== 
+==================
 */
 void CL_SkyShot_f( void )
 {
@@ -312,13 +312,13 @@ void CL_SkyShot_f( void )
 	cls.envshot_viewsize = 0;
 }
 
-/* 
-================== 
+/*
+==================
 CL_LevelShot_f
 
 splash logo while map is loading
-================== 
-*/ 
+==================
+*/
 void CL_LevelShot_f( void )
 {
 	size_t	ft1, ft2;
@@ -352,13 +352,13 @@ void CL_LevelShot_f( void )
 	else cls.scrshot_action = scrshot_inactive;	// disable - not needs
 }
 
-/* 
-================== 
+/*
+==================
 CL_SaveShot_f
 
 mini-pic in loadgame menu
-================== 
-*/ 
+==================
+*/
 void CL_SaveShot_f( void )
 {
 	if( Cmd_Argc() < 2 )
@@ -371,13 +371,13 @@ void CL_SaveShot_f( void )
 	cls.scrshot_action = scrshot_savegame;	// build new frame for saveshot
 }
 
-/* 
-================== 
+/*
+==================
 CL_DemoShot_f
 
 mini-pic in playdemo menu
-================== 
-*/ 
+==================
+*/
 void CL_DemoShot_f( void )
 {
 	if( Cmd_Argc() < 2 )
@@ -452,12 +452,12 @@ void SCR_TimeRefresh_f( void )
 	start = Sys_DoubleTime();
 
 	if( Cmd_Argc() == 2 )
-	{	
+	{
 		// run without page flipping
 		R_BeginFrame( false );
 		for( i = 0; i < 128; i++ )
 		{
-			cl.refdef.viewangles[1] = i / 128.0 * 360.0f;
+			cl.refdef.viewangles[1] = i / 128.0f * 360.0f;
 			R_RenderFrame( &cl.refdef, true );
 		}
 		R_EndFrame();
@@ -466,7 +466,7 @@ void SCR_TimeRefresh_f( void )
 	{
 		for( i = 0; i < 128; i++ )
 		{
-			cl.refdef.viewangles[1] = i / 128.0 * 360.0f;
+			cl.refdef.viewangles[1] = i / 128.0f * 360.0f;
 
 			R_BeginFrame( true );
 			R_RenderFrame( &cl.refdef, true );

@@ -32,7 +32,7 @@ GNU General Public License for more details.
 // So we must process 1840 samples in 3ms.
 
 // on a 1Ghz CPU (mid-low end CPU) 3ms provides roughly 3,000,000 cycles.
-// Thus we have 3e6 / 1840 = 1630 cycles per sample.  
+// Thus we have 3e6 / 1840 = 1630 cycles per sample.
 
 #define PBITS		12		// parameter bits
 #define PMAX		((1 << PBITS)-1)	// parameter max size
@@ -102,7 +102,7 @@ _inline int avg_filter( int  M, int *a, int L, int *b, int *w, int x )
 	case 1:  y += w[1];
 	case 0:  y += w[0];
 	}
-	
+
 	for( i = L; i >= 1; i-- )	// reverse update internal state
 		w[i] = w[i-1];
 
@@ -131,10 +131,10 @@ _inline int avg_filter( int  M, int *a, int L, int *b, int *w, int x )
 //	w = internal state vector, dimension max(M,L) + 1
 //  L, M numerator and denominator filter orders
 //  a,b are M+1 dimensional arrays of filter params
-// 
+//
 //  for M = 4:
 //
-//                1     w0(n)   b0	 
+//                1     w0(n)   b0
 //  x(n)--->(+)--(*)-----.------(*)->(+)---> y(n)
 //           ^         |            ^
 //           |     [Delay d]        |
@@ -165,15 +165,15 @@ _inline int avg_filter( int  M, int *a, int L, int *b, int *w, int x )
 _inline int iir_filter( int  M, int *a, int L, int *b, int *w, int x )
 {
 	int	K, i, y, x0;
-	
+
 	if( M == 0 )
 		return avg_filter( M, a, L, b, w, x );
-	
+
 	y = 0;
 	x0 = x;
 
-	K = max ( M, L );				
-	
+	K = max ( M, L );
+
 	// for (i = 1; i <= M; i++)		// input adder
 	//	w[0] -= ( a[i] * w[i] ) >> PBITS;
 
@@ -219,7 +219,7 @@ _inline int iir_filter( int  M, int *a, int L, int *b, int *w, int x )
 	case 1:  y += ( b[1] * w[1] ) >> PBITS;
 	case 0:  y += ( b[0] * w[0] ) >> PBITS;
 	}
-	
+
 	for( i = K; i >= 1; i-- )		// reverse update internal state
 		w[i] = w[i-1];
 
@@ -234,12 +234,12 @@ _inline int iir_filter2( int  M, int *a, int L, int *b, int *w, int x )
 
 	K = max( M, L );			// K = max (M, L)
 	w[0] = 0;				// needed for dot (M, a, w)
-	
+
 	w[0] = x - dot( M, a, w );		// input adder
 	y = dot( L, b, w );			// output adder
-	
+
 	delay( K, w );			// update delay line
-	
+
 	return y;				// current output sample
 }
 
@@ -297,7 +297,7 @@ _inline int tapi( int D, int *w, int *p, int t, int frac )
 
 	i = t;			// tap value, interpolate between adjacent samples si and sj
 	j = (i + 1) % (D+1);	// if i = D, then j = 0; otherwise, j = i + 1
-	
+
 	si = tap( D, w, p, i );	// si(n) = x(n - i)
 	sj = tap( D, w, p, j );	// sj(n) = x(n - j)
 
@@ -323,12 +323,12 @@ _inline void cdelay( int D, int *w, int **p )
 // b gain
 // x input sample
 
-//                    w0(n)   b	 
+//                    w0(n)   b
 //  x(n)--->(+)--------.-----(*)-> y(n)
-//           ^         |            
-//           |     [Delay d]        
-//           |         |            
-//           |    a    |Wd(n)       
+//           ^         |
+//           |     [Delay d]
+//           |         |
+//           |    a    |Wd(n)
 //			 ----(*)---.
 
 _inline int dly_plain( int D, int t, int *w, int **p, int a, int b, int x )
@@ -350,7 +350,7 @@ _inline int dly_plain( int D, int t, int *w, int **p, int a, int b, int x )
 // w delay line buffer pointer of dimension D+1
 // p circular pointer, must be init to &w[0] before first call
 // x input sample
-//                    
+//
 //  x(n)--->[Delay d]---> y(n)
 //
 _inline int dly_linear ( int D, int t, int *w, int **p, int x )
@@ -364,7 +364,7 @@ _inline int dly_linear ( int D, int t, int *w, int **p, int x )
 	return y;
 }
 
-// lowpass reverberator, replace feedback multiplier 'a' in 
+// lowpass reverberator, replace feedback multiplier 'a' in
 // plain reverberator with a low pass filter
 // D delay line size in samples
 // t tap from this location - <= D
@@ -379,10 +379,10 @@ _inline int dly_linear ( int D, int t, int *w, int **p, int x )
 // x input sample
 //                    w0(n)    	   b
 //  x(n)--->(+)--------------.----(*)--> y(n)
-//           ^               |            
-//           |           [Delay d]        
-//           |               |            
-//           |  a            |Wd(n)       
+//           ^               |
+//           |           [Delay d]
+//           |               |
+//           |  a            |Wd(n)
 //			 --(*)--[Filter])-
 
 int dly_lowpass( int D, int t, int *w, int **p, int a, int b, int M, int *af, int L, int *bf, int *vf, int x )
@@ -424,12 +424,12 @@ int dly_lowpass( int D, int t, int *w, int **p, int a, int b, int M, int *af, in
 //		S0 = x + a*Sd
 //		y = -a*S0 + Sd
 //		*p = S0
-//		cdelay(D, w, &p)		
+//		cdelay(D, w, &p)
 
-_inline int dly_allpass( int D, int t, int *w, int **p, int a, int b, int x ) 
+_inline int dly_allpass( int D, int t, int *w, int **p, int a, int b, int x )
 {
 	int	y, s0, sD;
-	
+
 	sD = tap( D, w, *p, t );		// Dth tap delay output
 	s0 = x + (( a * sD ) >> PBITS);
 
@@ -466,7 +466,7 @@ typedef void * (*prc_Param_t)( void *pprc );			// individual processor allocatio
 typedef int (*prc_GetNext_t)( void *pdata, int x );		// get next function for processor
 typedef int (*prc_GetNextN_t)( void *pdata,  portable_samplepair_t *pbuffer, int SampleCount, int op);	// batch version of getnext
 typedef void (*prc_Free_t)( void *pdata );			// free function for processor
-typedef void (*prc_Mod_t)(void *pdata, float v);			// modulation function for processor	
+typedef void (*prc_Mod_t)(void *pdata, float v);			// modulation function for processor
 
 #define	OP_LEFT			0		// batch process left channel in place
 #define OP_RIGHT			1		// batch process right channel in place
@@ -558,7 +558,7 @@ flt_t * FLT_Alloc( int M, int L, int *a, int *b )
 {
 	int	i, j;
 	flt_t	*pf = NULL;
-	
+
 	for( i = 0; i < CFLTS; i++ )
 	{
 		if( !flts[i].fused )
@@ -592,11 +592,11 @@ flt_t * FLT_Alloc( int M, int L, int *a, int *b )
 void FLT_Design_3db_IIR( float cutoff, float ftype, int *pM, int *pL, int *a, int *b )
 {
 	// ftype: FLT_LP, FLT_HP, FLT_BP
-	
+
 	double	Wc = M_PI2 * cutoff / SOUND_DMA_SPEED;		// radians per sample
 	double	Oc;
 	double	fa;
-	double	fb; 
+	double	fb;
 
 	// calculations:
 	// Wc = 2pi * fc/44100			convert to radians
@@ -619,7 +619,7 @@ void FLT_Design_3db_IIR( float cutoff, float ftype, int *pM, int *pL, int *a, in
 	a[1] = (int)( -fa * PMAX );			// quantize params down to 0-PMAX >> PBITS
 	b[0] = (int)( fb * PMAX );
 	b[1] = b[0];
-	
+
 	if( ftype == FLT_HP )
 		b[1] = -b[1];
 
@@ -646,7 +646,7 @@ void conv( int M, double *h, int L, double *x, double *y )
 	}
 }
 
-// cas2can - convert cascaded, second order section parameter arrays to 
+// cas2can - convert cascaded, second order section parameter arrays to
 // canonical numerator/denominator arrays.  Canonical implementations
 // have half as many multiplies as cascaded implementations.
 
@@ -663,7 +663,7 @@ void cas2can( int K, double A[KMAX+1][3], int *aout )
 	double	a[2*KMAX + 1];
 
 	ASSERT( K <= KMAX );
-	
+
 	Q_memset( d, 0, sizeof( double ) * ( 2 * KMAX + 1 ));
 	Q_memset( a, 0, sizeof( double ) * ( 2 * KMAX + 1 ));
 
@@ -678,7 +678,7 @@ void cas2can( int K, double A[KMAX+1][3], int *aout )
 	}
 
 	for( i = 0; i < (2*K + 1); i++ )
-		aout[i] = a[i] * PMAX;
+		aout[i] = (int)(a[i] * PMAX);
 }
 
 
@@ -725,14 +725,14 @@ void FLT_Design_Cheb( int Nmax, float cutoff, float ftype, float qwidth, int *pM
 	// calculate filter order N
 
 	Nex = acosh( estop/epass ) / acosh ( Wstop/Wpass );
-	N = min ( ceil(Nex), Nmax );	// don't exceed Nmax for filter order
+	N = (int)min ( ceilf((float)Nex), (float)Nmax );	// don't exceed Nmax for filter order
 	r = ( (int)N & 1);					// r == 1 if N is odd
 	K = (N - r ) / 2;
 
 	aa = asinh ( estop ) / N;
 	W3 = Wstop / cosh( acosh( estop ) / N );
 	f3 = (fs / M_PI) * atan( pow( W3, s ));
-	
+
 	W0 = sinh( aa ) / Wstop;
 	W02 = W0 * W0;
 
@@ -765,7 +765,7 @@ void FLT_Design_Cheb( int Nmax, float cutoff, float ftype, float qwidth, int *pM
 		A[i][0] = 1;
 		A[i][1] = s * a1;
 		A[i][2] = a2;
-		
+
 		B[i][0] = G;
 		B[i][1] = G* s* b1;
 		B[i][2] = G;
@@ -781,13 +781,13 @@ void FLT_Design_Cheb( int Nmax, float cutoff, float ftype, float qwidth, int *pM
 }
 
 // filter parameter order
-	
+
 typedef enum
 {
-	flt_iftype,				
-	flt_icutoff,			
-	flt_iqwidth,			
-	flt_iquality,			
+	flt_iftype,
+	flt_icutoff,
+	flt_iqwidth,
+	flt_iquality,
 
 	flt_cparam		// # of params
 } flt_e;
@@ -797,10 +797,10 @@ typedef enum
 prm_rng_t flt_rng[] =
 {
 { flt_cparam,	0, 0 },		// first entry is # of parameters
-{ flt_iftype,	0, FTR_MAX },	// filter type FLT_LP, FLT_HP, FLT_BP (UNDONE: FLT_BP currently ignored)			
+{ flt_iftype,	0, FTR_MAX },	// filter type FLT_LP, FLT_HP, FLT_BP (UNDONE: FLT_BP currently ignored)
 { flt_icutoff,	10, 22050 },	// cutoff frequency in hz at -3db gain
 { flt_iqwidth,	100, 11025 },	// width of BP, or steepness of LP/HP (ie: fcutoff + qwidth = -60db gain point)
-{ flt_iquality,	0, QUA_MAX },	// QUA_LO, _MED, _HI 0,1,2,3 
+{ flt_iquality,	0, QUA_MAX },	// QUA_LO, _MED, _HI 0,1,2,3
 };
 
 
@@ -812,25 +812,25 @@ flt_t * FLT_Params ( prc_t *pprc )
 	float	cutoff	= pprc->prm[flt_icutoff];
 	float	ftype	= pprc->prm[flt_iftype];
 	float	qwidth	= pprc->prm[flt_iqwidth];
-	
+
 	int L = 0;				// numerator order
 	int M = 0;				// denominator order
 	int b[FLT_M+1];				// numerator params	 0..PMAX
 	int a[FLT_M+1];				// denominator params 0..PMAX
-	
-	// low pass and highpass filter design 
-	
+
+	// low pass and highpass filter design
+
 	if( (int)qual == QUA_LO )
 		qual = QUA_MED;			// disable lowest quality filter - check perf on lowend KDB
 
-	switch ( (int)qual ) 
+	switch ( (int)qual )
 	{
 	case QUA_LO:
 		// lowpass averaging filter: perf KDB
 		ASSERT( ftype == FLT_LP );
 		ASSERT( cutoff <= SOUND_DMA_SPEED );
 		M = 0;
-		
+
 		// L is # of samples to average
 
 		L = 0;
@@ -839,26 +839,26 @@ flt_t * FLT_Params ( prc_t *pprc )
 		if( cutoff <= SOUND_DMA_SPEED / 16 ) L = 4;	// 2.75k
 		if( cutoff <= SOUND_DMA_SPEED / 32 ) L = 8;	// 1.35k
 		if( cutoff <= SOUND_DMA_SPEED / 64 ) L = 12;	// 750hz
-		
+
 		break;
 	case QUA_MED:
 		// 1st order IIR filter, 3db cutoff at fc
 		FLT_Design_3db_IIR( cutoff, ftype, &M, &L, a, b );
-			
+
 		M = bound( 1, M, FLT_M );
 		L = bound( 1, L, FLT_M );
 		break;
 	case QUA_HI:
-		// type 2 chebyshev N = 4 IIR 
+		// type 2 chebyshev N = 4 IIR
 		FLT_Design_Cheb( 4, cutoff, ftype, qwidth, &M, &L, a, b );
-			
+
 		M = bound( 1, M, FLT_M );
 		L = bound( 1, L, FLT_M );
 		break;
 	case QUA_VHI:
 		// type 2 chebyshev N = 7 IIR
 		FLT_Design_Cheb( 8, cutoff, ftype, qwidth, &M, &L, a, b );
-			
+
 		M = bound( 1, M, FLT_M );
 		L = bound( 1, L, FLT_M );
 		break;
@@ -867,10 +867,10 @@ flt_t * FLT_Params ( prc_t *pprc )
 	return FLT_Alloc( M, L, a, b );
 }
 
-_inline void * FLT_VParams( void *p ) 
+_inline void * FLT_VParams( void *p )
 {
 	PRC_CheckParams(( prc_t *)p, flt_rng );
-	return (void *)FLT_Params ((prc_t *)p); 
+	return (void *)FLT_Params ((prc_t *)p);
 }
 
 _inline void FLT_Mod( void *p, float v )
@@ -888,7 +888,7 @@ _inline void FLT_GetNextN( flt_t *pflt, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -929,7 +929,7 @@ typedef struct
 	fix20int	step;	// wave table whole and fractional step value
 	fix20int	cstep;	// current cummulative step value
 	int	pos;	// current position within wav table
-	
+
 	int	D;	// max dimension of array w[0...D] ie: # of samples = D+1
 } pos_t;
 
@@ -956,7 +956,7 @@ _inline void POS_Init( pos_t *p, int D, float fstep )
 		step = (step - (int)step) + FIX20_INTMAX;
 
 	p->step = FLOAT_TO_FIX20( step );	// convert fstep to fixed point
-	p->cstep = 0;			
+	p->cstep = 0;
 	p->pos = 0;			// current update value
 	p->D = D;				// always init to end value, in case we're stepping backwards
 }
@@ -988,7 +988,7 @@ _inline int POS_GetNext ( pos_t *p )
 	return p->pos;
 }
 
-// oneshot position within wav 
+// oneshot position within wav
 typedef struct
 {
 	pos_t	p;				// pos_t
@@ -1000,7 +1000,7 @@ typedef struct
 _inline void POS_ONE_Init( pos_one_t *p1, int D, float fstep )
 {
 	POS_Init( &p1->p, D, fstep ) ;
-	
+
 	p1->fhitend = false;
 }
 
@@ -1011,7 +1011,7 @@ _inline int POS_ONE_GetNext( pos_one_t *p1 )
 	pos_t	*p0;
 
 	pos = p1->p.pos;				// return current position
-	
+
 	if( p1->fhitend )
 		return pos;
 
@@ -1045,7 +1045,7 @@ _inline int POS_ONE_GetNext( pos_one_t *p1 )
 #define DLY_LINEAR		3			// linear delay, no feedback, unity gain
 #define DLY_MAX		DLY_LINEAR
 
-// delay line 
+// delay line
 typedef struct
 {
 	qboolean	fused;				// true if dly is in use
@@ -1058,7 +1058,7 @@ typedef struct
 	int	a;				// feedback value 0..PMAX,normalized to 0-1.0
 	int	b;				// gain value 0..PMAX, normalized to 0-1.0
 	flt_t	*pflt;				// pointer to filter, if type DLY_LOWPASS
-	HANDLE	h;				// memory handle for sample array	
+	HANDLE	h;				// memory handle for sample array
 } dly_t;
 
 dly_t	dlys[CDLYS];				// delay lines
@@ -1077,7 +1077,7 @@ void DLY_Free( dly_t *pdly )
 			GlobalUnlock( pdly->h );
 			GlobalFree( pdly->h );
 		}
-		
+
 		// free dly slot
 		Q_memset( pdly, 0, sizeof( dly_t ));
 	}
@@ -1087,7 +1087,7 @@ void DLY_Free( dly_t *pdly )
 void DLY_FreeAll( void ) { int i; for( i = 0; i < CDLYS; i++ ) DLY_Free( &dlys[i] ); }
 
 // set up 'b' gain parameter of feedback delay to
-// compensate for gain caused by feedback.  
+// compensate for gain caused by feedback.
 void DLY_SetNormalizingGain( dly_t *pdly )
 {
 	// compute normalized gain, set as output gain
@@ -1111,10 +1111,10 @@ void DLY_SetNormalizingGain( dly_t *pdly )
 	b = pdly->b ? pdly->b : PMAX;
 
 	// fgain = b * (1.0 / (1.0 - (float)pdly->a / (float)PMAX)) / (float)PMAX;
-	fgain = (1.0 / (1.0 - (float)pdly->a / (float)PMAX ));
+	fgain = (1.0f / (1.0f - (float)pdly->a / (float)PMAX ));
 
 	// compensating gain -  multiply rva output by gain then >> PBITS
-	gain = (int)((1.0 / fgain) * PMAX);	
+	gain = (1.0f / fgain) * PMAX;
 
 	gain = gain * 4;	// compensate for fact that gain calculation is for +/- 32767 amplitude wavs
 			// ie: ok to allow a bit more gain because most wavs are not at theoretical peak amplitude at all times
@@ -1132,7 +1132,7 @@ void DLY_SetNormalizingGain( dly_t *pdly )
 // if DLY_LOWPASS:
 //	L - numerator order of filter
 //	M - denominator order of filter
-//	fb - numerator params, M+1 
+//	fb - numerator params, M+1
 //	fa - denominator params, L+1
 
 dly_t * DLY_AllocLP( int D, int a, int b, int type, int M, int L, int *fa, int *fb )
@@ -1153,7 +1153,7 @@ dly_t * DLY_AllocLP( int D, int a, int b, int type, int M, int L, int *fa, int *
 			break;
 		}
 	}
-	
+
 	if( i == CDLYS )
 	{
 		MsgDev( D_WARN, "DSP: failed to allocate delay line.\n" );
@@ -1174,28 +1174,28 @@ dly_t * DLY_AllocLP( int D, int a, int b, int type, int M, int L, int *fa, int *
 	}
 
 	// alloc delay memory
-	h = GlobalAlloc( GMEM_MOVEABLE|GMEM_SHARE, cb ); 
-	if( !h ) 
-	{ 
+	h = GlobalAlloc( GMEM_MOVEABLE|GMEM_SHARE, cb );
+	if( !h )
+	{
 		MsgDev( D_ERROR, "Sound DSP: Out of memory.\n" );
 		FLT_Free( pdly->pflt );
-		return NULL; 
+		return NULL;
 	}
-	
+
 	// lock delay memory
 	w = (int *)GlobalLock( h );
 
 	if( !w )
-	{ 
+	{
 		MsgDev( D_ERROR, "Sound DSP: Failed to lock.\n" );
 		GlobalFree( h );
 		FLT_Free( pdly->pflt );
-		return NULL; 
+		return NULL;
 	}
-	
+
 	// clear delay array
 	Q_memset( w, 0, cb );
-	
+
 	// init values
 	pdly->type = type;
 	pdly->D = D;
@@ -1208,7 +1208,7 @@ dly_t * DLY_AllocLP( int D, int a, int b, int type, int M, int L, int *fa, int *
 	pdly->b = b;
 	pdly->fused = true;
 
-	if( type == DLY_LINEAR ) 
+	if( type == DLY_LINEAR )
 	{
 		// linear delay has no feedback and unity gain
 		pdly->a = 0;
@@ -1217,7 +1217,7 @@ dly_t * DLY_AllocLP( int D, int a, int b, int type, int M, int L, int *fa, int *
 	else
 	{
 		// adjust b to compensate for feedback gain
-		DLY_SetNormalizingGain( pdly );	
+		DLY_SetNormalizingGain( pdly );
 	}
 
 	return pdly;
@@ -1237,13 +1237,13 @@ dly_t * DLY_Alloc( int D, int a, int b, int type )
 typedef enum
 {
 	dly_idtype,		// NOTE: first 8 params must match those in mdy_e
-	dly_idelay,		
-	dly_ifeedback,		
-	dly_igain,		
-	dly_iftype,		
-	dly_icutoff,	
-	dly_iqwidth,		
-	dly_iquality, 
+	dly_idelay,
+	dly_ifeedback,
+	dly_igain,
+	dly_iftype,
+	dly_icutoff,
+	dly_iqwidth,
+	dly_iquality,
 	dly_cparam
 } dly_e;
 
@@ -1252,17 +1252,17 @@ typedef enum
 prm_rng_t dly_rng[] =
 {
 { dly_cparam,	0, 0 },			// first entry is # of parameters
-		
+
 // delay params
-{ dly_idtype,	0, DLY_MAX },		// delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS	
-{ dly_idelay,	0.0, 1000.0 },		// delay in milliseconds
-{ dly_ifeedback,	0.0, 0.99 },		// feedback 0-1.0
-{ dly_igain,	0.0, 1.0 },		// final gain of output stage, 0-1.0
+{ dly_idtype,	0, DLY_MAX },		// delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS
+{ dly_idelay,	0.0f, 1000.0f },		// delay in milliseconds
+{ dly_ifeedback,	0.0f, 0.99f },		// feedback 0-1.0
+{ dly_igain,	0.0f, 1.0f },		// final gain of output stage, 0-1.0
 
 // filter params if dly type DLY_LOWPASS
-{ dly_iftype,	0, FTR_MAX },			
-{ dly_icutoff,	10.0, 22050.0 },
-{ dly_iqwidth,	100.0, 11025.0 },
+{ dly_iftype,	0, FTR_MAX },
+{ dly_icutoff,	10.0f, 22050.0f },
+{ dly_iqwidth,	100.0f, 11025.0f },
 { dly_iquality,	0, QUA_MAX },
 };
 
@@ -1270,21 +1270,21 @@ dly_t * DLY_Params( prc_t *pprc )
 {
 	dly_t	*pdly = NULL;
 	int	D, a, b;
-	
+
 	float	delay	= pprc->prm[dly_idelay];
 	float	feedback	= pprc->prm[dly_ifeedback];
 	float	gain	= pprc->prm[dly_igain];
-	int	type	= pprc->prm[dly_idtype];
+	int	type	= (int)pprc->prm[dly_idtype];
 
 	float	ftype 	= pprc->prm[dly_iftype];
 	float	cutoff	= pprc->prm[dly_icutoff];
 	float	qwidth	= pprc->prm[dly_iqwidth];
 	float	qual	= pprc->prm[dly_iquality];
 
-	D = MSEC_TO_SAMPS( delay );		// delay samples
-	a = feedback * PMAX;		// feedback
-	b = gain * PMAX;			// gain
-	
+	D = (int)MSEC_TO_SAMPS( delay );		// delay samples
+	a = (int)(feedback * PMAX);		// feedback
+	b = (int)(gain * PMAX);			// gain
+
 	switch( type )
 	{
 	case DLY_PLAIN:
@@ -1292,7 +1292,7 @@ dly_t * DLY_Params( prc_t *pprc )
 	case DLY_LINEAR:
 		pdly = DLY_Alloc( D, a, b, type );
 		break;
-	case DLY_LOWPASS: 
+	case DLY_LOWPASS:
 		{
 			// set up dummy lowpass filter to convert params
 			prc_t	prcf;
@@ -1303,9 +1303,9 @@ dly_t * DLY_Params( prc_t *pprc )
 			prcf.prm[flt_icutoff] = cutoff;
 			prcf.prm[flt_iftype] = ftype;
 			prcf.prm[flt_iqwidth] = qwidth;
-	
+
 			pflt = (flt_t *)FLT_Params( &prcf );
-		
+
 			if( !pflt )
 			{
 				MsgDev( D_WARN, "DSP: failed to allocate filter.\n" );
@@ -1321,10 +1321,10 @@ dly_t * DLY_Params( prc_t *pprc )
 	return pdly;
 }
 
-_inline void *DLY_VParams( void *p ) 
+_inline void *DLY_VParams( void *p )
 {
 	PRC_CheckParams(( prc_t *)p, dly_rng );
-	return (void *) DLY_Params((prc_t *)p); 
+	return (void *) DLY_Params((prc_t *)p);
 }
 
 // get next value from delay line, move x into delay line
@@ -1341,7 +1341,7 @@ int DLY_GetNext( dly_t *pdly, int x )
 		return dly_lowpass( pdly->D, pdly->t, pdly->w, &(pdly->p), pdly->a, pdly->b, pdly->pflt->M, pdly->pflt->a, pdly->pflt->L, pdly->pflt->b, pdly->pflt->w, x );
 	case DLY_LINEAR:
 		return dly_linear( pdly->D, pdly->t, pdly->w, &pdly->p, x );
-	}		
+	}
 }
 
 // batch version for performance
@@ -1349,7 +1349,7 @@ void DLY_GetNextN( dly_t *pdly, portable_samplepair_t *pbuffer, int SampleCount,
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -1411,7 +1411,7 @@ typedef struct
 {
 	qboolean	fused;
 	int	m;			// number of parallel plain or lowpass delays
-	int	fparallel;		// true if filters in parallel with delays, otherwise single output filter	
+	int	fparallel;		// true if filters in parallel with delays, otherwise single output filter
 	flt_t	*pflt;
 
 	dly_t	*pdlys[CRVA_DLYS];		// array of pointers to delays
@@ -1432,7 +1432,7 @@ void RVA_Free( rva_t *prva )
 		// free all delays
 		for( i = 0; i < CRVA_DLYS; i++)
 			DLY_Free ( prva->pdlys[i] );
-	
+
 		FLT_Free( prva->pflt );
 		Q_memset( prva, 0, sizeof (rva_t) );
 	}
@@ -1441,7 +1441,7 @@ void RVA_Free( rva_t *prva )
 
 void RVA_FreeAll( void ) { int i; for( i = 0; i < CRVAS; i++ ) RVA_Free( &rvas[i] ); }
 
-// create parallel reverb - m parallel reverbs summed 
+// create parallel reverb - m parallel reverbs summed
 // D array of CRVB_DLYS reverb delay sizes max sample index w[0...D] (ie: D+1 samples)
 // a array of reverb feedback parms for parallel reverbs (CRVB_P_DLYS)
 // b array of CRVB_P_DLYS - mix params for parallel reverbs
@@ -1467,7 +1467,7 @@ rva_t *RVA_Alloc( int *D, int *a, int *b, int m, flt_t *pflt, int fparallel )
 		MsgDev( D_WARN, "DSP: failed to allocate reverb.\n" );
 		return NULL;
 	}
-	
+
 	prva = &rvas[i];
 
 	// if series filter specified, alloc
@@ -1482,7 +1482,7 @@ rva_t *RVA_Alloc( int *D, int *a, int *b, int m, flt_t *pflt, int fparallel )
 			return NULL;
 		}
 	}
-	
+
 	// alloc parallel reverbs
 	if( pflt && fparallel )
 	{
@@ -1490,15 +1490,15 @@ rva_t *RVA_Alloc( int *D, int *a, int *b, int m, flt_t *pflt, int fparallel )
 		// use this filter data as a template to alloc a filter for each parallel delay
 		for( i = 0; i < m; i++ )
 			prva->pdlys[i] = DLY_AllocLP( D[i], a[i], b[i], DLY_LOWPASS, pflt->M, pflt->L, pflt->a, pflt->b );
-	}	
-	else 
+	}
+	else
 	{
 		// no filter specified, use plain delays in parallel sections
 		for( i = 0; i < m; i++ )
 			prva->pdlys[i] = DLY_Alloc( D[i], a[i], b[i], DLY_PLAIN );
 	}
-	
-	
+
+
 	// if we failed to alloc any reverb, free all, return NULL
 	for( i = 0; i < m; i++ )
 	{
@@ -1541,7 +1541,7 @@ rva_t *RVA_Alloc( int *D, int *a, int *b, int m, flt_t *pflt, int fparallel )
 
 _inline int RVA_GetNext( rva_t *prva, int x )
 {
-	int	m = prva->m;			
+	int	m = prva->m;
 	int	i, y, sum;
 
 	sum = 0;
@@ -1550,7 +1550,7 @@ _inline int RVA_GetNext( rva_t *prva, int x )
 		sum += DLY_GetNext( prva->pdlys[i], x );
 
 	// m is clamped between RVA_BASEM & CRVA_DLYS
-	
+
 	if( m ) y = sum/m;
 	else y = x;
 #if 0
@@ -1582,7 +1582,7 @@ _inline int RVA_GetNext( rva_t *prva, int x )
 	// run series filter if present
 	if( prva->pflt && !prva->fparallel )
 		y = FLT_GetNext( prva->pflt, y );
-	
+
 	return y;
 }
 
@@ -1591,7 +1591,7 @@ _inline void RVA_GetNextN( rva_t *prva, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -1625,18 +1625,18 @@ _inline void RVA_GetNextN( rva_t *prva, portable_samplepair_t *pbuffer, int Samp
 
 //float rvadlys[] = { 29,  37,  44,  50,  62,  75, 96, 118, 127, 143, 164, 175 };
 float rvadlys[] = { 18,  23,  28,  36,  47,  21, 26, 33,  40,  49,  45,  38 };
-float rvafbs[] = { 0.7, 0.7, 0.7, 0.8, 0.8, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 };
+float rvafbs[] = { 0.7f, 0.7f, 0.7f, 0.8f, 0.8f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f };
 
 // reverb parameter order
 typedef enum
 {
 	// parameter order
-	rva_isize,		
-	rva_idensity,	
-	rva_idecay,	
-	rva_iftype,		
-	rva_icutoff,		
-	rva_iqwidth,		
+	rva_isize,
+	rva_idensity,
+	rva_idecay,
+	rva_iftype,
+	rva_icutoff,
+	rva_iqwidth,
 	rva_ifparallel,
 	rva_cparam	// # of params
 } rva_e;
@@ -1652,7 +1652,7 @@ prm_rng_t rva_rng[] =
 { rva_idecay,	0.0, 2.0 },	// 0-2.0 scales feedback parameters (starting at approx 0.15)
 
 // filter params for each parallel reverb (quality set to 0 for max execution speed)
-{ rva_iftype,	0, FTR_MAX },			
+{ rva_iftype,	0, FTR_MAX },
 { rva_icutoff,	10, 22050 },
 { rva_iqwidth,	100, 11025 },
 { rva_ifparallel,	0, 1 }		// if 1, then all filters operate in parallel with delays. otherwise filter output only
@@ -1673,28 +1673,28 @@ rva_t * RVA_Params( prc_t *pprc )
 	float	fparallel = pprc->prm[rva_ifparallel];
 
 	// D array of CRVB_DLYS reverb delay sizes max sample index w[0...D] (ie: D+1 samples)
-	// a array of reverb feedback parms for parallel delays 
+	// a array of reverb feedback parms for parallel delays
 	// b array of CRVB_P_DLYS - mix params for parallel reverbs
 	// m - number of parallel delays
-	
+
 	int	D[CRVA_DLYS];
 	int	a[CRVA_DLYS];
 	int	b[CRVA_DLYS];
 	int	m = RVA_BASEM;
 	int	i;
-		
-	m = density * CRVA_DLYS / 2;
+
+	m = (int)(density * CRVA_DLYS / 2);
 
 	// limit # delays 3-12
 	m = bound( RVA_BASEM, m, CRVA_DLYS );
-	
+
 	// average time sound takes to travel from most distant wall
 	// (cap at 1000 ft room)
 	for( i = 0; i < m; i++ )
 	{
 		// delays of parallel reverb
-		D[i] = MSEC_TO_SAMPS( rvadlys[i] * size );
-		
+		D[i] = (int)MSEC_TO_SAMPS( rvadlys[i] * size );
+
 		// feedback and gain of parallel reverb
 		a[i] = (int)min( 0.9 * PMAX, rvafbs[i] * (float)PMAX * decay );
 		b[i] = PMAX;
@@ -1712,20 +1712,20 @@ rva_t * RVA_Params( prc_t *pprc )
 		prcf.prm[flt_icutoff] = cutoff;
 		prcf.prm[flt_iftype] = ftype;
 		prcf.prm[flt_iqwidth] = qwidth;
-	
-		pflt = (flt_t *)FLT_Params( &prcf );	
+
+		pflt = (flt_t *)FLT_Params( &prcf );
 	}
-	
-	prva = RVA_Alloc( D, a, b, m, pflt, fparallel );
+
+	prva = RVA_Alloc( D, a, b, m, pflt, (int)fparallel );
 	FLT_Free( pflt );
 
 	return prva;
 }
 
-_inline void *RVA_VParams( void *p ) 
+_inline void *RVA_VParams( void *p )
 {
-	PRC_CheckParams((prc_t *)p, rva_rng ); 
-	return (void *)RVA_Params((prc_t *)p ); 
+	PRC_CheckParams((prc_t *)p, rva_rng );
+	return (void *)RVA_Params((prc_t *)p );
 }
 
 _inline void RVA_Mod( void *p, float v )
@@ -1764,7 +1764,7 @@ void DFR_Free( dfr_t *pdfr )
 		// free all delays
 		for( i = 0; i < CDFR_DLYS; i++ )
 			DLY_Free( pdfr->pdlys[i] );
-	
+
 		Q_memset( pdfr, 0, sizeof( dfr_t ));
 	}
 }
@@ -1789,14 +1789,14 @@ dfr_t *DFR_Alloc( int *D, int *a, int *b, int n )
 		if( !dfrs[i].fused )
 			break;
 	}
-	
+
 	// return null if no free slots
 	if( i == CDFRS )
 	{
 		MsgDev( D_WARN, "DSP: failed to allocate diffusor.\n" );
 		return NULL;
 	}
-	
+
 	pdfr = &dfrs[i];
 
 	DFR_Init( pdfr );
@@ -1804,7 +1804,7 @@ dfr_t *DFR_Alloc( int *D, int *a, int *b, int n )
 	// alloc reverbs
 	for( i = 0; i < n; i++ )
 		pdfr->pdlys[i] = DLY_Alloc( D[i], a[i], b[i], DLY_ALLPASS );
-		
+
 	// if we failed to alloc any reverb, free all, return NULL
 	for( i = 0; i < n; i++ )
 	{
@@ -1815,7 +1815,7 @@ dfr_t *DFR_Alloc( int *D, int *a, int *b, int n )
 			return NULL;
 		}
 	}
-	
+
 	pdfr->fused = true;
 	pdfr->n = n;
 
@@ -1826,7 +1826,7 @@ dfr_t *DFR_Alloc( int *D, int *a, int *b, int n )
 _inline int DFR_GetNext( dfr_t *pdfr, int x )
 {
 	int	i, y;
-	int	n = pdfr->n;			
+	int	n = pdfr->n;
 
 	y = x;
 	for( i = 0; i < n; i++ )
@@ -1847,9 +1847,9 @@ _inline int DFR_GetNext( dfr_t *pdfr, int x )
 
 	for( i = n; i > 0; i-- )
 		v[i] = DLY_GetNext( pdfr->pdlys[i-1], v[i-1] );
-	
+
 	return v[n];
-#endif 
+#endif
 }
 
 // batch version for performance
@@ -1857,7 +1857,7 @@ _inline void DFR_GetNextN( dfr_t *pdfr, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -1890,17 +1890,17 @@ _inline void DFR_GetNextN( dfr_t *pdfr, portable_samplepair_t *pbuffer, int Samp
 // nominal diffusor delay and feedback values
 //float dfrdlys[] = { 20,   25,   30,   35,   40,   45,   50,   55,   60,   65,   70,   75,   80,   85,   90,   95 };
 float dfrdlys[] = { 13,   19,   26,   21,   32,   36,   38,   16,   24,   28,   41,   35,   10,   46,   50,   27 };
-float dfrfbs[] = { 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15 };
+float dfrfbs[] = { 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f, 0.15f };
 
 
 // diffusor parameter order
-	
+
 typedef enum
 {
 	// parameter order
-	dfr_isize,		
-	dfr_idensity,	
-	dfr_idecay,		
+	dfr_isize,
+	dfr_idensity,
+	dfr_idecay,
 	dfr_cparam		// # of params
 
 } dfr_e;
@@ -1912,7 +1912,7 @@ prm_rng_t dfr_rng[] =
 { dfr_cparam,	0, 0 },		// first entry is # of parameters
 { dfr_isize,	0.0, 1.0 },	// 0-1.0 scales all delays
 { dfr_idensity,	0.0, 1.0 },	// 0-1.0 controls # of series delays
-{ dfr_idecay,	0.0, 1.0 },	// 0-1.0 scales all feedback parameters 
+{ dfr_idecay,	0.0, 1.0 },	// 0-1.0 scales all feedback parameters
 };
 
 dfr_t *DFR_Params( prc_t *pprc )
@@ -1921,7 +1921,7 @@ dfr_t *DFR_Params( prc_t *pprc )
 	int	i, s;
 	float	size = pprc->prm[dfr_isize];			// 0-1.0 scales all delays
 	float	density =	pprc->prm[dfr_idensity];		// 0-1.0 controls # of series delays
-	float	diffusion = pprc->prm[dfr_idecay];		// 0-1.0 scales all feedback parameters 
+	float	diffusion = pprc->prm[dfr_idecay];		// 0-1.0 scales all feedback parameters
 
 	// D array of CRVB_DLYS reverb delay sizes max sample index w[0...D] (ie: D+1 samples)
 	// a array of reverb feedback parms for series delays (CRVB_S_DLYS)
@@ -1934,8 +1934,8 @@ dfr_t *DFR_Params( prc_t *pprc )
 	int	n = DFR_BASEN;
 
 	// increase # of series diffusors with increased density
-	n += density * 2;
-	
+	n += (int)(density * 2);
+
 	// limit m, n to half max number of delays
 	n = min( CDFR_DLYS / 2, n );
 
@@ -1948,19 +1948,19 @@ dfr_t *DFR_Params( prc_t *pprc )
 		D[i] = MSEC_TO_SAMPS( s );
 
 		// feedback and gain of diffusor
-		a[i] = min( 0.9 * PMAX, dfrfbs[i] * PMAX * diffusion );
+		a[i] = (int)min( 0.9 * PMAX, dfrfbs[i] * PMAX * diffusion );
 		b[i] = PMAX;
 	}
-	
+
 	pdfr = DFR_Alloc( D, a, b, n );
 
 	return pdfr;
 }
 
-_inline void *DFR_VParams( void *p ) 
+_inline void *DFR_VParams( void *p )
 {
 	PRC_CheckParams((prc_t *)p, dfr_rng );
-	return (void *)DFR_Params((prc_t *)p ); 
+	return (void *)DFR_Params((prc_t *)p );
 }
 
 _inline void DFR_Mod( void *p, float v )
@@ -1984,7 +1984,7 @@ _inline void DFR_Mod( void *p, float v )
 #define LFO_RND		4	// random wav
 #define LFO_LOG_IN		5	// logarithmic fade in
 #define LFO_LOG_OUT		6	// logarithmic fade out
-#define LFO_LIN_IN		7	// linear fade in 
+#define LFO_LIN_IN		7	// linear fade in
 #define LFO_LIN_OUT		8	// linear fade out
 #define LFO_MAX		LFO_LIN_OUT
 
@@ -2036,7 +2036,7 @@ void LFOWAV_Fill( int *w, int count, int type )
 		for( i = 0; i < count; i++ )
 		{
 			w[i] = ( int ) ( (float)(2 * LFOAMP * i ) / (float)(count) );
-				
+
 			if( i > count / 2 )
 				w[i] = ( int )( (float) (2 * LFOAMP) - (float)( 2 * LFOAMP * i ) / (float)( count ));
 		}
@@ -2084,13 +2084,13 @@ void LFOWAV_InitAll( void )
 	for( i = 0; i < CLFOWAV; i++ )
 	{
 		pdly = DLY_Alloc( CLFOSAMPS, 0, 0 , DLY_PLAIN );
-		
+
 		lfowavs[i].pdly = pdly;
 		lfowavs[i].type = i;
 
 		LFOWAV_Fill( pdly->w, CLFOSAMPS, i );
 	}
-	
+
 	// if any dlys fail to alloc, free all
 	for( i = 0; i < CLFOWAV; i++ )
 	{
@@ -2146,7 +2146,7 @@ lfo_t *LFO_Alloc( int wtype, float freqHz, qboolean foneshot )
 {
 	int	i, type = min( CLFOWAV - 1, wtype );
 	float	lfostep;
-	
+
 	for( i = 0; i < CLFO; i++ )
 	{
 		if( !lfos[i].fused )
@@ -2169,7 +2169,7 @@ lfo_t *LFO_Alloc( int wtype, float freqHz, qboolean foneshot )
 			return plfo;
 		}
 	}
-	
+
 	MsgDev( D_WARN, "DSP: failed to allocate LFO.\n" );
 	return NULL;
 }
@@ -2196,7 +2196,7 @@ _inline void LFO_GetNextN( lfo_t *plfo, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -2228,9 +2228,9 @@ _inline void LFO_GetNextN( lfo_t *plfo, portable_samplepair_t *pbuffer, int Samp
 typedef enum
 {
 	// parameter order
-	lfo_iwav,		
-	lfo_irate,		
-	lfo_ifoneshot,	
+	lfo_iwav,
+	lfo_irate,
+	lfo_ifoneshot,
 	lfo_cparam	// # of params
 
 } lfo_e;
@@ -2250,7 +2250,7 @@ lfo_t * LFO_Params( prc_t *pprc )
 	lfo_t	*plfo;
 	qboolean	foneshot = pprc->prm[lfo_ifoneshot] > 0 ? true : false;
 
-	plfo = LFO_Alloc( pprc->prm[lfo_iwav], pprc->prm[lfo_irate], foneshot );
+	plfo = LFO_Alloc( (int)pprc->prm[lfo_iwav], pprc->prm[lfo_irate], foneshot );
 
 	return plfo;
 }
@@ -2264,25 +2264,25 @@ void LFO_ChangeVal( lfo_t *plfo, float fhz )
 	else POS_ChangeVal( &plfo->pos1.p, fstep );
 }
 
-_inline void *LFO_VParams( void *p ) 
+_inline void *LFO_VParams( void *p )
 {
-	PRC_CheckParams((prc_t *)p, lfo_rng ); 
-	return (void *)LFO_Params((prc_t *)p); 
+	PRC_CheckParams((prc_t *)p, lfo_rng );
+	return (void *)LFO_Params((prc_t *)p);
 }
 
 // v is +/- 0-1.0
 // v changes current lfo frequency up/down by +/- v%
-_inline void LFO_Mod( lfo_t *plfo, float v ) 
-{ 
+_inline void LFO_Mod( lfo_t *plfo, float v )
+{
 	float	fhz;
 	float	fhznew;
 
 	fhz = plfo->f;
-	fhznew = fhz * (1.0 + v);
+	fhznew = fhz * (1.0f + v);
 
 	LFO_ChangeVal( plfo, fhznew );
 
-	return; 
+	return;
 }
 
 
@@ -2306,21 +2306,21 @@ typedef struct
 // ramptime - duration of ramp in seconds
 // initval - initial ramp value
 // targetval - target ramp value
-void RMP_Init( rmp_t *prmp, float ramptime, int initval, int targetval ) 
+void RMP_Init( rmp_t *prmp, float ramptime, int initval, int targetval )
 {
 	int	rise;
 	int	run;
 
-	if( prmp ) Q_memset( prmp, 0, sizeof( rmp_t )); 
-			
+	if( prmp ) Q_memset( prmp, 0, sizeof( rmp_t ));
+
 	run = (int)( ramptime * SOUND_DMA_SPEED );	// 'samples' in ramp
 	rise = (targetval - initval);			// height of ramp
 
 	// init fixed point iterator to iterate along the height of the ramp 'rise'
 	// always iterates from 0..'rise', increasing in value
 
-	POS_ONE_Init( &prmp->ps, ABS( rise ), ABS((float) rise) / ((float) run));
-	
+	POS_ONE_Init( &prmp->ps, ABS( rise ), fabsf((float)rise/(float)run));
+
 	prmp->yprev = initval;
 	prmp->initval = initval;
 	prmp->target = targetval;
@@ -2347,17 +2347,17 @@ _inline void RMP_SetEnd( rmp_t *prmp )
 // get next ramp value & update ramp, never varies by more than +1 or -1 between calls
 // when ramp hits target value, it thereafter always returns last value
 
-_inline int RMP_GetNext( rmp_t *prmp ) 
+_inline int RMP_GetNext( rmp_t *prmp )
 {
 	int	y, d;
-	
+
 	// if we hit ramp end, return last value
 	if( prmp->fhitend )
 		return prmp->yprev;
-	
-	// get next integer position in ramp height. 
+
+	// get next integer position in ramp height.
 	d = POS_ONE_GetNext( &prmp->ps );
-	
+
 	if( prmp->ps.fhitend )
 		prmp->fhitend = true;
 
@@ -2409,14 +2409,14 @@ typedef struct
 ptc_t	ptcs[CPTCS];
 
 void PTC_Init( ptc_t *pptc ) { if( pptc ) Q_memset( pptc, 0, sizeof( ptc_t )); };
-void PTC_Free( ptc_t *pptc ) 
+void PTC_Free( ptc_t *pptc )
 {
 	if( pptc )
 	{
 		DLY_Free( pptc->pdly_in );
 		DLY_Free( pptc->pdly_out );
 
-		Q_memset( pptc, 0, sizeof( ptc_t )); 
+		Q_memset( pptc, 0, sizeof( ptc_t ));
 	}
 };
 
@@ -2437,22 +2437,22 @@ void PTC_FreeAll() { int i; for( i = 0; i < CPTCS; i++ ) PTC_Free( &ptcs[i] ); }
 // timexfade is length in milliseconds of crossfade region between duplicated or cut sections
 // fstep is % expanded/compressed sound normalized to 0.01-2.0 (1% - 200%)
 
-// input buffer: 
+// input buffer:
 
 // iin-->
 
 // [0...      tslice              ...D]				input samples 0...D (D is NEWEST sample)
 // [0...          ...n][m... tseg ...D]				region to be cut or duplicated m...D
-					
+
 // [0...   [p..txf1..n][m... tseg ...D]				fade in  region 1 txf1 p...n
 // [0...          ...n][m..[q..txf2..D]				fade out region 2 txf2 q...D
 
 
 // pitch up: duplicate into output buffer:	tdup = tseg
 
-// [0...          ...n][m... tdup ...D][m... tdup ...D]		output buffer size with duplicate region	
+// [0...          ...n][m... tdup ...D][m... tdup ...D]		output buffer size with duplicate region
 // [0...          ...n][m..[p...xf1..n][m... tdup ...D]		fade in p...n while fading out q...D
-// [0...          ...n][m..[q...xf2..D][m... tdup ...D]		
+// [0...          ...n][m..[q...xf2..D][m... tdup ...D]
 // [0...          ...n][m..[.XFADE...n][m... tdup ...D]		final duplicated output buffer - resample at fstep
 
 // pitch down: cut into output buffer: tcut = tseg
@@ -2463,7 +2463,7 @@ void PTC_FreeAll() { int i; for( i = 0; i < CPTCS; i++ ) PTC_Free( &ptcs[i] ); }
 // [0... [.XFADE ...D]					final cut output buffer - resample at fstep
 
 
-ptc_t * PTC_Alloc( float timeslice, float timexfade, float fstep ) 
+ptc_t * PTC_Alloc( float timeslice, float timexfade, float fstep )
 {
 	int	i;
 	ptc_t	*pptc;
@@ -2479,8 +2479,8 @@ ptc_t * PTC_Alloc( float timeslice, float timexfade, float fstep )
 		if( !ptcs[i].fused )
 			break;
 	}
-	
-	if( i == CPTCS ) 
+
+	if( i == CPTCS )
 	{
 		MsgDev( D_WARN, "DSP: failed to allocate pitch shifter.\n" );
 		return NULL;
@@ -2490,30 +2490,30 @@ ptc_t * PTC_Alloc( float timeslice, float timexfade, float fstep )
 	PTC_Init( pptc );
 
 	// get size of region to cut or duplicate
-	tcutdup = abs(( fstep - 1.0 ) * timeslice );
+	tcutdup = (float)abs((int)(( fstep - 1.0 ) * timeslice) );
 
 	// to prevent buffer overruns:
 
 	// make sure timeslice is greater than cut/dup time
-	tslice = max ( tslice, 1.1 * tcutdup);
+	tslice = max ( tslice, 1.1f * tcutdup);
 
 	// make sure xfade time smaller than cut/dup time, and smaller than (timeslice-cutdup) time
-	txfade = min( txfade, 0.9 * tcutdup );
-	txfade = min( txfade, 0.9 * ( tslice - tcutdup ));
+	txfade = min( txfade, 0.9f * tcutdup );
+	txfade = min( txfade, 0.9f * ( tslice - tcutdup ));
 
-	pptc->cxfade = MSEC_TO_SAMPS( txfade );
-	pptc->ccut = MSEC_TO_SAMPS( tcutdup );
-	pptc->cduplicate =  MSEC_TO_SAMPS( tcutdup );
-	
+	pptc->cxfade = (int)MSEC_TO_SAMPS( txfade );
+	pptc->ccut = (int)MSEC_TO_SAMPS( tcutdup );
+	pptc->cduplicate =  (int)MSEC_TO_SAMPS( tcutdup );
+
 	// alloc delay lines (buffers)
 	tout = tslice * fstep;
 
-	cin = MSEC_TO_SAMPS( tslice );
-	cout = MSEC_TO_SAMPS( tout );
-	
+	cin = (int)MSEC_TO_SAMPS( tslice );
+	cout = (int)MSEC_TO_SAMPS( tout );
+
 	pptc->pdly_in = DLY_Alloc( cin, 0, 1, DLY_LINEAR );	// alloc input buffer
 	pptc->pdly_out = DLY_Alloc( cout, 0, 1, DLY_LINEAR );	// alloc output buffer
-	
+
 	if( !pptc->pdly_in || !pptc->pdly_out )
 	{
 		PTC_Free( pptc );
@@ -2533,7 +2533,7 @@ ptc_t * PTC_Alloc( float timeslice, float timexfade, float fstep )
 
 	// if fstep > 1.0 we're pitching shifting up, so fdup = true
 	pptc->fdup = fstep > 1.0 ? true : false;
-	
+
 	pptc->cin = cin;
 	pptc->cout = cout;
 
@@ -2567,7 +2567,7 @@ _inline int xfade( int yfadein, int yfadeout, int nsamples, int isample )
 void TimeExpand( int *w, int *v, int cin, int cout, int cxfade, int cduplicate )
 {
 	int	i, j;
-	int	m;	
+	int	m;
 	int	p;
 	int	q;
 	int	D;
@@ -2575,7 +2575,7 @@ void TimeExpand( int *w, int *v, int cin, int cout, int cxfade, int cduplicate )
 	// input buffer
 	//               xfade source   duplicate
 	// [0...........][p.......n][m...........D]
-	
+
 	// output buffer
 	//			xfade region   duplicate
 	// [0.....................n][m..[q.......D][m...........D]
@@ -2584,22 +2584,22 @@ void TimeExpand( int *w, int *v, int cin, int cout, int cxfade, int cduplicate )
 	// m - index of 1st sample in duplication region
 	// p - index of 1st sample of crossfade source
 	// q - index of 1st sample in crossfade region
-	
+
 	D = cin - 1;
-	m = cin - cduplicate;			
-	p = m - cxfade;	
+	m = cin - cduplicate;
+	p = m - cxfade;
 	q = cin - cxfade;
 
 	// copy up to crossfade region
 	for( i = 0; i < q; i++ )
 		v[i] = w[i];
-	
+
 	// crossfade region
-	j = p;	
+	j = p;
 
 	for( i = q; i <= D; i++ )
 		v[i] = xfade( w[j++], w[i], cxfade, i-q );	// fade out p..n, fade in q..D
-	
+
 	// duplicate region
 	j = D+1;
 
@@ -2620,43 +2620,43 @@ void TimeExpand( int *w, int *v, int cin, int cout, int cxfade, int cduplicate )
 void TimeCompress( int *w, int *v, int cin, int cout, int cxfade, int ccut )
 {
 	int	i, j;
-	int	m;	
+	int	m;
 	int	p;
 	int	q;
 	int	D;
 
 	// input buffer
-	//	      xfade source 
+	//	      xfade source
 	// [0.....................n][m..[p.......D]
 
 	//              xfade region     cut
 	// [0...........][q.......n][m...........D]
-	
+
 	// output buffer
-	//               xfade to source 
+	//               xfade to source
 	// [0...........][p.......D]
-	
+
 	// D - index of last sample in input buffer
 	// m - index of 1st sample in cut region
 	// p - index of 1st sample of crossfade source
 	// q - index of 1st sample in crossfade region
-	
+
 	D = cin - 1;
-	m = cin - ccut;			
-	p = cin - cxfade;	
+	m = cin - ccut;
+	p = cin - cxfade;
 	q = m - cxfade;
 
 	// copy up to crossfade region
 
 	for( i = 0; i < q; i++ )
 		v[i] = w[i];
-	
+
 	// crossfade region
-	j = p;	
+	j = p;
 
 	for( i = q; i < m; i++ )
 		v[i] = xfade( w[j++], w[i], cxfade, i-q );	// fade out p..n, fade in q..D
-	
+
 	// skip rest of input buffer
 }
 
@@ -2665,7 +2665,7 @@ void TimeCompress( int *w, int *v, int cin, int cout, int cxfade, int ccut )
 // put input sample into input (delay) buffer
 // get output sample from output buffer, step by fstep %
 // output buffer is time expanded or compressed version of previous input buffer
-_inline int PTC_GetNext( ptc_t *pptc, int x ) 
+_inline int PTC_GetNext( ptc_t *pptc, int x )
 {
 	int	iout, xout;
 	qboolean	fhitend = false;
@@ -2676,7 +2676,7 @@ _inline int PTC_GetNext( ptc_t *pptc, int x )
 	pptc->pin[pptc->iin] = x;
 
 	pptc->iin++;
-	
+
 	// check for end of input buffer
 	if( pptc->iin >= pptc->cin )
 		fhitend = true;
@@ -2685,7 +2685,7 @@ _inline int PTC_GetNext( ptc_t *pptc, int x )
 	iout = POS_ONE_GetNext( &pptc->psn );
 	ASSERT( iout < pptc->cout );
 	xout = pptc->pout[iout];
-	
+
 	if( fhitend )
 	{
 		// if hit end of input buffer (ie: input buffer is full)
@@ -2709,7 +2709,7 @@ _inline void PTC_GetNextN( ptc_t *pptc, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -2747,7 +2747,7 @@ void PTC_ChangeVal( ptc_t *pptc, float fstep, float ramptime )
 // UNDONE: just realloc time compressor with new fstep
 }
 
-// uses pitch: 
+// uses pitch:
 // 1.0 = playback normal rate
 // 0.5 = cut 50% of sound (2x playback)
 // 1.5 = add 50% sound (0.5x playback)
@@ -2755,9 +2755,9 @@ void PTC_ChangeVal( ptc_t *pptc, float fstep, float ramptime )
 typedef enum
 {
 	// parameter order
-	ptc_ipitch,			
-	ptc_itimeslice,		
-	ptc_ixfade,			
+	ptc_ipitch,
+	ptc_itimeslice,
+	ptc_ixfade,
 	ptc_cparam	// # of params
 } ptc_e;
 
@@ -2765,9 +2765,9 @@ typedef enum
 prm_rng_t ptc_rng[] =
 {
 { ptc_cparam,	0, 0 },		// first entry is # of parameters
-{ ptc_ipitch,	0.1, 4.0 },	// 0-n.0 where 1.0 = 1 octave up and 0.5 is one octave down	
-{ ptc_itimeslice,	20.0, 300.0 },	// in milliseconds - size of sound chunk to analyze and cut/duplicate - 100ms nominal
-{ ptc_ixfade,	1.0, 200.0 },	// in milliseconds - size of crossfade region between spliced chunks - 20ms nominal	
+{ ptc_ipitch,	0.1f, 4.0f },	// 0-n.0 where 1.0 = 1 octave up and 0.5 is one octave down
+{ ptc_itimeslice,	20.0f, 300.0f },	// in milliseconds - size of sound chunk to analyze and cut/duplicate - 100ms nominal
+{ ptc_ixfade,	1.0f, 200.0f },	// in milliseconds - size of crossfade region between spliced chunks - 20ms nominal
 };
 
 ptc_t *PTC_Params( prc_t *pprc )
@@ -2779,28 +2779,28 @@ ptc_t *PTC_Params( prc_t *pprc )
 	float	txfade = pprc->prm[ptc_ixfade];
 
 	pptc = PTC_Alloc( timeslice, txfade, pitch );
-	
+
 	return pptc;
 }
 
-_inline void *PTC_VParams( void *p ) 
+_inline void *PTC_VParams( void *p )
 {
-	PRC_CheckParams((prc_t *)p, ptc_rng ); 
-	return (void *)PTC_Params((prc_t *)p); 
+	PRC_CheckParams((prc_t *)p, ptc_rng );
+	return (void *)PTC_Params((prc_t *)p);
 }
 
 // change to new pitch value
 // v is +/- 0-1.0
 // v changes current pitch up/down by +/- v%
-void PTC_Mod( ptc_t *pptc, float v ) 
-{ 
+void PTC_Mod( ptc_t *pptc, float v )
+{
 	float	fstep;
 	float	fstepnew;
 
 	fstep = pptc->fstep;
-	fstepnew = fstep * (1.0 + v);
+	fstepnew = fstep * (1.0f + v);
 
-	PTC_ChangeVal( pptc, fstepnew, 0.01 );
+	PTC_ChangeVal( pptc, fstepnew, 0.01f );
 }
 
 
@@ -2813,7 +2813,7 @@ void PTC_Mod( ptc_t *pptc, float v )
 
 #define ENV_LIN		0		// linear a,d,s,r
 #define ENV_EXP		1		// exponential a,d,s,r
-#define ENV_MAX		ENV_EXP	
+#define ENV_MAX		ENV_EXP
 
 #define ENV_BITS		14		// bits of resolution of ramp
 
@@ -2847,12 +2847,12 @@ env_t *ENV_Alloc( int type, float famp1, float famp2, float famp3, float attack,
 	{
 		if( !envs[i].fused )
 		{
-			int	amp1 = famp1 * (1 << ENV_BITS);	// ramp resolution
-			int	amp2 = famp2 * (1 << ENV_BITS);	
-			int	amp3 = famp3 * (1 << ENV_BITS);
+			int	amp1 = (int)(famp1 * (1 << ENV_BITS));	// ramp resolution
+			int	amp2 = (int)(famp2 * (1 << ENV_BITS));
+			int	amp3 = (int)(famp3 * (1 << ENV_BITS));
 
 			penv = &envs[i];
-			
+
 			ENV_Init( penv );
 
 			// UNDONE: ignoring type = ENV_EXP - use oneshot LFOS instead with sawtooth/exponential
@@ -2883,7 +2883,7 @@ _inline int ENV_GetNext( env_t *penv, int x )
 
 		i = penv->ienv;
 		y = RMP_GetNext( &penv->rmps[i] );
-		
+
 		// check for next ramp
 		if( penv->rmps[i].fhitend )
 			i++;
@@ -2905,7 +2905,7 @@ _inline void ENV_GetNextN( env_t *penv, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -2939,14 +2939,14 @@ _inline void ENV_GetNextN( env_t *penv, portable_samplepair_t *pbuffer, int Samp
 // parameter order
 typedef enum
 {
-	env_itype,		
-	env_iamp1,		
-	env_iamp2,		
-	env_iamp3,		
-	env_iattack,	
-	env_idecay,		
-	env_isustain,		
-	env_irelease,	
+	env_itype,
+	env_iamp1,
+	env_iamp2,
+	env_iamp3,
+	env_iattack,
+	env_idecay,
+	env_isustain,
+	env_irelease,
 	env_cparam	// # of params
 
 } env_e;
@@ -2961,8 +2961,8 @@ prm_rng_t env_rng[] =
 { env_iamp3,	0.0, 1.0 },	// sustain target amplitude 0-1.0
 { env_iattack,	0.0, 20000.0 },	// attack time in milliseconds
 { env_idecay,	0.0, 20000.0 },	// envelope decay time in milliseconds
-{ env_isustain,	0.0, 20000.0 },	// sustain time in milliseconds	
-{ env_irelease,	0.0, 20000.0 },	// release time in milliseconds	
+{ env_isustain,	0.0, 20000.0 },	// sustain time in milliseconds
+{ env_irelease,	0.0, 20000.0 },	// release time in milliseconds
 };
 
 env_t *ENV_Params( prc_t *pprc )
@@ -2978,14 +2978,14 @@ env_t *ENV_Params( prc_t *pprc )
 	float	sustain	= pprc->prm[env_isustain] / 1000.0f;
 	float	release	= pprc->prm[env_irelease] / 1000.0f;
 
-	penv = ENV_Alloc( type, amp1, amp2, amp3, attack, decay, sustain, release );
+	penv = ENV_Alloc( (int)type, amp1, amp2, amp3, attack, decay, sustain, release );
 	return penv;
 }
 
-_inline void *ENV_VParams( void *p ) 
+_inline void *ENV_VParams( void *p )
 {
-	PRC_CheckParams((prc_t *)p, env_rng ); 
-	return (void *)ENV_Params((prc_t *)p); 
+	PRC_CheckParams((prc_t *)p, env_rng );
+	return (void *)ENV_Params((prc_t *)p);
 }
 
 _inline void ENV_Mod ( void *p, float v )
@@ -3051,7 +3051,7 @@ _inline int EFO_GetNext( efo_t *pefo, int x )
 	pefo->avg += xa >> 1;	// divide by 2 to prevent overflow
 
 	pefo->cavg--;
-	
+
 	if( !pefo->cavg )
 	{
 		// new output value - end of window
@@ -3070,7 +3070,7 @@ _inline void EFO_GetNextN( efo_t *pefo, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -3104,10 +3104,10 @@ efo_t * EFO_Params( prc_t *pprc )
 	return EFO_Alloc();
 }
 
-_inline void *EFO_VParams( void *p ) 
+_inline void *EFO_VParams( void *p )
 {
 	// PRC_CheckParams(( prc_t *)p, efo_rng );  - efo has no params
-	return (void *)EFO_Params((prc_t *)p ); 
+	return (void *)EFO_Params((prc_t *)p );
 }
 
 _inline void EFO_Mod( void *p, float v )
@@ -3175,7 +3175,7 @@ mdy_t *MDY_Alloc( dly_t *pdly, float ramptime, float modtime, float depth )
 			pmdy->Dcur = pdly->D0;
 			pmdy->fused = true;
 			pmdy->ramptime = ramptime;
-			pmdy->mtime = SEC_TO_SAMPS( modtime );
+			pmdy->mtime = (int)SEC_TO_SAMPS( modtime );
 			pmdy->mtimecur = pmdy->mtime;
 			pmdy->depth = depth;
 
@@ -3194,7 +3194,7 @@ void MDY_ChangeVal( mdy_t *pmdy, int t )
 
 	t = min( pmdy->pdly->D0, t );
 	pmdy->fchanging = true;
-	
+
 	RMP_Init( &pmdy->rmp, pmdy->ramptime, pmdy->Dcur, t );
 }
 
@@ -3209,11 +3209,11 @@ int MDY_GetNext( mdy_t *pmdy, int x )
 
 	// return right away if not modulating (not changing and not self modulating)
 	if( !pmdy->fchanging && !pmdy->mtime )
-	{	
+	{
 		pmdy->xprev = xcur;
 		return xcur;
 	}
-	
+
 	xout = xcur;
 
 	// if currently changing to new delay target, get next delay value
@@ -3221,21 +3221,21 @@ int MDY_GetNext( mdy_t *pmdy, int x )
 	{
 		// get next ramp value, test for done
 		int	r = RMP_GetNext( &pmdy->rmp );
-		
+
 		if( RMP_HitEnd( &pmdy->rmp ))
 			pmdy->fchanging = false;
-		
+
 		// if new delay different from current delay, change delay
 		if( r != pmdy->Dcur )
 		{
 			// ramp never changes by more than + or - 1
-			
+
 			// change delay tap value to r
 			DLY_ChangeVal( pmdy->pdly, r );
 
-			pmdy->Dcur = r;	
-			
-			// filter delay output within transitions. 
+			pmdy->Dcur = r;
+
+			// filter delay output within transitions.
 			// note: xprev = xcur = 0 if changing delay on 1st sample
 			xout = ( xcur + pmdy->xprev ) >> 1;
 		}
@@ -3251,7 +3251,7 @@ int MDY_GetNext( mdy_t *pmdy, int x )
 		pmdy->mtimecur = pmdy->mtime;
 
 		// modulate between 0 and 100% of d0
-		D1 = (float)D0 * (1.0 - pmdy->depth);
+		D1 = (float)D0 * (1.0f - pmdy->depth);
 		Dnew = Com_RandomLong( (int)D1, D0 );
 
 		MDY_ChangeVal( pmdy, Dnew );
@@ -3267,7 +3267,7 @@ _inline void MDY_GetNextN( mdy_t *pmdy, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -3299,13 +3299,13 @@ _inline void MDY_GetNextN( mdy_t *pmdy, portable_samplepair_t *pbuffer, int Samp
 typedef enum
 {
 	 mdy_idtype,		// NOTE: first 8 params must match params in dly_e
-	 mdy_idelay,		
-	 mdy_ifeedback,		
-	 mdy_igain,		
+	 mdy_idelay,
+	 mdy_ifeedback,
+	 mdy_igain,
 	 mdy_iftype,
-	 mdy_icutoff,	
-	 mdy_iqwidth,		
-	 mdy_iquality, 
+	 mdy_icutoff,
+	 mdy_iqwidth,
+	 mdy_iquality,
 	 mdy_imodrate,
 	 mdy_imoddepth,
 	 mdy_imodglide,
@@ -3317,31 +3317,31 @@ typedef enum
 prm_rng_t mdy_rng[] =
 {
 { mdy_cparam,	0, 0 },			// first entry is # of parameters
-	
+
 // delay params
-{ mdy_idtype,	0, DLY_MAX },		// delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS	
-{ mdy_idelay,	0.0, 1000.0 },		// delay in milliseconds
-{ mdy_ifeedback,	0.0, 0.99 },		// feedback 0-1.0
-{ mdy_igain,	0.0, 1.0 },		// final gain of output stage, 0-1.0
+{ mdy_idtype,	0, DLY_MAX },		// delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS
+{ mdy_idelay,	0.0f, 1000.0f },		// delay in milliseconds
+{ mdy_ifeedback,	0.0f, 0.99f },		// feedback 0-1.0
+{ mdy_igain,	0.0f, 1.0f },		// final gain of output stage, 0-1.0
 
 // filter params if mdy type DLY_LOWPASS
-{ mdy_iftype,	0, FTR_MAX },		
-{ mdy_icutoff,	10.0, 22050.0 },
-{ mdy_iqwidth,	100.0, 11025.0 },
+{ mdy_iftype,	0, FTR_MAX },
+{ mdy_icutoff,	10.0f, 22050.0f },
+{ mdy_iqwidth,	100.0f, 11025.0f },
 { mdy_iquality,	0, QUA_MAX },
-{ mdy_imodrate,	0.01, 200.0 },		// frequency at which delay values change to new random value. 0 is no self-modulation
-{ mdy_imoddepth,	0.0, 1.0 },		// how much delay changes (decreases) from current value (0-1.0) 
-{ mdy_imodglide,	0.01, 100.0 },		// glide time between dcur and dnew in milliseconds
+{ mdy_imodrate,	0.01f, 200.0f },		// frequency at which delay values change to new random value. 0 is no self-modulation
+{ mdy_imoddepth,	0.0f, 1.0f },		// how much delay changes (decreases) from current value (0-1.0)
+{ mdy_imodglide,	0.01f, 100.0f },		// glide time between dcur and dnew in milliseconds
 };
 
 // convert user parameters to internal parameters, allocate and return
 mdy_t *MDY_Params( prc_t *pprc )
 {
 	mdy_t	*pmdy;
-	dly_t	*pdly;	
+	dly_t	*pdly;
 
-	float	ramptime = pprc->prm[mdy_imodglide] / 1000.0;	// get ramp time in seconds
-	float	modtime = 1.0 / pprc->prm[mdy_imodrate];	// time between modulations in seconds
+	float	ramptime = pprc->prm[mdy_imodglide] / 1000.0f;	// get ramp time in seconds
+	float	modtime = 1.0f / pprc->prm[mdy_imodrate];	// time between modulations in seconds
 	float	depth = pprc->prm[mdy_imoddepth];		// depth of modulations 0-1.0
 
 	// alloc plain, allpass or lowpass delay
@@ -3349,22 +3349,22 @@ mdy_t *MDY_Params( prc_t *pprc )
 	if( !pdly ) return NULL;
 
 	pmdy = MDY_Alloc( pdly, ramptime, modtime, depth );
-	
+
 	return pmdy;
 }
 
-_inline void * MDY_VParams( void *p ) 
+_inline void * MDY_VParams( void *p )
 {
-	PRC_CheckParams(( prc_t *)p, mdy_rng ); 
-	return (void *)MDY_Params ((prc_t *)p ); 
+	PRC_CheckParams(( prc_t *)p, mdy_rng );
+	return (void *)MDY_Params ((prc_t *)p );
 }
 
 // v is +/- 0-1.0
 // change current delay value 0..D
-void MDY_Mod( mdy_t *pmdy, float v ) 
+void MDY_Mod( mdy_t *pmdy, float v )
 {
 	int	D = pmdy->Dcur;
-	float	v2 = -(v + 1.0)/2.0;	// v2 varies -1.0-0.0
+	float	v2 = -(v + 1.0f)/2.0f;	// v2 varies -1.0-0.0
 
 	// D varies 0..D
 	D = D + (int)((float)D * v2);
@@ -3393,20 +3393,20 @@ typedef struct
 crs_t	crss[CCRSS];
 
 void CRS_Init( crs_t *pcrs ) { if( pcrs ) Q_memset( pcrs, 0, sizeof( crs_t )); };
-void CRS_Free( crs_t *pcrs ) 
+void CRS_Free( crs_t *pcrs )
 {
 	if( pcrs )
 	{
 		MDY_Free( pcrs->pmdy );
 		LFO_Free( pcrs->plfo );
-		Q_memset( pcrs, 0, sizeof( crs_t )); 
+		Q_memset( pcrs, 0, sizeof( crs_t ));
 	}
 }
 
 void CRS_InitAll() { int i; for( i = 0; i < CCRSS; i++ ) CRS_Init( &crss[i] ); }
 void CRS_FreeAll() { int i; for( i = 0; i < CCRSS; i++ ) CRS_Free( &crss[i] ); }
 
-// fstep is base pitch shift, ie: floating point step value, where 1.0 = +1 octave, 0.5 = -1 octave 
+// fstep is base pitch shift, ie: floating point step value, where 1.0 = +1 octave, 0.5 = -1 octave
 // lfotype is LFO_SIN, LFO_RND, LFO_TRI etc (LFO_RND for chorus, LFO_SIN for flange)
 // fHz is modulation frequency in Hz
 // depth is modulation depth, 0-1.0
@@ -3415,7 +3415,7 @@ void CRS_FreeAll() { int i; for( i = 0; i < CCRSS; i++ ) CRS_Free( &crss[i] ); }
 #define CRS_DELAYMAX	100		// max milliseconds of sweepable delay
 #define CRS_RAMPTIME	5		// milliseconds to ramp between new delay values
 
-crs_t * CRS_Alloc( int lfotype, float fHz, float fdepth, float mix ) 
+crs_t * CRS_Alloc( int lfotype, float fHz, float fdepth, float mix )
 {
 	int	i, D;
 	crs_t	*pcrs;
@@ -3431,7 +3431,7 @@ crs_t * CRS_Alloc( int lfotype, float fHz, float fdepth, float mix )
 			break;
 	}
 
-	if( i == CCRSS ) 
+	if( i == CCRSS )
 	{
 		MsgDev( D_WARN, "DSP: failed to allocate chorus.\n" );
 		return NULL;
@@ -3440,14 +3440,14 @@ crs_t * CRS_Alloc( int lfotype, float fHz, float fdepth, float mix )
 	pcrs = &crss[i];
 	CRS_Init( pcrs );
 
-	D = fdepth * MSEC_TO_SAMPS( CRS_DELAYMAX );		// sweep from 0 - n milliseconds
+	D = (int)(fdepth * MSEC_TO_SAMPS( CRS_DELAYMAX ));		// sweep from 0 - n milliseconds
 
 	ramptime = (float)CRS_RAMPTIME / 1000.0f;		// # milliseconds to ramp between new values
-	
+
 	pdly = DLY_Alloc( D, 0, 1, DLY_LINEAR );
 	pmdy = MDY_Alloc( pdly, ramptime, 0.0, 0.0 );
 	plfo = LFO_Alloc( lfotype, fHz, false );
-	
+
 	if( !plfo || !pmdy )
 	{
 		LFO_Free( plfo );
@@ -3465,10 +3465,10 @@ crs_t * CRS_Alloc( int lfotype, float fHz, float fdepth, float mix )
 }
 
 // return next chorused sample (modulated delay) mixed with input sample
-_inline int CRS_GetNext( crs_t *pcrs, int x ) 
+_inline int CRS_GetNext( crs_t *pcrs, int x )
 {
 	int	l, y;
-	
+
 	// get current mod delay value
 	y = MDY_GetNext( pcrs->pmdy, x );
 
@@ -3500,7 +3500,7 @@ _inline void CRS_GetNextN( crs_t *pcrs, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -3553,16 +3553,16 @@ prm_rng_t crs_rng[] =
 crs_t *CRS_Params( prc_t *pprc )
 {
 	crs_t	*pcrs;
-	
-	pcrs = CRS_Alloc( pprc->prm[crs_ilfotype], pprc->prm[crs_irate], pprc->prm[crs_idepth], pprc->prm[crs_imix] );
+
+	pcrs = CRS_Alloc( (int)pprc->prm[crs_ilfotype], pprc->prm[crs_irate], pprc->prm[crs_idepth], pprc->prm[crs_imix] );
 
 	return pcrs;
 }
 
-_inline void *CRS_VParams( void *p ) 
+_inline void *CRS_VParams( void *p )
 {
-	PRC_CheckParams((prc_t *)p, crs_rng ); 
-	return (void *)CRS_Params((prc_t *)p ); 
+	PRC_CheckParams((prc_t *)p, crs_rng );
+	return (void *)CRS_Params((prc_t *)p );
 }
 
 _inline void CRS_Mod( void *p, float v )
@@ -3594,7 +3594,7 @@ void AMP_Free( amp_t *pamp ) { if( pamp ) Q_memset( pamp, 0, sizeof( amp_t )); }
 void AMP_InitAll() { int i; for( i = 0; i < CAMPS; i++ ) AMP_Init( &amps[i] ); }
 void AMP_FreeAll() { int i; for( i = 0; i < CAMPS; i++ ) AMP_Free( &amps[i] ); }
 
-amp_t *AMP_Alloc( float gain, float vthresh, float distmix, float vfeed ) 
+amp_t *AMP_Alloc( float gain, float vthresh, float distmix, float vfeed )
 {
 	int	i;
 	amp_t	*pamp;
@@ -3606,7 +3606,7 @@ amp_t *AMP_Alloc( float gain, float vthresh, float distmix, float vfeed )
 			break;
 	}
 
-	if( i == CAMPS ) 
+	if( i == CAMPS )
 	{
 		MsgDev( D_WARN, "DSP: failed to allocate amp.\n" );
 		return NULL;
@@ -3625,7 +3625,7 @@ amp_t *AMP_Alloc( float gain, float vthresh, float distmix, float vfeed )
 }
 
 // return next amplified sample
-_inline int AMP_GetNext( amp_t *pamp, int x ) 
+_inline int AMP_GetNext( amp_t *pamp, int x )
 {
 	float y = (float)x;
 	float yin;
@@ -3656,21 +3656,21 @@ _inline int AMP_GetNext( amp_t *pamp, int x )
 	}
 
 	// if distortion is on, add distortion, feedback
-	if( pamp->vthresh < 1.0 )
+	if( pamp->vthresh < 1.0f )
 	{
-		float	fclip = pamp->vthresh * 32767.0;
+		float	fclip = pamp->vthresh * 32767.0f;
 
-		if( pamp->vfeed > 0.0 )
+		if( pamp->vfeed > 0.0f )
 		{
-			// UNDONE: feedback 
+			// UNDONE: feedback
 		}
 
 		// clip distort
 		y = ( y > fclip ? fclip : ( y < -fclip ? -fclip : y));
 
 		// mix distorted with clean (1.0 = full distortion)
-		if( pamp->distmix > 0.0 )
-			y = y * pamp->distmix + yin * (1.0 - pamp->distmix);
+		if( pamp->distmix > 0.0f )
+			y = y * pamp->distmix + yin * (1.0f - pamp->distmix);
 	}
 
 	// amplify
@@ -3684,7 +3684,7 @@ _inline void AMP_GetNextN( amp_t *pamp, portable_samplepair_t *pbuffer, int Samp
 {
 	int count = SampleCount;
 	portable_samplepair_t *pb = pbuffer;
-	
+
 	switch( op )
 	{
 	default:
@@ -3714,16 +3714,16 @@ _inline void AMP_GetNextN( amp_t *pamp, portable_samplepair_t *pbuffer, int Samp
 
 _inline void AMP_Mod( amp_t *pamp, float v )
 {
-	float	vmod = bound( v, 0.0, 1.0 );
+	float	vmod = bound( v, 0.0f, 1.0f );
 	float	samps = MSEC_TO_SAMPS( AMPSLEW );	// # samples to slew between amp values
 
 	// ramp to new amplification value
 	pamp->gaintarget = pamp->gain * vmod;
 
-	pamp->gaindif = fabs( pamp->gain - pamp->gaintarget ) / samps;
+	pamp->gaindif = fabsf( pamp->gain - pamp->gaintarget ) / samps;
 
 	if( pamp->gaindif == 0.0f )
-		pamp->gaindif = fabs( pamp->gain - pamp->gaintarget ) / 100;
+		pamp->gaindif = fabsf( pamp->gain - pamp->gaintarget ) / 100.f;
 }
 
 
@@ -3742,7 +3742,7 @@ typedef enum
 prm_rng_t amp_rng[] =
 {
 { amp_cparam,	0, 0 },			// first entry is # of parameters
-{ amp_gain,	0.0, 10.0 },		// amplification		
+{ amp_gain,	0.0, 10.0 },		// amplification
 { amp_vthresh,	0.0, 1.0 },		// threshold for distortion (1.0 = no distortion)
 { amp_distmix,	0.0, 1.0 },		// mix of clean and distortion (1.0 = full distortion, 0.0 = full clean)
 { amp_vfeed,	0.0, 1.0 },		// distortion feedback
@@ -3751,16 +3751,16 @@ prm_rng_t amp_rng[] =
 amp_t * AMP_Params( prc_t *pprc )
 {
 	amp_t	*pamp;
-	
+
 	pamp = AMP_Alloc( pprc->prm[amp_gain], pprc->prm[amp_vthresh], pprc->prm[amp_distmix], pprc->prm[amp_vfeed] );
 
 	return pamp;
 }
 
-_inline void *AMP_VParams( void *p ) 
+_inline void *AMP_VParams( void *p )
 {
-	PRC_CheckParams((prc_t *)p, amp_rng ); 
-	return (void *)AMP_Params((prc_t *)p ); 
+	PRC_CheckParams((prc_t *)p, amp_rng );
+	return (void *)AMP_Params((prc_t *)p );
 }
 
 
@@ -3792,7 +3792,7 @@ _inline void * NULL_VParams( void *p ) { return (void *)(&nuls[0]); }
 // A dsp processor (prc) performs a single-sample function, such as pitch shift, delay, reverb, filter
 
 // note, this array must have CPRCPARMS entries
-#define PRMZERO	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+#define PRMZERO	0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
 #define PFNZERO	NULL,NULL,NULL,NULL,NULL	// zero pointers for pfnparam...pdata within prc_t
 
 //////////////////
@@ -3807,67 +3807,67 @@ _inline void * NULL_VParams( void *p ) { return (void *)(&nuls[0]); }
 // Amplifiers
 //////////////
 
-// {amp_gain,	0.0, 10.0 },	// amplification		
+// {amp_gain,	0.0, 10.0 },	// amplification
 // {amp_vthresh,	0.0, 1.0 },	// threshold for distortion (1.0 = no distortion)
 // {amp_distmix,	0.0, 1.0 },	// mix of clean and distortion (1.0 = full distortion, 0.0 = full clean)
 // {amp_vfeed,	0.0, 1.0 },	// distortion feedback
-	
-//		  prctype	   gain	vthresh	distmix	vfeed 
-#define PRC_AMP1	{PRC_AMP,	{ 1.0,	1.0,	0.0,	0.0, },	PFNZERO }	// modulatable unity gain amp
-#define PRC_AMP2	{PRC_AMP,	{ 1.5,	0.75,	1.0,	0.0, },	PFNZERO }	// amp with light distortion
-#define PRC_AMP3	{PRC_AMP,	{ 2.0,	0.5,	1.0,	0.0, },	PFNZERO }	// amp with medium distortion
-#define PRC_AMP4	{PRC_AMP,	{ 4.0,	0.25,	1.0,	0.0, },	PFNZERO }	// amp with heavy distortion
-#define PRC_AMP5	{PRC_AMP,	{ 10.0,	0.10,	1.0,	0.0, },	PFNZERO }	// mega distortion
 
-#define PRC_AMP6	{PRC_AMP,	{ 0.1,	1.0,	0.0,	0.0, },	PFNZERO }	// fade out
-#define PRC_AMP7	{PRC_AMP,	{ 0.2,	1.0,	0.0,	0.0, },	PFNZERO }	// fade out
-#define PRC_AMP8	{PRC_AMP,	{ 0.3,	1.0,	0.0,	0.0, },	PFNZERO }	// fade out
+//		  prctype	   gain	vthresh	distmix	vfeed
+#define PRC_AMP1	{PRC_AMP,	{ 1.0f,	1.0f,	0.0f,	0.0f, },	PFNZERO }	// modulatable unity gain amp
+#define PRC_AMP2	{PRC_AMP,	{ 1.5f,	0.75,	1.0f,	0.0f, },	PFNZERO }	// amp with light distortion
+#define PRC_AMP3	{PRC_AMP,	{ 2.0f,	0.5f,	1.0f,	0.0f, },	PFNZERO }	// amp with medium distortion
+#define PRC_AMP4	{PRC_AMP,	{ 4.0f,	0.25f,	1.0f,	0.0f, },	PFNZERO }	// amp with heavy distortion
+#define PRC_AMP5	{PRC_AMP,	{ 10.0f,	0.10f,	1.0f,	0.0f, },	PFNZERO }	// mega distortion
 
-#define PRC_AMP9	{PRC_AMP,	{ 0.75,	1.0,	0.0,	0.0, },	PFNZERO }	// duck out
+#define PRC_AMP6	{PRC_AMP,	{ 0.1f,	1.0f,	0.0f,	0.0f, },	PFNZERO }	// fade out
+#define PRC_AMP7	{PRC_AMP,	{ 0.2f,	1.0f,	0.0f,	0.0f, },	PFNZERO }	// fade out
+#define PRC_AMP8	{PRC_AMP,	{ 0.3f,	1.0f,	0.0f,	0.0f, },	PFNZERO }	// fade out
+
+#define PRC_AMP9	{PRC_AMP,	{ 0.75f,	1.0f,	0.0f,	0.0f, },	PFNZERO }	// duck out
 
 
 ///////////
-// Filters			
+// Filters
 ///////////
 
-// ftype: filter type FLT_LP, FLT_HP, FLT_BP (UNDONE: FLT_BP currently ignored)			
+// ftype: filter type FLT_LP, FLT_HP, FLT_BP (UNDONE: FLT_BP currently ignored)
 // cutoff: cutoff frequency in hz at -3db gain
 // qwidth: width of BP, or steepness of LP/HP (ie: fcutoff + qwidth = -60db gain point)
-// quality: QUA_LO, _MED, _HI 0,1,2 
+// quality: QUA_LO, _MED, _HI 0,1,2
 
 //		  prctype	   ftype	cutoff	qwidth	quality
-#define PRC_FLT1	{PRC_FLT,	{ FLT_LP, 3000,	1000,	QUA_MED, }, PFNZERO } 
+#define PRC_FLT1	{PRC_FLT,	{ FLT_LP, 3000,	1000,	QUA_MED, }, PFNZERO }
 #define PRC_FLT2	{PRC_FLT,	{ FLT_LP, 2000,	2000,	QUA_MED, }, PFNZERO }	// lowpass for facing away
-#define PRC_FLT3	{PRC_FLT,	{ FLT_LP, 1000,	1000,	QUA_MED, }, PFNZERO } 
+#define PRC_FLT3	{PRC_FLT,	{ FLT_LP, 1000,	1000,	QUA_MED, }, PFNZERO }
 #define PRC_FLT4	{PRC_FLT,	{ FLT_LP, 700,	700,	QUA_LO, },  PFNZERO }	// muffle filter
 
 #define PRC_FLT5	{PRC_FLT,	{ FLT_HP, 700,	200,	QUA_MED, }, PFNZERO }	// highpass (bandpass pair)
 #define PRC_FLT6	{PRC_FLT,	{ FLT_HP, 2000,	1000,	QUA_MED, }, PFNZERO }	// lowpass  (bandpass pair)
 
 //////////
-// Delays	
+// Delays
 //////////
 
-// dtype: delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS	
+// dtype: delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS
 // delay: delay in milliseconds
 // feedback: feedback 0-1.0
 // gain: final gain of output stage, 0-1.0
 
 //		  prctype	   dtype		delay	feedbk	gain	ftype	cutoff	qwidth	quality
-#define PRC_DLY1	{PRC_DLY,	{ DLY_PLAIN,	500.0,	0.5,	0.6,	0.0,	0.0,	0.0,	0.0, },	 PFNZERO }
-#define PRC_DLY2	{PRC_DLY,	{ DLY_LOWPASS,	45.0,	0.8,	0.6,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO }
-#define PRC_DLY3	{PRC_DLY,	{ DLY_LOWPASS,	300.0,	0.5,	0.6,	FLT_LP,	2000,	2000,	QUA_LO, }, PFNZERO } // outside S
-#define PRC_DLY4	{PRC_DLY,	{ DLY_LOWPASS,	400.0,	0.5,	0.6,	FLT_LP,	1500,	1500,	QUA_LO, }, PFNZERO } // outside M
-#define PRC_DLY5	{PRC_DLY,	{ DLY_LOWPASS,	750.0,	0.5,	0.6,	FLT_LP,	1000,	1000,	QUA_LO, }, PFNZERO } // outside L
-#define PRC_DLY6	{PRC_DLY,	{ DLY_LOWPASS,	1000.0,	0.5,	0.6,	FLT_LP,	800,	400,	QUA_LO, }, PFNZERO } // outside VL
-#define PRC_DLY7	{PRC_DLY,	{ DLY_LOWPASS,	45.0,	0.4,	0.5,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // tunnel S
-#define PRC_DLY8	{PRC_DLY,	{ DLY_LOWPASS,	55.0,	0.4,	0.5,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // tunnel M
-#define PRC_DLY9	{PRC_DLY,	{ DLY_LOWPASS,	65.0,	0.4,	0.5,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // tunnel L
-#define PRC_DLY10	{PRC_DLY,	{ DLY_LOWPASS,	150.0,	0.5,	0.6,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // cavern S
-#define PRC_DLY11	{PRC_DLY,	{ DLY_LOWPASS,	200.0,	0.7,	0.6,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // cavern M
-#define PRC_DLY12	{PRC_DLY,	{ DLY_LOWPASS,	300.0,	0.7,	0.6,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // cavern L
-#define PRC_DLY13	{PRC_DLY,	{ DLY_LINEAR,	300.0,	0.0,	1.0,	0.0,	0.0,	0.0,	0.0,},	PFNZERO } // straight delay 300ms
-#define PRC_DLY14	{PRC_DLY,	{ DLY_LINEAR,	80.0,	0.0,	1.0,	0.0,	0.0,	0.0,	0.0,},	PFNZERO } // straight delay 80ms
+#define PRC_DLY1	{PRC_DLY,	{ DLY_PLAIN,	500.0f,	0.5f,	0.6f,	0.0f,	0.0f,	0.0f,	0.0f, },	 PFNZERO }
+#define PRC_DLY2	{PRC_DLY,	{ DLY_LOWPASS,	45.0f,	0.8f,	0.6f,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO }
+#define PRC_DLY3	{PRC_DLY,	{ DLY_LOWPASS,	300.0f,	0.5f,	0.6f,	FLT_LP,	2000,	2000,	QUA_LO, }, PFNZERO } // outside S
+#define PRC_DLY4	{PRC_DLY,	{ DLY_LOWPASS,	400.0f,	0.5f,	0.6f,	FLT_LP,	1500,	1500,	QUA_LO, }, PFNZERO } // outside M
+#define PRC_DLY5	{PRC_DLY,	{ DLY_LOWPASS,	750.0f,	0.5f,	0.6f,	FLT_LP,	1000,	1000,	QUA_LO, }, PFNZERO } // outside L
+#define PRC_DLY6	{PRC_DLY,	{ DLY_LOWPASS,	1000.0f,	0.5f,	0.6f,	FLT_LP,	800,	400,	QUA_LO, }, PFNZERO } // outside VL
+#define PRC_DLY7	{PRC_DLY,	{ DLY_LOWPASS,	45.0f,	0.4f,	0.5f,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // tunnel S
+#define PRC_DLY8	{PRC_DLY,	{ DLY_LOWPASS,	55.0f,	0.4f,	0.5f,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // tunnel M
+#define PRC_DLY9	{PRC_DLY,	{ DLY_LOWPASS,	65.0f,	0.4f,	0.5f,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // tunnel L
+#define PRC_DLY10	{PRC_DLY,	{ DLY_LOWPASS,	150.0f,	0.5f,	0.6f,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // cavern S
+#define PRC_DLY11	{PRC_DLY,	{ DLY_LOWPASS,	200.0f,	0.7f,	0.6f,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // cavern M
+#define PRC_DLY12	{PRC_DLY,	{ DLY_LOWPASS,	300.0f,	0.7f,	0.6f,	FLT_LP,	3000,	3000,	QUA_LO, }, PFNZERO } // cavern L
+#define PRC_DLY13	{PRC_DLY,	{ DLY_LINEAR,	300.0f,	0.0f,	1.0f,	0.0f,	0.0f,	0.0f,	0.0f,},	PFNZERO } // straight delay 300ms
+#define PRC_DLY14	{PRC_DLY,	{ DLY_LINEAR,	80.0f,	0.0f,	1.0f,	0.0f,	0.0f,	0.0f,	0.0f,},	PFNZERO } // straight delay 80ms
 
 ///////////
 // Reverbs
@@ -3878,57 +3878,57 @@ _inline void * NULL_VParams( void *p ) { return (void *)(&nuls[0]); }
 // decay: 0-2.0 scales feedback parameters (starting at approx 0.15)
 
 //      		prctype	size	density	decay	ftype	cutoff	qwidth	fparallel
-#define PRC_RVA1	{PRC_RVA,	{2.0,	0.5,	1.5,	FLT_LP,	6000,	2000,	1},	PFNZERO }
-#define PRC_RVA2	{PRC_RVA,	{1.0,	0.2,	1.5,	0,	0,	0,	0},	PFNZERO }
+#define PRC_RVA1	{PRC_RVA,	{2.0f,	0.5f,	1.5f,	FLT_LP,	6000,	2000,	1},	PFNZERO }
+#define PRC_RVA2	{PRC_RVA,	{1.0f,	0.2f,	1.5f,	0,	0,	0,	0},	PFNZERO }
 
-#define PRC_RVA3	{PRC_RVA,	{0.8,	0.5,	1.5,	FLT_LP,	2500,	2000,	0},	PFNZERO }	// metallic S
-#define PRC_RVA4	{PRC_RVA,	{1.0,	0.5,	1.5,	FLT_LP,	2500,	2000,	0},	PFNZERO }	// metallic M
-#define PRC_RVA5	{PRC_RVA,	{1.2,	0.5,	1.5,	FLT_LP,	2500,	2000,	0},	PFNZERO }	// metallic L
+#define PRC_RVA3	{PRC_RVA,	{0.8f,	0.5f,	1.5f,	FLT_LP,	2500,	2000,	0},	PFNZERO }	// metallic S
+#define PRC_RVA4	{PRC_RVA,	{1.0f,	0.5f,	1.5f,	FLT_LP,	2500,	2000,	0},	PFNZERO }	// metallic M
+#define PRC_RVA5	{PRC_RVA,	{1.2f,	0.5f,	1.5f,	FLT_LP,	2500,	2000,	0},	PFNZERO }	// metallic L
 
-#define PRC_RVA6	{PRC_RVA,	{0.8,	0.3,	1.5,	FLT_LP,	4000,	2000,	0},	PFNZERO }	// tunnel S
-#define PRC_RVA7	{PRC_RVA,	{0.9,	0.3,	1.5,	FLT_LP,	4000,	2000,	0},	PFNZERO }	// tunnel M
-#define PRC_RVA8	{PRC_RVA,	{1.0,	0.3,	1.5,	FLT_LP,	4000,	2000,	0},	PFNZERO }	// tunnel L
+#define PRC_RVA6	{PRC_RVA,	{0.8f,	0.3f,	1.5f,	FLT_LP,	4000,	2000,	0},	PFNZERO }	// tunnel S
+#define PRC_RVA7	{PRC_RVA,	{0.9f,	0.3f,	1.5f,	FLT_LP,	4000,	2000,	0},	PFNZERO }	// tunnel M
+#define PRC_RVA8	{PRC_RVA,	{1.0f,	0.3f,	1.5f,	FLT_LP,	4000,	2000,	0},	PFNZERO }	// tunnel L
 
-#define PRC_RVA9	{PRC_RVA,	{2.0,	1.5,	2.0,	FLT_LP,	1500,	1500,	1},	PFNZERO }	// cavern S
-#define PRC_RVA10	{PRC_RVA,	{2.0,	1.5,	2.0,	FLT_LP,	1500,	1500,	1},	PFNZERO }	// cavern M
-#define PRC_RVA11	{PRC_RVA,	{2.0,	1.5,	2.0,	FLT_LP,	1500,	1500,	1},	PFNZERO }	// cavern L
+#define PRC_RVA9	{PRC_RVA,	{2.0f,	1.5f,	2.0f,	FLT_LP,	1500,	1500,	1},	PFNZERO }	// cavern S
+#define PRC_RVA10	{PRC_RVA,	{2.0f,	1.5f,	2.0f,	FLT_LP,	1500,	1500,	1},	PFNZERO }	// cavern M
+#define PRC_RVA11	{PRC_RVA,	{2.0f,	1.5f,	2.0f,	FLT_LP,	1500,	1500,	1},	PFNZERO }	// cavern L
 
-#define PRC_RVA12	{PRC_RVA,	{2.0,	0.5,	1.5,	FLT_LP,	6000,	2000,	1},	PFNZERO }	// chamber S
-#define PRC_RVA13	{PRC_RVA,	{2.0,	1.0,	1.5,	FLT_LP,	6000,	2000,	1},	PFNZERO }	// chamber M
-#define PRC_RVA14	{PRC_RVA,	{2.0,	2.0,	1.5,	FLT_LP,	6000,	2000,	1},	PFNZERO }	// chamber L
+#define PRC_RVA12	{PRC_RVA,	{2.0f,	0.5f,	1.5f,	FLT_LP,	6000,	2000,	1},	PFNZERO }	// chamber S
+#define PRC_RVA13	{PRC_RVA,	{2.0f,	1.0f,	1.5f,	FLT_LP,	6000,	2000,	1},	PFNZERO }	// chamber M
+#define PRC_RVA14	{PRC_RVA,	{2.0f,	2.0f,	1.5f,	FLT_LP,	6000,	2000,	1},	PFNZERO }	// chamber L
 
-#define PRC_RVA15	{PRC_RVA,	{1.7,	1.0,	1.2,	FLT_LP,	5000,	4000,	1},	PFNZERO }	// brite S
-#define PRC_RVA16	{PRC_RVA,	{1.75,	1.0,	1.5,	FLT_LP,	5000,	4000,	1},	PFNZERO }	// brite M
-#define PRC_RVA17	{PRC_RVA,	{1.85,	1.0,	2.0,	FLT_LP,	6000,	4000,	1},	PFNZERO }	// brite L
+#define PRC_RVA15	{PRC_RVA,	{1.7f,	1.0f,	1.2f,	FLT_LP,	5000,	4000,	1},	PFNZERO }	// brite S
+#define PRC_RVA16	{PRC_RVA,	{1.75f,	1.0f,	1.5f,	FLT_LP,	5000,	4000,	1},	PFNZERO }	// brite M
+#define PRC_RVA17	{PRC_RVA,	{1.85f,	1.0f,	2.0f,	FLT_LP,	6000,	4000,	1},	PFNZERO }	// brite L
 
-#define PRC_RVA18	{PRC_RVA,	{1.0,	1.5,	1.0,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// generic
+#define PRC_RVA18	{PRC_RVA,	{1.0f,	1.5f,	1.0f,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// generic
 
-#define PRC_RVA19	{PRC_RVA,	{1.9,	1.8,	1.25,	FLT_LP,	4000,	2000,	1},	PFNZERO }	// concrete S
-#define PRC_RVA20	{PRC_RVA,	{2.0,	1.8,	1.5,	FLT_LP,	3500,	2000,	1},	PFNZERO }	// concrete M
-#define PRC_RVA21	{PRC_RVA,	{2.0,	1.8,	1.75,	FLT_LP,	3000,	2000,	1},	PFNZERO }	// concrete L
+#define PRC_RVA19	{PRC_RVA,	{1.9f,	1.8f,	1.25f,	FLT_LP,	4000,	2000,	1},	PFNZERO }	// concrete S
+#define PRC_RVA20	{PRC_RVA,	{2.0f,	1.8f,	1.5f,	FLT_LP,	3500,	2000,	1},	PFNZERO }	// concrete M
+#define PRC_RVA21	{PRC_RVA,	{2.0f,	1.8f,	1.75,	FLT_LP,	3000,	2000,	1},	PFNZERO }	// concrete L
 
-#define PRC_RVA22	{PRC_RVA,	{1.8,	1.5,	1.5,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// water S
-#define PRC_RVA23	{PRC_RVA,	{1.9,	1.75,	1.5,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// water M
-#define PRC_RVA24	{PRC_RVA,	{2.0,	2.0,	1.5,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// water L
+#define PRC_RVA22	{PRC_RVA,	{1.8f,	1.5f,	1.5f,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// water S
+#define PRC_RVA23	{PRC_RVA,	{1.9f,	1.75f,	1.5f,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// water M
+#define PRC_RVA24	{PRC_RVA,	{2.0f,	2.0f,	1.5f,	FLT_LP,	1000,	1000,	0},	PFNZERO }	// water L
 
 
 /////////////
-// Diffusors	
+// Diffusors
 /////////////
 
 // size: 0-1.0 scales all delays
 // density: 0-1.0 controls # of series delays
-// decay: 0-1.0 scales all feedback parameters 
+// decay: 0-1.0 scales all feedback parameters
 
 //		prctype	size	density	decay
-#define PRC_DFR1	{PRC_DFR,	{ 1.0,	0.5,	1.0 },	PFNZERO }
-#define PRC_DFR2	{PRC_DFR,	{ 0.5,	0.3,	0.5 },	PFNZERO }	// S
-#define PRC_DFR3	{PRC_DFR,	{ 0.75,	0.5,	0.75 },	PFNZERO }	// M
-#define PRC_DFR4	{PRC_DFR,	{ 1.0,	0.5,	1.0 },	PFNZERO }	// L
-#define PRC_DFR5	{PRC_DFR,	{ 1.0,	1.0,	1.0 },	PFNZERO }	// VL
+#define PRC_DFR1	{PRC_DFR,	{ 1.0f,	0.5f,	1.0f },	PFNZERO }
+#define PRC_DFR2	{PRC_DFR,	{ 0.5f,	0.3f,	0.5f },	PFNZERO }	// S
+#define PRC_DFR3	{PRC_DFR,	{ 0.75f,	0.5f,	0.75f },	PFNZERO }	// M
+#define PRC_DFR4	{PRC_DFR,	{ 1.0f,	0.5f,	1.0f },	PFNZERO }	// L
+#define PRC_DFR5	{PRC_DFR,	{ 1.0f,	1.0f,	1.0f },	PFNZERO }	// VL
 
 ////////
-// LFOs		
+// LFOs
 ////////
 
 // wavtype: lfo type to use (LFO_SIN, LFO_RND...)
@@ -3936,29 +3936,29 @@ _inline void * NULL_VParams( void *p ) { return (void *)(&nuls[0]); }
 // foneshot: 1.0 if lfo is oneshot
 
 //		prctype	wavtype		rate	foneshot
-#define PRC_LFO1	{PRC_LFO, { LFO_SIN,	440.0,	0.0, },	PFNZERO}
-#define PRC_LFO2	{PRC_LFO, { LFO_SIN,	3000.0,	0.0, },	PFNZERO}	// ear noise ring
-#define PRC_LFO3	{PRC_LFO, { LFO_SIN,	4500.0,	0.0, },	PFNZERO}	// ear noise ring
-#define PRC_LFO4	{PRC_LFO, { LFO_SIN,	6000.0,	0.0, },	PFNZERO}	// ear noise ring
-#define PRC_LFO5	{PRC_LFO, { LFO_SAW,	100.0,	0.0, },	PFNZERO}	// sub bass
+#define PRC_LFO1	{PRC_LFO, { LFO_SIN,	440.0f,	0.0f, },	PFNZERO}
+#define PRC_LFO2	{PRC_LFO, { LFO_SIN,	3000.0f,	0.0f, },	PFNZERO}	// ear noise ring
+#define PRC_LFO3	{PRC_LFO, { LFO_SIN,	4500.0f,	0.0f, },	PFNZERO}	// ear noise ring
+#define PRC_LFO4	{PRC_LFO, { LFO_SIN,	6000.0f,	0.0f, },	PFNZERO}	// ear noise ring
+#define PRC_LFO5	{PRC_LFO, { LFO_SAW,	100.0f,	0.0f, },	PFNZERO}	// sub bass
 
 /////////
-// Pitch	
+// Pitch
 /////////
 
-// pitch: 0-n.0 where 1.0 = 1 octave up and 0.5 is one octave down	
+// pitch: 0-n.0 where 1.0 = 1 octave up and 0.5 is one octave down
 // timeslice: in milliseconds - size of sound chunk to analyze and cut/duplicate - 100ms nominal
 // xfade: in milliseconds - size of crossfade region between spliced chunks - 20ms nominal
-	
+
 //		prctype	pitch	timeslice	xfade
-#define PRC_PTC1	{PRC_PTC,	{ 1.1,	100.0,	20.0 },	PFNZERO}	// pitch up 10%
-#define PRC_PTC2	{PRC_PTC,	{ 0.9,	100.0,	20.0 },	PFNZERO}	// pitch down 10%
-#define PRC_PTC3	{PRC_PTC,	{ 0.95,	100.0,	20.0 },	PFNZERO}	// pitch down 5%
-#define PRC_PTC4	{PRC_PTC,	{ 1.01,	100.0,	20.0 },	PFNZERO}	// pitch up 1%
-#define PRC_PTC5	{PRC_PTC,	{ 0.5,	100.0,	20.0 },	PFNZERO}	// pitch down 50%
+#define PRC_PTC1	{PRC_PTC,	{ 1.1f,	100.0f,	20.0f },	PFNZERO}	// pitch up 10%
+#define PRC_PTC2	{PRC_PTC,	{ 0.9f,	100.0f,	20.0f },	PFNZERO}	// pitch down 10%
+#define PRC_PTC3	{PRC_PTC,	{ 0.95f,	100.0f,	20.0f },	PFNZERO}	// pitch down 5%
+#define PRC_PTC4	{PRC_PTC,	{ 1.01f,	100.0f,	20.0f },	PFNZERO}	// pitch up 1%
+#define PRC_PTC5	{PRC_PTC,	{ 0.5f,	100.0f,	20.0f },	PFNZERO}	// pitch down 50%
 
 /////////////
-// Envelopes	
+// Envelopes
 /////////////
 
 // etype: ENV_LINEAR, ENV_LOG - currently ignored
@@ -3967,36 +3967,36 @@ _inline void * NULL_VParams( void *p ) { return (void *)(&nuls[0]); }
 // amp3: sustain target amplitude 0-1.0
 // attack time in milliseconds
 // envelope decay time in milliseconds
-// sustain time in milliseconds	
-// release time in milliseconds	
+// sustain time in milliseconds
+// release time in milliseconds
 
 //		prctype	etype	amp1	amp2	amp3	attack	decay	sustain	release
-#define	PRC_ENV1	{PRC_ENV, {ENV_LIN,	1.0,	0.5,	0.4,	500,	500,	3000,	6000 },	PFNZERO}
+#define	PRC_ENV1	{PRC_ENV, {ENV_LIN,	1.0f,	0.5f,	0.4f,	500,	500,	3000,	6000 },	PFNZERO}
 
 
 //////////////
-// Mod delays	
+// Mod delays
 //////////////
 
-// dtype: delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS	
+// dtype: delay type DLY_PLAIN, DLY_LOWPASS, DLY_ALLPASS
 // delay: delay in milliseconds
 // feedback: feedback 0-1.0
 // gain: final gain of output stage, 0-1.0
 
 // modrate: frequency at which delay values change to new random value. 0 is no self-modulation
-// moddepth: how much delay changes (decreases) from current value (0-1.0) 
+// moddepth: how much delay changes (decreases) from current value (0-1.0)
 // modglide: glide time between dcur and dnew in milliseconds
 
 //		prctype	dtype		delay	feedback	gain	ftype	cutoff	qwidth	qual	modrate	moddepth modglide
-#define PRC_MDY1	{PRC_MDY,	{DLY_PLAIN,	500.0,	0.5,	1.0,	0,	0,	0,	0,	10,	0.8,	5,}, PFNZERO}			
-#define PRC_MDY2	{PRC_MDY,	{DLY_PLAIN,	50.0,	0.8,	1.0,	0,	0,	0,	0,	5,	0.8,	5,}, PFNZERO}
+#define PRC_MDY1	{PRC_MDY,	{DLY_PLAIN,	500.0f,	0.5f,	1.0f,	0,	0,	0,	0,	10,	0.8f,	5,}, PFNZERO}
+#define PRC_MDY2	{PRC_MDY,	{DLY_PLAIN,	50.0f,	0.8f,	1.0f,	0,	0,	0,	0,	5,	0.8f,	5,}, PFNZERO}
 
-#define PRC_MDY3	{PRC_MDY,	{DLY_PLAIN,	300.0,	0.2,	1.0,	0,	0,	0,	0,	30,	0.01,	15,}, PFNZERO }	// weird 1
-#define PRC_MDY4	{PRC_MDY,	{DLY_PLAIN,	400.0,	0.3,	1.0,	0,	0,	0,	0,	0.25,	0.01,	15,}, PFNZERO }	// weird 2
-#define PRC_MDY5	{PRC_MDY,	{DLY_PLAIN,	500.0,	0.4,	1.0,	0,	0,	0,	0,	0.25,	0.01,	15,}, PFNZERO }	// weird 3
+#define PRC_MDY3	{PRC_MDY,	{DLY_PLAIN,	300.0f,	0.2f,	1.0f,	0,	0,	0,	0,	30,	0.01f,	15,}, PFNZERO }	// weird 1
+#define PRC_MDY4	{PRC_MDY,	{DLY_PLAIN,	400.0f,	0.3f,	1.0f,	0,	0,	0,	0,	0.25f,	0.01f,	15,}, PFNZERO }	// weird 2
+#define PRC_MDY5	{PRC_MDY,	{DLY_PLAIN,	500.0f,	0.4f,	1.0f,	0,	0,	0,	0,	0.25f,	0.01f,	15,}, PFNZERO }	// weird 3
 
 //////////
-// Chorus	
+// Chorus
 //////////
 
 // lfowav: lfotype is LFO_SIN, LFO_RND, LFO_TRI etc (LFO_RND for chorus, LFO_SIN for flange)
@@ -4005,7 +4005,7 @@ _inline void * NULL_VParams( void *p ) { return (void *)(&nuls[0]); }
 // mix: mix is mix of chorus and clean signal
 
 //		prctype	lfowav		rate	depth	mix
-#define	PRC_CRS1	{PRC_CRS,	{ LFO_SIN,	10,	1.0,	0.5, },	PFNZERO }
+#define	PRC_CRS1	{PRC_CRS,	{ LFO_SIN,	10,	1.0f,	0.5f, },	PFNZERO }
 
 /////////////////////
 // Envelope follower
@@ -4021,14 +4021,14 @@ _inline void * NULL_VParams( void *p ) { return (void *)(&nuls[0]); }
 // count - number of elements in the array
 // returns false if failed to init one or more processors
 
-qboolean PRC_InitAll( prc_t *prcs, int count ) 
-{ 
+qboolean PRC_InitAll( prc_t *prcs, int count )
+{
 	int		i;
 	prc_Param_t	pfnParam;		// allocation function - takes ptr to prc, returns ptr to specialized data struct for proc type
 	prc_GetNext_t	pfnGetNext;	// get next function
 	prc_GetNextN_t	pfnGetNextN;	// get next function, batch version
-	prc_Free_t	pfnFree;	
-	prc_Mod_t		pfnMod;	
+	prc_Free_t	pfnFree;
+	prc_Mod_t		pfnMod;
 	qboolean		fok = true;
 
 	// set up pointers to XXX_Free, XXX_GetNext and XXX_Params functions
@@ -4196,64 +4196,64 @@ void PRC_CheckParams( prc_t *pprc, prm_rng_t *prng )
 
 // x(n)-P(0)-->P(1)-->P(2)-->(+)-P(5)->y(n)
 //        |	        ^
-//	|                 | 
+//	|                 |
 //	-->P(3)-->P(4)---->
 
 
 #define PSET_PARALLEL2	5
-	
+
 // x(n)--->P(0)-->(+)-->y(n)
 //      	          ^
-//		| 
+//		|
 // x(n)--->P(1)-----
 
 #define PSET_PARALLEL4	6
 
 // x(n)--->P(0)-->P(1)-->(+)-->y(n)
 //      		       ^
-//		       | 
+//		       |
 // x(n)--->P(2)-->P(3)-----
 
 #define PSET_PARALLEL5	7
 
 // x(n)--->P(0)-->P(1)-->(+)-->P(4)-->y(n)
 //      		       ^
-//		       | 
+//		       |
 // x(n)--->P(2)-->P(3)-----
 
 #define PSET_FEEDBACK	8
- 
+
 // x(n)-P(0)--(+)-->P(1)-->P(2)-->P(5)->y(n)
 //             ^		  |
-//             |                v 
+//             |                v
 //	     -----P(4)<--P(3)--
 
 #define PSET_FEEDBACK3	9
- 
+
 // x(n)---(+)-->P(0)--------->y(n)
 //         ^                |
-//         |                v 
+//         |                v
 //	 -----P(2)<--P(1)--
 
 #define PSET_FEEDBACK4	10
 
 // x(n)---(+)-->P(0)-------->P(3)--->y(n)
 //         ^              |
-//         |              v 
+//         |              v
 //	 ---P(2)<--P(1)--
 
 #define PSET_MOD		11
 
 //
 // x(n)------>P(1)--P(2)--P(3)--->y(n)
-//                    ^     
+//                    ^
 // x(n)------>P(0)....:
 
 #define PSET_MOD2		12
 
 //
 // x(n)-------P(1)-->y(n)
-//              ^     
+//              ^
 // x(n)-->P(0)..:
 
 
@@ -4261,7 +4261,7 @@ void PRC_CheckParams( prc_t *pprc, prm_rng_t *prng )
 
 //
 // x(n)-------P(1)-->P(2)-->y(n)
-//              ^     
+//              ^
 // x(n)-->P(0)..:
 
 
@@ -4287,84 +4287,84 @@ pset_t	psets[CPSETS];
 
 #define WZERO	{0,0,0,0,0,0,0,0,0}, 0
 
-pset_t psettemplates[] = 
+pset_t psettemplates[] =
 {
 // presets 0-29 map to legacy room_type 0-29
 
 // type		#	proc	 P0	P1	P2	P3	P4    P5	GAIN
-{PSET_SIMPLE,	1, { PRC_NULL1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // OFF	0
-{PSET_SIMPLE,	1, { PRC_RVA18,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.4, WZERO }, // GENERIC	1	// general, low reflective, diffuse room
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA3,	PRC0,	PRC0,	PRC0,	PRC0	},1.4, WZERO }, // METALIC_S	2	// highly reflective, parallel surfaces 
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA4,	PRC0,	PRC0,	PRC0,	PRC0	},1.4, WZERO }, // METALIC_M	3
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA5,	PRC0,	PRC0,	PRC0,	PRC0	},1.4, WZERO }, // METALIC_L	4
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA6,	PRC0,	PRC0,	PRC0,	PRC0	},2.0, WZERO }, // TUNNEL_S	5	// resonant reflective, long surfaces
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA7,	PRC0,	PRC0,	PRC0,	PRC0	},1.8, WZERO }, // TUNNEL_M	6
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA8,	PRC0,	PRC0,	PRC0,	PRC0	},1.7, WZERO }, // TUNNEL_L	7
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA12,PRC0,	PRC0,	PRC0,	PRC0	},1.7, WZERO }, // CHAMBER_S	8	// diffuse, moderately reflective surfaces
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA13,PRC0,	PRC0,	PRC0,	PRC0	},1.7, WZERO }, // CHAMBER_M	9
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA14,PRC0,	PRC0,	PRC0,	PRC0	},1.9, WZERO }, // CHAMBER_L	10
-{PSET_SIMPLE,	1, { PRC_RVA15,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.5, WZERO }, // BRITE_S	11	// diffuse, highly reflective
-{PSET_SIMPLE,	1, { PRC_RVA16,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.6, WZERO }, // BRITE_M	12
-{PSET_SIMPLE,	1, { PRC_RVA17,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.7, WZERO }, // BRITE_L	13
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA22,PRC0,	PRC0,	PRC0,	PRC0	},1.8, WZERO }, // WATER1	14	// underwater fx
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA23,PRC0,	PRC0,	PRC0,	PRC0	},1.8, WZERO }, // WATER2	15
-{PSET_LINEAR,	3, { PRC_DFR1,	PRC_RVA24,PRC_MDY5,	PRC0,	PRC0,	PRC0	},1.8, WZERO }, // WATER3	16
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA19,PRC0,	PRC0,	PRC0,	PRC0	},1.7, WZERO }, // CONCRTE_S	17	// bare, reflective, parallel surfaces
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA20,PRC0,	PRC0,	PRC0,	PRC0	},1.8, WZERO }, // CONCRTE_M	18
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA21,PRC0,	PRC0,	PRC0,	PRC0	},1.9, WZERO }, // CONCRTE_L	19
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_DLY3,	PRC0,	PRC0,	PRC0,	PRC0	},1.7, WZERO }, // OUTSIDE1	20	// echoing, moderately reflective
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_DLY4,	PRC0,	PRC0,	PRC0,	PRC0	},1.7, WZERO }, // OUTSIDE2	21	// echoing, dull
-{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1,	PRC_DLY5,	PRC0,	PRC0,	PRC0	},1.6, WZERO }, // OUTSIDE3	22	// echoing, very dull
-{PSET_LINEAR,	2, { PRC_DLY10,	PRC_RVA10,PRC0,	PRC0,	PRC0,	PRC0	},2.8, WZERO }, // CAVERN_S	23	// large, echoing area
-{PSET_LINEAR,	2, { PRC_DLY11,	PRC_RVA10,PRC0,	PRC0,	PRC0,	PRC0	},2.6, WZERO }, // CAVERN_M	24
-{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DLY12,PRC_RVA11,PRC0,	PRC0,	PRC0	},2.6, WZERO }, // CAVERN_L	25
-{PSET_LINEAR,	2, { PRC_DLY7,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},2.0, WZERO }, // WEIRDO1	26
-{PSET_LINEAR,	2, { PRC_DLY8,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},1.9, WZERO }, // WEIRDO2	27
-{PSET_LINEAR,	2, { PRC_DLY9,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},1.8, WZERO }, // WEIRDO3	28
-{PSET_LINEAR,	2, { PRC_DLY9,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},1.8, WZERO }, // WEIRDO4	29
+{PSET_SIMPLE,	1, { PRC_NULL1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // OFF	0
+{PSET_SIMPLE,	1, { PRC_RVA18,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.4f, WZERO }, // GENERIC	1	// general, low reflective, diffuse room
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA3,	PRC0,	PRC0,	PRC0,	PRC0	},1.4f, WZERO }, // METALIC_S	2	// highly reflective, parallel surfaces
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA4,	PRC0,	PRC0,	PRC0,	PRC0	},1.4f, WZERO }, // METALIC_M	3
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA5,	PRC0,	PRC0,	PRC0,	PRC0	},1.4f, WZERO }, // METALIC_L	4
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA6,	PRC0,	PRC0,	PRC0,	PRC0	},2.0f, WZERO }, // TUNNEL_S	5	// resonant reflective, long surfaces
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA7,	PRC0,	PRC0,	PRC0,	PRC0	},1.8f, WZERO }, // TUNNEL_M	6
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA8,	PRC0,	PRC0,	PRC0,	PRC0	},1.7f, WZERO }, // TUNNEL_L	7
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA12,PRC0,	PRC0,	PRC0,	PRC0	},1.7f, WZERO }, // CHAMBER_S	8	// diffuse, moderately reflective surfaces
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA13,PRC0,	PRC0,	PRC0,	PRC0	},1.7f, WZERO }, // CHAMBER_M	9
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA14,PRC0,	PRC0,	PRC0,	PRC0	},1.9f, WZERO }, // CHAMBER_L	10
+{PSET_SIMPLE,	1, { PRC_RVA15,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.5f, WZERO }, // BRITE_S	11	// diffuse, highly reflective
+{PSET_SIMPLE,	1, { PRC_RVA16,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.6f, WZERO }, // BRITE_M	12
+{PSET_SIMPLE,	1, { PRC_RVA17,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.7f, WZERO }, // BRITE_L	13
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA22,PRC0,	PRC0,	PRC0,	PRC0	},1.8f, WZERO }, // WATER1	14	// underwater fx
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA23,PRC0,	PRC0,	PRC0,	PRC0	},1.8f, WZERO }, // WATER2	15
+{PSET_LINEAR,	3, { PRC_DFR1,	PRC_RVA24,PRC_MDY5,	PRC0,	PRC0,	PRC0	},1.8f, WZERO }, // WATER3	16
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA19,PRC0,	PRC0,	PRC0,	PRC0	},1.7f, WZERO }, // CONCRTE_S	17	// bare, reflective, parallel surfaces
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA20,PRC0,	PRC0,	PRC0,	PRC0	},1.8f, WZERO }, // CONCRTE_M	18
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA21,PRC0,	PRC0,	PRC0,	PRC0	},1.9f, WZERO }, // CONCRTE_L	19
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_DLY3,	PRC0,	PRC0,	PRC0,	PRC0	},1.7f, WZERO }, // OUTSIDE1	20	// echoing, moderately reflective
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_DLY4,	PRC0,	PRC0,	PRC0,	PRC0	},1.7f, WZERO }, // OUTSIDE2	21	// echoing, dull
+{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1,	PRC_DLY5,	PRC0,	PRC0,	PRC0	},1.6f, WZERO }, // OUTSIDE3	22	// echoing, very dull
+{PSET_LINEAR,	2, { PRC_DLY10,	PRC_RVA10,PRC0,	PRC0,	PRC0,	PRC0	},2.8f, WZERO }, // CAVERN_S	23	// large, echoing area
+{PSET_LINEAR,	2, { PRC_DLY11,	PRC_RVA10,PRC0,	PRC0,	PRC0,	PRC0	},2.6f, WZERO }, // CAVERN_M	24
+{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DLY12,PRC_RVA11,PRC0,	PRC0,	PRC0	},2.6f, WZERO }, // CAVERN_L	25
+{PSET_LINEAR,	2, { PRC_DLY7,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},2.0f, WZERO }, // WEIRDO1	26
+{PSET_LINEAR,	2, { PRC_DLY8,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},1.9f, WZERO }, // WEIRDO2	27
+{PSET_LINEAR,	2, { PRC_DLY9,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},1.8f, WZERO }, // WEIRDO3	28
+{PSET_LINEAR,	2, { PRC_DLY9,	PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0	},1.8f, WZERO }, // WEIRDO4	29
 
 // presets 30-40 are new presets
-{PSET_SIMPLE,	1, { PRC_FLT2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 30 lowpass - facing away
-{PSET_LINEAR,	2, { PRC_FLT3,	PRC_DLY14,PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 31 lowpass - facing away+80ms delay
+{PSET_SIMPLE,	1, { PRC_FLT2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 30 lowpass - facing away
+{PSET_LINEAR,	2, { PRC_FLT3,	PRC_DLY14,PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 31 lowpass - facing away+80ms delay
 //{PSET_PARALLEL2,2, { PRC_AMP6,	PRC_LFO2,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 32 explosion ring 1
 //{PSET_PARALLEL2,2, { PRC_AMP7,	PRC_LFO3,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 33 explosion ring 2
 //{PSET_PARALLEL2,2, { PRC_AMP8,	PRC_LFO4,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 34 explosion ring 3
-{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1, PRC_FLT3, PRC0,	PRC0,	PRC0	},0.25, WZERO }, // 32 explosion ring 
-{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1, PRC_FLT3,	PRC0,	PRC0,	PRC0	},0.25, WZERO }, // 33 explosion ring 2
-{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1, PRC_FLT3,	PRC0,	PRC0,	PRC0	},0.25, WZERO }, // 34 explosion ring 3
-{PSET_PARALLEL2,2, { PRC_DFR1,	PRC_LFO2,	PRC0,	PRC0,	PRC0,	PRC0	},0.25, WZERO }, // 35 shock muffle 1
-{PSET_PARALLEL2,2, { PRC_DFR1,	PRC_LFO2,	PRC0,	PRC0,	PRC0,	PRC0	},0.25, WZERO }, // 36 shock muffle 2
-{PSET_PARALLEL2,2, { PRC_DFR1,	PRC_LFO2,	PRC0,	PRC0,	PRC0,	PRC0	},0.25, WZERO }, // 37 shock muffle 3
+{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1, PRC_FLT3, PRC0,	PRC0,	PRC0	},0.25f, WZERO }, // 32 explosion ring
+{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1, PRC_FLT3,	PRC0,	PRC0,	PRC0	},0.25f, WZERO }, // 33 explosion ring 2
+{PSET_LINEAR,	3, { PRC_DFR1,	PRC_DFR1, PRC_FLT3,	PRC0,	PRC0,	PRC0	},0.25f, WZERO }, // 34 explosion ring 3
+{PSET_PARALLEL2,2, { PRC_DFR1,	PRC_LFO2,	PRC0,	PRC0,	PRC0,	PRC0	},0.25f, WZERO }, // 35 shock muffle 1
+{PSET_PARALLEL2,2, { PRC_DFR1,	PRC_LFO2,	PRC0,	PRC0,	PRC0,	PRC0	},0.25f, WZERO }, // 36 shock muffle 2
+{PSET_PARALLEL2,2, { PRC_DFR1,	PRC_LFO2,	PRC0,	PRC0,	PRC0,	PRC0	},0.25f, WZERO }, // 37 shock muffle 3
 //{PSET_LINEAR,	3, { PRC_DFR1,	PRC_LFO4, PRC_FLT3,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 35 shock muffle 1
 //{PSET_LINEAR,	3, { PRC_DFR1,	PRC_LFO4, PRC_FLT3,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 36 shock muffle 2
 //{PSET_LINEAR,	3, { PRC_DFR1,	PRC_LFO4, PRC_FLT3,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 37 shock muffle 3
-{PSET_FEEDBACK3,3, { PRC_DLY13,	PRC_PTC4,	PRC_FLT2,	PRC0,	PRC0,	PRC0	},0.25, WZERO }, // 38 fade pitchdown 1
-{PSET_LINEAR,	3, { PRC_AMP3,	PRC_FLT5,	PRC_FLT6,	PRC0,	PRC0,	PRC0	},2.0, WZERO }, // 39 distorted speaker 1
+{PSET_FEEDBACK3,3, { PRC_DLY13,	PRC_PTC4,	PRC_FLT2,	PRC0,	PRC0,	PRC0	},0.25f, WZERO }, // 38 fade pitchdown 1
+{PSET_LINEAR,	3, { PRC_AMP3,	PRC_FLT5,	PRC_FLT6,	PRC0,	PRC0,	PRC0	},2.0f, WZERO }, // 39 distorted speaker 1
 
 // fade out fade in
 
 // presets 40+ are test presets
-{PSET_SIMPLE,	1, { PRC_NULL1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 39 null
-{PSET_SIMPLE,	1, { PRC_DLY1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 40 delay
-{PSET_SIMPLE,	1, { PRC_RVA1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 41 parallel reverb
-{PSET_SIMPLE,	1, { PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 42 series diffusor
-{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA1,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 43 diff & reverb
-{PSET_SIMPLE,	1, { PRC_DLY2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 44 lowpass delay
-{PSET_SIMPLE,	1, { PRC_MDY2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 45 modulating delay
-{PSET_SIMPLE,	1, { PRC_PTC1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 46 pitch shift
-{PSET_SIMPLE,	1, { PRC_PTC2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 47 pitch shift
-{PSET_SIMPLE,	1, { PRC_FLT1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 48 filter
-{PSET_SIMPLE,	1, { PRC_CRS1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 49 chorus
-{PSET_SIMPLE,	1, { PRC_ENV1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 50 
-{PSET_SIMPLE,	1, { PRC_LFO1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 51 lfo
-{PSET_SIMPLE,	1, { PRC_EFO1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 52
-{PSET_SIMPLE,	1, { PRC_MDY1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 53 modulating delay
-{PSET_SIMPLE,	1, { PRC_FLT2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 54 lowpass - facing away
-{PSET_PARALLEL2,	2, { PRC_PTC2,	PRC_PTC1,	PRC0,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 55 ptc1/ptc2
-{PSET_FEEDBACK,	6, { PRC_DLY1,	PRC0,	PRC0,	PRC_PTC1,	PRC_FLT1,	PRC0	},1.0, WZERO }, // 56 dly/ptc1
-{PSET_MOD,	4, { PRC_EFO1,	PRC0,	PRC_PTC1,	PRC0,	PRC0,	PRC0	},1.0, WZERO }, // 57 efo mod ptc
-{PSET_LINEAR,	3, { PRC_DLY1,	PRC_RVA1,	PRC_CRS1,	PRC0,	PRC0,	PRC0	},1.0, WZERO }  // 58 dly/rvb/crs
-};				
+{PSET_SIMPLE,	1, { PRC_NULL1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 39 null
+{PSET_SIMPLE,	1, { PRC_DLY1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 40 delay
+{PSET_SIMPLE,	1, { PRC_RVA1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 41 parallel reverb
+{PSET_SIMPLE,	1, { PRC_DFR1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 42 series diffusor
+{PSET_LINEAR,	2, { PRC_DFR1,	PRC_RVA1,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 43 diff & reverb
+{PSET_SIMPLE,	1, { PRC_DLY2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 44 lowpass delay
+{PSET_SIMPLE,	1, { PRC_MDY2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 45 modulating delay
+{PSET_SIMPLE,	1, { PRC_PTC1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 46 pitch shift
+{PSET_SIMPLE,	1, { PRC_PTC2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 47 pitch shift
+{PSET_SIMPLE,	1, { PRC_FLT1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 48 filter
+{PSET_SIMPLE,	1, { PRC_CRS1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 49 chorus
+{PSET_SIMPLE,	1, { PRC_ENV1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 50
+{PSET_SIMPLE,	1, { PRC_LFO1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 51 lfo
+{PSET_SIMPLE,	1, { PRC_EFO1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 52
+{PSET_SIMPLE,	1, { PRC_MDY1,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 53 modulating delay
+{PSET_SIMPLE,	1, { PRC_FLT2,	PRC0,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 54 lowpass - facing away
+{PSET_PARALLEL2,	2, { PRC_PTC2,	PRC_PTC1,	PRC0,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 55 ptc1/ptc2
+{PSET_FEEDBACK,	6, { PRC_DLY1,	PRC0,	PRC0,	PRC_PTC1,	PRC_FLT1,	PRC0	},1.0f, WZERO }, // 56 dly/ptc1
+{PSET_MOD,	4, { PRC_EFO1,	PRC0,	PRC_PTC1,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }, // 57 efo mod ptc
+{PSET_LINEAR,	3, { PRC_DLY1,	PRC_RVA1,	PRC_CRS1,	PRC0,	PRC0,	PRC0	},1.0f, WZERO }  // 58 dly/rvb/crs
+};
 
 
 // number of presets currently defined above
@@ -4372,10 +4372,10 @@ pset_t psettemplates[] =
 #define CPSETTEMPLATES	60	//(sizeof( psets ) / sizeof( pset_t ))
 
 // init a preset - just clear state array
-void PSET_Init( pset_t *ppset ) 
-{ 
+void PSET_Init( pset_t *ppset )
+{
 	// clear state array
-	if( ppset ) Q_memset( ppset->w, 0, sizeof( int ) * ( CPSET_STATES )); 
+	if( ppset ) Q_memset( ppset->w, 0, sizeof( int ) * ( CPSET_STATES ));
 }
 
 // clear runtime slots
@@ -4389,8 +4389,8 @@ void PSET_InitAll( void )
 
 // free the preset - free all processors
 
-void PSET_Free( pset_t *ppset ) 
-{ 
+void PSET_Free( pset_t *ppset )
+{
 	if( ppset )
 	{
 		// free processors
@@ -4424,9 +4424,9 @@ pset_t *PSET_Alloc( int ipsettemplate )
 
 	if( i == CPSETS )
 		return NULL;
-	
+
 	ppset = &psets[i];
-	
+
 	// copy template into preset
 	*ppset = psettemplates[ipsettemplate];
 
@@ -4434,7 +4434,7 @@ pset_t *PSET_Alloc( int ipsettemplate )
 
 	// clear state array
 	PSET_Init( ppset );
-	
+
 	// init all processors, set up processor function pointers
 	fok = PRC_InitAll( ppset->prcs, ppset->cprcs );
 
@@ -4451,7 +4451,7 @@ pset_t *PSET_Alloc( int ipsettemplate )
 // batch version of PSET_GetNext for linear array of processors.  For performance.
 
 // ppset - preset array
-// pbuffer - input sample data 
+// pbuffer - input sample data
 // SampleCount - size of input buffer
 // OP:	OP_LEFT		- process left channel in place
 //	OP_RIGHT		- process right channel in place
@@ -4461,7 +4461,7 @@ _inline void PSET_GetNextN( pset_t *ppset, portable_samplepair_t *pbf, int Sampl
 {
 	prc_t	*pprc;
 	int	i, count = ppset->cprcs;
-	
+
 	switch( ppset->type )
 	{
 		default:
@@ -4474,7 +4474,7 @@ _inline void PSET_GetNextN( pset_t *ppset, portable_samplepair_t *pbf, int Sampl
 		case PSET_LINEAR:
 		{
 
-			//      w0     w1     w2 
+			//      w0     w1     w2
 			// x(n)--->P(0)-->P(1)-->...P(count-1)--->y(n)
 
 			//      w0     w1     w2     w3     w4     w5
@@ -4491,7 +4491,7 @@ _inline void PSET_GetNextN( pset_t *ppset, portable_samplepair_t *pbf, int Sampl
 				pprc++;
 			}
 			break;
-		}	
+		}
 	}
 }
 
@@ -4504,7 +4504,7 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 	int	*w = ppset->w;
 	prc_t	*pprc;
 	int	count = ppset->cprcs;
-	
+
 	// initialized 0'th element of state array
 
 	w[0] = x;
@@ -4519,14 +4519,14 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 		}
 	case PSET_LINEAR:
 		{
-			//      w0     w1     w2 
+			//      w0     w1     w2
 			// x(n)--->P(0)-->P(1)-->...P(count-1)--->y(n)
 
 			//      w0     w1     w2     w3     w4     w5
 			// x(n)--->P(0)-->P(1)-->P(2)-->P(3)-->P(4)-->y(n)
 
 			// call processors in reverse order, from count to 1
-			
+
 			// point to last processor
 
 			pprc = &ppset->prcs[count-1];
@@ -4550,33 +4550,33 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 				w[1] = pprc->pfnGetNext (pprc->pdata, w[0]);
 			}
 			return w[count];
-		}	
+		}
 
 	case PSET_PARALLEL6:
 		{
 			//    w0	w1		w2	   w3	w6      w7
 			// x(n)-P(0)-->P(1)-->P(2)-->(+)---P(5)--->y(n)
 			//          |				  ^
-			//		    |       w4     w5 | 
+			//		    |       w4     w5 |
 			//		    -->P(3)-->P(4)---->
-			
+
 			pprc = &ppset->prcs[0];
-			
+
 			// start with all adders
 
 			w[6] = w[3] + w[5];
-			
+
 			// top branch - evaluate in reverse order
 
-			w[7] = pprc[5].pfnGetNext( pprc[5].pdata, w[6] ); 
+			w[7] = pprc[5].pfnGetNext( pprc[5].pdata, w[6] );
 			w[3] = pprc[2].pfnGetNext( pprc[2].pdata, w[2] );
 			w[2] = pprc[1].pfnGetNext( pprc[1].pdata, w[1] );
-			
+
 			// bottom branch - evaluate in reverse order
 
 			w[5] = pprc[4].pfnGetNext( pprc[4].pdata, w[4] );
 			w[4] = pprc[3].pfnGetNext( pprc[3].pdata, w[1] );
-			
+
 			w[1] = pprc[0].pfnGetNext( pprc[0].pdata, w[0] );
 
 			return w[7];
@@ -4585,7 +4585,7 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 		{	//     w0      w1    w3
 			// x(n)--->P(0)-->(+)-->y(n)
 			//      	       ^
-			//	   w0      w2  | 
+			//	   w0      w2  |
 			// x(n)--->P(1)-----
 
 			pprc = &ppset->prcs[0];
@@ -4604,7 +4604,7 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 			//     w0      w1     w2    w5
 			// x(n)--->P(0)-->P(1)-->(+)-->y(n)
 			//      				  ^
-			//	   w0      w3     w4  | 
+			//	   w0      w3     w4  |
 			// x(n)--->P(2)-->P(3)-----
 
 			pprc = &ppset->prcs[0];
@@ -4625,7 +4625,7 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 			//     w0      w1     w2    w5     w6
 			// x(n)--->P(0)-->P(1)-->(+)-->P(4)-->y(n)
 			//      				  ^
-			//	   w0      w3     w4  | 
+			//	   w0      w3     w4  |
 			// x(n)--->P(2)-->P(3)-----
 
 			pprc = &ppset->prcs[0];
@@ -4648,13 +4648,13 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 			//    w0    w1   w2     w3      w4    w7
 			// x(n)-P(0)--(+)-->P(1)-->P(2)-->P(5)->y(n)
 			//             ^		  |
-			//             |  w6     w5     v 
+			//             |  w6     w5     v
 			//	     -----P(4)<--P(3)--
 
 			pprc = &ppset->prcs[0];
-			
+
 			// start with adders
-			
+
 			w[2] = w[1] + w[6];
 
 			// evaluate in reverse order
@@ -4673,13 +4673,13 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 			//     w0     w1     w2
 			// x(n)---(+)-->P(0)--------->y(n)
 			//         ^                |
-			//         |  w4     w3     v 
+			//         |  w4     w3     v
 			//		   -----P(2)<--P(1)--
-			
+
 			pprc = &ppset->prcs[0];
-			
+
 			// start with adders
-			
+
 			w[1] = w[0] + w[4];
 
 			// evaluate in reverse order
@@ -4687,7 +4687,7 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 			w[4] = pprc[2].pfnGetNext( pprc[2].pdata, w[3] );
 			w[3] = pprc[1].pfnGetNext( pprc[1].pdata, w[2] );
 			w[2] = pprc[0].pfnGetNext( pprc[0].pdata, w[1] );
-			
+
 			return w[2];
 		}
 	case PSET_FEEDBACK4:
@@ -4695,13 +4695,13 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 			//     w0    w1      w2           w5
 			// x(n)---(+)-->P(0)-------->P(3)--->y(n)
 			//         ^              |
-			//         | w4     w3    v 
+			//         | w4     w3    v
 			//		   ---P(2)<--P(1)--
 
 			pprc = &ppset->prcs[0];
-			
+
 			// start with adders
-			
+
 			w[1] = w[0] + w[4];
 
 			// evaluate in reverse order
@@ -4710,14 +4710,14 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 			w[4] = pprc[2].pfnGetNext( pprc[2].pdata, w[3] );
 			w[3] = pprc[1].pfnGetNext( pprc[1].pdata, w[2] );
 			w[2] = pprc[0].pfnGetNext( pprc[0].pdata, w[1] );
-			
+
 			return w[2];
 		}
 	case PSET_MOD:
 		{
 			//		w0		  w1    w3     w4
 			// x(n)------>P(1)--P(2)--P(3)--->y(n)
-			//      w0        w2  ^     
+			//      w0        w2  ^
 			// x(n)------>P(0)....:
 
 			pprc = &ppset->prcs[0];
@@ -4742,7 +4742,7 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 		{
 			//      w0           w2
 			// x(n)---------P(1)-->y(n)
-			//      w0    w1  ^     
+			//      w0    w1  ^
 			// x(n)-->P(0)....:
 
 			pprc = &ppset->prcs[0];
@@ -4764,7 +4764,7 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 		{
 			//      w0           w2      w3
 			// x(n)----------P(1)-->P(2)-->y(n)
-			//      w0    w1   ^     
+			//      w0    w1   ^
 			// x(n)-->P(0).....:
 
 			pprc = &ppset->prcs[0];
@@ -4795,11 +4795,11 @@ _inline int PSET_GetNext( pset_t *ppset, int x )
 
 //     Whenever the preset # changes on any of these processors, the old processor is faded out, new is faded in.
 //     dsp_chan is optionally set when a sound is played - a preset is sent with the start_static/dynamic sound.
-//  
+//
 // sound1---->dsp_chan-->  -------------(+)---->dsp_water--->dsp_player--->out
 // sound2---->dsp_chan-->  |             |
 // sound3--------------->  ----dsp_room---
-//                         |             |		 
+//                         |             |
 //                         --dsp_indirect-
 
 //  dsp_room	- set this cvar to a preset # to change the room dsp.  room fx are more prevalent farther from player.
@@ -4844,37 +4844,37 @@ typedef struct
 
 dsp_t	dsps[CDSPS];
 
-void DSP_Init( int idsp ) 
-{ 
+void DSP_Init( int idsp )
+{
 	dsp_t	*pdsp;
 
 	if( idsp < 0 || idsp > CDSPS )
 		return;
-	
+
 	pdsp = &dsps[idsp];
-	Q_memset( pdsp, 0, sizeof( dsp_t )); 
+	Q_memset( pdsp, 0, sizeof( dsp_t ));
 }
 
-void DSP_Free( int idsp ) 
+void DSP_Free( int idsp )
 {
 	dsp_t	*pdsp;
 	int	i;
 
 	if( idsp < 0 || idsp > CDSPS )
 		return;
-	
+
 	pdsp = &dsps[idsp];
 
 	for( i = 0; i < pdsp->cchan; i++ )
 	{
 		if( pdsp->ppset[i] )
 			PSET_Free( pdsp->ppset[i] );
-		
+
 		if( pdsp->ppsetprev[i] )
 			PSET_Free( pdsp->ppsetprev[i] );
 	}
 
-	Q_memset( pdsp, 0, sizeof( dsp_t )); 
+	Q_memset( pdsp, 0, sizeof( dsp_t ));
 }
 
 // Init all dsp processors - called once, during engine startup
@@ -4888,7 +4888,7 @@ void DSP_InitAll( void )
 	RVA_InitAll();
 	LFOWAV_InitAll();
 	LFO_InitAll();
-	
+
 	CRS_InitAll();
 	PTC_InitAll();
 	ENV_InitAll();
@@ -4898,7 +4898,7 @@ void DSP_InitAll( void )
 
 	PSET_InitAll();
 
-	for( idsp = 0; idsp < CDSPS; idsp++ ) 
+	for( idsp = 0; idsp < CDSPS; idsp++ )
 		DSP_Init( idsp );
 }
 
@@ -4909,7 +4909,7 @@ void DSP_FreeAll( void )
 	int	idsp;
 
 	// order is important, don't rearange.
-	for( idsp = 0; idsp < CDSPS; idsp++ ) 
+	for( idsp = 0; idsp < CDSPS; idsp++ )
 		DSP_Free( idsp );
 
 	AMP_FreeAll();
@@ -4918,7 +4918,7 @@ void DSP_FreeAll( void )
 	ENV_FreeAll();
 	PTC_FreeAll();
 	CRS_FreeAll();
-	
+
 	LFO_FreeAll();
 	LFOWAV_FreeAll();
 	RVA_FreeAll();
@@ -4928,7 +4928,7 @@ void DSP_FreeAll( void )
 
 
 // allocate a new dsp processor chain, kill the old processor.  Called by DSP_CheckNewPreset()
-// ipset is new preset 
+// ipset is new preset
 // xfade is crossfade time when switching between presets (milliseconds)
 // cchan is how many simultaneous preset channels to allocate (1-4)
 // return index to new dsp
@@ -4945,7 +4945,7 @@ int DSP_Alloc( int ipset, float xfade, int cchan )
 			break;
 	}
 
-	if( idsp == CDSPS ) 
+	if( idsp == CDSPS )
 		return -1;
 
 	pdsp = &dsps[idsp];
@@ -4958,7 +4958,7 @@ int DSP_Alloc( int ipset, float xfade, int cchan )
 	// allocate a preset processor for each channel
 	pdsp->ipset = ipset;
 	pdsp->ipsetprev = 0;
-	
+
 	for( i = 0; i < pdsp->cchan; i++ )
 	{
 		pdsp->ppset[i] = PSET_Alloc( ipset );
@@ -4966,8 +4966,8 @@ int DSP_Alloc( int ipset, float xfade, int cchan )
 	}
 
 	// set up crossfade time in seconds
-	pdsp->xfade = xfade / 1000.0f;				
-	
+	pdsp->xfade = xfade / 1000.0f;
+
 	RMP_SetEnd( &pdsp->xramp );
 
 	return idsp;
@@ -4983,10 +4983,10 @@ float DSP_GetGain( int idsp )
 	float	gain;
 	dsp_t	*pdsp;
 	int	r;
-	
+
 	if( idsp < 0 || idsp > CDSPS )
 		return 1.0f;
-	
+
 	pdsp = &dsps[idsp];
 
 	// get current preset's gain
@@ -5000,7 +5000,7 @@ float DSP_GetGain( int idsp )
 		// return current preset's gain
 		return gain_target;
 	}
-	
+
 	// get previous preset gain
 
 	if( pdsp->ppsetprev[0] )
@@ -5016,7 +5016,7 @@ float DSP_GetGain( int idsp )
 	}
 
 	// get crossfade ramp value (updated elsewhere, when actually crossfading preset data)
-	r = RMP_GetCurrent( &pdsp->xramp );	
+	r = RMP_GetCurrent( &pdsp->xramp );
 
 	// crossfade from previous to current preset gain
 	if( gain_target > gain_prev )
@@ -5027,8 +5027,8 @@ float DSP_GetGain( int idsp )
 
 		rf = rf / pmax;		// rf 0->1.0
 
-		if( rf < 0.9 ) rf = 0.0;
-		else rf = (rf - 0.9) / (1.0 - 0.9);	// 0->1.0 after rf > 0.9
+		if( rf < 0.9 ) rf = 0.0f;
+		else rf = (rf - 0.9f) / (1.0f - 0.9f);	// 0->1.0 after rf > 0.9
 
 		// crossfade gain from prev to target over rf
 		gain = gain_prev + (gain_target - gain_prev) * rf;
@@ -5043,11 +5043,11 @@ float DSP_GetGain( int idsp )
 
 		rf = rf / pmax;		// rf 0.0->1.0
 
-		if( rf < 0.1 ) rf = (rf - 0.1) / (0.0 - 0.1);	// 1.0->0.0 if rf < 0.1
-		else rf = 0.0;	
+		if( rf < 0.1f ) rf = (rf - 0.1f) / (0.0f - 0.1f);	// 1.0->0.0 if rf < 0.1
+		else rf = 0.0f;
 
 		// crossfade gain from prev to target over rf
-		gain = gain_prev + (gain_target - gain_prev) * (1.0 - rf);
+		gain = gain_prev + (gain_target - gain_prev) * (1.0f - rf);
 
 		return gain;
 	}
@@ -5118,17 +5118,17 @@ void DSP_SetPreset( int idsp, int ipsetnew )
 	{
 		// current becomes previous
 		pdsp->ppsetprev[i] = pdsp->ppset[i];
-		
+
 		// new becomes current
 		pdsp->ppset[i] = ppsetnew[i];
 	}
-	
+
 	pdsp->ipsetprev = pdsp->ipset;
 	pdsp->ipset = ipsetnew;
 
 	// clear ramp
 	RMP_SetEnd( &pdsp->xramp );
-	
+
 	// make sure previous dsp preset has data
 	ASSERT( pdsp->ppsetprev[0] );
 
@@ -5147,9 +5147,9 @@ _inline qboolean FBatchPreset( pset_t *ppset )
 {
 	switch( ppset->type )
 	{
-	case PSET_LINEAR: 
+	case PSET_LINEAR:
 		return true;
-	case PSET_SIMPLE: 
+	case PSET_SIMPLE:
 		return true;
 	default:
 		return false;
@@ -5164,7 +5164,7 @@ _inline void DSP_ProcessStereoToMono( dsp_t *pdsp, portable_samplepair_t *pbfron
 	int count = sampleCount;
 	int	av, x;
 
-	if( !bcrossfading ) 
+	if( !bcrossfading )
 	{
 		if( FBatchPreset( pdsp->ppset[0] ))
 		{
@@ -5176,7 +5176,7 @@ _inline void DSP_ProcessStereoToMono( dsp_t *pdsp, portable_samplepair_t *pbfron
 				pbf->left = (pbf->left + pbf->right) >> 1;
 				pbf++;
 			}
-			
+
 			// process left (mono), duplicate output into right
 			PSET_GetNextN( pdsp->ppset[0], pbfront, sampleCount, OP_LEFT_DUPLICATE);
 		}
@@ -5195,35 +5195,35 @@ _inline void DSP_ProcessStereoToMono( dsp_t *pdsp, portable_samplepair_t *pbfron
 		return;
 	}
 
-	// crossfading to current preset from previous preset	
+	// crossfading to current preset from previous preset
 	if( bcrossfading )
 	{
 		int	r = -1;
 		int	fl, flp;
 		int	xf_fl;
-		
+
 		while( count-- )
 		{
 			av = ( ( pbf->left + pbf->right ) >> 1 );
 
 			// get current preset values
 			fl = PSET_GetNext( pdsp->ppset[0], av );
-			
+
 			// get previous preset values
 			flp = PSET_GetNext( pdsp->ppsetprev[0], av );
-			
+
 			fl = CLIP_DSP(fl);
 			flp = CLIP_DSP(flp);
 
 			// get current ramp value
-			r = RMP_GetNext( &pdsp->xramp );	
+			r = RMP_GetNext( &pdsp->xramp );
 
 			// crossfade from previous to current preset
 			xf_fl = XFADE( fl, flp, r );	// crossfade front left previous to front left
-			
+
 			pbf->left =  xf_fl;		// crossfaded front left, duplicate in right channel
 			pbf->right = xf_fl;
-		
+
 			pbf++;
 
 		}
@@ -5239,7 +5239,7 @@ _inline void DSP_ProcessStereoToStereo( dsp_t *pdsp, portable_samplepair_t *pbfr
 	int count = sampleCount;
 	int fl, fr;
 
-	if( !bcrossfading ) 
+	if( !bcrossfading )
 	{
 
 		if( FBatchPreset( pdsp->ppset[0] ) && FBatchPreset( pdsp->ppset[1] ))
@@ -5267,7 +5267,7 @@ _inline void DSP_ProcessStereoToStereo( dsp_t *pdsp, portable_samplepair_t *pbfr
 		return;
 	}
 
-	// crossfading to current preset from previous preset	
+	// crossfading to current preset from previous preset
 	if( bcrossfading )
 	{
 		int	r, flp, frp;
@@ -5278,13 +5278,13 @@ _inline void DSP_ProcessStereoToStereo( dsp_t *pdsp, portable_samplepair_t *pbfr
 			// get current preset values
 			fl = PSET_GetNext( pdsp->ppset[0], pbf->left );
 			fr = PSET_GetNext( pdsp->ppset[1], pbf->right );
-	
+
 			// get previous preset values
 			flp = PSET_GetNext( pdsp->ppsetprev[0], pbf->left );
 			frp = PSET_GetNext( pdsp->ppsetprev[1], pbf->right );
-		
+
 			// get current ramp value
-			r = RMP_GetNext( &pdsp->xramp );	
+			r = RMP_GetNext( &pdsp->xramp );
 
 			fl = CLIP_DSP( fl );
 			fr = CLIP_DSP( fr );
@@ -5294,10 +5294,10 @@ _inline void DSP_ProcessStereoToStereo( dsp_t *pdsp, portable_samplepair_t *pbfr
 			// crossfade from previous to current preset
 			xf_fl = XFADE( fl, flp, r );	// crossfade front left previous to front left
 			xf_fr = XFADE( fr, frp, r );
-			
+
 			pbf->left =  xf_fl;		// crossfaded front left
 			pbf->right = xf_fr;
-		
+
 			pbf++;
 		}
 	}
@@ -5322,7 +5322,7 @@ void DSP_ClearState( void )
 // pfront - front stereo buffer to process
 // prear - rear stereo buffer to process (may be NULL)
 // sampleCount - number of samples in pbuf to process
-// This routine also maps the # processing channels in the pdsp to the number of channels 
+// This routine also maps the # processing channels in the pdsp to the number of channels
 // supplied.  ie: if the pdsp has 4 channels and pbfront and pbrear are both non-null, the channels
 // map 1:1 through the processors.
 
@@ -5351,17 +5351,17 @@ void DSP_Process( int idsp, portable_samplepair_t *pbfront, int sampleCount )
 
 	if( sampleCount < 0 )
 		return;
-	
+
 	bcrossfading = !RMP_HitEnd( &pdsp->xramp );
 
 	// if not crossfading, and previous channel is not null, free previous
 	if( !bcrossfading ) DSP_FreePrevPreset( pdsp );
 
 	cprocs = pdsp->cchan;
-	
-	// NOTE: when mixing between different channel sizes, 
+
+	// NOTE: when mixing between different channel sizes,
 	// always AVERAGE down to fewer channels and DUPLICATE up more channels.
-	// The following routines always process cchan_in channels. 
+	// The following routines always process cchan_in channels.
 	// ie: QuadToMono still updates 4 values in buffer
 
 	// DSP_Process stereo in to mono out (ie: left and right are averaged)
@@ -5381,12 +5381,12 @@ void DSP_Process( int idsp, portable_samplepair_t *pbfront, int sampleCount )
 
 // DSP helpers
 
-// free all dsp processors 
+// free all dsp processors
 void FreeDsps( void )
 {
 	DSP_Free( idsp_room );
 	idsp_room = 0;
-	
+
 	DSP_FreeAll();
 }
 
@@ -5395,7 +5395,7 @@ qboolean AllocDsps( void )
 {
 	DSP_InitAll();
 
-	idsp_room = -1.0;
+	idsp_room = -1;
 
 	// initialize DSP cvars
 	dsp_room = Cvar_Get( "dsp_room", "0", 0, "room dsp preset - sounds more distant from player (1ch)" );
@@ -5443,7 +5443,7 @@ void CheckNewDspPresets( void )
 	{
 		// force dsp_room = room_type
 		ipset_room_typeprev = iroomtype;
-		Cvar_SetFloat( "dsp_room", iroomtype );
+		Cvar_SetFloat( "dsp_room", (float)iroomtype );
 	}
 
 	if( iroom != ipset_room_prev )
@@ -5452,7 +5452,7 @@ void CheckNewDspPresets( void )
 		ipset_room_prev = iroom;
 
 		// force room_type = dsp_room
-		Cvar_SetFloat( "room_type", iroom );
+		Cvar_SetFloat( "room_type", (float)iroom );
 		ipset_room_typeprev = iroom;
 	}
 }

@@ -39,11 +39,11 @@ void SCR_RebuildGammaTable( void )
 
 	g = bound( 0.5f, vid_gamma->value, 2.3f );
 
-	// movie gamma	
+	// movie gamma
 	for( i = 0; i < 256; i++ )
 	{
 		if( g == 1 ) clgame.ds.gammaTable[i] = i;
-		else clgame.ds.gammaTable[i] = bound( 0, pow( i * ( 1.0f / 255.0f ), g ) * 255.0f, 255 );
+		else clgame.ds.gammaTable[i] = bound( 0, (byte)(powf( i * ( 1.0f / 255.0f ), g ) * 255.0f), 255 );
 	}
 }
 
@@ -97,7 +97,7 @@ void SCR_CheckStartupVids( void )
 	int	c = 0;
 	char	*afile, *pfile;
 	string	token;
-		
+
 	if( Sys_CheckParm( "-nointro" ) || host.developer >= 2 || cls.demonum != -1 )
 	{
 		// don't run movies where we in developer-mode
@@ -134,7 +134,7 @@ void SCR_CheckStartupVids( void )
 	}
 	else cls.movienum = -1;
 }
-		
+
 /*
 ==================
 SCR_RunCinematic
@@ -160,8 +160,8 @@ void SCR_RunCinematic( void )
 		return;
 	}
 
-	// advances cinematic time (ignores maxfps and host_framerate settings)	
-	cin_time += host.realframetime;
+	// advances cinematic time (ignores maxfps and host_framerate settings)
+	cin_time += (float)host.realframetime;
 
 	// stop the video after it finishes
 	if( cin_time > video_duration + 0.1f )
@@ -198,11 +198,11 @@ qboolean SCR_DrawCinematic( void )
 		redraw = true;
 	}
 
-	R_DrawStretchRaw( 0, 0, scr_width->integer, scr_height->integer, xres, yres, frame, redraw );
+	R_DrawStretchRaw( 0.f, 0.f, (float)scr_width->integer, (float)scr_height->integer, xres, yres, frame, redraw );
 
 	return true;
 }
-  
+
 /*
 ==================
 SCR_PlayCinematic
@@ -246,7 +246,7 @@ qboolean SCR_PlayCinematic( const char *arg )
 
 	cls.state = ca_cinematic;
 	cin_time = 0.0f;
-	
+
 	return true;
 }
 
@@ -266,7 +266,7 @@ wavdata_t *SCR_GetMovieInfo( void )
 		return &cin_audio;
 	return NULL;
 }
-	
+
 /*
 ==================
 SCR_StopCinematic

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -80,7 +80,7 @@ static void UI_PromptDialog( void )
 {
 	// toggle main menu between active\inactive
 	// show\hide quit dialog
-	uiInternetGames.joinGame.generic.flags ^= QMF_INACTIVE; 
+	uiInternetGames.joinGame.generic.flags ^= QMF_INACTIVE;
 	uiInternetGames.createGame.generic.flags ^= QMF_INACTIVE;
 	uiInternetGames.gameInfo.generic.flags ^= QMF_INACTIVE;
 	uiInternetGames.refresh.generic.flags ^= QMF_INACTIVE;
@@ -129,7 +129,7 @@ static void UI_InternetGames_GetGamesList( void )
 		// but this feature not detail tested and may be bugly
 		if( stricmp( gMenu.m_gameinfo.gamefolder, Info_ValueForKey( info, "gamedir" )))
 			continue;	// filter by game
-#endif 
+#endif
 		StringConcat( uiInternetGames.gameDescription[i], Info_ValueForKey( info, "host" ), GAME_LENGTH );
 		StringConcat( uiInternetGames.gameDescription[i], uiEmptyString, GAME_LENGTH );
 		StringConcat( uiInternetGames.gameDescription[i], Info_ValueForKey( info, "map" ), MAPNAME_LENGTH );
@@ -189,7 +189,7 @@ UI_Background_Ownerdraw
 */
 static void UI_Background_Ownerdraw( void *self )
 {
-	menuCommon_s	*item = (menuCommon_s *)self;
+//	menuCommon_s	*item = (menuCommon_s *)self;
 
 	if( !CVAR_GET_FLOAT( "cl_background" ))
 		UI_DrawBackground_Callback( self );
@@ -422,19 +422,19 @@ static void UI_InternetGames_Init( void )
 		uiInternetGames.createGame.generic.flags |= QMF_GRAYED;	// server.dll is missed - remote servers only
 
 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.background );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.banner );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.joinGame );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.createGame );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.gameInfo );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.refresh );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.done );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.hintMessage );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.gameList );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.msgBox );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.dlgMessage1 );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.dlgMessage2 );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.no );
- 	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.yes );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.banner );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.joinGame );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.createGame );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.gameInfo );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.refresh );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.done );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.hintMessage );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.gameList );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.msgBox );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.dlgMessage1 );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.dlgMessage2 );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.no );
+	UI_AddItem( &uiInternetGames.menu, (void *)&uiInternetGames.yes );
 
 	uiInternetGames.refreshTime = uiStatic.realTime + 500; // delay before update 0.5 sec
 }

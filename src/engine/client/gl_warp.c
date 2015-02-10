@@ -69,12 +69,12 @@ static qboolean CheckSkybox( const char *name )
 	int		i, j, num_checked_sides;
 	const char	*sidename;
 
-	// search for skybox images				
+	// search for skybox images
 	for( i = 0; i < 2; i++ )
-	{	
+	{
 		num_checked_sides = 0;
 		for( j = 0; j < 6; j++ )
-		{         
+		{
 			// build side name
 			sidename = va( "%s%s.%s", name, r_skyBoxSuffix[j], skybox_ext[i] );
 			if( FS_FileExists( sidename, false ))
@@ -86,7 +86,7 @@ static qboolean CheckSkybox( const char *name )
 			return true; // image exists
 
 		for( j = 0; j < 6; j++ )
-		{         
+		{
 			// build side name
 			sidename = va( "%s_%s.%s", name, r_skyBoxSuffix[j], skybox_ext[i] );
 			if( FS_FileExists( sidename, false ))
@@ -111,9 +111,9 @@ void DrawSkyPolygon( int nump, vec3_t vecs )
 	for( i = 0, vp = vecs; i < nump; i++, vp += 3 )
 		VectorAdd( vp, v, v );
 
-	av[0] = fabs( v[0] );
-	av[1] = fabs( v[1] );
-	av[2] = fabs( v[2] );
+	av[0] = fabsf( v[0] );
+	av[1] = fabsf( v[1] );
+	av[2] = fabsf( v[2] );
 
 	if( av[0] > av[1] && av[0] > av[2] )
 		axis = (v[0] < 0) ? 1 : 0;
@@ -160,7 +160,7 @@ void ClipSkyPolygon( int nump, vec3_t vecs, int stage )
 		Host_Error( "ClipSkyPolygon: MAX_CLIP_VERTS\n" );
 loc1:
 	if( stage == 6 )
-	{	
+	{
 		// fully clipped, so draw it
 		DrawSkyPolygon( nump, vecs );
 		return;
@@ -189,7 +189,7 @@ loc1:
 	}
 
 	if( !front || !back )
-	{	
+	{
 		// not clipped
 		stage++;
 		goto loc1;
@@ -245,11 +245,11 @@ void MakeSkyVec( float s, float t, int axis )
 	int	j, k, farclip;
 	vec3_t	v, b;
 
-	farclip = RI.farClip;
+	farclip = (int)RI.farClip;
 
 	b[0] = s * (farclip >> 1);
 	b[1] = t * (farclip >> 1);
-	b[2] = (farclip >> 1);
+	b[2] = (float)(farclip >> 1);
 
 	for( j = 0; j < 3; j++ )
 	{
@@ -359,7 +359,7 @@ void R_DrawSkyBox( void )
 	int	i;
 
 	if( clgame.movevars.skyangle )
-	{	
+	{
 		// check for no sky at all
 		for( i = 0; i < 6; i++ )
 		{
@@ -435,7 +435,7 @@ void R_SetupSky( const char *skyboxname )
 	{
 		MsgDev( D_ERROR, "R_SetupSky: missed or incomplete skybox '%s'\n", skyboxname );
 		R_SetupSky( "desert" ); // force to default
-		return; 
+		return;
 	}
 
 	// release old skybox
@@ -555,7 +555,7 @@ void R_InitSky( mip_t *mt, texture_t *tx )
 				trans[(i * r_sky->height) + j] = transpix;
 			}
 			else
-			{         
+			{
 				rgba = (uint *)r_sky->palette + p;
 				trans[(i * r_sky->height) + j] = *rgba;
 			}
@@ -605,8 +605,8 @@ void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
 		{
 			if( waveHeight )
 			{
-				nv = v[2] + waveHeight + ( waveHeight * sin(v[0] * 0.02f + cl.time)
-					* sin(v[1] * 0.02 + cl.time) * sin(v[2] * 0.02f + cl.time));
+				nv = v[2] + waveHeight + ( waveHeight * sinf(v[0] * 0.02f + (float)cl.time)
+					* sinf(v[1] * 0.02f + (float)cl.time) * sinf(v[2] * 0.02f + (float)cl.time));
 				nv -= waveHeight;
 			}
 			else nv = v[2];
@@ -614,10 +614,10 @@ void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
 			os = v[3];
 			ot = v[4];
 
-			s = os + r_turbsin[(int)((ot * 0.125f + cl.time ) * TURBSCALE) & 255];
+			s = os + r_turbsin[(int)((ot * 0.125f + (float)cl.time ) * TURBSCALE) & 255];
 			s *= ( 1.0f / SUBDIVIDE_SIZE );
 
-			t = ot + r_turbsin[(int)((os * 0.125f + cl.time ) * TURBSCALE) & 255];
+			t = ot + r_turbsin[(int)((os * 0.125f + (float)cl.time ) * TURBSCALE) & 255];
 			t *= ( 1.0f / SUBDIVIDE_SIZE );
 
 			if( glState.activeTMU != 0 )
@@ -685,7 +685,7 @@ void R_DrawSkyChain( msurface_t *s )
 	GL_SetRenderMode( kRenderNormal );
 	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
 
-	speedscale = cl.time * 8.0f;
+	speedscale = (float)cl.time * 8.0f;
 	speedscale -= (int)speedscale & ~127;
 
 	for( fa = s; fa; fa = fa->texturechain )
@@ -694,7 +694,7 @@ void R_DrawSkyChain( msurface_t *s )
 	GL_SetRenderMode( kRenderTransTexture );
 	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
 
-	speedscale = cl.time * 16.0f;
+	speedscale = (float)cl.time * 16.0f;
 	speedscale -= (int)speedscale & ~127;
 
 	for( fa = s; fa; fa = fa->texturechain )
@@ -717,7 +717,7 @@ void EmitSkyLayers( msurface_t *fa )
 	GL_SetRenderMode( kRenderNormal );
 	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
 
-	speedscale = cl.time * 8.0f;
+	speedscale = (float)cl.time * 8.0f;
 	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys( fa );
@@ -725,7 +725,7 @@ void EmitSkyLayers( msurface_t *fa )
 	GL_SetRenderMode( kRenderTransTexture );
 	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
 
-	speedscale = cl.time * 16.0f;
+	speedscale = (float)cl.time * 16.0f;
 	speedscale -= (int)speedscale & ~127;
 
 	EmitSkyPolys( fa );

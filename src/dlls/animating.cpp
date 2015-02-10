@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -26,7 +26,7 @@
 #include "animation.h"
 #include "saverestore.h"
 
-TYPEDESCRIPTION	CBaseAnimating::m_SaveData[] = 
+TYPEDESCRIPTION	CBaseAnimating::m_SaveData[] =
 {
 	DEFINE_FIELD( CBaseMonster, m_flFrameRate, FIELD_FLOAT ),
 	DEFINE_FIELD( CBaseMonster, m_flGroundSpeed, FIELD_FLOAT ),
@@ -44,27 +44,27 @@ IMPLEMENT_SAVERESTORE( CBaseAnimating, CBaseDelay );
 //=========================================================
 float CBaseAnimating :: StudioFrameAdvance ( float flInterval )
 {
-	if (flInterval == 0.0)
+	if (flInterval == 0.0f)
 	{
 		flInterval = (gpGlobals->time - pev->animtime);
-		if (flInterval <= 0.001)
+		if (flInterval <= 0.001f)
 		{
 			pev->animtime = gpGlobals->time;
-			return 0.0;
+			return 0.0f;
 		}
 	}
 	if (! pev->animtime)
-		flInterval = 0.0;
-	
+		flInterval = 0.0f;
+
 	pev->frame += flInterval * m_flFrameRate * pev->framerate;
 	pev->animtime = gpGlobals->time;
 
-	if (pev->frame < 0.0 || pev->frame >= 256.0) 
+	if (pev->frame < 0.0f || pev->frame >= 256.0f)
 	{
 		if (m_fSequenceLoops)
-			pev->frame -= (int)(pev->frame / 256.0) * 256.0;
+			pev->frame -= (int)(pev->frame / 256.0f) * 256.0f;
 		else
-			pev->frame = (pev->frame < 0.0) ? 0 : 255;
+			pev->frame = (pev->frame < 0.0f) ? 0.f : 255.f;
 		m_fSequenceFinished = TRUE;	// just in case it wasn't caught in GetEvents
 	}
 
@@ -114,7 +114,7 @@ void CBaseAnimating :: ResetSequenceInfo ( )
 	GetSequenceInfo( pmodel, pev, &m_flFrameRate, &m_flGroundSpeed );
 	m_fSequenceLoops = ((GetSequenceFlags() & STUDIO_LOOPING) != 0);
 	pev->animtime = gpGlobals->time;
-	pev->framerate = 1.0;
+	pev->framerate = 1.0f;
 	m_fSequenceFinished = FALSE;
 	m_flLastEventCheck = gpGlobals->time;
 }
@@ -146,7 +146,7 @@ void CBaseAnimating :: DispatchAnimEvents ( float flInterval )
 	}
 
 	// FIXME: I have to do this or some events get missed, and this is probably causing the problem below
-	flInterval = 0.1;
+	flInterval = 0.1f;
 
 	// FIX: this still sometimes hits events twice
 	float flStart = pev->frame + (m_flLastEventCheck - pev->animtime) * m_flFrameRate * pev->framerate;
@@ -154,7 +154,7 @@ void CBaseAnimating :: DispatchAnimEvents ( float flInterval )
 	m_flLastEventCheck = pev->animtime + flInterval;
 
 	m_fSequenceFinished = FALSE;
-	if (flEnd >= 256 || flEnd <= 0.0) 
+	if (flEnd >= 256 || flEnd <= 0.0f)
 		m_fSequenceFinished = TRUE;
 
 	int index = 0;
@@ -181,10 +181,10 @@ void CBaseAnimating :: InitBoneControllers ( void )
 {
 	void *pmodel = GET_MODEL_PTR( ENT(pev) );
 
-	SetController( pmodel, pev, 0, 0.0 );
-	SetController( pmodel, pev, 1, 0.0 );
-	SetController( pmodel, pev, 2, 0.0 );
-	SetController( pmodel, pev, 3, 0.0 );
+	SetController( pmodel, pev, 0, 0.0f );
+	SetController( pmodel, pev, 1, 0.0f );
+	SetController( pmodel, pev, 2, 0.0f );
+	SetController( pmodel, pev, 3, 0.0f );
 }
 
 //=========================================================
@@ -215,7 +215,7 @@ void CBaseAnimating :: GetAttachment ( int iAttachment, Vector &origin, Vector &
 int CBaseAnimating :: FindTransition( int iEndingSequence, int iGoalSequence, int *piDir )
 {
 	void *pmodel = GET_MODEL_PTR( ENT(pev) );
-	
+
 	if (piDir == NULL)
 	{
 		int iDir;
@@ -264,8 +264,8 @@ void CBaseAnimating :: SetSequenceBox( void )
 	{
 		// expand box for rotation
 		// find min / max for rotations
-		float yaw = pev->angles.y * (M_PI / 180.0);
-		
+		float yaw = static_cast<float>(pev->angles.y * M_PI / 180.);
+
 		Vector xvector, yvector;
 		xvector.x = cos(yaw);
 		xvector.y = sin(yaw);
@@ -275,7 +275,7 @@ void CBaseAnimating :: SetSequenceBox( void )
 
 		bounds[0] = mins;
 		bounds[1] = maxs;
-		
+
 		Vector rmin( 9999, 9999, 9999 );
 		Vector rmax( -9999, -9999, -9999 );
 		Vector base, transformed;
@@ -289,12 +289,12 @@ int i;		for ( i = 0; i <= 1; i++ )
 				for ( int k = 0; k <= 1; k++ )
 				{
 					base.z = bounds[k].z;
-					
+
 				// transform the point
 					transformed.x = xvector.x*base.x + yvector.x*base.y;
 					transformed.y = xvector.y*base.x + yvector.y*base.y;
 					transformed.z = base.z;
-					
+
 					if (transformed.x < rmin.x)
 						rmin.x = transformed.x;
 					if (transformed.x > rmax.x)

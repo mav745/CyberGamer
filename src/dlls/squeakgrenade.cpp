@@ -85,7 +85,7 @@ TYPEDESCRIPTION	CSqueakGrenade::m_SaveData[] =
 
 IMPLEMENT_SAVERESTORE( CSqueakGrenade, CGrenade );
 
-#define SQUEEK_DETONATE_DELAY	15.0
+#define SQUEEK_DETONATE_DELAY	15.0f
 
 int CSqueakGrenade :: Classify ( void )
 {
@@ -122,14 +122,14 @@ void CSqueakGrenade :: Spawn( void )
 
 	SetTouch( &CSqueakGrenade::SuperBounceTouch );
 	SetThink( &CSqueakGrenade::HuntThink );
-	pev->nextthink = gpGlobals->time + 0.1;
-	m_flNextHunt = gpGlobals->time + 1E6;
+	pev->nextthink = gpGlobals->time + 0.1f;
+	m_flNextHunt = gpGlobals->time + 1E6f;
 
 	pev->flags |= FL_MONSTER;
 	pev->takedamage		= DAMAGE_AIM;
 	pev->health			= gSkillData.snarkHealth;
-	pev->gravity		= 0.5;
-	pev->friction		= 0.5;
+	pev->gravity		= 0.5f;
+	pev->friction		= 0.5f;
 
 	pev->dmg = gSkillData.snarkDmgPop;
 
@@ -164,7 +164,7 @@ void CSqueakGrenade :: Killed( entvars_t *pevAttacker, int iGib )
 	pev->model = iStringNull;// make invisible
 	SetThink( &CBaseEntity::SUB_Remove );
 	SetTouch( NULL );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	// since squeak grenades never leave a body behind, clear out their takedamage now.
 	// Squeaks do a bit of radius damage when they pop, and that radius damage will
@@ -209,7 +209,7 @@ void CSqueakGrenade::HuntThink( void )
 	}
 
 	StudioFrameAdvance( );
-	pev->nextthink = gpGlobals->time + 0.1;
+	pev->nextthink = gpGlobals->time + 0.1f;
 
 	// explode when ready
 	if (gpGlobals->time >= m_flDie)
@@ -239,7 +239,7 @@ void CSqueakGrenade::HuntThink( void )
 	if (m_flNextHunt > gpGlobals->time)
 		return;
 
-	m_flNextHunt = gpGlobals->time + 2.0;
+	m_flNextHunt = gpGlobals->time + 2.0f;
 
 	CBaseEntity *pOther = NULL;
 	Vector vecDir;
@@ -266,7 +266,7 @@ void CSqueakGrenade::HuntThink( void )
 	}
 
 	// higher pitch as squeeker gets closer to detonation time
-	float flpitch = 155.0 - 60.0 * ((m_flDie - gpGlobals->time) / SQUEEK_DETONATE_DELAY);
+	float flpitch = 155.0f - 60.0f * ((m_flDie - gpGlobals->time) / SQUEEK_DETONATE_DELAY);
 	if (flpitch < 80)
 		flpitch = 80;
 
@@ -279,10 +279,10 @@ void CSqueakGrenade::HuntThink( void )
 		}
 
 		float flVel = pev->velocity.Length();
-		float flAdj = 50.0 / (flVel + 10.0);
+		float flAdj = 50.0f / (flVel + 10.0f);
 
-		if (flAdj > 1.2)
-			flAdj = 1.2;
+		if (flAdj > 1.2f)
+			flAdj = 1.2f;
 
 		// ALERT( at_console, "think : enemy\n");
 
@@ -338,7 +338,7 @@ void CSqueakGrenade::SuperBounceTouch( CBaseEntity *pOther )
 		return;
 
 	// higher pitch as squeeker gets closer to detonation time
-	flpitch = 155.0 - 60.0 * ((m_flDie - gpGlobals->time) / SQUEEK_DETONATE_DELAY);
+	flpitch = 155.0f - 60.0f * ((m_flDie - gpGlobals->time) / SQUEEK_DETONATE_DELAY);
 
 	if ( pOther->pev->takedamage && m_flNextAttack < gpGlobals->time )
 	{
@@ -363,7 +363,7 @@ void CSqueakGrenade::SuperBounceTouch( CBaseEntity *pOther )
 
 				// make bite sound
 				EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, "squeek/sqk_deploy1.wav", 1.0, ATTN_NORM, 0, (int)flpitch);
-				m_flNextAttack = gpGlobals->time + 0.5;
+				m_flNextAttack = gpGlobals->time + 0.5f;
 			}
 		}
 		else
@@ -372,7 +372,7 @@ void CSqueakGrenade::SuperBounceTouch( CBaseEntity *pOther )
 		}
 	}
 
-	m_flNextHit = gpGlobals->time + 0.1;
+	m_flNextHit = gpGlobals->time + 0.1f;
 	m_flNextHunt = gpGlobals->time;
 
 	if ( g_pGameRules->IsMultiplayer() )
@@ -404,7 +404,7 @@ void CSqueakGrenade::SuperBounceTouch( CBaseEntity *pOther )
 		CSoundEnt::InsertSound ( bits_SOUND_COMBAT, pev->origin, 100, 0.1 );
 	}
 
-	m_flNextBounceSoundTime = gpGlobals->time + 0.5;// half second.
+	m_flNextBounceSoundTime = gpGlobals->time + 0.5f;// half second.
 }
 
 #endif
@@ -478,18 +478,18 @@ BOOL CSqueak::Deploy( )
 
 void CSqueak::Holster( int skiplocal /* = 0 */ )
 {
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5f;
 
 	if ( !m_pPlayer->m_rgAmmo[ m_iPrimaryAmmoType ] )
 	{
 		m_pPlayer->pev->weapons &= ~(1<<WEAPON_SNARK);
 		SetThink( &CSqueak::DestroyItem );
-		pev->nextthink = gpGlobals->time + 0.1;
+		pev->nextthink = gpGlobals->time + 0.1f;
 		return;
 	}
 
 	SendWeaponAnim( SQUEAK_DOWN );
-	EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_WEAPON, "common/null.wav", 1.0, ATTN_NORM);
+	EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_WEAPON, "common/null.wav", 1.0f, ATTN_NORM);
 }
 
 
@@ -545,8 +545,8 @@ void CSqueak::PrimaryAttack()
 
 			m_fJustThrown = 1;
 
-			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.3;
-			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0;
+			m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.3f;
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.0f;
 		}
 	}
 }
@@ -580,20 +580,20 @@ void CSqueak::WeaponIdle( void )
 
 	int iAnim;
 	float flRand = UTIL_SharedRandomFloat( m_pPlayer->random_seed, 0, 1 );
-	if (flRand <= 0.75)
+	if (flRand <= 0.75f)
 	{
 		iAnim = SQUEAK_IDLE1;
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 30.0 / 16 * (2);
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 30.0f / 16.f * 2.f;
 	}
-	else if (flRand <= 0.875)
+	else if (flRand <= 0.875f)
 	{
 		iAnim = SQUEAK_FIDGETFIT;
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 70.0 / 16.0;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 70.0f / 16.0f;
 	}
 	else
 	{
 		iAnim = SQUEAK_FIDGETNIP;
-		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 80.0 / 16.0;
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 80.0f / 16.0f;
 	}
 	SendWeaponAnim( iAnim );
 }
