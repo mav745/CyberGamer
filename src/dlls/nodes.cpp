@@ -832,19 +832,19 @@ void CGraph :: CheckNode(Vector vecOrigin, int iNode)
 			m_iNearest = iNode;
 			m_flShortest = flDist;
 
-			UpdateRange(m_minX, m_maxX, CALC_RANGE((int)(vecOrigin.x), (int)m_RegionMin[0], (int)m_RegionMax[0]), (int)m_pNodes[iNode].m_Region[0]);
-			UpdateRange(m_minY, m_maxY, CALC_RANGE((int)(vecOrigin.y), (int)m_RegionMin[1], (int)m_RegionMax[1]), (int)m_pNodes[iNode].m_Region[1]);
-			UpdateRange(m_minZ, m_maxZ, CALC_RANGE((int)(vecOrigin.z), (int)m_RegionMin[2], (int)m_RegionMax[2]), (int)m_pNodes[iNode].m_Region[2]);
+			UpdateRange(m_minX, m_maxX, CALC_RANGE(static_cast<int>(vecOrigin.x), (int)m_RegionMin[0], (int)m_RegionMax[0]), (int)m_pNodes[iNode].m_Region[0]);
+			UpdateRange(m_minY, m_maxY, CALC_RANGE(static_cast<int>(vecOrigin.y), (int)m_RegionMin[1], (int)m_RegionMax[1]), (int)m_pNodes[iNode].m_Region[1]);
+			UpdateRange(m_minZ, m_maxZ, CALC_RANGE(static_cast<int>(vecOrigin.z), (int)m_RegionMin[2], (int)m_RegionMax[2]), (int)m_pNodes[iNode].m_Region[2]);
 
 			// From maxCircle, calculate maximum bounds box. All points must be
 			// simultaneously inside all bounds of the box.
 			//
-			m_minBoxX = CALC_RANGE((int)(vecOrigin.x - flDist), (int)m_RegionMin[0], (int)m_RegionMax[0]);
-			m_maxBoxX = CALC_RANGE((int)(vecOrigin.x + flDist), (int)m_RegionMin[0], (int)m_RegionMax[0]);
-			m_minBoxY = CALC_RANGE((int)(vecOrigin.y - flDist), (int)m_RegionMin[1], (int)m_RegionMax[1]);
-			m_maxBoxY = CALC_RANGE((int)(vecOrigin.y + flDist), (int)m_RegionMin[1], (int)m_RegionMax[1]);
-			m_minBoxZ = CALC_RANGE((int)(vecOrigin.z - flDist), (int)m_RegionMin[2], (int)m_RegionMax[2]);
-			m_maxBoxZ = CALC_RANGE((int)(vecOrigin.z + flDist), (int)m_RegionMin[2], (int)m_RegionMax[2]);
+			m_minBoxX = CALC_RANGE(static_cast<int>(vecOrigin.x - flDist), (int)m_RegionMin[0], (int)m_RegionMax[0]);
+			m_maxBoxX = CALC_RANGE(static_cast<int>(vecOrigin.x + flDist), (int)m_RegionMin[0], (int)m_RegionMax[0]);
+			m_minBoxY = CALC_RANGE(static_cast<int>(vecOrigin.y - flDist), (int)m_RegionMin[1], (int)m_RegionMax[1]);
+			m_maxBoxY = CALC_RANGE(static_cast<int>(vecOrigin.y + flDist), (int)m_RegionMin[1], (int)m_RegionMax[1]);
+			m_minBoxZ = CALC_RANGE(static_cast<int>(vecOrigin.z - flDist), (int)m_RegionMin[2], (int)m_RegionMax[2]);
+			m_maxBoxZ = CALC_RANGE(static_cast<int>(vecOrigin.z + flDist), (int)m_RegionMin[2], (int)m_RegionMax[2]);
 		}
 	}
 }
@@ -2921,9 +2921,9 @@ int i;	for ( i = 0; i < 3; i++)
 	}
 	for (i = 0; i < m_cNodes; i++)
 	{
-		m_pNodes[i].m_Region[0] = CALC_RANGE((int)(m_pNodes[i].m_vecOrigin.x), (int)m_RegionMin[0], (int)m_RegionMax[0]);
-		m_pNodes[i].m_Region[1] = CALC_RANGE((int)(m_pNodes[i].m_vecOrigin.y), (int)m_RegionMin[1], (int)m_RegionMax[1]);
-		m_pNodes[i].m_Region[2] = CALC_RANGE((int)(m_pNodes[i].m_vecOrigin.z), (int)m_RegionMin[2], (int)m_RegionMax[2]);
+		m_pNodes[i].m_Region[0] = CALC_RANGE(static_cast<int>(m_pNodes[i].m_vecOrigin.x), (int)m_RegionMin[0], (int)m_RegionMax[0]);
+		m_pNodes[i].m_Region[1] = CALC_RANGE(static_cast<int>(m_pNodes[i].m_vecOrigin.y), (int)m_RegionMin[1], (int)m_RegionMax[1]);
+		m_pNodes[i].m_Region[2] = CALC_RANGE(static_cast<int>(m_pNodes[i].m_vecOrigin.z), (int)m_RegionMin[2], (int)m_RegionMax[2]);
 	}
 
 	for (i = 0; i < 3; i++)

@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -36,7 +36,7 @@ public:
 	float				GetValue();
 	void				SetValue(float val);
 
-public:	
+public:
 	Label				m_Label;
 	ScrollBar			m_Scroll;
 	Slider				m_Slider;
@@ -74,15 +74,15 @@ private:
 	int					m_DlgWidth;
 	int					m_DlgHeight;
 
-	Label				m_Label;		
-	
+	Label				m_Label;
+
 	IVoiceTweak			*m_pVoiceTweak;		// Engine voice tweak API.
 
 	TweakScroller		m_MicVolume;
 	TweakScroller		m_SpeakerVolume;
 
 	CCheckButton2		m_VoiceModEnable;
-	
+
 	Button				m_Button_OK;
 };
 
@@ -150,7 +150,7 @@ void TweakScroller::Init(Panel *pParent, char *pText, int yPos)
 
 	m_Slider.setRangeWindow(10);
 	m_Slider.setRangeWindowEnabled(true);
-	
+
 	m_Scroll.setPos(parentWidth/2+ITEM_BORDER, yPos);
 	m_Scroll.setSize(parentWidth/2-ITEM_BORDER*2, 20);
 	m_Scroll.setSlider(&m_Slider);
@@ -169,7 +169,7 @@ float TweakScroller::GetValue()
 
 void TweakScroller::SetValue(float val)
 {
-	m_Scroll.setValue((int)(val * 100.0f));
+	m_Scroll.setValue(static_cast<int>(val * 100.0f));
 }
 
 
@@ -197,7 +197,7 @@ void CVoiceVGUITweakDlg::Open()
 {
 	if(g_bTweakDlgOpen)
 		return;
-	
+
 	g_bTweakDlgOpen = true;
 
 	m_DlgWidth = ScreenWidth;

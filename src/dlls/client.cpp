@@ -1082,7 +1082,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	//
 
 	// Round animtime to nearest millisecond
-	state->animtime   = floorf(ent->v.animtime * 1000.f) * 0.001f; //(int)(1000.0 * ent->v.animtime ) / 1000.0;
+	state->animtime   = floorf(ent->v.animtime * 1000.f) * 0.001f; //static_cast<int>(1000.0 * ent->v.animtime ) / 1000.0;
 
 	memcpy( state->origin, ent->v.origin, 3 * sizeof( float ) );
 	memcpy( state->angles, ent->v.angles, 3 * sizeof( float ) );

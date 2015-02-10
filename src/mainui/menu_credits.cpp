@@ -65,7 +65,7 @@ static void UI_Credits_DrawFunc( void )
 
 	// draw the background first
 	if( !uiCredits.finalCredits && !CVAR_GET_FLOAT( "cl_background" ))
-		UI_DrawPic( 0, 0, (int)(1024.f * uiStatic.scaleX), (int)(768.f * uiStatic.scaleY), uiColorWhite, ART_BACKGROUND );
+		UI_DrawPic( 0, 0, static_cast<int>(1024.f * uiStatic.scaleX), static_cast<int>(768.f * uiStatic.scaleY), uiColorWhite, ART_BACKGROUND );
 	else speed = 45.0f;	// syncronize with final background track :-)
 
 	// otherwise running on cutscene
@@ -74,7 +74,7 @@ static void UI_Credits_DrawFunc( void )
 	// now draw the credits
 	UI_ScaleCoords( NULL, NULL, &w, &h );
 
-	y = ScreenHeight - (int)(((gpGlobals->time * 1000.f) - (float)uiCredits.startTime ) / speed );
+	y = ScreenHeight - static_cast<int>(((gpGlobals->time * 1000.f) - (float)uiCredits.startTime ) / speed );
 
 	// draw the credits
 	for ( i = 0; i < uiCredits.numLines && uiCredits.credits[i]; i++, y += h )
@@ -84,12 +84,12 @@ static void UI_Credits_DrawFunc( void )
 
 		if(( y < ( ScreenHeight - h ) / 2 ) && i == uiCredits.numLines - 1 )
 		{
-			if( !uiCredits.fadeTime ) uiCredits.fadeTime = (int)(gpGlobals->time * 1000.f);
+			if( !uiCredits.fadeTime ) uiCredits.fadeTime = static_cast<int>(gpGlobals->time * 1000.f);
 			color = UI_FadeAlpha( uiCredits.fadeTime, uiCredits.showTime );
 			if( UnpackAlpha( color ))
-				UI_DrawString( 0, ( ScreenHeight - h ) / 2, (int)(1024.f * uiStatic.scaleX), h, uiCredits.credits[i], color, true, w, h, 1, true );
+				UI_DrawString( 0, ( ScreenHeight - h ) / 2, static_cast<int>(1024.f * uiStatic.scaleX), h, uiCredits.credits[i], color, true, w, h, 1, true );
 		}
-		else UI_DrawString( 0, y, (int)(1024.f * uiStatic.scaleX), h, uiCredits.credits[i], uiColorWhite, false, w, h, 1, true );
+		else UI_DrawString( 0, y, static_cast<int>(1024.f * uiStatic.scaleX), h, uiCredits.credits[i], uiColorWhite, false, w, h, 1, true );
 	}
 
 	if( y < 0 && UnpackAlpha( color ) == 0 )
@@ -182,7 +182,7 @@ static void UI_Credits_Init( void )
 	}
 
 	// run credits
-	uiCredits.startTime = (int)((gpGlobals->time * 1000) + 500); // make half-seconds delay
+	uiCredits.startTime = static_cast<int>((gpGlobals->time * 1000) + 500); // make half-seconds delay
 	uiCredits.showTime = bound( 1000, strlen( uiCredits.credits[uiCredits.numLines - 1]) * 1000, 10000 );
 	uiCredits.fadeTime = 0; // will be determined later
 	uiCredits.active = true;

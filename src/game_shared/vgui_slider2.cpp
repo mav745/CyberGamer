@@ -134,8 +134,8 @@ void Slider2::recomputeNobPosFromValue()
 
 			float firstpixel = freepixels * fper;
 
-			_nobPos[0]=(int)( firstpixel );
-			_nobPos[1]=(int)( firstpixel + fnobsize );
+			_nobPos[0]=static_cast<int>( firstpixel );
+			_nobPos[1]=static_cast<int>( firstpixel + fnobsize );
 
 			if(_nobPos[1]>tall)
 			{
@@ -150,8 +150,8 @@ void Slider2::recomputeNobPosFromValue()
 
 			float firstpixel = freepixels * fper;
 
-			_nobPos[0]=(int)( firstpixel );
-			_nobPos[1]=(int)( firstpixel + fnobsize );
+			_nobPos[0]=static_cast<int>( firstpixel );
+			_nobPos[1]=static_cast<int>( firstpixel + fnobsize );
 
 			if(_nobPos[1]>wide)
 			{
@@ -200,7 +200,7 @@ void Slider2::recomputeValueFromNobPos()
 		}
 	}
 	// Take care of rounding issues.
-	_value=(int)(fvalue+_range[0]+0.5);
+	_value=static_cast<int>(fvalue+_range[0]+0.5);
 
 	// Clamp final result
 	_value = ( _value < _range[1] ) ? _value : _range[1];

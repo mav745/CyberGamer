@@ -374,7 +374,7 @@ int CHudHealth::DrawDamage(float flTime)
 
 	UnpackRGB(r,g,b, RGB_YELLOWISH);
 
-	a = (int)( fabs(sin(flTime*2)) * 256.0);
+	a = static_cast<int>( fabs(sin(flTime*2)) * 256.0);
 
 	ScaleColors(r, g, b, a);
 

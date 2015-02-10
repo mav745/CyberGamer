@@ -167,7 +167,7 @@ int CHud :: Redraw( float flTime, int intermission )
 		y = SPR_Height(m_hsprLogo, 0)/2;
 
 		// Draw the logo at 20 fps
-		int iFrame = (int)(flTime * 20) % MAX_LOGO_FRAMES;
+		int iFrame = static_cast<int>(flTime * 20) % MAX_LOGO_FRAMES;
 		i = grgLogoFrame[iFrame] - 1;
 
 		SPR_DrawAdditive(i, x, y, NULL);
@@ -201,9 +201,9 @@ int CHud :: Redraw( float flTime, int intermission )
 void ScaleColors( int &r, int &g, int &b, int a )
 {
 	float x = (float)a / 255;
-	r = (int)(r * x);
-	g = (int)(g * x);
-	b = (int)(b * x);
+	r = static_cast<int>(r * x);
+	g = static_cast<int>(g * x);
+	b = static_cast<int>(b * x);
 }
 
 int CHud :: DrawHudString(int xpos, int ypos, int iMaxX, char *szIt, int r, int g, int b )

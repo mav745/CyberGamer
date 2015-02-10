@@ -1247,7 +1247,7 @@ void CNihilanth::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vec
 	{
 		Vector vecBlood = (ptr->vecEndPos - pev->origin).Normalize( );
 
-		UTIL_BloodStream( ptr->vecEndPos, vecBlood, BloodColor(), (int)(flDamage + (100.f - 100.f * (pev->health / gSkillData.nihilanthHealth))));
+		UTIL_BloodStream( ptr->vecEndPos, vecBlood, BloodColor(), static_cast<int>(flDamage + (100.f - 100.f * (pev->health / gSkillData.nihilanthHealth))));
 	}
 
 	// SpawnBlood(ptr->vecEndPos, BloodColor(), flDamage * 5.0f);// a little surface blood.
@@ -1501,7 +1501,7 @@ void CNihilanthHVR :: ZapThink( void  )
 		return;
 	}
 
-	pev->frame = static_cast<float>((int)(pev->frame + 1) % 11);
+	pev->frame = static_cast<float>(static_cast<int>(pev->frame + 1) % 11);
 
 	MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
 		WRITE_BYTE( TE_ELIGHT );
@@ -1625,7 +1625,7 @@ void CNihilanthHVR :: TeleportThink( void  )
 		WRITE_COORD( 256 ); // decay
 	MESSAGE_END();
 
-	pev->frame = static_cast<float>((int)(pev->frame + 1) % 20);
+	pev->frame = static_cast<float>(static_cast<int>(pev->frame + 1) % 20);
 }
 
 

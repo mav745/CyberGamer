@@ -62,7 +62,7 @@ float CBaseAnimating :: StudioFrameAdvance ( float flInterval )
 	if (pev->frame < 0.0f || pev->frame >= 256.0f)
 	{
 		if (m_fSequenceLoops)
-			pev->frame -= (int)(pev->frame / 256.0f) * 256.0f;
+			pev->frame -= floorf(pev->frame / 256.0f) * 256.0f;
 		else
 			pev->frame = (pev->frame < 0.0f) ? 0.f : 255.f;
 		m_fSequenceFinished = TRUE;	// just in case it wasn't caught in GetEvents

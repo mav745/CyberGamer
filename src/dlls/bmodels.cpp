@@ -76,7 +76,7 @@ void CFuncWall :: Spawn( void )
 
 void CFuncWall :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	if ( ShouldToggle( useType, (int)(pev->frame)) )
+	if ( ShouldToggle( useType, static_cast<int>(pev->frame)) )
 		pev->frame = 1 - pev->frame;
 }
 
@@ -568,7 +568,7 @@ void CFuncRotating :: RampPitchVol (int fUp)
 
 	fpitch = FANPITCHMIN + (FANPITCHMAX - FANPITCHMIN) * fpct;
 
-	pitch = (int) fpitch;
+	pitch = static_cast<int>(fpitch);
 	if (pitch == PITCH_NORM)
 		pitch = PITCH_NORM-1;
 

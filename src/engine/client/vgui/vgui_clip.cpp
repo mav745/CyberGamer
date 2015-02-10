@@ -51,7 +51,7 @@ inline float InterpTCoord( float val, float mins, float maxs, float tMin, float 
 	float	flPercent;
 
 	if( mins != maxs )
-		flPercent = (float)(val - mins) / (maxs - mins);
+		flPercent = (val - mins) / (maxs - mins);
 	else flPercent = 0.5f;
 
 	return tMin + (tMax - tMin) * flPercent;

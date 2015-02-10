@@ -721,7 +721,7 @@ void CApache :: Flight( void )
 
 			float pitch = DotProduct( pev->velocity - pPlayer->pev->velocity, (pPlayer->pev->origin - pev->origin).Normalize() );
 
-			pitch = floorf(100.f + pitch / 50.0f);//(int)(100.f + pitch / 50.0f);
+			pitch = floorf(100.f + pitch / 50.0f);//static_cast<int>(100.f + pitch / 50.0f);
 
 			if (pitch > 250)
 				pitch = 250;

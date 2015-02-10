@@ -81,17 +81,17 @@ bool FontCache::GetTextureForChar( Font *font, char ch, int *textureID, float **
 	byte * rgba = (byte *)Z_Malloc( nByteCount );
 	font->getCharRGBA( (byte)ch, 0, 0, fontWide, fontTall, rgba );
 
-	// upload the new sub texture 
+	// upload the new sub texture
 	VGUI_BindTexture( m_PageList[page].textureID );
 	VGUI_UploadTextureBlock( m_PageList[page].textureID, drawX, drawY, rgba, fontWide, fontTall );
 
 	// set the cache info
 	cacheitem.page = page;
 
-	cacheitem.texCoords[0] = (float)((double)drawX / ((double)twide));
-	cacheitem.texCoords[1] = (float)((double)drawY / ((double)ttall));
-	cacheitem.texCoords[2] = (float)((double)(drawX + fontWide) / (double)twide);
-	cacheitem.texCoords[3] = (float)((double)(drawY + fontTall) / (double)ttall);
+	cacheitem.texCoords[0] = static_cast<float>((double)drawX / ((double)twide));
+	cacheitem.texCoords[1] = static_cast<float>((double)drawY / ((double)ttall));
+	cacheitem.texCoords[2] = static_cast<float>((double)(drawX + fontWide) / (double)twide);
+	cacheitem.texCoords[3] = static_cast<float>((double)(drawY + fontTall) / (double)ttall);
 
 	m_CharCache.Insert( cacheitem );
 
@@ -137,7 +137,7 @@ bool FontCache::AllocatePageForChar( int charWide, int charTall, int &pageIndex,
 
 		bNeedsNewPage = (( page.nextY + page.fontHeight + 1 ) > page.tall );
 	}
-	
+
 	if( bNeedsNewPage )
 	{
 		// allocate a new page
@@ -155,7 +155,7 @@ bool FontCache::AllocatePageForChar( int charWide, int charTall, int &pageIndex,
 
 		nNextX = charWide;
 
-		// create empty texture                    
+		// create empty texture
 		VGUI_CreateTexture( newPage.textureID, 256, 256 );
 	}
 

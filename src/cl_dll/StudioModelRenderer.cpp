@@ -648,7 +648,7 @@ void CStudioModelRenderer::StudioCalcRotations ( float pos[][3], vec4_t *q, mstu
 		pos[pseqdesc->motionbone][2] = 0.0;
 	}
 
-	s = 0 * ((1.0f - (f - (int)(f))) / (pseqdesc->numframes)) * m_pCurrentEntity->curstate.framerate;
+	s = 0 * ((1.0f - (f - floorf(f))) / (pseqdesc->numframes)) * m_pCurrentEntity->curstate.framerate;
 
 	if (pseqdesc->motiontype & STUDIO_LX)
 	{
@@ -751,7 +751,7 @@ float CStudioModelRenderer::StudioEstimateFrame( mstudioseqdesc_t *pseqdesc )
 	{
 		if (pseqdesc->numframes > 1)
 		{
-			f -= (int)(f / (pseqdesc->numframes - 1)) *  (pseqdesc->numframes - 1);
+			f -= floor(f / (pseqdesc->numframes - 1)) *  (pseqdesc->numframes - 1);
 		}
 		if (f < 0)
 		{
@@ -1233,7 +1233,7 @@ void CStudioModelRenderer::StudioEstimateGait( entity_state_t *pplayer )
 	if (est_velocity[1] == 0 && est_velocity[0] == 0)
 	{
 		float flYawDiff = m_pCurrentEntity->angles[YAW] - m_pPlayerInfo->gaityaw;
-		flYawDiff = flYawDiff - (int)(flYawDiff / 360) * 360;
+		flYawDiff = flYawDiff - floorf(flYawDiff / 360.f) * 360.f;
 		if (flYawDiff > 180)
 			flYawDiff -= 360;
 		if (flYawDiff < -180)
@@ -1245,7 +1245,7 @@ void CStudioModelRenderer::StudioEstimateGait( entity_state_t *pplayer )
 			flYawDiff *= dt;
 
 		m_pPlayerInfo->gaityaw += flYawDiff;
-		m_pPlayerInfo->gaityaw = m_pPlayerInfo->gaityaw - (int)(m_pPlayerInfo->gaityaw / 360) * 360;
+		m_pPlayerInfo->gaityaw = m_pPlayerInfo->gaityaw - floorf(m_pPlayerInfo->gaityaw / 360.f) * 360.f;
 
 		m_flGaitMovement = 0;
 	}
@@ -1301,7 +1301,7 @@ void CStudioModelRenderer::StudioProcessGait( entity_state_t *pplayer )
 
 	// calc side to side turning
 	flYaw = m_pCurrentEntity->angles[YAW] - m_pPlayerInfo->gaityaw;
-	flYaw = flYaw - (int)(flYaw / 360) * 360;
+	flYaw = flYaw - floorf(flYaw / 360) * 360;
 	if (flYaw < -180)
 		flYaw = flYaw + 360;
 	if (flYaw > 180)
@@ -1354,7 +1354,7 @@ void CStudioModelRenderer::StudioProcessGait( entity_state_t *pplayer )
 	}
 
 	// do modulo
-	m_pPlayerInfo->gaitframe = m_pPlayerInfo->gaitframe - (int)(m_pPlayerInfo->gaitframe / pseqdesc->numframes) * pseqdesc->numframes;
+	m_pPlayerInfo->gaitframe = m_pPlayerInfo->gaitframe - floorf(m_pPlayerInfo->gaitframe / pseqdesc->numframes) * pseqdesc->numframes;
 	if (m_pPlayerInfo->gaitframe < 0)
 		m_pPlayerInfo->gaitframe += pseqdesc->numframes;
 }

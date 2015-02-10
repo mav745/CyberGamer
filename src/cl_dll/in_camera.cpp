@@ -159,7 +159,7 @@ void DLLEXPORT CAM_Think( void )
 #endif
 	vec3_t viewangles;
 
-	switch( (int) cam_command->value )
+	switch( static_cast<int>(cam_command->value) )
 	{
 		case CAM_COMMAND_TOTHIRDPERSON:
 			CAM_ToThirdPerson();

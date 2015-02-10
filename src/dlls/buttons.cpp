@@ -554,7 +554,7 @@ void DoSpark(entvars_t *pev, const Vector &location )
 	UTIL_Sparks( tmp );
 
 	float flVolume = RANDOM_FLOAT ( 0.25f , 0.75f ) * 0.4f;//random volume range
-	switch ( (int)(RANDOM_FLOAT(0,1) * 6) )
+	switch ( static_cast<int>(RANDOM_FLOAT(0,1) * 6) )
 	{
 		case 0: EMIT_SOUND(ENT(pev), CHAN_VOICE, "buttons/spark1.wav", flVolume, ATTN_NORM);	break;
 		case 1: EMIT_SOUND(ENT(pev), CHAN_VOICE, "buttons/spark2.wav", flVolume, ATTN_NORM);	break;

@@ -360,9 +360,9 @@ int i;	for ( i = 0; i < pstudiohdr->numbonecontrollers; i++, pbonecontroller++)
 		else
 		{
 			if (flValue > 360)
-				flValue = flValue - (int)(flValue / 360.0f) * 360.0f;
+				flValue = flValue - floorf(flValue / 360.0f) * 360.0f;
 			else if (flValue < 0)
-				flValue = flValue + (int)((flValue / -360.0f) + 1) * 360.0f;
+				flValue = flValue + floorf((flValue / -360.0f) + 1) * 360.0f;
 		}
 	}
 

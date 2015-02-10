@@ -1481,7 +1481,7 @@ void TeamFortressViewport::UpdateSpectatorPanel()
 		m_pSpectatorPanel->m_ExtraInfo->setText ( szText );
 
 		/*
-		int timer = (int)( gHUD.m_roundTimer.m_flTimeEnd - gHUD.m_flTime );
+		int timer = static_cast<int>( gHUD.m_roundTimer.m_flTimeEnd - gHUD.m_flTime );
 
 		if ( timer < 0 )
 			 timer	= 0;

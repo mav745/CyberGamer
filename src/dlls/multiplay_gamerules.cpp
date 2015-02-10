@@ -220,7 +220,7 @@ void CHalfLifeMultiplay :: Think ( void )
 	float flTimeLimit = timelimit.value * 60;
 	float flFragLimit = fraglimit.value;
 
-	time_remaining = (int)(flTimeLimit ? ( flTimeLimit - gpGlobals->time ) : 0);
+	time_remaining = static_cast<int>(flTimeLimit ? ( flTimeLimit - gpGlobals->time ) : 0);
 
 	if ( flTimeLimit != 0 && gpGlobals->time >= flTimeLimit )
 	{
@@ -248,7 +248,7 @@ void CHalfLifeMultiplay :: Think ( void )
 
 			if ( pPlayer )
 			{
-				remain = (int)(flFragLimit - pPlayer->pev->frags);
+				remain = static_cast<int>(flFragLimit - pPlayer->pev->frags);
 				if ( remain < bestfrags )
 				{
 					bestfrags = remain;

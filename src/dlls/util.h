@@ -61,9 +61,9 @@ inline edict_t *FIND_ENTITY_BY_TARGET(edict_t *entStart, const char *pszName)
 		ENGINE_FPRINTF(pf, "\"%s\" \"%f %f %f\"\n", szKeyName, flX, flY, flZ)
 
 // Keeps clutter down a bit, when using a float as a bit-vector
-#define SetBits(flBitVector, bits)		((flBitVector) = (int)(flBitVector) | (bits))
-#define ClearBits(flBitVector, bits)	((flBitVector) = (int)(flBitVector) & ~(bits))
-#define FBitSet(flBitVector, bit)		((int)(flBitVector) & (bit))
+#define SetBits(flBitVector, bits)		((flBitVector) = static_cast<int>(flBitVector) | (bits))
+#define ClearBits(flBitVector, bits)	((flBitVector) = static_cast<int>(flBitVector) & ~(bits))
+#define FBitSet(flBitVector, bit)		(static_cast<int>(flBitVector) & (bit))
 
 // Makes these more explicit, and easier to find
 #define FILE_GLOBAL static

@@ -566,12 +566,12 @@ void CBaseTrigger :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "damage"))
 	{
-		pev->dmg = (float)atof(pkvd->szValue);
+		pev->dmg = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "count"))
 	{
-		m_cTriggersLeft = (int) atof(pkvd->szValue);
+		m_cTriggersLeft = static_cast<int>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "damagetype"))

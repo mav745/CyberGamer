@@ -373,7 +373,7 @@ void CISlave :: HandleAnimEvent( MonsterEvent_t *pEvent )
 					WRITE_BYTE( 255 );		// r
 					WRITE_BYTE( 180 );		// g
 					WRITE_BYTE( 96 );		// b
-					WRITE_BYTE( (int)(20.f / pev->framerate) );		// time * 10
+					WRITE_BYTE( static_cast<int>(20.f / pev->framerate) );		// time * 10
 					WRITE_BYTE( 0 );		// decay * 0.1
 				MESSAGE_END( );
 
@@ -611,8 +611,8 @@ void CISlave::TraceAttack( entvars_t *pevAttacker, float flDamage, Vector vecDir
 Task_t	tlSlaveAttack1[] =
 {
 	{ TASK_STOP_MOVING,			0				},
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_RANGE_ATTACK1,		(float)0		},
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_RANGE_ATTACK1,		0.f		},
 };
 
 Schedule_t	slSlaveAttack1[] =

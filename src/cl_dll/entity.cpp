@@ -759,7 +759,7 @@ void DLLEXPORT HUD_TempEntUpdate (
 				pTemp->entity.curstate.frame += static_cast<float>(frametime * 10);
 				if ( pTemp->entity.curstate.frame >= pTemp->frameMax )
 				{
-					pTemp->entity.curstate.frame = pTemp->entity.curstate.frame - (int)(pTemp->entity.curstate.frame);
+					pTemp->entity.curstate.frame = pTemp->entity.curstate.frame - floorf(pTemp->entity.curstate.frame);
 				}
 			}
 // Experiment

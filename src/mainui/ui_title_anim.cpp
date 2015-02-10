@@ -53,10 +53,10 @@ float UI_GetTitleTransFraction( void )
 
 void LerpQuad( quad_t a, quad_t b, float frac, quad_t *c )
 {
-	c->x = a.x + (int)((b.x - a.x) * frac);
-	c->y = a.y + (int)((b.y - a.y) * frac);
-	c->lx = a.lx + (int)((b.lx - a.lx) * frac);
-	c->ly = a.ly + (int)((b.ly - a.ly) * frac);
+	c->x = a.x + static_cast<int>((b.x - a.x) * frac);
+	c->y = a.y + static_cast<int>((b.y - a.y) * frac);
+	c->lx = a.lx + static_cast<int>((b.lx - a.lx) * frac);
+	c->ly = a.ly + static_cast<int>((b.ly - a.ly) * frac);
 }
 
 void UI_SetupTitleQuad()

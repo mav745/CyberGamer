@@ -354,13 +354,13 @@ BOOL UTIL_GetNextBestWeapon( CBasePlayer *pPlayer, CBasePlayerItem *pCurrentWeap
 // ripped this out of the engine
 float	UTIL_AngleMod(float a)
 {
-	if (a < 0)
+	if (a < 0.f)
 	{
-		a = a + 360 * ((int)(a / 360) + 1);
+		a = a + 360.f * (floorf(a / 360.f) + 1.f);
 	}
-	else if (a >= 360)
+	else if (a >= 360.f)
 	{
-		a = a - 360 * ((int)(a / 360));
+		a = a - 360.f * (floorf(a / 360.f));
 	}
 	// a = (360.0/65536) * ((int)(a*(65536/360.0)) & 65535);
 	return a;
@@ -643,7 +643,7 @@ static unsigned short FixedUnsigned16( float value, float scale )
 {
 	int output;
 
-	output = (int)(value * scale);
+	output = static_cast<int>(value * scale);
 	if ( output < 0 )
 		output = 0;
 	if ( output > 0xFFFF )
@@ -656,7 +656,7 @@ static short FixedSigned16( float value, float scale )
 {
 	int output;
 
-	output = (int)(value * scale);
+	output = static_cast<int>(value * scale);
 
 	if ( output > 32767 )
 		output = 32767;
@@ -1356,7 +1356,7 @@ void UTIL_Ricochet( const Vector &position, float scale )
 		WRITE_COORD( position.x );
 		WRITE_COORD( position.y );
 		WRITE_COORD( position.z );
-		WRITE_BYTE( (int)(scale*10) );
+		WRITE_BYTE( static_cast<int>(scale*10) );
 	MESSAGE_END();
 }
 

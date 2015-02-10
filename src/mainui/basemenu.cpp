@@ -81,10 +81,10 @@ Any parameter can be NULL if you don't want it
 */
 void UI_ScaleCoords( int *x, int *y, int *w, int *h )
 {
-	if( x ) *x = (int)(*x * uiStatic.scaleX);
-	if( y ) *y = (int)(*y * uiStatic.scaleY);
-	if( w ) *w = (int)(*w * uiStatic.scaleX);
-	if( h ) *h = (int)(*h * uiStatic.scaleY);
+	if( x ) *x = static_cast<int>(*x * uiStatic.scaleX);
+	if( y ) *y = static_cast<int>(*y * uiStatic.scaleY);
+	if( w ) *w = static_cast<int>(*w * uiStatic.scaleX);
+	if( h ) *h = static_cast<int>(*h * uiStatic.scaleY);
 }
 
 /*
@@ -678,7 +678,7 @@ void UI_DrawMenu( menuFramework_s *menu )
 	if( item && ( item->flags & QMF_HASMOUSEFOCUS && !( item->flags & QMF_NOTIFY )) && ( item->statusText != NULL ))
 	{
 		// fade it in, but wait a second
-		int a1 = (int)(( uiStatic.realTime - statusFadeTime  - 1000.f ) * 0.001f * 255.f);
+		int a1 = static_cast<int>(( uiStatic.realTime - statusFadeTime  - 1000.f ) * 0.001f * 255.f);
 		int alpha = bound( 0, a1, 255 );
 		int r, g, b, x, len;
 
@@ -686,9 +686,9 @@ void UI_DrawMenu( menuFramework_s *menu )
 
 		UnpackRGB( r, g, b, uiColorHelp );
 		TextMessageSetColor( r, g, b, alpha );
-		x = (int)(( ScreenWidth - len ) * 0.5f); // centering
+		x = static_cast<int>(( ScreenWidth - len ) * 0.5f); // centering
 
-		DrawConsoleString( x, (int)(720.f * uiStatic.scaleY), item->statusText );
+		DrawConsoleString( x, static_cast<int>(720.f * uiStatic.scaleY), item->statusText );
 	}
 	else statusFadeTime = uiStatic.realTime;
 }
@@ -1015,7 +1015,7 @@ void UI_UpdateMenu( float flTime )
 	if( !uiStatic.menuActive )
 		return;
 
-	uiStatic.realTime = (int)(flTime * 1000);
+	uiStatic.realTime = static_cast<int>(flTime * 1000);
 	uiStatic.framecount++;
 
 	if( CVAR_GET_FLOAT( "cl_background" ) && !g_engfuncs.pfnClientInGame())

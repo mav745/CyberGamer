@@ -209,8 +209,8 @@ static void UI_PlayerSetup_UpdateConfig( void )
 		sprintf( newImage, "models/player/%s/%s.bmp", name, name );
 	}
 
-	topColor = (int)(uiPlayerSetup.topColor.curValue * 255 );
-	bottomColor = (int)(uiPlayerSetup.bottomColor.curValue * 255 );
+	topColor = static_cast<int>(uiPlayerSetup.topColor.curValue * 255 );
+	bottomColor = static_cast<int>(uiPlayerSetup.bottomColor.curValue * 255 );
 
 	CVAR_SET_STRING( "model", uiPlayerSetup.currentModel );
 	CVAR_SET_FLOAT( "cl_himodels", (float)uiPlayerSetup.hiModels.enabled );

@@ -1221,7 +1221,7 @@ void CBasePlayer::WaterMove()
 
 	// make bubbles
 
-	air = (int)(pev->air_finished - gpGlobals->time);
+	air = static_cast<int>(pev->air_finished - gpGlobals->time);
 	if (!RANDOM_LONG(0,0x1f) && RANDOM_LONG(0,AIRTIME-1) >= air)
 	{
 		switch (RANDOM_LONG(0,3))
@@ -1692,7 +1692,7 @@ void CBasePlayer::UpdateStatusBar()
 				// allies and medics get to see the targets health
 				if ( g_pGameRules->PlayerRelationship( this, pEntity ) == GR_TEAMMATE )
 				{
-					newSBarState[ SBAR_ID_TARGETHEALTH ] = (int)(100 * (pEntity->pev->health / pEntity->pev->max_health));
+					newSBarState[ SBAR_ID_TARGETHEALTH ] = static_cast<int>(100 * (pEntity->pev->health / pEntity->pev->max_health));
 					newSBarState[ SBAR_ID_TARGETARMOR ] = (int)pEntity->pev->armorvalue; //No need to get it % based since 100 it's the max.
 				}
 
@@ -2410,7 +2410,7 @@ void CBasePlayer :: UpdatePlayerSound ( void )
 	}
 
 	// decay weapon volume over time so bits_SOUND_COMBAT stays set for a while
-	m_iWeaponVolume -= (int)(250 * gpGlobals->frametime);
+	m_iWeaponVolume -= static_cast<int>(250 * gpGlobals->frametime);
 	if ( m_iWeaponVolume < 0 )
 	{
 		iVolume = 0;
@@ -2429,7 +2429,7 @@ void CBasePlayer :: UpdatePlayerSound ( void )
 	}
 	else if ( iVolume > m_iTargetVolume )
 	{
-		iVolume -= (int)(250 * gpGlobals->frametime);
+		iVolume -= static_cast<int>(250 * gpGlobals->frametime);
 
 		if ( iVolume < m_iTargetVolume )
 		{
@@ -2458,7 +2458,7 @@ void CBasePlayer :: UpdatePlayerSound ( void )
 	}
 
 	// keep track of virtual muzzle flash
-	m_iWeaponFlash -= (int)(256 * gpGlobals->frametime);
+	m_iWeaponFlash -= static_cast<int>(256 * gpGlobals->frametime);
 	if (m_iWeaponFlash < 0)
 		m_iWeaponFlash = 0;
 
@@ -3180,7 +3180,7 @@ void CSprayCan::Think( void )
 
 	playernum = ENTINDEX(pev->owner);
 
-	// ALERT(at_console, "Spray by player %i, %i of %i\n", playernum, (int)(pev->frame + 1), nFrames);
+	// ALERT(at_console, "Spray by player %i, %i of %i\n", playernum, static_cast<int>(pev->frame + 1), nFrames);
 
 	UTIL_MakeVectors(pev->angles);
 	UTIL_TraceLine ( pev->origin, pev->origin + gpGlobals->v_forward * 128, ignore_monsters, pev->owner, & tr);

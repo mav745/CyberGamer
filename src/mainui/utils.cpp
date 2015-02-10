@@ -254,7 +254,7 @@ int UI_FadeAlpha( int starttime, int endtime )
 		return 0xFFFFFFFF;
 	}
 
-	time = (int)( gpGlobals->time * 1000.f ) - starttime;
+	time = static_cast<int>( gpGlobals->time * 1000.f ) - starttime;
 
 	if( time >= endtime )
 	{
@@ -270,7 +270,7 @@ int UI_FadeAlpha( int starttime, int endtime )
 	// fade out
 	if(( endtime - time ) < fade_time )
 	{
-		int a1 = (int)((( endtime - time ) * 1.0 / fade_time ) * 255.);
+		int a1 = static_cast<int>((( endtime - time ) * 1.0 / fade_time ) * 255.);
 		alpha = bound( 0, a1, 255 );
 	}
 	else alpha = 255;
@@ -1010,7 +1010,7 @@ void UI_SpinControl_Draw( menuSpinControl_s *sc )
 	{
 		int	color;
 
-		color = PackAlpha( sc->generic.color, (int)(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
+		color = PackAlpha( sc->generic.color, static_cast<int>(255.f * (0.5f + 0.5f * sinf( static_cast<float>(uiStatic.realTime) / UI_PULSE_DIVISOR ))));
 
 		UI_DrawString( x, y, w, h, sc->generic.name, color, false, sc->generic.charWidth, sc->generic.charHeight, justify, shadow );
 		UI_DrawPic( leftX, leftY, arrowWidth, arrowHeight, (leftFocus) ? color : sc->generic.color, (leftFocus) ? sc->leftArrowFocus : sc->leftArrow );
@@ -1076,7 +1076,7 @@ void UI_Slider_Init( menuSlider_s *sl )
 	sl->generic.y2 -= uiStatic.sliderWidth;
 
 	sl->drawStep = (sl->generic.width - sl->generic.width2) / ((sl->maxValue - sl->minValue) / sl->range);
-	sl->numSteps = (int)(((sl->maxValue - sl->minValue) / sl->range) + 1);
+	sl->numSteps = static_cast<int>(((sl->maxValue - sl->minValue) / sl->range) + 1);
 }
 
 /*
@@ -1107,7 +1107,7 @@ const char *UI_Slider_Key( menuSlider_s *sl, int key, int down )
 			return uiSoundNull;
 
 		// find the current slider position
-		sliderX = (int)(sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps)));
+		sliderX = static_cast<int>(sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps)));
 					if( UI_CursorInRect( sliderX, sl->generic.y2, sl->generic.width2, sl->generic.height ))
 					{
 			sl->keepSlider = true;
@@ -1167,12 +1167,12 @@ void UI_Slider_Draw( menuSlider_s *sl )
 	sl->curValue = bound( sl->minValue, sl->curValue, sl->maxValue );
 
 	// calc slider position
-	sliderX = (int)(sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps)));
+	sliderX = static_cast<int>(sl->generic.x2 + (sl->drawStep * (sl->curValue * sl->numSteps)));
 
 	UI_DrawRectangleExt( sl->generic.x, sl->generic.y + uiStatic.sliderWidth, sl->generic.width, sl->generic.height2, uiInputBgColor, uiStatic.sliderWidth );
 	UI_DrawPic( sliderX, sl->generic.y2, sl->generic.width2, sl->generic.height, uiColorWhite, UI_SLIDER_MAIN );
 
-	textHeight = (int)(sl->generic.y - (sl->generic.charHeight * 1.5f));
+	textHeight = static_cast<int>(sl->generic.y - (sl->generic.charHeight * 1.5f));
 	UI_DrawString( sl->generic.x, textHeight, sl->generic.width, sl->generic.charHeight, sl->generic.name, uiColorHelp, true, sl->generic.charWidth, sl->generic.charHeight, justify, shadow );
 }
 
@@ -1294,7 +1294,7 @@ void UI_CheckBox_Draw( menuCheckBox_s *cb )
 	shadow = (cb->generic.flags & QMF_DROPSHADOW);
 
 	y = cb->generic.y + (cb->generic.height>>2);
-	textOffset = (int)(cb->generic.x + (cb->generic.width * 1.7f));
+	textOffset = static_cast<int>(cb->generic.x + (cb->generic.width * 1.7f));
 	UI_DrawString( textOffset, y, strlen( cb->generic.name ) * cb->generic.charWidth, cb->generic.charHeight, cb->generic.name, uiColorHelp, true, cb->generic.charWidth, cb->generic.charHeight, justify, shadow );
 
 	if( cb->generic.statusText && cb->generic.flags & QMF_NOTIFY )
@@ -1679,7 +1679,7 @@ void UI_Field_Draw( menuField_s *f )
 		UI_DrawRectangle( f->generic.x, f->generic.y, f->generic.width, f->generic.height, uiInputFgColor );
 	}
 
-	textHeight = (int)(f->generic.y - (f->generic.charHeight * 1.5f));
+	textHeight = static_cast<int>(f->generic.y - (f->generic.charHeight * 1.5f));
 	UI_DrawString( f->generic.x, textHeight, f->generic.width, f->generic.charHeight, f->generic.name, uiColorHelp, true, f->generic.charWidth, f->generic.charHeight, 0, shadow );
 
 	if( f->generic.flags & QMF_GRAYED )
@@ -1774,7 +1774,7 @@ void UI_Action_Init( menuAction_s *a )
 				a->generic.width = a->generic.charWidth * strlen( a->generic.name );
 
 			if( a->generic.height < 1 )
-				a->generic.height = (int)(a->generic.charHeight * 1.5f);
+				a->generic.height = static_cast<int>(a->generic.charHeight * 1.5f);
 		}
 	}
 
@@ -2075,7 +2075,7 @@ void UI_PicButton_Init( menuPicButton_s *pb )
 			pb->generic.width = pb->generic.charWidth * strlen( pb->generic.name );
 
 		if( pb->generic.height < 1 )
-			pb->generic.height = (int)(pb->generic.charHeight * 1.5f);
+			pb->generic.height = static_cast<int>(pb->generic.charHeight * 1.5f);
 	}
 
 	UI_ScaleCoords( &pb->generic.x, &pb->generic.y, &pb->generic.width, &pb->generic.height );

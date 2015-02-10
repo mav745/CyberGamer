@@ -1054,7 +1054,7 @@ void CFuncTrackTrain :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_
 	{
 		float delta = value;
 
-		delta = ((int)(pev->speed * 4) / (int)m_speed)*0.25f + 0.25f * delta;
+		delta = (static_cast<int>(pev->speed * 4) / static_cast<int>(m_speed))*0.25f + 0.25f * delta;
 		if ( delta > 1 )
 			delta = 1;
 		else if ( delta < -1 )
@@ -1132,14 +1132,14 @@ void CFuncTrackTrain :: UpdateSound( void )
 	{
 		// play startup sound for train
 		EMIT_SOUND_DYN(ENT(pev), CHAN_ITEM, "plats/ttrain_start1.wav", m_flVolume, ATTN_NORM, 0, 100);
-		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char*)STRING(pev->noise), m_flVolume, ATTN_NORM, 0, (int) flpitch);
+		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char*)STRING(pev->noise), m_flVolume, ATTN_NORM, 0, static_cast<int>(flpitch));
 		m_soundPlaying = 1;
 	}
 	else
 	{
 /*
 		// update pitch
-		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char*)STRING(pev->noise), m_flVolume, ATTN_NORM, SND_CHANGE_PITCH, (int) flpitch);
+		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char*)STRING(pev->noise), m_flVolume, ATTN_NORM, SND_CHANGE_PITCH, static_cast<int>(flpitch));
 */
 		// volume 0.0 - 1.0 - 6 bits
 		// m_sounds 3 bits

@@ -90,7 +90,7 @@ void CHalfLifeTeamplay :: Think ( void )
 
 	float flTimeLimit = CVAR_GET_FLOAT("mp_timelimit") * 60;
 
-	time_remaining = (int)(flTimeLimit ? ( flTimeLimit - gpGlobals->time ) : 0);
+	time_remaining = static_cast<int>(flTimeLimit ? ( flTimeLimit - gpGlobals->time ) : 0);
 
 	if ( flTimeLimit != 0 && gpGlobals->time >= flTimeLimit )
 	{

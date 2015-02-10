@@ -1071,7 +1071,7 @@ void EV_FireGauss( event_args_t *args )
 							{
 								vec3_t fwd;
 								VectorSubtract( beam_tr.endpos, forward, fwd );
-								gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, beam_tr.endpos, fwd, m_iBalls, (int)(flDamage * 0.3f), 0.1f, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0f, 200,
+								gEngfuncs.pEfxAPI->R_Sprite_Trail( TE_SPRITETRAIL, beam_tr.endpos, fwd, m_iBalls, static_cast<int>(flDamage * 0.3f), 0.1f, gEngfuncs.pfnRandomFloat( 10, 20 ) / 100.0f, 200,
 									255, 40 );
 							}
 
@@ -1667,9 +1667,9 @@ void EV_TrainPitchAdjust( event_args_t *args )
 	us_params = (unsigned short)args->iparam1;
 	stop	  = args->bparam1;
 
-	m_flVolume	= (float)(us_params & 0x003f)/40.0f;
-	noise		= (int)(((us_params) >> 12 ) & 0x0007);
-	pitch		= (int)( 10.0 * (float)( ( us_params >> 6 ) & 0x003f ) );
+	m_flVolume	= static_cast<float>(us_params & 0x003f)/40.0f;
+	noise		= static_cast<int>(((us_params) >> 12 ) & 0x0007);
+	pitch		= static_cast<int>( 10.0 * static_cast<float>( ( us_params >> 6 ) & 0x003f ) );
 
 	switch ( noise )
 	{

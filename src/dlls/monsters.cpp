@@ -1412,12 +1412,12 @@ float CBaseMonster :: OpenDoorAndWait( entvars_t *pevDoor )
 	{
 		//ALERT(at_aiconsole, "unlocked! ");
 		pcbeDoor->Use(this, this, USE_ON, 0.0);
-		//ALERT(at_aiconsole, "pevDoor->nextthink = %d ms\n", (int)(1000*pevDoor->nextthink));
-		//ALERT(at_aiconsole, "pevDoor->ltime = %d ms\n", (int)(1000*pevDoor->ltime));
-		//ALERT(at_aiconsole, "pev-> nextthink = %d ms\n", (int)(1000*pev->nextthink));
-		//ALERT(at_aiconsole, "pev->ltime = %d ms\n", (int)(1000*pev->ltime));
+		//ALERT(at_aiconsole, "pevDoor->nextthink = %d ms\n", static_cast<int>(1000*pevDoor->nextthink));
+		//ALERT(at_aiconsole, "pevDoor->ltime = %d ms\n", static_cast<int>(1000*pevDoor->ltime));
+		//ALERT(at_aiconsole, "pev-> nextthink = %d ms\n", static_cast<int>(1000*pev->nextthink));
+		//ALERT(at_aiconsole, "pev->ltime = %d ms\n", static_cast<int>(1000*pev->ltime));
 		flTravelTime = pevDoor->nextthink - pevDoor->ltime;
-		//ALERT(at_aiconsole, "Waiting %d ms\n", (int)(1000*flTravelTime));
+		//ALERT(at_aiconsole, "Waiting %d ms\n", static_cast<int>(1000*flTravelTime));
 		if ( pcbeDoor->pev->targetname )
 		{
 			edict_t *pentTarget = NULL;
@@ -2450,7 +2450,7 @@ CBaseEntity *CBaseMonster :: BestVisibleEnemy ( void )
 				// currently think is the best visible enemy. No need to do
 				// a distance check, just get mad at this one for now.
 				iBestRelationship = IRelationship ( pNextEnt );
-				iNearest = (int)(( pNextEnt->pev->origin - pev->origin ).Length());
+				iNearest = static_cast<int>(( pNextEnt->pev->origin - pev->origin ).Length());
 				pReturn = pNextEnt;
 			}
 			else if ( IRelationship( pNextEnt) == iBestRelationship )
@@ -2458,7 +2458,7 @@ CBaseEntity *CBaseMonster :: BestVisibleEnemy ( void )
 				// this entity is disliked just as much as the entity that
 				// we currently think is the best visible enemy, so we only
 				// get mad at it if it is closer.
-				iDist = (int)(( pNextEnt->pev->origin - pev->origin ).Length());
+				iDist = static_cast<int>(( pNextEnt->pev->origin - pev->origin ).Length());
 
 				if ( iDist <= iNearest )
 				{
