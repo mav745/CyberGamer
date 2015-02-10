@@ -1723,13 +1723,13 @@ void V_Move( int mx, int my )
 	vec3_t farpoint;
 	pmtrace_t tr;
 
-	fov = CalcFov( in_fov, (float)ScreenWidth, (float)ScreenHeight );
+	fov = CalcFov( in_fov, static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight) );
 
-	c_x = (float)ScreenWidth / 2.0;
-	c_y = (float)ScreenHeight / 2.0;
+	c_x = static_cast<float>(ScreenWidth) / 2.0f;
+	c_y = static_cast<float>(ScreenHeight) / 2.0f;
 
-	dx = (float)mx - c_x;
-	dy = (float)my - c_y;
+	dx = static_cast<float>(mx) - c_x;
+	dy = static_cast<float>(my) - c_y;
 
 	// Proportion we moved in each direction
 	fx = dx / c_x;

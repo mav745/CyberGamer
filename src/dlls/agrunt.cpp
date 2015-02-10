@@ -644,10 +644,10 @@ void CAGrunt :: Precache()
 //=========================================================
 Task_t	tlAGruntFail[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE },
-	{ TASK_WAIT,				(float)2		},
-	{ TASK_WAIT_PVS,			(float)0		},
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE) },
+	{ TASK_WAIT,				2.f		},
+	{ TASK_WAIT_PVS,			0.f		},
 };
 
 Schedule_t	slAGruntFail[] =
@@ -667,10 +667,10 @@ Schedule_t	slAGruntFail[] =
 //=========================================================
 Task_t	tlAGruntCombatFail[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE },
-	{ TASK_WAIT_FACE_ENEMY,		(float)2		},
-	{ TASK_WAIT_PVS,			(float)0		},
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE) },
+	{ TASK_WAIT_FACE_ENEMY,		2.f		},
+	{ TASK_WAIT_PVS,			0.f		},
 };
 
 Schedule_t	slAGruntCombatFail[] =
@@ -692,9 +692,9 @@ Schedule_t	slAGruntCombatFail[] =
 //=========================================================
 Task_t	tlAGruntStandoff[] =
 {
-	{ TASK_STOP_MOVING,				(float)0					},
-	{ TASK_SET_ACTIVITY,			(float)ACT_IDLE				},
-	{ TASK_WAIT_FACE_ENEMY,			(float)2					},
+	{ TASK_STOP_MOVING,				0.f					},
+	{ TASK_SET_ACTIVITY,			static_cast<float>(ACT_IDLE)				},
+	{ TASK_WAIT_FACE_ENEMY,			2.f					},
 };
 
 Schedule_t slAGruntStandoff[] =
@@ -718,8 +718,8 @@ Schedule_t slAGruntStandoff[] =
 //=========================================================
 Task_t	tlAGruntSuppressHornet[] =
 {
-	{ TASK_STOP_MOVING,		(float)0		},
-	{ TASK_RANGE_ATTACK1,	(float)0		},
+	{ TASK_STOP_MOVING,		0.f		},
+	{ TASK_RANGE_ATTACK1,	0.f		},
 };
 
 Schedule_t slAGruntSuppress[] =
@@ -738,9 +738,9 @@ Schedule_t slAGruntSuppress[] =
 //=========================================================
 Task_t	tlAGruntRangeAttack1[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_FACE_ENEMY,			(float)0		},
-	{ TASK_RANGE_ATTACK1,		(float)0		},
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_FACE_ENEMY,			0.f		},
+	{ TASK_RANGE_ATTACK1,		0.f		},
 };
 
 Schedule_t	slAGruntRangeAttack1[] =
@@ -760,11 +760,11 @@ Schedule_t	slAGruntRangeAttack1[] =
 
 Task_t	tlAGruntHiddenRangeAttack1[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,			(float)SCHED_STANDOFF },
-	{ TASK_AGRUNT_SETUP_HIDE_ATTACK,	0				},
-	{ TASK_STOP_MOVING,					0				},
-	{ TASK_FACE_IDEAL,					0				},
-	{ TASK_RANGE_ATTACK1_NOTURN,		(float)0		},
+	{ TASK_SET_FAIL_SCHEDULE,			static_cast<float>(SCHED_STANDOFF) },
+	{ TASK_AGRUNT_SETUP_HIDE_ATTACK,	0.f				},
+	{ TASK_STOP_MOVING,					0.f				},
+	{ TASK_FACE_IDEAL,					0.f				},
+	{ TASK_RANGE_ATTACK1_NOTURN,		0.f		},
 };
 
 Schedule_t	slAGruntHiddenRangeAttack[] =
@@ -787,13 +787,13 @@ Schedule_t	slAGruntHiddenRangeAttack[] =
 //=========================================================
 Task_t	tlAGruntTakeCoverFromEnemy[] =
 {
-	{ TASK_STOP_MOVING,				(float)0					},
-	{ TASK_WAIT,					(float)0.2					},
-	{ TASK_FIND_COVER_FROM_ENEMY,	(float)0					},
-	{ TASK_RUN_PATH,				(float)0					},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0					},
-	{ TASK_REMEMBER,				(float)bits_MEMORY_INCOVER	},
-	{ TASK_FACE_ENEMY,				(float)0					},
+	{ TASK_STOP_MOVING,				0.f					},
+	{ TASK_WAIT,					0.2f					},
+	{ TASK_FIND_COVER_FROM_ENEMY,	0.f					},
+	{ TASK_RUN_PATH,				0.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f					},
+	{ TASK_REMEMBER,				static_cast<float>(bits_MEMORY_INCOVER)	},
+	{ TASK_FACE_ENEMY,				0.f					},
 };
 
 Schedule_t	slAGruntTakeCoverFromEnemy[] =
@@ -812,25 +812,25 @@ Schedule_t	slAGruntTakeCoverFromEnemy[] =
 //=========================================================
 Task_t	tlAGruntVictoryDance[] =
 {
-	{ TASK_STOP_MOVING,						(float)0					},
-	{ TASK_SET_FAIL_SCHEDULE,				(float)SCHED_AGRUNT_THREAT_DISPLAY	},
-	{ TASK_WAIT,							(float)0.2					},
-	{ TASK_AGRUNT_GET_PATH_TO_ENEMY_CORPSE,	(float)0					},
-	{ TASK_WALK_PATH,						(float)0					},
-	{ TASK_WAIT_FOR_MOVEMENT,				(float)0					},
-	{ TASK_FACE_ENEMY,						(float)0					},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_CROUCH			},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_VICTORY_DANCE	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_VICTORY_DANCE	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_STAND			},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_THREAT_DISPLAY	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_CROUCH			},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_VICTORY_DANCE	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_VICTORY_DANCE	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_VICTORY_DANCE	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_VICTORY_DANCE	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_VICTORY_DANCE	},
-	{ TASK_PLAY_SEQUENCE,					(float)ACT_STAND			},
+	{ TASK_STOP_MOVING,						0.f					},
+	{ TASK_SET_FAIL_SCHEDULE,				static_cast<float>(SCHED_AGRUNT_THREAT_DISPLAY)	},
+	{ TASK_WAIT,							0.2f					},
+	{ TASK_AGRUNT_GET_PATH_TO_ENEMY_CORPSE,	0.f					},
+	{ TASK_WALK_PATH,						0.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,				0.f					},
+	{ TASK_FACE_ENEMY,						0.f					},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_CROUCH)			},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_VICTORY_DANCE)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_VICTORY_DANCE)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_STAND)			},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_THREAT_DISPLAY)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_CROUCH)			},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_VICTORY_DANCE)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_VICTORY_DANCE)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_VICTORY_DANCE)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_VICTORY_DANCE)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_VICTORY_DANCE)	},
+	{ TASK_PLAY_SEQUENCE,					static_cast<float>(ACT_STAND)			},
 };
 
 Schedule_t	slAGruntVictoryDance[] =
@@ -850,9 +850,9 @@ Schedule_t	slAGruntVictoryDance[] =
 //=========================================================
 Task_t	tlAGruntThreatDisplay[] =
 {
-	{ TASK_STOP_MOVING,			(float)0					},
-	{ TASK_FACE_ENEMY,			(float)0					},
-	{ TASK_PLAY_SEQUENCE,		(float)ACT_THREAT_DISPLAY	},
+	{ TASK_STOP_MOVING,			0.f					},
+	{ TASK_FACE_ENEMY,			0.f					},
+	{ TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_THREAT_DISPLAY)	},
 };
 
 Schedule_t	slAGruntThreatDisplay[] =

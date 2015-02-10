@@ -114,8 +114,8 @@ IMPLEMENT_SAVERESTORE( CBarney, CTalkMonster );
 //=========================================================
 Task_t	tlBaFollow[] =
 {
-	{ TASK_MOVE_TO_TARGET_RANGE,(float)128		},	// Move within 128 of target ent (client)
-	{ TASK_SET_SCHEDULE,		(float)SCHED_TARGET_FACE },
+	{ TASK_MOVE_TO_TARGET_RANGE,128.f		},	// Move within 128 of target ent (client)
+	{ TASK_SET_SCHEDULE,		static_cast<float>(SCHED_TARGET_FACE) },
 };
 
 Schedule_t	slBaFollow[] =
@@ -157,10 +157,10 @@ Schedule_t slBarneyEnemyDraw[] =
 
 Task_t	tlBaFaceTarget[] =
 {
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE },
-	{ TASK_FACE_TARGET,			(float)0		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE },
-	{ TASK_SET_SCHEDULE,		(float)SCHED_TARGET_CHASE },
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE) },
+	{ TASK_FACE_TARGET,			0.f		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE) },
+	{ TASK_SET_SCHEDULE,		static_cast<float>(SCHED_TARGET_CHASE) },
 };
 
 Schedule_t	slBaFaceTarget[] =
@@ -182,10 +182,10 @@ Schedule_t	slBaFaceTarget[] =
 
 Task_t	tlIdleBaStand[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE },
-	{ TASK_WAIT,				(float)2		}, // repick IDLESTAND every two seconds.
-	{ TASK_TLK_HEADRESET,		(float)0		}, // reset head position
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE) },
+	{ TASK_WAIT,				2.f		}, // repick IDLESTAND every two seconds.
+	{ TASK_TLK_HEADRESET,		0.f		}, // reset head position
 };
 
 Schedule_t	slIdleBaStand[] =

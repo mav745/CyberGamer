@@ -200,7 +200,7 @@ int CHud :: Redraw( float flTime, int intermission )
 
 void ScaleColors( int &r, int &g, int &b, int a )
 {
-	float x = (float)a / 255;
+	float x = static_cast<float>(a) / 255.f;
 	r = static_cast<int>(r * x);
 	g = static_cast<int>(g * x);
 	b = static_cast<int>(b * x);

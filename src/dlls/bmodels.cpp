@@ -316,17 +316,21 @@ void CFuncRotating :: KeyValue( KeyValueData* pkvd)
 {
 	if (FStrEq(pkvd->szKeyName, "fanfriction"))
 	{
-		m_flFanFriction = (float)atof(pkvd->szValue)/100.f;
+
+		m_flFanFriction = static_cast<float>(atof(pkvd->szValue)/100.);
+
+
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "Volume"))
 	{
-		m_flVolume = (float)atof(pkvd->szValue)/10.0f;
+		m_flVolume = static_cast<float>(atof(pkvd->szValue)/10.0);
 
 		if (m_flVolume > 1.0f)
 			m_flVolume = 1.0f;
 		if (m_flVolume < 0.0f)
 			m_flVolume = 0.0f;
+
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "spawnorigin"))

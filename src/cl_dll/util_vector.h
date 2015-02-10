@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -27,7 +27,7 @@ typedef int	string_t;				// from engine's pr_comp.h;
 typedef float vec_t;				// needed before including progdefs.h
 
 //=========================================================
-// 2DVector - used for many pathfinding and many other 
+// 2DVector - used for many pathfinding and many other
 // operations that are treated as planar rather than 3d.
 //=========================================================
 class Vector2D
@@ -39,8 +39,8 @@ public:
 	inline Vector2D operator-(const Vector2D& v)	const	{ return Vector2D(x-v.x, y-v.y);	}
 	inline Vector2D operator*(float fl)				const	{ return Vector2D(x*fl, y*fl);	}
 	inline Vector2D operator/(float fl)				const	{ return Vector2D(x/fl, y/fl);	}
-	
-	inline float Length(void)						const	{ return (float)sqrt(x*x + y*y );		}
+
+	inline float Length(void)						const	{ return sqrtf(x*x + y*y );		}
 
 	inline Vector2D Normalize ( void ) const
 	{
@@ -49,7 +49,7 @@ public:
 		float flLen = Length();
 		if ( flLen == 0 )
 		{
-			return Vector2D( (float)0, (float)0 );
+			return Vector2D( 0.f, 0.f );
 		}
 		else
 		{
@@ -73,9 +73,9 @@ public:
 	// Construction/destruction
 	inline Vector(void)								{ }
 	inline Vector(float X, float Y, float Z)		{ x = X; y = Y; z = Z;						}
-	inline Vector(double X, double Y, double Z)		{ x = (float)X; y = (float)Y; z = (float)Z;	}
-	inline Vector(int X, int Y, int Z)				{ x = (float)X; y = (float)Y; z = (float)Z;	}
-	inline Vector(const Vector& v)					{ x = v.x; y = v.y; z = v.z;				} 
+	inline Vector(double X, double Y, double Z)		{ x = static_cast<float>(X); y = static_cast<float>(Y); z = static_cast<float>(Z);	}
+	inline Vector(int X, int Y, int Z)				{ x = static_cast<float>(X); y = static_cast<float>(Y); z = static_cast<float>(Z);	}
+	inline Vector(const Vector& v)					{ x = v.x; y = v.y; z = v.z;				}
 	inline Vector(float rgfl[3])					{ x = rgfl[0]; y = rgfl[1]; z = rgfl[2];	}
 
 	// Operators
@@ -86,10 +86,10 @@ public:
 	inline Vector operator-(const Vector& v) const	{ return Vector(x-v.x, y-v.y, z-v.z);	}
 	inline Vector operator*(float fl) const			{ return Vector(x*fl, y*fl, z*fl);		}
 	inline Vector operator/(float fl) const			{ return Vector(x/fl, y/fl, z/fl);		}
-	
+
 	// Methods
 	inline void CopyToArray(float* rgfl) const		{ rgfl[0] = x, rgfl[1] = y, rgfl[2] = z; }
-	inline float Length(void) const					{ return (float)sqrt(x*x + y*y + z*z); }
+	inline float Length(void) const					{ return sqrtf(x*x + y*y + z*z); }
 	operator float *()								{ return &x; } // Vectors will now automatically convert to float * when needed
 	operator const float *() const					{ return &x; } // Vectors will now automatically convert to float * when needed
 	inline Vector Normalize(void) const
@@ -109,7 +109,7 @@ public:
 
 		return Vec2;
 	}
-	inline float Length2D(void) const					{ return (float)sqrt(x*x + y*y); }
+	inline float Length2D(void) const					{ return sqrtf(x*x + y*y); }
 
 	// Members
 	vec_t x, y, z;

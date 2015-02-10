@@ -431,7 +431,7 @@ int	CBullsquid :: Classify ( void )
 //=========================================================
 // IdleSound
 //=========================================================
-#define SQUID_ATTN_IDLE	(float)1.5
+#define SQUID_ATTN_IDLE	1.5f
 void CBullsquid :: IdleSound ( void )
 {
 	switch ( RANDOM_LONG(0,4) )
@@ -806,10 +806,10 @@ void CBullsquid :: RunAI ( void )
 // primary range attack
 Task_t	tlSquidRangeAttack1[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_RANGE_ATTACK1,		(float)0		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_RANGE_ATTACK1,		0.f		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
 };
 
 Schedule_t	slSquidRangeAttack1[] =
@@ -830,10 +830,10 @@ Schedule_t	slSquidRangeAttack1[] =
 // Chase enemy schedule
 Task_t tlSquidChaseEnemy1[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,	(float)SCHED_RANGE_ATTACK1	},// !!!OEM - this will stop nasty squid oscillation.
-	{ TASK_GET_PATH_TO_ENEMY,	(float)0					},
-	{ TASK_RUN_PATH,			(float)0					},
-	{ TASK_WAIT_FOR_MOVEMENT,	(float)0					},
+	{ TASK_SET_FAIL_SCHEDULE,	static_cast<float>(SCHED_RANGE_ATTACK1)	},// !!!OEM - this will stop nasty squid oscillation.
+	{ TASK_GET_PATH_TO_ENEMY,	0.f					},
+	{ TASK_RUN_PATH,			0.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,	0.f					},
 };
 
 Schedule_t slSquidChaseEnemy[] =
@@ -858,10 +858,10 @@ Schedule_t slSquidChaseEnemy[] =
 
 Task_t tlSquidHurtHop[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_SOUND_WAKE,			(float)0		},
-	{ TASK_SQUID_HOPTURN,		(float)0		},
-	{ TASK_FACE_ENEMY,			(float)0		},// in case squid didn't turn all the way in the air.
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_SOUND_WAKE,			0.f		},
+	{ TASK_SQUID_HOPTURN,		0.f		},
+	{ TASK_FACE_ENEMY,			0.f		},// in case squid didn't turn all the way in the air.
 };
 
 Schedule_t slSquidHurtHop[] =
@@ -877,10 +877,10 @@ Schedule_t slSquidHurtHop[] =
 
 Task_t tlSquidSeeCrab[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_SOUND_WAKE,			(float)0			},
-	{ TASK_PLAY_SEQUENCE,		(float)ACT_EXCITED	},
-	{ TASK_FACE_ENEMY,			(float)0			},
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_SOUND_WAKE,			0.f			},
+	{ TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_EXCITED)	},
+	{ TASK_FACE_ENEMY,			0.f			},
 };
 
 Schedule_t slSquidSeeCrab[] =
@@ -898,20 +898,20 @@ Schedule_t slSquidSeeCrab[] =
 // squid walks to something tasty and eats it.
 Task_t tlSquidEat[] =
 {
-	{ TASK_STOP_MOVING,				(float)0				},
-	{ TASK_EAT,						(float)10				},// this is in case the squid can't get to the food
-	{ TASK_STORE_LASTPOSITION,		(float)0				},
-	{ TASK_GET_PATH_TO_BESTSCENT,	(float)0				},
-	{ TASK_WALK_PATH,				(float)0				},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0				},
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_EAT			},
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_EAT			},
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_EAT			},
-	{ TASK_EAT,						(float)50				},
-	{ TASK_GET_PATH_TO_LASTPOSITION,(float)0				},
-	{ TASK_WALK_PATH,				(float)0				},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0				},
-	{ TASK_CLEAR_LASTPOSITION,		(float)0				},
+	{ TASK_STOP_MOVING,				0.f				},
+	{ TASK_EAT,						10.f				},// this is in case the squid can't get to the food
+	{ TASK_STORE_LASTPOSITION,		0.f				},
+	{ TASK_GET_PATH_TO_BESTSCENT,	0.f				},
+	{ TASK_WALK_PATH,				0.f				},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f				},
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_EAT)			},
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_EAT)			},
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_EAT)			},
+	{ TASK_EAT,						50.f				},
+	{ TASK_GET_PATH_TO_LASTPOSITION,0.f				},
+	{ TASK_WALK_PATH,				0.f				},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f				},
+	{ TASK_CLEAR_LASTPOSITION,		0.f				},
 };
 
 Schedule_t slSquidEat[] =
@@ -935,21 +935,21 @@ Schedule_t slSquidEat[] =
 // the squid. This schedule plays a sniff animation before going to the source of food.
 Task_t tlSquidSniffAndEat[] =
 {
-	{ TASK_STOP_MOVING,				(float)0				},
-	{ TASK_EAT,						(float)10				},// this is in case the squid can't get to the food
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_DETECT_SCENT },
-	{ TASK_STORE_LASTPOSITION,		(float)0				},
-	{ TASK_GET_PATH_TO_BESTSCENT,	(float)0				},
-	{ TASK_WALK_PATH,				(float)0				},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0				},
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_EAT			},
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_EAT			},
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_EAT			},
-	{ TASK_EAT,						(float)50				},
-	{ TASK_GET_PATH_TO_LASTPOSITION,(float)0				},
-	{ TASK_WALK_PATH,				(float)0				},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0				},
-	{ TASK_CLEAR_LASTPOSITION,		(float)0				},
+	{ TASK_STOP_MOVING,				0.f				},
+	{ TASK_EAT,						10.f				},// this is in case the squid can't get to the food
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_DETECT_SCENT) },
+	{ TASK_STORE_LASTPOSITION,		0.f				},
+	{ TASK_GET_PATH_TO_BESTSCENT,	0.f				},
+	{ TASK_WALK_PATH,				0.f				},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f				},
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_EAT)			},
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_EAT)			},
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_EAT)			},
+	{ TASK_EAT,						50.f				},
+	{ TASK_GET_PATH_TO_LASTPOSITION,0.f				},
+	{ TASK_WALK_PATH,				0.f				},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f				},
+	{ TASK_CLEAR_LASTPOSITION,		0.f				},
 };
 
 Schedule_t slSquidSniffAndEat[] =
@@ -972,18 +972,18 @@ Schedule_t slSquidSniffAndEat[] =
 // squid does this to stinky things.
 Task_t tlSquidWallow[] =
 {
-	{ TASK_STOP_MOVING,				(float)0				},
-	{ TASK_EAT,						(float)10				},// this is in case the squid can't get to the stinkiness
-	{ TASK_STORE_LASTPOSITION,		(float)0				},
-	{ TASK_GET_PATH_TO_BESTSCENT,	(float)0				},
-	{ TASK_WALK_PATH,				(float)0				},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0				},
-	{ TASK_PLAY_SEQUENCE,			(float)ACT_INSPECT_FLOOR},
-	{ TASK_EAT,						(float)50				},// keeps squid from eating or sniffing anything else for a while.
-	{ TASK_GET_PATH_TO_LASTPOSITION,(float)0				},
-	{ TASK_WALK_PATH,				(float)0				},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0				},
-	{ TASK_CLEAR_LASTPOSITION,		(float)0				},
+	{ TASK_STOP_MOVING,				0.f				},
+	{ TASK_EAT,						10.f				},// this is in case the squid can't get to the stinkiness
+	{ TASK_STORE_LASTPOSITION,		0.f				},
+	{ TASK_GET_PATH_TO_BESTSCENT,	0.f				},
+	{ TASK_WALK_PATH,				0.f				},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f				},
+	{ TASK_PLAY_SEQUENCE,			static_cast<float>(ACT_INSPECT_FLOOR)},
+	{ TASK_EAT,						50.f				},// keeps squid from eating or sniffing anything else for a while.
+	{ TASK_GET_PATH_TO_LASTPOSITION,0.f				},
+	{ TASK_WALK_PATH,				0.f				},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f				},
+	{ TASK_CLEAR_LASTPOSITION,		0.f				},
 };
 
 Schedule_t slSquidWallow[] =

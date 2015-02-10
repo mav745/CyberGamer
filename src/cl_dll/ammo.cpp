@@ -997,7 +997,7 @@ void DrawAmmoBar(WEAPON *p, int x, int y, int width, int height)
 		if (!gWR.CountAmmo(p->iAmmoType))
 			return;
 
-		float f = (float)gWR.CountAmmo(p->iAmmoType)/(float)p->iMax1;
+		float f = static_cast<float>(gWR.CountAmmo(p->iAmmoType))/static_cast<float>(p->iMax1);
 
 		x = DrawBar(x, y, width, height, f);
 
@@ -1006,7 +1006,7 @@ void DrawAmmoBar(WEAPON *p, int x, int y, int width, int height)
 
 		if (p->iAmmo2Type != -1)
 		{
-			f = (float)gWR.CountAmmo(p->iAmmo2Type)/(float)p->iMax2;
+			f = static_cast<float>(gWR.CountAmmo(p->iAmmo2Type))/static_cast<float>(p->iMax2);
 
 			x += 5; //!!!
 

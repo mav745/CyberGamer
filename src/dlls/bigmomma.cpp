@@ -433,7 +433,10 @@ void CBigMomma :: SetYawSpeed ( void )
 	default:
 		ys = 90;
 	}
-	pev->yaw_speed = (float)ys;
+
+	pev->yaw_speed = static_cast<float>(ys);
+
+
 }
 
 //=========================================================
@@ -833,18 +836,18 @@ enum
 
 Task_t	tlBigNode[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,	(float)SCHED_NODE_FAIL },
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_FIND_NODE,			(float)0		},	// Find my next node
-	{ TASK_PLAY_NODE_PRESEQUENCE,(float)0		},	// Play the pre-approach sequence if any
-	{ TASK_MOVE_TO_NODE_RANGE,	(float)0		},	// Move within node range
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_NODE_YAW,			(float)0		},
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_WAIT_NODE,			(float)0		},	// Wait for node delay
-	{ TASK_PLAY_NODE_SEQUENCE,	(float)0		},	// Play the sequence if one exists
-	{ TASK_PROCESS_NODE,		(float)0		},	// Fire targets, etc.
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
+	{ TASK_SET_FAIL_SCHEDULE,	static_cast<float>(SCHED_NODE_FAIL) },
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_FIND_NODE,			0.f		},	// Find my next node
+	{ TASK_PLAY_NODE_PRESEQUENCE,0.f		},	// Play the pre-approach sequence if any
+	{ TASK_MOVE_TO_NODE_RANGE,	0.f		},	// Move within node range
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_NODE_YAW,			0.f		},
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_WAIT_NODE,			0.f		},	// Wait for node delay
+	{ TASK_PLAY_NODE_SEQUENCE,	0.f		},	// Play the sequence if one exists
+	{ TASK_PROCESS_NODE,		0.f		},	// Fire targets, etc.
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
 };
 
 Schedule_t	slBigNode[] =
@@ -861,8 +864,8 @@ Schedule_t	slBigNode[] =
 
 Task_t	tlNodeFail[] =
 {
-	{ TASK_NODE_DELAY,			(float)10		},	// Try to do something else for 10 seconds
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
+	{ TASK_NODE_DELAY,			10.f		},	// Try to do something else for 10 seconds
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
 };
 
 Schedule_t	slNodeFail[] =

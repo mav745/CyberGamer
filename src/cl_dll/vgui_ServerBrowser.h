@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -21,8 +21,8 @@ class CTransparentPanel;
 class CommandButton;
 
 // Scoreboard positions
-#define SB_X_INDENT				(20 * ((float)ScreenHeight / 640))
-#define SB_Y_INDENT				(20 * ((float)ScreenHeight / 480))
+#define SB_X_INDENT				(20.f * (static_cast<float>(ScreenHeight) / 640.f))
+#define SB_Y_INDENT				(20.f * (static_cast<float>(ScreenHeight) / 480.f))
 
 class ServerBrowser : public CTransparentPanel
 {
