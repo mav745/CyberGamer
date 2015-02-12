@@ -356,7 +356,7 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 		{
 			m_fFireOnEmpty = TRUE;
 		}
-		//gEngfuncs.Con_Printf("m_iClip %i\n",m_iClip);
+		gEngfuncs.Con_Printf("IN_ATTACK %.2f\n",m_flNextPrimaryAttack); 
 		PrimaryAttack();
 	}
 	else if ( m_pPlayer->pev->button & IN_RELOAD && iMaxClip() != WEAPON_NOCLIP && !m_fInReload )
@@ -622,13 +622,13 @@ void HUD_InitClientWeapons( void )
 	HUD_PrepEntity( &player		, NULL );
 
 	// Allocate slot(s) for each weapon that we are going to be predicting
-	HUD_PrepEntity( &g_Glock	, &player );
+	HUD_PrepEntity( &g_Glock	, &player );// g_Glock.m_iClip = 10;//g_Glock.m_iDefaultAmmo;
 	HUD_PrepEntity( &g_Crowbar	, &player );
-	HUD_PrepEntity( &g_Python	, &player );
-	HUD_PrepEntity( &g_Mp5		, &player );
-	HUD_PrepEntity( &g_Crossbow, &player );
-	HUD_PrepEntity( &g_Shotgun	, &player );
-	HUD_PrepEntity( &g_Rpg		, &player );
+	HUD_PrepEntity( &g_Python	, &player );// g_Python.m_iClip = 10;//g_Python.m_iDefaultAmmo;
+	HUD_PrepEntity( &g_Mp5		, &player );// g_Mp5.m_iClip = 10;//g_Mp5.m_iDefaultAmmo;
+	HUD_PrepEntity( &g_Crossbow, &player );// g_Crossbow.m_iClip = 10;//g_Crossbow.m_iDefaultAmmo;
+	HUD_PrepEntity( &g_Shotgun	, &player );// g_Shotgun.m_iClip = 10;//g_Shotgun.m_iDefaultAmmo;
+	HUD_PrepEntity( &g_Rpg		, &player );// g_Rpg.m_iClip = 10;//g_Rpg.m_iDefaultAmmo;
 	HUD_PrepEntity( &g_Gauss	, &player );
 	HUD_PrepEntity( &g_Egon		, &player );
 	HUD_PrepEntity( &g_HGun		, &player );
@@ -697,6 +697,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	// Get current clock
 	gpGlobals->time = static_cast<float>(time);
 	//gEngfuncs.Con_Printf("+attack %i\n",!!(cmd->buttons & IN_ATTACK));
+	//gEngfuncs.Con_Printf("from->client.m_iId %i\n",from->client.m_iId);
 	// Fill in data based on selected weapon
 	// FIXME, make this a method in each weapon?  where you pass in an entity_state_t *?
 	switch ( from->client.m_iId )
@@ -757,7 +758,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 			pWeapon = &g_Snark;
 			break;
 	}
-
+	//gEngfuncs.Con_Printf("post2");
 	// Store pointer to our destination entity_state_t so we can get our origin, etc. from it
 	//  for setting up events on the client
 	g_finalstate = to;
@@ -783,8 +784,8 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	// We are not predicting the current weapon, just bow out here.
 	if ( !pWeapon )
 		return;
-
-	
+	//gEngfuncs.Con_Printf("post3\n");
+	//gEngfuncs.Con_Printf("pfrom 0x%x ",from->weapondata);
 	for ( i = 0; i < 32; i++ )
 	{
 		pCurrent = g_pWpns[ i ];
@@ -794,12 +795,14 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 		}
 
 		pfrom = &from->weapondata[ i ];
-		//gEngfuncs.Con_Printf("[%i]->m_iClip %i\n",i,pfrom->m_iClip);
+		
+		//if (i == 2) 
+		//	gEngfuncs.Con_Printf("NextPrimat %.2f, pform 0x%x, time %i\n",pfrom->m_flNextPrimaryAttack,pfrom,random_seed);
 
 		pCurrent->m_fInReload			= pfrom->m_fInReload;
 		pCurrent->m_fInSpecialReload	= pfrom->m_fInSpecialReload;
 //		pCurrent->m_flPumpTime			= pfrom->m_flPumpTime;
-		pCurrent->m_iClip				= pfrom->m_iClip;
+		pCurrent->m_iClip					= pfrom->m_iClip;
 		pCurrent->m_flNextPrimaryAttack	= pfrom->m_flNextPrimaryAttack;
 		pCurrent->m_flNextSecondaryAttack = pfrom->m_flNextSecondaryAttack;
 		pCurrent->m_flTimeWeaponIdle	= pfrom->m_flTimeWeaponIdle;
@@ -815,7 +818,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 		player.m_rgAmmo[ pCurrent->m_iPrimaryAmmoType ]	= (int)from->client.vuser4[ 1 ];
 		player.m_rgAmmo[ pCurrent->m_iSecondaryAmmoType ]	= (int)from->client.vuser4[ 2 ];
 	}
-
+	//gEngfuncs.Con_Printf("\n");
 	// For random weapon events, use this seed to seed random # generator
 	player.random_seed = random_seed;
 
@@ -999,6 +1002,9 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 		to->client.vuser4[1]				= static_cast<float>(player.m_rgAmmo[ pCurrent->m_iPrimaryAmmoType ]);
 		to->client.vuser4[2]				= static_cast<float>(player.m_rgAmmo[ pCurrent->m_iSecondaryAmmoType ]);
 
+		//if (i == 2)
+		//	gEngfuncs.Con_Printf("NextPrimat %.2f, pto 0x%x, time %i\n",pto->m_flNextPrimaryAttack,pto,random_seed);
+		
 /*		if ( pto->m_flPumpTime != -9999 )
 		{
 			pto->m_flPumpTime -= cmd->msec / 1000.0;
@@ -1081,6 +1087,7 @@ void _DLLEXPORT HUD_PostRunCmd( struct local_state_s *from, struct local_state_s
 #if defined( CLIENT_WEAPONS )
 	if ( cl_lw && cl_lw->value )
 	{
+		//gEngfuncs.Con_Printf("to HUD_WeaponsPostThink\n");;
 		HUD_WeaponsPostThink( from, to, cmd, time, random_seed );
 	}
 	else

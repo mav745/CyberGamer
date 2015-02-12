@@ -1635,7 +1635,7 @@ void CL_InitLocal( void )
 	rate = Cvar_Get( "rate", "25000", CVAR_USERINFO|CVAR_ARCHIVE, "player network rate" );
 	hltv = Cvar_Get( "hltv", "0", CVAR_USERINFO|CVAR_LATCH, "HLTV mode" );
 	cl_showfps = Cvar_Get( "cl_showfps", "1", CVAR_ARCHIVE, "show client fps" );
-	cl_smooth = Cvar_Get ("cl_smooth", "0", CVAR_ARCHIVE, "smooth up stair climbing and interpolate position in multiplayer" );
+	cl_smooth = Cvar_Get ("cl_smooth", "1", CVAR_ARCHIVE|CVAR_READ_ONLY, "smooth up stair climbing and interpolate position in multiplayer" );
 	cl_cmdbackup = Cvar_Get( "cl_cmdbackup", "10", CVAR_ARCHIVE, "how many additional history commands are sent" );
 	cl_cmdrate = Cvar_Get( "cl_cmdrate", "30", CVAR_ARCHIVE, "Max number of command packets sent to server per second" );
 	cl_draw_particles = Cvar_Get( "cl_draw_particles", "1", CVAR_ARCHIVE, "Disable any particle effects" );
@@ -1769,18 +1769,18 @@ void Host_ClientFrame( void )
 		if( !cl.audio_prepped ) CL_PrepSound();
 	}
 
-	// update the screen
-	SCR_UpdateScreen ();
-
-	// update audio
-	S_RenderFrame( &cl.refdef );
-
 	// send a new command message to the server
 	CL_SendCommand();
 
 	// predict all unacknowledged movements
 	CL_PredictMovement();
 
+	// update the screen
+	SCR_UpdateScreen ();
+
+	// update audio
+	S_RenderFrame( &cl.refdef );
+	
 	// decay dynamic lights
 	CL_DecayLights ();
 

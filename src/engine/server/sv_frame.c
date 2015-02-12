@@ -406,6 +406,7 @@ void SV_EmitPings( sizebuf_t *msg )
 	sv_client_t	*cl;
 	int		packet_loss;
 	int		i, ping;
+	//char txt[64];
 
 	BF_WriteByte( msg, svc_updatepings );
 
@@ -415,7 +416,7 @@ void SV_EmitPings( sizebuf_t *msg )
 			continue;
 
 		SV_GetPlayerStats( cl, &ping, &packet_loss );
-
+		
 		// there are 25 bits for each client
 		BF_WriteOneBit( msg, 1 );
 		BF_WriteUBitLong( msg, i, MAX_CLIENT_BITS );
@@ -508,7 +509,7 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 	if( cl->local_weapons && svgame.dllFuncs.pfnGetWeaponData( clent, frame->weapondata ))
 	{
 		Q_memset( &nullwd, 0, sizeof( nullwd ));
-
+ 
 		for( i = 0; i < 32; i++ )
 		{
 			if( cl->delta_sequence == -1 ) from_wd = &nullwd;

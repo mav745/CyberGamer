@@ -1108,6 +1108,7 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 	uint		iValue;
 	const char	*pStr;
 
+	
 	if( Delta_CompareField( pField, from, to, timebase ))
 	{
 		BF_WriteOneBit( msg, 0 );	// unchanged
@@ -1135,6 +1136,14 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 		iValue = *(uint *)((byte *)to + pField->offset );
 		iValue = Delta_ClampIntegerField( iValue, bSigned, pField->bits );
 		iValue *= (uint)pField->multiplier;
+		
+//		if (!strcmp(pField->name,"m_iClip"))
+//		{
+//			char txt[64];
+//			sprintf(txt,"server m_iClip, %i, from 0x%x, to 0x%x\n",iValue, from, to);
+//			Sys_Print(txt);
+//		}
+		
 		//Sys_Print(pField->name);
 		//Sys_Print("\n");
 //		if (!strcmp(pField->name,"weapons"))
@@ -1192,6 +1201,12 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 		pStr = (char *)((byte *)to + pField->offset );
 		BF_WriteString( msg, pStr );
 	}
+//	if (!strcmp(pField->name,"m_iClip"))
+//	{
+//		char txt[64];
+//		sprintf(txt,"m_iClip, to %i\n",iValue);
+//		Sys_Print(txt);
+//	}
 	return true;
 }
 
@@ -1213,6 +1228,7 @@ qboolean Delta_ReadField( sizebuf_t *msg, delta_t *pField, void *from, void *to,
 	char		*pOut;
 
 	bChanged = BF_ReadOneBit( msg );
+	//if (!bChanged) return FALSE;
 
 	ASSERT( pField->multiplier != 0.0f );
 
@@ -1248,10 +1264,22 @@ qboolean Delta_ReadField( sizebuf_t *msg, delta_t *pField, void *from, void *to,
 		{
 			iValue = BF_ReadBitLong( msg, pField->bits, bSigned );
 			iValue /= (uint)pField->multiplier;
+//			if (!strcmp(pField->name,"m_iClip"))
+//			{
+//				char txt[64];
+//				sprintf(txt,"client m_iClip, %i, from 0x%x, to 0x%x\n",iValue, from, to);
+//				Sys_Print(txt);
+//			}
 		}
 		else
 		{
 			iValue = *(uint *)((byte *)from + pField->offset );
+//			if (!strcmp(pField->name,"m_iClip"))
+//			{
+//				char txt[64];
+//				sprintf(txt,"unchanged m_iClip, %i, from 0x%x, to 0x%x\n",iValue, from, to);
+//				Sys_Print(txt);
+//			}
 		}
 		*(uint *)((byte *)to + pField->offset ) = iValue;
 	}
@@ -1323,6 +1351,7 @@ qboolean Delta_ReadField( sizebuf_t *msg, delta_t *pField, void *from, void *to,
 		pOut = (char *)((byte *)to + pField->offset );
 		Q_strncpy( pOut, pStr, pField->size );
 	}
+	
 	return bChanged;
 }
 
@@ -1642,6 +1671,7 @@ void MSG_ReadWeaponData( sizebuf_t *msg, weapon_data_t *from, weapon_data_t *to,
 	ASSERT( pField );
 
 	*to = *from;
+	//memcpy(to,from,sizeof(weapon_data_t));
 
 	// process fields
 	for( i = 0; i < dt->numFields; i++, pField++ )

@@ -117,15 +117,16 @@ GNU General Public License for more details.
 #define MAX_RENDER_DECALS		4096	// max rendering decals per a level
 
 // sound flags
-#define SND_VOLUME			(1<<0)	// a scaled byte
-#define SND_ATTENUATION		(1<<1)	// a byte
-#define SND_LARGE_INDEX		(1<<2)	// a send sound as short
+#define SND_VOLUME		(1<<0)	// a scaled byte
+#define SND_ATTENUATION	(1<<1)	// a byte
+#define SND_LARGE_INDEX	(1<<2)	// a send sound as short
 #define SND_PITCH			(1<<3)	// a byte
 #define SND_SENTENCE		(1<<4)	// set if sound num is actually a sentence num
 #define SND_STOP			(1<<5)	// stop the sound
-#define SND_CHANGE_VOL		(1<<6)	// change sound vol
-#define SND_CHANGE_PITCH		(1<<7)	// change sound pitch
+#define SND_CHANGE_VOL	(1<<6)	// change sound vol
+#define SND_CHANGE_PITCH	(1<<7)	// change sound pitch
 #define SND_SPAWNING		(1<<8)	// we're spawning, used in some cases for ambients (not sent across network)
+#define SND_PMOVESTEP	(1<<9)	//MAV: pmove stepsound on server (ignored for local client)
 
 // decal flags
 #define FDECAL_PERMANENT		0x01	// This decal should not be removed in favor of any new decals

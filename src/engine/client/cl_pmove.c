@@ -708,7 +708,7 @@ void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state
 	pmove->bInDuck = cd->bInDuck;
 	pmove->usehull = (cd->flags & FL_DUCKING) ? 1 : 0; // reset hull
 	pmove->flTimeStepSound = cd->flTimeStepSound;
-	pmove->iStepLeft = state->iStepLeft;
+	//pmove->iStepLeft = state->iStepLeft;
 	pmove->flFallVelocity = state->flFallVelocity;
 	pmove->flSwimTime = (float)cd->flSwimTime;
 	VectorCopy( cd->punchangle, pmove->punchangle );
@@ -753,19 +753,24 @@ CL_PostRunCmd
 Done after running a player command.
 ===========
 */
-void CL_PostRunCmd( usercmd_t *ucmd, int random_seed )
+
+void CL_PostRunCmd( usercmd_t *ucmd, int random_seed, int pred_frame )
 {
 	local_state_t	*from, *to;
 
 	// TODO: write real predicting code
 
-	from = &cl.predict[cl.predictcount & CL_UPDATE_MASK];
-	to = &cl.predict[(cl.predictcount + 1) & CL_UPDATE_MASK];
+	from = &cl.predict[(cl.predictcount + pred_frame) & CL_UPDATE_MASK];
+	to   = &cl.predict[(cl.predictcount + pred_frame + 1) & CL_UPDATE_MASK];
 
 	*to = *from;
 
-	clgame.dllFuncs.pfnPostRunCmd( from, to, ucmd, clgame.pmove->runfuncs, cl.time, random_seed );
-	cl.predictcount++;
+	clgame.dllFuncs.pfnPostRunCmd( 
+				from, to, ucmd, clgame.pmove->runfuncs, 
+				cl.frames[(cl.predictcount + pred_frame) & CL_UPDATE_MASK].time,
+				//cl.time, 
+				random_seed );
+	
 }
 
 /*
@@ -783,6 +788,7 @@ void CL_PredictMovement( void )
 	int		current_command_mod;
 	cl_entity_t	*player, *viewent;
 	clientdata_t	*cd;
+	//int predictcount = cl.predictcount;
 	//char txt[64];
 
 	if( cls.state != ca_active ) return;
@@ -870,18 +876,27 @@ void CL_PredictMovement( void )
 		//Sys_Print(txt);
 
 		// motor!
+		clgame.pmove->runfuncs = (outgoing_command - current_command == 1)? TRUE : FALSE;
 		clgame.dllFuncs.pfnPlayerMove( clgame.pmove, false ); // run frames
+		
 		//clgame.pmove->runfuncs = ( current_command > outgoing_command - 1 ) ? true : false;
+		
+		//cl.predictcount = predictcount + frame;
 
+		CL_PostRunCmd( &clgame.pmove->cmd, current_command,frame-1 );
+		
 		//sprintf(txt,"(%i)%.2f ",clgame.pmove->cmd.buttons,clgame.pmove->view_ofs[2]);
 		//Sys_Print(txt);
 		//cls.netchan.last_predicted = current_command;
+		
 		frame++;
 	}
 	//Sys_Print("\n");
 	//clgame.pmove->runfuncs = true;
-	CL_PostRunCmd( cl.refdef.cmd, current_command );
+	
 
+	//cl.predictcount = predictcount;
+	//cl.predictcount++;
 	// copy results out for rendering
 	//player->curstate.oldbuttons = clgame.pmove->oldbuttons;
 

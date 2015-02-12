@@ -812,6 +812,7 @@ void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta )
 	// update local player states
 	if( player != NULL )
 	{
+//		char txt[64];
 		entity_state_t	*ps, *pps;
 		clientdata_t	*pcd, *ppcd;
 		weapon_data_t	*wd, *pwd;
@@ -823,7 +824,10 @@ void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta )
 		ps = &cl.predict[cl.predictcount & CL_UPDATE_MASK].playerstate;
 		pcd = &cl.predict[cl.predictcount & CL_UPDATE_MASK].client;
 		wd = cl.predict[cl.predictcount & CL_UPDATE_MASK].weapondata;
-
+		
+//		sprintf(txt,"wd 0x%x, clip %i\n",wd,wd[2].m_iClip); 
+//		Sys_Print(txt); 
+		
 		clgame.dllFuncs.pfnTxferPredictionData( ps, pps, pcd, ppcd, wd, pwd );
 		clgame.dllFuncs.pfnTxferLocalOverrides( &player->curstate, pcd );
 	}
@@ -838,7 +842,8 @@ void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta )
 	}
 
 	cl.frame = *newframe;
-	cl.predict[cl.predictcount & CL_UPDATE_MASK] = cl.frame.local;
+	cl.predict[cl.predictcount & CL_UPDATE_MASK].playerstate = cl.frame.local.playerstate;
+	
 }
 
 /*

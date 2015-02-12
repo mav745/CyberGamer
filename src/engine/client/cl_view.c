@@ -45,7 +45,7 @@ void V_SetupRefDef( void )
 	clgame.viewent.index = cl.playernum + 1;
 
 	cl.refdef.movevars = &clgame.movevars;
-	cl.refdef.onground = ( cl.frame.local.client.flags & FL_ONGROUND ) ? 1 : 0;
+	//cl.refdef.onground = ( cl.frame.local.client.flags & FL_ONGROUND ) ? 1 : 0;
 	cl.refdef.health = (int)cl.frame.local.client.health;
 	cl.refdef.playernum = cl.playernum;
 	cl.refdef.max_entities = clgame.maxEntities;
@@ -91,8 +91,9 @@ void V_SetupRefDef( void )
 	if( glState.wideScreen && r_adjust_fov->integer )
 		V_AdjustFov( &cl.refdef.fov_x, &cl.refdef.fov_y, (float)cl.refdef.viewport[2], (float)cl.refdef.viewport[3], false );
 
-	if( CL_IsPredicted( ) && !cl.refdef.demoplayback )
+	if(/* CL_IsPredicted( ) && */!cl.refdef.demoplayback )
 	{
+		
 		VectorCopy( cl.predicted_origin, cl.refdef.simorg );
 		VectorCopy( cl.predicted_velocity, cl.refdef.simvel );
 		VectorCopy( cl.predicted_viewofs, cl.refdef.viewheight );
@@ -307,6 +308,10 @@ void V_CalcRefDef( void )
 
 	do
 	{
+//		char txt[64];
+//		sprintf(txt,"V_CalcRefDef, %.2f\n",cl.refdef.simorg[2]);
+//		Sys_Print(txt);
+		
 		clgame.dllFuncs.pfnCalcRefdef( &cl.refdef );
 		V_MergeOverviewRefdef( &cl.refdef );
 		R_RenderFrame( &cl.refdef, true );

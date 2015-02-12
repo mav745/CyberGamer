@@ -417,6 +417,8 @@ text to the screen.
 */
 void SCR_UpdateScreen( void )
 {
+//	char txt[64];
+	
 	if( !V_PreRender( )) return;
 
 	switch( cls.state )
@@ -428,7 +430,12 @@ void SCR_UpdateScreen( void )
 		SCR_DrawPlaque();
 		break;
 	case ca_active:
+		
 		V_RenderView();
+		
+//		sprintf(txt,"ca_active, %.2f\n",cl.refdef.simorg[2]);
+//		Sys_Print(txt);
+		
 		break;
 	case ca_cinematic:
 		SCR_DrawCinematic();

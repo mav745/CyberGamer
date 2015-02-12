@@ -1776,13 +1776,13 @@ void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 
 	cl->local_weapons = Q_atoi( Info_ValueForKey( cl->userinfo, "cl_lw" )) ? true : false;
 	cl->lag_compensation = Q_atoi( Info_ValueForKey( cl->userinfo, "cl_lc" )) ? true : false;
-	if (true)
-	{
-		char txt[64];
-		sprintf(txt,"local_weapons %i, lag_compensation %i\n",
-				  cl->local_weapons,cl->lag_compensation);
-		Sys_Print(txt);
-	}
+//	if (true)
+//	{
+//		char txt[64];
+//		sprintf(txt,"local_weapons %i, lag_compensation %i\n",
+//				  cl->local_weapons,cl->lag_compensation);
+//		Sys_Print(txt);
+//	}
 	
 	val = Info_ValueForKey( cl->userinfo, "cl_updaterate" );
 

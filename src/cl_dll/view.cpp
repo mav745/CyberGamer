@@ -199,10 +199,12 @@ float V_CalcBob ( struct ref_params_s *pparams )
 
 	// bob is proportional to simulated velocity in the xy plane
 	// (don't count Z, or jumping messes it up)
+	vel[0] = vel[1] = vel[2] = 0;
 	VectorCopy( pparams->simvel, vel );
-	vel[2] = 0;
 
 	bob = sqrt( vel[0] * vel[0] + vel[1] * vel[1] ) * cl_bob->value;
+	//gEngfuncs.Con_Printf("bob %.4f\n",bob);
+	
 	bob = bob * 0.3f + bob * 0.7f * sinf(cycle);
 	bob = min( bob, 4 );
 	bob = max( bob, -7 );
@@ -728,7 +730,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 
 	// Smooth out whole view in multiplayer when on trains, lifts
 	if ( cl_vsmoothing && cl_vsmoothing->value &&
-		( pparams->smoothing && ( pparams->maxclients > 1 ) ) )
+		(/* pparams->smoothing && */( pparams->maxclients > 1 ) ) )
 	{
 		int foundidx;
 		int i;

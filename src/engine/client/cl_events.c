@@ -373,7 +373,7 @@ void CL_ParseEvent( sizebuf_t *msg )
 		{
 			if(( args.entindex - 1 ) == cl.playernum )
 			{
-				if( state && !CL_IsPredicted( ))
+				if( state/* && !CL_IsPredicted( )*/)
 				{
 					// restore viewangles from angles
 					args.angles[PITCH] = -state->angles[PITCH] * 3;

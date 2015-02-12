@@ -288,14 +288,14 @@ void PM_PlayStepSound( int step, float fvol )
 	static int iSkipStep = 0;
 	int irand;
 	vec3_t hvel;
-
-	pmove->iStepLeft = !pmove->iStepLeft;
-
+	
 	if ( !pmove->runfuncs )
 	{
 		return;
 	}
-
+	
+	pmove->iStepLeft = !pmove->iStepLeft;
+	
 	irand = pmove->RandomLong(0,1) + ( pmove->iStepLeft * 2 );
 
 	// FIXME mp_footsteps needs to be a movevar
@@ -312,6 +312,7 @@ void PM_PlayStepSound( int step, float fvol )
 	// used to alternate left and right foot
 	// FIXME, move to player state
 
+	//pmove->Con_Printf("irand %i\n",irand);
 	switch (step)
 	{
 	default:
@@ -3286,7 +3287,7 @@ void PM_Move ( struct playermove_s *ppmove, int server )
 	assert( pm_shared_initialized );
 
 	pmove = ppmove;
-
+	
 //	pmove->Con_Printf( "PM_Move: %g, frametime %g, onground %i\n", pmove->time, pmove->frametime, pmove->onground );
 
 	PM_PlayerMove( ( server != 0 ) ? true : false );
