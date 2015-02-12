@@ -800,9 +800,9 @@ recalc ping on current client
 int SV_CalcPing( sv_client_t *cl )
 {
 	float		ping = 0;
-	int		i, count;
+	int		i,  count;
 	client_frame_t	*frame;
-
+	
 	// bots don't have a real ping
 	if( cl->fakeclient )
 		return 5;
@@ -819,10 +819,11 @@ int SV_CalcPing( sv_client_t *cl )
 			count++;
 		}
 	}
-
+	
+	
 	if( !count )
 		return 0;
-
+	
 	return (int)(( ping / (float)count ) * 1000.f );
 }
 
@@ -936,15 +937,16 @@ if this person needs ping data.
 */
 qboolean SV_ShouldUpdatePing( sv_client_t *cl )
 {
-	if( !cl->hltv_proxy )
-	{
-		SV_CalcPing( cl );
-		return cl->lastcmd.buttons & IN_SCORE;	// they are viewing the scoreboard.  Send them pings.
-	}
+	
+//	if( !cl->hltv_proxy )
+//	{
+//		SV_CalcPing( cl );
+//		return cl->lastcmd.buttons & IN_SCORE;	// they are viewing the scoreboard.  Send them pings.
+//	}
 
 	if( host.realtime > cl->next_checkpingtime )
 	{
-		cl->next_checkpingtime = host.realtime + 2.0;
+		cl->next_checkpingtime = host.realtime + 1.0;
 		return true;
 	}
 
@@ -981,12 +983,12 @@ void SV_GetPlayerStats( sv_client_t *cl, int *ping, int *packet_loss )
 
 	i = cl - svs.clients;
 
-	if( cl->next_checkpingtime < host.realtime )
-	{
-		cl->next_checkpingtime = host.realtime + 2.0;
+//	if( cl->next_checkpingtime < host.realtime )
+//	{
+//		cl->next_checkpingtime = host.realtime + 2.0;
 		last_ping[i] = SV_CalcPing( cl );
 		last_loss[i] = cl->packet_loss;
-	}
+//	}
 
 	if( ping ) *ping = last_ping[i];
 	if( packet_loss ) *packet_loss = last_loss[i];
@@ -1774,7 +1776,14 @@ void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 
 	cl->local_weapons = Q_atoi( Info_ValueForKey( cl->userinfo, "cl_lw" )) ? true : false;
 	cl->lag_compensation = Q_atoi( Info_ValueForKey( cl->userinfo, "cl_lc" )) ? true : false;
-
+	if (true)
+	{
+		char txt[64];
+		sprintf(txt,"local_weapons %i, lag_compensation %i\n",
+				  cl->local_weapons,cl->lag_compensation);
+		Sys_Print(txt);
+	}
+	
 	val = Info_ValueForKey( cl->userinfo, "cl_updaterate" );
 
 	if( Q_strlen( val ))
@@ -2161,7 +2170,12 @@ static void SV_ParseClientMove( sv_client_t *cl, sizebuf_t *msg )
 	// the message probably arrived 1/2 through client's frame loop
 	frame->latency -= cl->lastcmd.msec * 0.5f / 1000.0f;
 	frame->latency = max( 0.0f, frame->latency );
-
+//	if (true)
+//	{
+//		char txt[64];
+//		sprintf(txt,"frame->latency %.2f\n",frame->latency);
+//		Sys_Print(txt);
+//	}
 	if( player->v.animtime > (float)(sv.time + host.frametime) )
 		player->v.animtime = (float)(sv.time + host.frametime);
 }
@@ -2227,13 +2241,14 @@ void SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg )
 	qboolean		move_issued = false;
 	client_frame_t	*frame;
 	char		*s;
-
+	
 	// calc ping time
 	frame = &cl->frames[cl->netchan.incoming_acknowledged & SV_UPDATE_MASK];
-
+	
 	// raw ping doesn't factor in message interval, either
 	frame->raw_ping = (float)(host.realtime - frame->senttime);
-
+	
+			
 	// on first frame ( no senttime ) don't skew ping
 	if( frame->senttime == 0.0f )
 	{
