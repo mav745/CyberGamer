@@ -230,8 +230,8 @@ enum
 
 static Task_t	tlSwimAround[] =
 {
-	{ TASK_SET_ACTIVITY,			(float)ACT_WALK },
-	{ TASK_ICHTHYOSAUR_SWIM,		0.0 },
+	{ TASK_SET_ACTIVITY,			static_cast<float>(ACT_WALK) },
+	{ TASK_ICHTHYOSAUR_SWIM,		0.0f },
 };
 
 static Schedule_t	slSwimAround[] =
@@ -271,8 +271,8 @@ static Schedule_t	slSwimAgitated[] =
 
 static Task_t	tlCircleEnemy[] =
 {
-	{ TASK_SET_ACTIVITY,			(float)ACT_WALK },
-	{ TASK_ICHTHYOSAUR_CIRCLE_ENEMY, 0.0 },
+	{ TASK_SET_ACTIVITY,			static_cast<float>(ACT_WALK) },
+	{ TASK_ICHTHYOSAUR_CIRCLE_ENEMY, 0.0f },
 };
 
 static Schedule_t	slCircleEnemy[] =
@@ -293,10 +293,10 @@ static Schedule_t	slCircleEnemy[] =
 
 Task_t tlTwitchDie[] =
 {
-	{ TASK_STOP_MOVING,			0		 },
-	{ TASK_SOUND_DIE,			(float)0 },
-	{ TASK_DIE,					(float)0 },
-	{ TASK_ICHTHYOSAUR_FLOAT,	(float)0 },
+	{ TASK_STOP_MOVING,			0.f		 },
+	{ TASK_SOUND_DIE,			0.f },
+	{ TASK_DIE,					0.f },
+	{ TASK_ICHTHYOSAUR_FLOAT,	0.f },
 };
 
 Schedule_t slTwitchDie[] =

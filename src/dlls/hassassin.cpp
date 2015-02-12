@@ -329,11 +329,11 @@ void CHAssassin :: Precache()
 //=========================================================
 Task_t	tlAssassinFail[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE },
-	{ TASK_WAIT_FACE_ENEMY,		(float)2		},
-	// { TASK_WAIT_PVS,			(float)0		},
-	{ TASK_SET_SCHEDULE,		(float)SCHED_CHASE_ENEMY },
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE) },
+	{ TASK_WAIT_FACE_ENEMY,		2.f		},
+	// { TASK_WAIT_PVS,			0.f		},
+	{ TASK_SET_SCHEDULE,		static_cast<float>(SCHED_CHASE_ENEMY) },
 };
 
 Schedule_t	slAssassinFail[] =
@@ -361,10 +361,10 @@ Schedule_t	slAssassinFail[] =
 //=========================================================
 Task_t	tlAssassinExposed[] =
 {
-	{ TASK_STOP_MOVING,			(float)0							},
-	{ TASK_RANGE_ATTACK1,		(float)0							},
-	{ TASK_SET_FAIL_SCHEDULE,	(float)SCHED_ASSASSIN_JUMP			},
-	{ TASK_SET_SCHEDULE,		(float)SCHED_TAKE_COVER_FROM_ENEMY	},
+	{ TASK_STOP_MOVING,			0.f							},
+	{ TASK_RANGE_ATTACK1,		0.f							},
+	{ TASK_SET_FAIL_SCHEDULE,	static_cast<float>(SCHED_ASSASSIN_JUMP)			},
+	{ TASK_SET_SCHEDULE,		static_cast<float>(SCHED_TAKE_COVER_FROM_ENEMY)	},
 };
 
 Schedule_t slAssassinExposed[] =
@@ -385,14 +385,14 @@ Schedule_t slAssassinExposed[] =
 //=========================================================
 Task_t	tlAssassinTakeCoverFromEnemy[] =
 {
-	{ TASK_STOP_MOVING,				(float)0					},
-	{ TASK_WAIT,					(float)0.2					},
-	{ TASK_SET_FAIL_SCHEDULE,		(float)SCHED_RANGE_ATTACK1	},
-	{ TASK_FIND_COVER_FROM_ENEMY,	(float)0					},
-	{ TASK_RUN_PATH,				(float)0					},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0					},
-	{ TASK_REMEMBER,				(float)bits_MEMORY_INCOVER	},
-	{ TASK_FACE_ENEMY,				(float)0					},
+	{ TASK_STOP_MOVING,				0.f					},
+	{ TASK_WAIT,					0.2f					},
+	{ TASK_SET_FAIL_SCHEDULE,		static_cast<float>(SCHED_RANGE_ATTACK1)	},
+	{ TASK_FIND_COVER_FROM_ENEMY,	0.f					},
+	{ TASK_RUN_PATH,				0.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f					},
+	{ TASK_REMEMBER,				static_cast<float>(bits_MEMORY_INCOVER)	},
+	{ TASK_FACE_ENEMY,				0.f					},
 };
 
 Schedule_t	slAssassinTakeCoverFromEnemy[] =
@@ -416,16 +416,16 @@ Schedule_t	slAssassinTakeCoverFromEnemy[] =
 //=========================================================
 Task_t	tlAssassinTakeCoverFromEnemy2[] =
 {
-	{ TASK_STOP_MOVING,				(float)0					},
-	{ TASK_WAIT,					(float)0.2					},
-	{ TASK_FACE_ENEMY,				(float)0					},
-	{ TASK_RANGE_ATTACK1,			(float)0					},
-	{ TASK_SET_FAIL_SCHEDULE,		(float)SCHED_RANGE_ATTACK2	},
-	{ TASK_FIND_FAR_NODE_COVER_FROM_ENEMY,	(float)384			},
-	{ TASK_RUN_PATH,				(float)0					},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0					},
-	{ TASK_REMEMBER,				(float)bits_MEMORY_INCOVER	},
-	{ TASK_FACE_ENEMY,				(float)0					},
+	{ TASK_STOP_MOVING,				0.f					},
+	{ TASK_WAIT,					0.2f					},
+	{ TASK_FACE_ENEMY,				0.f					},
+	{ TASK_RANGE_ATTACK1,			0.f					},
+	{ TASK_SET_FAIL_SCHEDULE,		static_cast<float>(SCHED_RANGE_ATTACK2)	},
+	{ TASK_FIND_FAR_NODE_COVER_FROM_ENEMY,	384.f			},
+	{ TASK_RUN_PATH,				0.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f					},
+	{ TASK_REMEMBER,				static_cast<float>(bits_MEMORY_INCOVER)	},
+	{ TASK_FACE_ENEMY,				0.f					},
 };
 
 Schedule_t	slAssassinTakeCoverFromEnemy2[] =
@@ -448,13 +448,13 @@ Schedule_t	slAssassinTakeCoverFromEnemy2[] =
 //=========================================================
 Task_t	tlAssassinTakeCoverFromBestSound[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,			(float)SCHED_MELEE_ATTACK1	},
-	{ TASK_STOP_MOVING,					(float)0					},
-	{ TASK_FIND_COVER_FROM_BEST_SOUND,	(float)0					},
-	{ TASK_RUN_PATH,					(float)0					},
-	{ TASK_WAIT_FOR_MOVEMENT,			(float)0					},
-	{ TASK_REMEMBER,					(float)bits_MEMORY_INCOVER	},
-	{ TASK_TURN_LEFT,					(float)179					},
+	{ TASK_SET_FAIL_SCHEDULE,			static_cast<float>(SCHED_MELEE_ATTACK1)	},
+	{ TASK_STOP_MOVING,					0.f					},
+	{ TASK_FIND_COVER_FROM_BEST_SOUND,	0.f					},
+	{ TASK_RUN_PATH,					0.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,			0.f					},
+	{ TASK_REMEMBER,					static_cast<float>(bits_MEMORY_INCOVER)	},
+	{ TASK_TURN_LEFT,					179.f					},
 };
 
 Schedule_t	slAssassinTakeCoverFromBestSound[] =
@@ -477,10 +477,10 @@ Schedule_t	slAssassinTakeCoverFromBestSound[] =
 //=========================================================
 Task_t	tlAssassinHide[] =
 {
-	{ TASK_STOP_MOVING,			0						 },
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE			 },
-	{ TASK_WAIT,				(float)2				 },
-	{ TASK_SET_SCHEDULE,		(float)SCHED_CHASE_ENEMY },
+	{ TASK_STOP_MOVING,			0.f						 },
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)			 },
+	{ TASK_WAIT,				2.f				 },
+	{ TASK_SET_SCHEDULE,		static_cast<float>(SCHED_CHASE_ENEMY) },
 };
 
 Schedule_t	slAssassinHide[] =
@@ -508,9 +508,9 @@ Schedule_t	slAssassinHide[] =
 //=========================================================
 Task_t tlAssassinHunt[] =
 {
-	{ TASK_GET_PATH_TO_ENEMY,	(float)0		},
-	{ TASK_RUN_PATH,			(float)0		},
-	{ TASK_WAIT_FOR_MOVEMENT,	(float)0		},
+	{ TASK_GET_PATH_TO_ENEMY,	0.f		},
+	{ TASK_RUN_PATH,			0.f		},
+	{ TASK_WAIT_FOR_MOVEMENT,	0.f		},
 };
 
 Schedule_t slAssassinHunt[] =
@@ -534,9 +534,9 @@ Schedule_t slAssassinHunt[] =
 //=========================================================
 Task_t	tlAssassinJump[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_PLAY_SEQUENCE,		(float)ACT_HOP	},
-	{ TASK_SET_SCHEDULE,		(float)SCHED_ASSASSIN_JUMP_ATTACK },
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_HOP)	},
+	{ TASK_SET_SCHEDULE,		static_cast<float>(SCHED_ASSASSIN_JUMP_ATTACK) },
 };
 
 Schedule_t	slAssassinJump[] =
@@ -556,9 +556,9 @@ Schedule_t	slAssassinJump[] =
 //=========================================================
 Task_t	tlAssassinJumpAttack[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,	(float)SCHED_ASSASSIN_JUMP_LAND	},
-	// { TASK_SET_ACTIVITY,		(float)ACT_FLY	},
-	{ TASK_ASSASSIN_FALL_TO_GROUND, (float)0		},
+	{ TASK_SET_FAIL_SCHEDULE,	static_cast<float>(SCHED_ASSASSIN_JUMP_LAND)	},
+	// { TASK_SET_ACTIVITY,		static_cast<float>(ACT_FLY)	},
+	{ TASK_ASSASSIN_FALL_TO_GROUND, 0.f		},
 };
 
 
@@ -579,17 +579,17 @@ Schedule_t	slAssassinJumpAttack[] =
 //=========================================================
 Task_t	tlAssassinJumpLand[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,		(float)SCHED_ASSASSIN_EXPOSED	},
-	// { TASK_SET_FAIL_SCHEDULE,		(float)SCHED_MELEE_ATTACK1	},
-	{ TASK_SET_ACTIVITY,			(float)ACT_IDLE				},
-	{ TASK_REMEMBER,				(float)bits_MEMORY_BADJUMP	},
-	{ TASK_FIND_NODE_COVER_FROM_ENEMY,	(float)0					},
-	{ TASK_RUN_PATH,				(float)0					},
-	{ TASK_FORGET,					(float)bits_MEMORY_BADJUMP	},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0					},
-	{ TASK_REMEMBER,				(float)bits_MEMORY_INCOVER	},
-	{ TASK_FACE_ENEMY,				(float)0					},
-	{ TASK_SET_FAIL_SCHEDULE,		(float)SCHED_RANGE_ATTACK1	},
+	{ TASK_SET_FAIL_SCHEDULE,		static_cast<float>(SCHED_ASSASSIN_EXPOSED)	},
+	// { TASK_SET_FAIL_SCHEDULE,	SCHED_MELEE_ATTACK1	},
+	{ TASK_SET_ACTIVITY,			static_cast<float>(ACT_IDLE)				},
+	{ TASK_REMEMBER,				static_cast<float>(bits_MEMORY_BADJUMP)	},
+	{ TASK_FIND_NODE_COVER_FROM_ENEMY,	0.f					},
+	{ TASK_RUN_PATH,				0.f					},
+	{ TASK_FORGET,					static_cast<float>(bits_MEMORY_BADJUMP)	},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f					},
+	{ TASK_REMEMBER,				static_cast<float>(bits_MEMORY_INCOVER)	},
+	{ TASK_FACE_ENEMY,				0.f					},
+	{ TASK_SET_FAIL_SCHEDULE,		static_cast<float>(SCHED_RANGE_ATTACK1)	},
 };
 
 Schedule_t	slAssassinJumpLand[] =

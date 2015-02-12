@@ -30,12 +30,12 @@
 
 Task_t	tlHCRangeAttack1[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_RANGE_ATTACK1,		(float)0		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_WAIT_RANDOM,			(float)0.5		},
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_RANGE_ATTACK1,		0.f		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_WAIT_RANDOM,			0.5f		},
 };
 
 Schedule_t	slHCRangeAttack1[] =
@@ -52,10 +52,10 @@ Schedule_t	slHCRangeAttack1[] =
 
 Task_t	tlHCRangeAttack1Fast[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_RANGE_ATTACK1,		(float)0		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_RANGE_ATTACK1,		0.f		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
 };
 
 Schedule_t	slHCRangeAttack1Fast[] =
@@ -436,7 +436,7 @@ int CHeadCrab :: TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 //=========================================================
 // IdleSound
 //=========================================================
-#define CRAB_ATTN_IDLE (float)1.5
+#define CRAB_ATTN_IDLE 1.5f
 void CHeadCrab :: IdleSound ( void )
 {
 	EMIT_SOUND_DYN( edict(), CHAN_VOICE, RANDOM_SOUND_ARRAY(pIdleSounds), GetSoundVolue(), ATTN_IDLE, 0, GetVoicePitch() );

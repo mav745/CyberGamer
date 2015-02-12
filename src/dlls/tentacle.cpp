@@ -332,7 +332,7 @@ void CTentacle::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "sweeparc"))
 	{
-		m_flMaxYaw = (float)atof(pkvd->szValue) / 2.0f;
+		m_flMaxYaw = static_cast<float>(atof(pkvd->szValue)) / 2.0f;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "sound"))
@@ -964,7 +964,7 @@ void CTentacle :: HitTouch( CBaseEntity *pOther )
 
 	if (tr.iHitgroup >= 3)
 	{
-		pOther->TakeDamage( pev, pev, (float)m_iHitDmg, DMG_CRUSH );
+		pOther->TakeDamage( pev, pev, static_cast<float>(m_iHitDmg), DMG_CRUSH );
 		// ALERT( at_console, "wack %3d : ", m_iHitDmg );
 	}
 	else if (tr.iHitgroup != 0)

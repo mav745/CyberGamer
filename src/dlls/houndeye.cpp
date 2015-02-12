@@ -917,17 +917,17 @@ Schedule_t	slHoundGuardPack[] =
 // primary range attack
 Task_t	tlHoundYell1[] =
 {
-	{ TASK_STOP_MOVING,			(float)0					},
-	{ TASK_FACE_IDEAL,			(float)0					},
-	{ TASK_RANGE_ATTACK1,		(float)0					},
-	{ TASK_SET_SCHEDULE,		(float)SCHED_HOUND_AGITATED	},
+	{ TASK_STOP_MOVING,			0.f					},
+	{ TASK_FACE_IDEAL,			0.f					},
+	{ TASK_RANGE_ATTACK1,		0.f					},
+	{ TASK_SET_SCHEDULE,		static_cast<float>(SCHED_HOUND_AGITATED)	},
 };
 
 Task_t	tlHoundYell2[] =
 {
-	{ TASK_STOP_MOVING,			(float)0					},
-	{ TASK_FACE_IDEAL,			(float)0					},
-	{ TASK_RANGE_ATTACK1,		(float)0					},
+	{ TASK_STOP_MOVING,			0.f					},
+	{ TASK_FACE_IDEAL,			0.f					},
+	{ TASK_RANGE_ATTACK1,		0.f					},
 };
 
 Schedule_t	slHoundRangeAttack[] =
@@ -953,16 +953,16 @@ Schedule_t	slHoundRangeAttack[] =
 // lie down and fall asleep
 Task_t	tlHoundSleep[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE			},
-	{ TASK_WAIT_RANDOM,			(float)5				},
-	{ TASK_PLAY_SEQUENCE,		(float)ACT_CROUCH		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_CROUCHIDLE	},
-	{ TASK_HOUND_FALL_ASLEEP,	(float)0				},
-	{ TASK_WAIT_RANDOM,			(float)25				},
-	{ TASK_HOUND_CLOSE_EYE,		(float)0				},
-	//{ TASK_WAIT,				(float)10				},
-	//{ TASK_WAIT_RANDOM,			(float)10				},
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)			},
+	{ TASK_WAIT_RANDOM,			5.f				},
+	{ TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_CROUCH)		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_CROUCHIDLE)	},
+	{ TASK_HOUND_FALL_ASLEEP,	0.f				},
+	{ TASK_WAIT_RANDOM,			25.f				},
+	{ TASK_HOUND_CLOSE_EYE,		0.f				},
+	//{ TASK_WAIT,				10.f				},
+	//{ TASK_WAIT_RANDOM,		10.f				},
 };
 
 Schedule_t	slHoundSleep[] =
@@ -985,11 +985,11 @@ Schedule_t	slHoundSleep[] =
 // wake and stand up lazily
 Task_t	tlHoundWakeLazy[] =
 {
-	{ TASK_STOP_MOVING,			(float)0			},
-	{ TASK_HOUND_OPEN_EYE,		(float)0			},
-	{ TASK_WAIT_RANDOM,			(float)2.5			},
-	{ TASK_PLAY_SEQUENCE,		(float)ACT_STAND	},
-	{ TASK_HOUND_WAKE_UP,		(float)0			},
+	{ TASK_STOP_MOVING,			0.f			},
+	{ TASK_HOUND_OPEN_EYE,		0.f			},
+	{ TASK_WAIT_RANDOM,			2.5f			},
+	{ TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_STAND)	},
+	{ TASK_HOUND_WAKE_UP,		0.f			},
 };
 
 Schedule_t	slHoundWakeLazy[] =
@@ -1006,10 +1006,10 @@ Schedule_t	slHoundWakeLazy[] =
 // wake and stand up with great urgency!
 Task_t	tlHoundWakeUrgent[] =
 {
-	{ TASK_HOUND_OPEN_EYE,		(float)0			},
-	{ TASK_PLAY_SEQUENCE,		(float)ACT_HOP		},
-	{ TASK_FACE_IDEAL,			(float)0			},
-	{ TASK_HOUND_WAKE_UP,		(float)0			},
+	{ TASK_HOUND_OPEN_EYE,		0.f			},
+	{ TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_HOP)		},
+	{ TASK_FACE_IDEAL,			0.f			},
+	{ TASK_HOUND_WAKE_UP,		0.f			},
 };
 
 Schedule_t	slHoundWakeUrgent[] =
@@ -1027,9 +1027,9 @@ Schedule_t	slHoundWakeUrgent[] =
 Task_t	tlHoundSpecialAttack1[] =
 {
 	{ TASK_STOP_MOVING,			0				},
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_SPECIAL_ATTACK1,		(float)0		},
-	{ TASK_PLAY_SEQUENCE,		(float)ACT_IDLE_ANGRY },
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_SPECIAL_ATTACK1,		0.f		},
+	{ TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_IDLE_ANGRY) },
 };
 
 Schedule_t	slHoundSpecialAttack1[] =
@@ -1068,9 +1068,9 @@ Schedule_t	slHoundAgitated[] =
 
 Task_t	tlHoundHopRetreat[] =
 {
-	{ TASK_STOP_MOVING,				0											},
-	{ TASK_HOUND_HOP_BACK,			0											},
-	{ TASK_SET_SCHEDULE,			(float)SCHED_TAKE_COVER_FROM_ENEMY	},
+	{ TASK_STOP_MOVING,				0.f											},
+	{ TASK_HOUND_HOP_BACK,			0.f											},
+	{ TASK_SET_SCHEDULE,			static_cast<float>(SCHED_TAKE_COVER_FROM_ENEMY)	},
 };
 
 Schedule_t	slHoundHopRetreat[] =
@@ -1087,9 +1087,9 @@ Schedule_t	slHoundHopRetreat[] =
 // hound fails in combat with client in the PVS
 Task_t	tlHoundCombatFailPVS[] =
 {
-	{ TASK_STOP_MOVING,				0			},
-	{ TASK_HOUND_THREAT_DISPLAY,	0			},
-	{ TASK_WAIT_FACE_ENEMY,			(float)1	},
+	{ TASK_STOP_MOVING,				0.f			},
+	{ TASK_HOUND_THREAT_DISPLAY,	0.f			},
+	{ TASK_WAIT_FACE_ENEMY,			1.f	},
 };
 
 Schedule_t	slHoundCombatFailPVS[] =
@@ -1108,11 +1108,11 @@ Schedule_t	slHoundCombatFailPVS[] =
 // hound fails in combat with no client in the PVS. Don't keep peeping!
 Task_t	tlHoundCombatFailNoPVS[] =
 {
-	{ TASK_STOP_MOVING,				0				},
-	{ TASK_HOUND_THREAT_DISPLAY,	0				},
-	{ TASK_WAIT_FACE_ENEMY,			(float)2		},
-	{ TASK_SET_ACTIVITY,			(float)ACT_IDLE	},
-	{ TASK_WAIT_PVS,				0				},
+	{ TASK_STOP_MOVING,				0.f				},
+	{ TASK_HOUND_THREAT_DISPLAY,	0.f				},
+	{ TASK_WAIT_FACE_ENEMY,			2.f		},
+	{ TASK_SET_ACTIVITY,			static_cast<float>(ACT_IDLE)	},
+	{ TASK_WAIT_PVS,				0.f				},
 };
 
 Schedule_t	slHoundCombatFailNoPVS[] =

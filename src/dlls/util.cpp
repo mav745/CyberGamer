@@ -131,7 +131,7 @@ float UTIL_SharedRandomFloat( unsigned int seed, float low, float high )
 
 		tensixrand = U_Random() & 65535;
 
-		offset = (float)tensixrand / 65536.0f;
+		offset = static_cast<float>(tensixrand) / 65536.0f;
 
 		return (low + offset * range );
 	}
@@ -1009,7 +1009,7 @@ void UTIL_SetOrigin( entvars_t *pev, const Vector &vecOrigin )
 
 void UTIL_ParticleEffect( const Vector &vecOrigin, const Vector &vecDirection, ULONG ulColor, ULONG ulCount )
 {
-	PARTICLE_EFFECT( vecOrigin, vecDirection, (float)ulColor, (float)ulCount );
+	PARTICLE_EFFECT( vecOrigin, vecDirection, static_cast<float>(ulColor), static_cast<float>(ulCount) );
 }
 
 
@@ -1388,7 +1388,7 @@ void UTIL_StringToVector( float *pVector, const char *pString )
 
 	for ( j = 0; j < 3; j++ )			// lifted from pr_edict.c
 	{
-		pVector[j] = (float)atof( pfront );
+		pVector[j] = static_cast<float>(atof( pfront ));
 
 		while ( *pstr && *pstr != ' ' )
 			pstr++;
@@ -1999,7 +1999,7 @@ void EntvarsKeyvalue( entvars_t *pev, KeyValueData *pkvd )
 
 			case FIELD_TIME:
 			case FIELD_FLOAT:
-				(*(float *)((char *)pev + pField->fieldOffset)) = (float)atof( pkvd->szValue );
+				(*(float *)((char *)pev + pField->fieldOffset)) = static_cast<float>(atof(pkvd->szValue));
 				break;
 
 			case FIELD_INTEGER:

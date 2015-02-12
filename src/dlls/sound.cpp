@@ -632,7 +632,7 @@ void CAmbientGeneric :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCalle
 		InitModulationParms();
 
 		UTIL_EmitAmbientSound(ENT(pev), pev->origin, szSoundFile,
-				((float)m_dpv.vol * 0.01f), m_flAttenuation, 0, m_dpv.pitch);
+				(static_cast<float>(m_dpv.vol) * 0.01f), m_flAttenuation, 0, m_dpv.pitch);
 
 		pev->nextthink = gpGlobals->time + 0.1f;
 
@@ -830,12 +830,12 @@ void CEnvSound :: KeyValue( KeyValueData *pkvd )
 
 	if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		m_flRadius = (float)atof(pkvd->szValue);
+		m_flRadius = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	if (FStrEq(pkvd->szKeyName, "roomtype"))
 	{
-		m_flRoomtype = (float)atof(pkvd->szValue);
+		m_flRoomtype = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 }

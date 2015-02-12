@@ -62,22 +62,22 @@ void CBasePlatTrain :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "lip"))
 	{
-		m_flLip = (float)atof(pkvd->szValue);
+		m_flLip = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = (float)atof(pkvd->szValue);
+		m_flWait = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "height"))
 	{
-		m_flHeight = (float)atof(pkvd->szValue);
+		m_flHeight = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "rotation"))
 	{
-		m_vecFinalAngle.x = (float)atof(pkvd->szValue);
+		m_vecFinalAngle.x = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "movesnd"))
@@ -92,7 +92,7 @@ void CBasePlatTrain :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_volume = (float)atof(pkvd->szValue);
+		m_volume = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -958,17 +958,17 @@ void CFuncTrackTrain :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "wheels"))
 	{
-		m_length = (float)atof(pkvd->szValue);
+		m_length = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "height"))
 	{
-		m_height = (float)atof(pkvd->szValue);
+		m_height = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "startspeed"))
 	{
-		m_startSpeed = (float)atof(pkvd->szValue);
+		m_startSpeed = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "sounds"))
@@ -978,13 +978,13 @@ void CFuncTrackTrain :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_flVolume = (float)atoi(pkvd->szValue);
+		m_flVolume = static_cast<float>(atoi(pkvd->szValue));
 		m_flVolume *= 0.1f;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "bank"))
 	{
-		m_flBank = (float)atof(pkvd->szValue);
+		m_flBank = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else

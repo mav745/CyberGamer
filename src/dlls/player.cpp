@@ -320,8 +320,8 @@ int TrainSpeed(int iSpeed, int iMax)
 	float fSpeed, fMax;
 	int iRet = 0;
 
-	fMax = (float)iMax;
-	fSpeed = (float)iSpeed;
+	fMax = static_cast<float>(iMax);
+	fSpeed = static_cast<float>(iSpeed);
 
 	fSpeed = fSpeed/fMax;
 
@@ -1236,12 +1236,12 @@ void CBasePlayer::WaterMove()
 	if (pev->watertype == CONTENT_LAVA)		// do damage
 	{
 		if (pev->dmgtime < gpGlobals->time)
-			TakeDamage(VARS(eoNullEntity), VARS(eoNullEntity), 10.f * (float)pev->waterlevel, DMG_BURN);
+			TakeDamage(VARS(eoNullEntity), VARS(eoNullEntity), 10.f * static_cast<float>(pev->waterlevel), DMG_BURN);
 	}
 	else if (pev->watertype == CONTENT_SLIME)		// do damage
 	{
 		pev->dmgtime = gpGlobals->time + 1;
-		TakeDamage(VARS(eoNullEntity), VARS(eoNullEntity), 4.f * (float)pev->waterlevel, DMG_ACID);
+		TakeDamage(VARS(eoNullEntity), VARS(eoNullEntity), 4.f * static_cast<float>(pev->waterlevel), DMG_ACID);
 	}
 
 	if (!FBitSet(pev->flags, FL_INWATER))
@@ -1408,7 +1408,7 @@ void CBasePlayer::StartObserver( Vector vecPosition, Vector vecViewAngle )
 //
 // PlayerUse - handles USE keypress
 //
-#define	PLAYER_SEARCH_RADIUS	(float)64
+#define	PLAYER_SEARCH_RADIUS	64.f
 
 void CBasePlayer::PlayerUse ( void )
 {
@@ -1848,12 +1848,12 @@ void CBasePlayer::PreThink(void)
 		if ( m_afButtonPressed & IN_FORWARD )
 		{
 			vel = 1;
-			pTrain->Use( this, this, USE_SET, (float)vel );
+			pTrain->Use( this, this, USE_SET, static_cast<float>(vel) );
 		}
 		else if ( m_afButtonPressed & IN_BACK )
 		{
 			vel = -1;
-			pTrain->Use( this, this, USE_SET, (float)vel );
+			pTrain->Use( this, this, USE_SET, static_cast<float>(vel) );
 		}
 
 		if (vel)
@@ -2016,7 +2016,7 @@ void CBasePlayer::CheckTimeBasedDamage()
 				{
 					int idif = min(m_idrowndmg - m_idrownrestored, 10);
 
-					TakeHealth((float)idif, DMG_GENERIC);
+					TakeHealth(static_cast<float>(idif), DMG_GENERIC);
 					m_idrownrestored += idif;
 				}
 				bDuration = 4;	// get up to 5*10 = 50 points back
@@ -4708,22 +4708,22 @@ void CRevertSaved :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		SetDuration( (float)atof(pkvd->szValue) );
+		SetDuration( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "holdtime"))
 	{
-		SetHoldTime( (float)atof(pkvd->szValue) );
+		SetHoldTime( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "messagetime"))
 	{
-		SetMessageTime( (float)atof(pkvd->szValue) );
+		SetMessageTime( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "loadtime"))
 	{
-		SetLoadTime( (float)atof(pkvd->szValue) );
+		SetLoadTime( static_cast<float>(atof(pkvd->szValue)) );
 		pkvd->fHandled = TRUE;
 	}
 	else

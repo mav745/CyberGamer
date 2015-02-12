@@ -470,7 +470,7 @@ void CCrossbow::SecondaryAttack()
 	else if ( m_pPlayer->pev->fov != 20.f )
 	{
 		m_pPlayer->m_iFOV = 20;
-		m_pPlayer->pev->fov = (float)m_pPlayer->m_iFOV;
+		m_pPlayer->pev->fov = static_cast<float>(m_pPlayer->m_iFOV);
 		m_fInZoom = 1;
 	}
 

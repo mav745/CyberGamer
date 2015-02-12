@@ -791,7 +791,7 @@ void CL_PredictMovement( void )
 	{
 		int i;
 		float f = 0.3f, a, b;
-		
+
 		// restore viewangles from cmd.angles
 		for(i=0;i<3;i++)
 		{
@@ -800,9 +800,9 @@ void CL_PredictMovement( void )
 //			if (a > 180.f) a -= 360.f; if (a <= -180.f) a += 360.f;
 //			if (b > 180.f) b -= 360.f; if (b <= -180.f) b += 360.f;
 //			cl.refdef.cl_viewangles[i] += (a - b)*f;
-			
+
 			a = 360.f - cl.refdef.cmd->viewangles[i] + cl.refdef.cl_viewangles[i];
-			a = fmod(a,360.f);
+			a = fmodf(a,360.f);
 			if(a < 0.f) a += 360.f;
 			b = 360.f - a;
 			if (a < b) cl.refdef.cl_viewangles[i] -= a*f;
@@ -884,7 +884,7 @@ void CL_PredictMovement( void )
 
 	// copy results out for rendering
 	//player->curstate.oldbuttons = clgame.pmove->oldbuttons;
-	
+
 	VectorCopy( clgame.pmove->punchangle,cl.predicted_punchangle);
 	VectorCopy( clgame.pmove->view_ofs,  cl.predicted_viewofs   );
 	VectorCopy( clgame.pmove->origin  ,  cl.predicted_origin    );

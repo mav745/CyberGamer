@@ -91,7 +91,7 @@ void CFrictionModifier :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "modifier"))
 	{
-		m_frictionFraction = (float)atof(pkvd->szValue) / 100.0f;
+		m_frictionFraction = static_cast<float>(atof(pkvd->szValue)) / 100.0f;
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -321,7 +321,7 @@ void CMultiManager :: KeyValue( KeyValueData *pkvd )
 
 	if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = (float)atof(pkvd->szValue);
+		m_flWait = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else // add this field to the target list
@@ -333,7 +333,7 @@ void CMultiManager :: KeyValue( KeyValueData *pkvd )
 
 			UTIL_StripToken( pkvd->szKeyName, tmp );
 			m_iTargetName [ m_cTargets ] = ALLOC_STRING( tmp );
-			m_flTargetDelay [ m_cTargets ] = (float)atof (pkvd->szValue);
+			m_flTargetDelay [ m_cTargets ] = static_cast<float>(atof(pkvd->szValue));
 			m_cTargets++;
 			pkvd->fHandled = TRUE;
 		}
@@ -754,7 +754,7 @@ void CTargetCDAudio :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		pev->scale = (float)atof(pkvd->szValue);
+		pev->scale = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1391,7 +1391,7 @@ void CChangeLevel :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "changedelay"))
 	{
-		m_changeTargetDelay = (float)atof( pkvd->szValue );
+		m_changeTargetDelay = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -2218,7 +2218,7 @@ void CTriggerCamera :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = (float)atof(pkvd->szValue);
+		m_flWait = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "moveto"))
@@ -2228,12 +2228,12 @@ void CTriggerCamera :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "acceleration"))
 	{
-		m_acceleration = (float)atof( pkvd->szValue );
+		m_acceleration = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "deceleration"))
 	{
-		m_deceleration = (float)atof( pkvd->szValue );
+		m_deceleration = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else

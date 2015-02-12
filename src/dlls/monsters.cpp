@@ -318,7 +318,7 @@ void CBaseMonster :: Look ( int iDistance )
 	{
 		CBaseEntity *pList[100];
 
-		Vector delta = Vector( (float)iDistance, (float)iDistance, (float)iDistance );
+		Vector delta = Vector( static_cast<float>(iDistance), static_cast<float>(iDistance), static_cast<float>(iDistance) );
 
 		// Find only monsters/clients in box, NOT limited to PVS
 		int count = UTIL_EntitiesInBox( pList, 100, pev->origin - delta, pev->origin + delta, FL_CLIENT|FL_MONSTER );
@@ -2539,7 +2539,7 @@ float CBaseMonster::ChangeYaw ( int yawSpeed )
 	ideal = pev->ideal_yaw;
 	if (current != ideal)
 	{
-		speed = (float)yawSpeed * gpGlobals->frametime * 10;
+		speed = static_cast<float>(yawSpeed * gpGlobals->frametime * 10);
 		move = ideal - current;
 
 		if (ideal > current)

@@ -61,7 +61,7 @@ void CRat :: SetYawSpeed ( void )
 		break;
 	}
 
-	pev->yaw_speed = (float)ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 //=========================================================
@@ -79,7 +79,7 @@ void CRat :: Spawn()
 	m_bloodColor		= BLOOD_COLOR_RED;
 	pev->health			= 8;
 	pev->view_ofs		= Vector ( 0, 0, 6 );// position of the eyes relative to monster's origin.
-	m_flFieldOfView		= 0.5;// indicates the width of this monster's forward view cone ( as a dotproduct result )
+	m_flFieldOfView		= 0.5f;// indicates the width of this monster's forward view cone ( as a dotproduct result )
 	m_MonsterState		= MONSTERSTATE_NONE;
 
 	MonsterInit();

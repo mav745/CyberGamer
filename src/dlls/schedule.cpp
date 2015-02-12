@@ -800,7 +800,7 @@ void CBaseMonster :: StartTask ( Task_t *pTask )
 			}
 			*/
 
-			if ( pBestSound && FindCover( pBestSound->m_vecOrigin, g_vecZero, (float)pBestSound->m_iVolume, CoverRadius() ) )
+			if ( pBestSound && FindCover( pBestSound->m_vecOrigin, g_vecZero, static_cast<float>(pBestSound->m_iVolume), CoverRadius() ) )
 			{
 				// then try for plain ole cover
 				m_flMoveWaitFinished = gpGlobals->time + pTask->flData;

@@ -80,7 +80,7 @@ public:
 		pev->rendercolor.y = static_cast<float>(g);
 		pev->rendercolor.z = static_cast<float>(b);
 	}
-	inline void SetBrightness( int brightness ) { pev->renderamt = (float)brightness; }
+	inline void SetBrightness( int brightness ) { pev->renderamt = static_cast<float>(brightness); }
 
 	inline void AnimateAndDie( float framerate )
 	{

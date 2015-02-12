@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -16,7 +16,7 @@
 #define VECTOR_H
 
 //=========================================================
-// 2DVector - used for many pathfinding and many other 
+// 2DVector - used for many pathfinding and many other
 // operations that are treated as planar rather than 3d.
 //=========================================================
 class Vector2D
@@ -28,7 +28,7 @@ public:
 	inline Vector2D operator-(const Vector2D& v)	const	{ return Vector2D(x-v.x, y-v.y);	}
 	inline Vector2D operator*(float fl)				const	{ return Vector2D(x*fl, y*fl);	}
 	inline Vector2D operator/(float fl)				const	{ return Vector2D(x/fl, y/fl);	}
-	
+
 	inline float Length(void)						const	{ return sqrt(x*x + y*y );		}
 
 	inline Vector2D Normalize ( void ) const
@@ -62,9 +62,9 @@ public:
 	// Construction/destruction
 	inline Vector(void)								{ }
 	inline Vector(float X, float Y, float Z)		{ x = X; y = Y; z = Z;						}
-	//inline Vector(double X, double Y, double Z)		{ x = (float)X; y = (float)Y; z = (float)Z;	}
-	//inline Vector(int X, int Y, int Z)				{ x = (float)X; y = (float)Y; z = (float)Z;	}
-	inline Vector(const Vector& v)					{ x = v.x; y = v.y; z = v.z;				} 
+	//inline Vector(double X, double Y, double Z)		{ x = static_cast<float>(X); y = static_cast<float>(Y); z = static_cast<float>(Z);	}
+	//inline Vector(int X, int Y, int Z)				{ x = static_cast<float>(X); y = static_cast<float>(Y); z = static_cast<float>(Z);	}
+	inline Vector(const Vector& v)					{ x = v.x; y = v.y; z = v.z;				}
 	inline Vector(float rgfl[3])					{ x = rgfl[0]; y = rgfl[1]; z = rgfl[2];	}
 
 	// Operators
@@ -75,7 +75,7 @@ public:
 	inline Vector operator-(const Vector& v) const	{ return Vector(x-v.x, y-v.y, z-v.z);	}
 	inline Vector operator*(float fl) const			{ return Vector(x*fl, y*fl, z*fl);		}
 	inline Vector operator/(float fl) const			{ return Vector(x/fl, y/fl, z/fl);		}
-	
+
 	// Methods
 	inline void CopyToArray(float* rgfl) const		{ rgfl[0] = x, rgfl[1] = y, rgfl[2] = z; }
 	inline float Length(void) const					{ return sqrt(x*x + y*y + z*z); }

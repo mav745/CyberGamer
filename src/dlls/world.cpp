@@ -247,7 +247,7 @@ void CopyToBodyQue(entvars_t *pev)
 	pevHead->flags		= 0;
 	pevHead->deadflag	= pev->deadflag;
 	pevHead->renderfx	= kRenderFxDeadPlayer;
-	pevHead->renderamt	= (float)ENTINDEX( ENT( pev ) );
+	pevHead->renderamt	= static_cast<float>(ENTINDEX( ENT( pev ) ));
 
 	pevHead->effects    = pev->effects | EF_NOINTERP;
 	//pevHead->goalstarttime = pev->goalstarttime;
@@ -699,12 +699,12 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 	else if ( FStrEq(pkvd->szKeyName, "WaveHeight") )
 	{
 		// Sent over net now.
-		pev->scale = (float)atof(pkvd->szValue) * (1.0f/8.0f);
+		pev->scale = static_cast<float>(atof(pkvd->szValue) * (1.0/8.0));
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "MaxRange") )
 	{
-		pev->speed = (float)atof(pkvd->szValue);
+		pev->speed = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "chaptertitle") )

@@ -110,7 +110,7 @@ void CRoach :: SetYawSpeed ( void )
 
 	ys = 120;
 
-	pev->yaw_speed = (float)ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 //=========================================================
@@ -205,7 +205,7 @@ void CRoach :: MonsterThink( void  )
 	else if ( m_flLastLightLevel < 0 )
 	{
 		// collect light level for the first time, now that all of the lightmaps in the roach's area have been calculated.
-		m_flLastLightLevel = (float)GETENTITYILLUM( ENT( pev ) );
+		m_flLastLightLevel = static_cast<float>(GETENTITYILLUM( ENT( pev ) ));
 	}
 
 	switch ( m_iMode )
@@ -221,7 +221,7 @@ void CRoach :: MonsterThink( void  )
 				{
 					// if see something scary
 					//ALERT ( at_aiconsole, "Scared\n" );
-					Eat( 30.f + (float)RANDOM_LONG(0,14) );// roach will ignore food for 30 to 45 seconds
+					Eat( 30.f + static_cast<float>(RANDOM_LONG(0,14)) );// roach will ignore food for 30 to 45 seconds
 					PickNewDest( ROACH_SCARED_BY_ENT );
 					SetActivity ( ACT_WALK );
 				}
@@ -235,7 +235,7 @@ void CRoach :: MonsterThink( void  )
 					if ( m_iMode == ROACH_EAT )
 					{
 						// roach will ignore food for 30 to 45 seconds if it got bored while eating.
-						Eat( 30.f + (float)RANDOM_LONG(0,14) );
+						Eat( 30.f + static_cast<float>(RANDOM_LONG(0,14)) );
 					}
 				}
 			}
@@ -278,7 +278,7 @@ void CRoach :: MonsterThink( void  )
 			if ( GETENTITYILLUM( ENT( pev ) ) <= m_flLastLightLevel )
 			{
 				SetActivity ( ACT_IDLE );
-				m_flLastLightLevel = (float)GETENTITYILLUM( ENT ( pev ) );// make this our new light level.
+				m_flLastLightLevel = static_cast<float>(GETENTITYILLUM( ENT ( pev ) ));// make this our new light level.
 			}
 			break;
 		}
@@ -326,7 +326,7 @@ void CRoach :: PickNewDest ( int iCondition )
 		// circles. this is a hack but buys me time to work on the real monsters.
 		vecNewDir.x = RANDOM_FLOAT( -1, 1 );
 		vecNewDir.y = RANDOM_FLOAT( -1, 1 );
-		flDist		= 256.f + (float)RANDOM_LONG(0,255);
+		flDist		= 256.f + static_cast<float>(RANDOM_LONG(0,255));
 		vecDest = pev->origin + vecNewDir * flDist;
 
 	} while ( ( vecDest - pev->origin ).Length2D() < 128 );
@@ -377,7 +377,7 @@ void CRoach :: Move ( float flInterval )
 		// take truncated step and stop
 
 		SetActivity ( ACT_IDLE );
-		m_flLastLightLevel = (float)GETENTITYILLUM( ENT ( pev ) );// this is roach's new comfortable light level
+		m_flLastLightLevel = static_cast<float>(GETENTITYILLUM( ENT ( pev ) ));// this is roach's new comfortable light level
 
 		if ( m_iMode == ROACH_SMELL_FOOD )
 		{
@@ -422,7 +422,7 @@ void CRoach :: Look ( int iDistance )
 	// Does sphere also limit itself to PVS?
 	// Examine all entities within a reasonable radius
 	// !!!PERFORMANCE - let's trivially reject the ent list before radius searching!
-	while ((pSightEnt = UTIL_FindEntityInSphere( pSightEnt, pev->origin, (float)iDistance )) != NULL)
+	while ((pSightEnt = UTIL_FindEntityInSphere( pSightEnt, pev->origin, static_cast<float>(iDistance) )) != NULL)
 	{
 		// only consider ents that can be damaged. !!!temporarily only considering other monsters and clients
 		if (  pSightEnt->IsPlayer() || FBitSet ( pSightEnt->pev->flags, FL_MONSTER ) )

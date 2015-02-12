@@ -79,12 +79,12 @@ void CCineMonster :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flRepeat"))
 	{
-		m_flRepeat = (float)atof( pkvd->szValue );
+		m_flRepeat = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flRadius"))
 	{
-		m_flRadius = (float)atof( pkvd->szValue );
+		m_flRadius = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_iFinishSchedule"))
@@ -988,17 +988,17 @@ void CScriptedSentence :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		m_flDuration = (float)atof( pkvd->szValue );
+		m_flDuration = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		m_flRadius = (float)atof( pkvd->szValue );
+		m_flRadius = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "refire"))
 	{
-		m_flRepeat = (float)atof( pkvd->szValue );
+		m_flRepeat = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if(FStrEq(pkvd->szKeyName, "attenuation"))
@@ -1008,7 +1008,7 @@ void CScriptedSentence :: KeyValue( KeyValueData *pkvd )
 	}
 	else if(FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_flVolume = (float)atof( pkvd->szValue ) * 0.1f;
+		m_flVolume = static_cast<float>(atof(pkvd->szValue)) * 0.1f;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "listener"))

@@ -303,7 +303,8 @@ int i;	for ( i = 0; i < NUM_ROWS; i++)
 void ScorePanel::SortTeams()
 {
 	// clear out team scores
-int i;	for (  i = 1; i <= m_iNumTeams; i++ )
+	int i;
+	for (  i = 1; i <= m_iNumTeams; i++ )
 	{
 		if ( !g_TeamInfo[i].scores_overriden )
 			g_TeamInfo[i].frags = g_TeamInfo[i].deaths = 0;

@@ -215,7 +215,7 @@ void CBaseTurret::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "maxsleep"))
 	{
-		m_flMaxWait = (float)atof(pkvd->szValue);
+		m_flMaxWait = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "orientation"))
@@ -305,7 +305,7 @@ void CTurret::Spawn()
 	m_iRetractHeight = 16;
 	m_iDeployHeight = 32;
 	m_iMinPitch	= -15;
-	UTIL_SetSize(pev, Vector(-32.f, -32.f, -(float)m_iRetractHeight), Vector(32.f, 32.f, (float)m_iRetractHeight));
+	UTIL_SetSize(pev, Vector(-32.f, -32.f, -static_cast<float>(m_iRetractHeight)), Vector(32.f, 32.f, static_cast<float>(m_iRetractHeight)));
 
 	SetThink(&CBaseTurret::Initialize);
 
@@ -337,7 +337,7 @@ void CMiniTurret::Spawn()
 	m_iRetractHeight = 16;
 	m_iDeployHeight = 32;
 	m_iMinPitch	= -15;
-	UTIL_SetSize(pev, Vector(-16.f, -16.f, -(float)m_iRetractHeight), Vector(16.f, 16.f, (float)m_iRetractHeight));
+	UTIL_SetSize(pev, Vector(-16.f, -16.f, -static_cast<float>(m_iRetractHeight)), Vector(16.f, 16.f, static_cast<float>(m_iRetractHeight)));
 
 	SetThink(&CBaseTurret::Initialize);
 	pev->nextthink = gpGlobals->time + 0.3f;
@@ -594,14 +594,14 @@ void CBaseTurret::ActiveThink(void)
 			if (vec.x > 90)
 				vec.x = 90;
 			else if (vec.x < m_iMinPitch)
-				vec.x = (float)m_iMinPitch;
+				vec.x = static_cast<float>(m_iMinPitch);
 		}
 		else
 		{
 			if (vec.x < -90)
 				vec.x = -90;
 			else if (vec.x > -m_iMinPitch)
-				vec.x = -(float)m_iMinPitch;
+				vec.x = -static_cast<float>(m_iMinPitch);
 		}
 
 		// ALERT(at_console, "->[%.2f]\n", vec.x);
@@ -653,8 +653,8 @@ void CBaseTurret::Deploy(void)
 
 	if (m_fSequenceFinished)
 	{
-		pev->maxs.z = (float)m_iDeployHeight;
-		pev->mins.z = -(float)m_iDeployHeight;
+		pev->maxs.z = static_cast<float>(m_iDeployHeight);
+		pev->mins.z = -static_cast<float>(m_iDeployHeight);
 		UTIL_SetSize(pev, pev->mins, pev->maxs);
 
 		m_vecCurAngles.x = 0;
@@ -705,8 +705,8 @@ void CBaseTurret::Retire(void)
 			m_iOn = 0;
 			m_flLastSight = 0;
 			SetTurretAnim(TURRET_ANIM_NONE);
-			pev->maxs.z = (float)m_iRetractHeight;
-			pev->mins.z = -(float)m_iRetractHeight;
+			pev->maxs.z = static_cast<float>(m_iRetractHeight);
+			pev->mins.z = -static_cast<float>(m_iRetractHeight);
 			UTIL_SetSize(pev, pev->mins, pev->maxs);
 			if (m_iAutoStart)
 			{
@@ -1119,7 +1119,7 @@ int CBaseTurret::MoveTurret(void)
 	}
 
 	if (!state)
-		m_fTurnRate = (float)m_iBaseTurnRate;
+		m_fTurnRate = static_cast<float>(m_iBaseTurnRate);
 
 	//ALERT(at_console, "(%.2f, %.2f)->(%.2f, %.2f)\n", m_vecCurAngles.x,
 	//	m_vecCurAngles.y, m_vecGoalAngles.x, m_vecGoalAngles.y);
@@ -1177,7 +1177,7 @@ void CSentry::Spawn()
 	m_iRetractHeight = 64;
 	m_iDeployHeight = 64;
 	m_iMinPitch	= -60;
-	UTIL_SetSize(pev, Vector(-16.f, -16.f, -(float)m_iRetractHeight), Vector(16.f, 16.f, (float)m_iRetractHeight));
+	UTIL_SetSize(pev, Vector(-16.f, -16.f, -static_cast<float>(m_iRetractHeight)), Vector(16.f, 16.f, static_cast<float>(m_iRetractHeight)));
 
 	SetTouch(&CSentry::SentryTouch);
 	SetThink(&CBaseTurret::Initialize);

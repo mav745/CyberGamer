@@ -144,7 +144,7 @@ void CBaseDelay :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "delay"))
 	{
-		m_flDelay = (float)atof( pkvd->szValue );
+		m_flDelay = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "killtarget"))
@@ -361,12 +361,12 @@ void CBaseToggle::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "lip"))
 	{
-		m_flLip = (float)atof(pkvd->szValue);
+		m_flLip = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = (float)atof(pkvd->szValue);
+		m_flWait = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "master"))
@@ -376,7 +376,7 @@ void CBaseToggle::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "distance"))
 	{
-		m_flMoveDistance = (float)atof(pkvd->szValue);
+		m_flMoveDistance = static_cast<float>(atof(pkvd->szValue));
 		pkvd->fHandled = TRUE;
 	}
 	else

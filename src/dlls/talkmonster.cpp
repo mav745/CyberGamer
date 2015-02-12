@@ -64,14 +64,14 @@ char *CTalkMonster::m_szFriends[TLK_CFRIENDS] =
 
 Task_t	tlIdleResponse[] =
 {
-	{ TASK_SET_ACTIVITY,	(float)ACT_IDLE	},// Stop and listen
-	{ TASK_WAIT,			(float)0.5		},// Wait until sure it's me they are talking to
-	{ TASK_TLK_EYECONTACT,	(float)0		},// Wait until speaker is done
-	{ TASK_TLK_RESPOND,		(float)0		},// Wait and then say my response
-	{ TASK_TLK_IDEALYAW,	(float)0		},// look at who I'm talking to
-	{ TASK_FACE_IDEAL,		(float)0		},
-	{ TASK_SET_ACTIVITY,	(float)ACT_SIGNAL3	},
-	{ TASK_TLK_EYECONTACT,	(float)0		},// Wait until speaker is done
+	{ TASK_SET_ACTIVITY,	static_cast<float>(ACT_IDLE)	},// Stop and listen
+	{ TASK_WAIT,			0.5f		},// Wait until sure it's me they are talking to
+	{ TASK_TLK_EYECONTACT,	0.f		},// Wait until speaker is done
+	{ TASK_TLK_RESPOND,		0.f		},// Wait and then say my response
+	{ TASK_TLK_IDEALYAW,	0.f		},// look at who I'm talking to
+	{ TASK_FACE_IDEAL,		0.f		},
+	{ TASK_SET_ACTIVITY,	static_cast<float>(ACT_SIGNAL3)	},
+	{ TASK_TLK_EYECONTACT,	0.f		},// Wait until speaker is done
 };
 
 Schedule_t	slIdleResponse[] =
@@ -90,12 +90,12 @@ Schedule_t	slIdleResponse[] =
 
 Task_t	tlIdleSpeak[] =
 {
-	{ TASK_TLK_SPEAK,		(float)0		},// question or remark
-	{ TASK_TLK_IDEALYAW,	(float)0		},// look at who I'm talking to
-	{ TASK_FACE_IDEAL,		(float)0		},
-	{ TASK_SET_ACTIVITY,	(float)ACT_SIGNAL3	},
-	{ TASK_TLK_EYECONTACT,	(float)0		},
-	{ TASK_WAIT_RANDOM,		(float)0.5		},
+	{ TASK_TLK_SPEAK,		0.f		},// question or remark
+	{ TASK_TLK_IDEALYAW,	0.f		},// look at who I'm talking to
+	{ TASK_FACE_IDEAL,		0.f		},
+	{ TASK_SET_ACTIVITY,	static_cast<float>(ACT_SIGNAL3)	},
+	{ TASK_TLK_EYECONTACT,	0.f		},
+	{ TASK_WAIT_RANDOM,		0.5f		},
 };
 
 Schedule_t	slIdleSpeak[] =
@@ -114,10 +114,10 @@ Schedule_t	slIdleSpeak[] =
 
 Task_t	tlIdleSpeakWait[] =
 {
-	{ TASK_SET_ACTIVITY,	(float)ACT_SIGNAL3	},// Stop and talk
-	{ TASK_TLK_SPEAK,		(float)0		},// question or remark
-	{ TASK_TLK_EYECONTACT,	(float)0		},//
-	{ TASK_WAIT,			(float)2		},// wait - used when sci is in 'use' mode to keep head turned
+	{ TASK_SET_ACTIVITY,	static_cast<float>(ACT_SIGNAL3)	},// Stop and talk
+	{ TASK_TLK_SPEAK,		0.f		},// question or remark
+	{ TASK_TLK_EYECONTACT,	0.f		},//
+	{ TASK_WAIT,			2.f		},// wait - used when sci is in 'use' mode to keep head turned
 };
 
 Schedule_t	slIdleSpeakWait[] =
@@ -136,19 +136,19 @@ Schedule_t	slIdleSpeakWait[] =
 
 Task_t	tlIdleHello[] =
 {
-	{ TASK_SET_ACTIVITY,	(float)ACT_SIGNAL3	},// Stop and talk
-	{ TASK_TLK_HELLO,		(float)0		},// Try to say hello to player
-	{ TASK_TLK_EYECONTACT,	(float)0		},
-	{ TASK_WAIT,			(float)0.5		},// wait a bit
-	{ TASK_TLK_HELLO,		(float)0		},// Try to say hello to player
-	{ TASK_TLK_EYECONTACT,	(float)0		},
-	{ TASK_WAIT,			(float)0.5		},// wait a bit
-	{ TASK_TLK_HELLO,		(float)0		},// Try to say hello to player
-	{ TASK_TLK_EYECONTACT,	(float)0		},
-	{ TASK_WAIT,			(float)0.5		},// wait a bit
-	{ TASK_TLK_HELLO,		(float)0		},// Try to say hello to player
-	{ TASK_TLK_EYECONTACT,	(float)0		},
-	{ TASK_WAIT,			(float)0.5		},// wait a bit
+	{ TASK_SET_ACTIVITY,	static_cast<float>(ACT_SIGNAL3)	},// Stop and talk
+	{ TASK_TLK_HELLO,		0.f		},// Try to say hello to player
+	{ TASK_TLK_EYECONTACT,	0.f		},
+	{ TASK_WAIT,			0.5f	},// wait a bit
+	{ TASK_TLK_HELLO,		0.f		},// Try to say hello to player
+	{ TASK_TLK_EYECONTACT,	0.f		},
+	{ TASK_WAIT,			0.5f	},// wait a bit
+	{ TASK_TLK_HELLO,		0.f		},// Try to say hello to player
+	{ TASK_TLK_EYECONTACT,	0.f		},
+	{ TASK_WAIT,			0.5f	},// wait a bit
+	{ TASK_TLK_HELLO,		0.f		},// Try to say hello to player
+	{ TASK_TLK_EYECONTACT,	0.f		},
+	{ TASK_WAIT,			0.5f	},// wait a bit
 
 };
 
@@ -171,8 +171,8 @@ Schedule_t	slIdleHello[] =
 
 Task_t	tlIdleStopShooting[] =
 {
-	{ TASK_TLK_STOPSHOOTING,	(float)0		},// tell player to stop shooting friend
-	// { TASK_TLK_EYECONTACT,		(float)0		},// look at the player
+	{ TASK_TLK_STOPSHOOTING,	0.f		},// tell player to stop shooting friend
+	// { TASK_TLK_EYECONTACT,		0.f		},// look at the player
 };
 
 Schedule_t	slIdleStopShooting[] =
@@ -191,12 +191,12 @@ Schedule_t	slIdleStopShooting[] =
 
 Task_t	tlMoveAway[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,		(float)SCHED_MOVE_AWAY_FAIL },
-	{ TASK_STORE_LASTPOSITION,		(float)0		},
-	{ TASK_MOVE_AWAY_PATH,			(float)100		},
-	{ TASK_WALK_PATH_FOR_UNITS,		(float)100		},
-	{ TASK_STOP_MOVING,				(float)0		},
-	{ TASK_FACE_PLAYER,				(float)0.5 },
+	{ TASK_SET_FAIL_SCHEDULE,		static_cast<float>(SCHED_MOVE_AWAY_FAIL) },
+	{ TASK_STORE_LASTPOSITION,		0.f		},
+	{ TASK_MOVE_AWAY_PATH,			100.f		},
+	{ TASK_WALK_PATH_FOR_UNITS,		100.f		},
+	{ TASK_STOP_MOVING,				0.f		},
+	{ TASK_FACE_PLAYER,				0.5f },
 };
 
 Schedule_t	slMoveAway[] =
@@ -213,8 +213,8 @@ Schedule_t	slMoveAway[] =
 
 Task_t	tlMoveAwayFail[] =
 {
-	{ TASK_STOP_MOVING,				(float)0		},
-	{ TASK_FACE_PLAYER,				(float)0.5		},
+	{ TASK_STOP_MOVING,				0.f		},
+	{ TASK_FACE_PLAYER,				0.5f	},
 };
 
 Schedule_t	slMoveAwayFail[] =
@@ -232,12 +232,12 @@ Schedule_t	slMoveAwayFail[] =
 
 Task_t	tlMoveAwayFollow[] =
 {
-	{ TASK_SET_FAIL_SCHEDULE,		(float)SCHED_TARGET_FACE },
-	{ TASK_STORE_LASTPOSITION,		(float)0		},
-	{ TASK_MOVE_AWAY_PATH,			(float)100				},
-	{ TASK_WALK_PATH_FOR_UNITS,		(float)100		},
-	{ TASK_STOP_MOVING,				(float)0		},
-	{ TASK_SET_SCHEDULE,			(float)SCHED_TARGET_FACE },
+	{ TASK_SET_FAIL_SCHEDULE,		static_cast<float>(SCHED_TARGET_FACE) },
+	{ TASK_STORE_LASTPOSITION,		0.f		},
+	{ TASK_MOVE_AWAY_PATH,			100.f				},
+	{ TASK_WALK_PATH_FOR_UNITS,		100.f		},
+	{ TASK_STOP_MOVING,				0.f		},
+	{ TASK_SET_SCHEDULE,			static_cast<float>(SCHED_TARGET_FACE) },
 };
 
 Schedule_t	slMoveAwayFollow[] =
@@ -253,21 +253,21 @@ Schedule_t	slMoveAwayFollow[] =
 
 Task_t	tlTlkIdleWatchClient[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
-	{ TASK_TLK_LOOK_AT_CLIENT,	(float)6		},
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
+	{ TASK_TLK_LOOK_AT_CLIENT,	6.f		},
 };
 
 Task_t	tlTlkIdleWatchClientStare[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
-	{ TASK_TLK_CLIENT_STARE,	(float)6		},
-	{ TASK_TLK_STARE,			(float)0		},
-	{ TASK_TLK_IDEALYAW,		(float)0		},// look at who I'm talking to
-	{ TASK_FACE_IDEAL,			(float)0		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_SIGNAL3	},
-	{ TASK_TLK_EYECONTACT,		(float)0		},
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
+	{ TASK_TLK_CLIENT_STARE,	6.f		},
+	{ TASK_TLK_STARE,			0.f		},
+	{ TASK_TLK_IDEALYAW,		0.f		},// look at who I'm talking to
+	{ TASK_FACE_IDEAL,			0.f		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_SIGNAL3)	},
+	{ TASK_TLK_EYECONTACT,		0.f		},
 };
 
 Schedule_t	slTlkIdleWatchClient[] =
@@ -322,10 +322,10 @@ Schedule_t	slTlkIdleWatchClient[] =
 
 Task_t	tlTlkIdleEyecontact[] =
 {
-	{ TASK_TLK_IDEALYAW,	(float)0		},// look at who I'm talking to
-	{ TASK_FACE_IDEAL,		(float)0		},
-	{ TASK_SET_ACTIVITY,	(float)ACT_SIGNAL3	},
-	{ TASK_TLK_EYECONTACT,	(float)0		},// Wait until speaker is done
+	{ TASK_TLK_IDEALYAW,	0.f		},// look at who I'm talking to
+	{ TASK_FACE_IDEAL,		0.f		},
+	{ TASK_SET_ACTIVITY,	static_cast<float>(ACT_SIGNAL3)	},
+	{ TASK_TLK_EYECONTACT,	0.f		},// Wait until speaker is done
 };
 
 Schedule_t	slTlkIdleEyecontact[] =

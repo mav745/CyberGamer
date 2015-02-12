@@ -131,7 +131,7 @@ void CZombie :: SetYawSpeed ( void )
 	}
 #endif
 
-	pev->yaw_speed = (float)ys;
+	pev->yaw_speed = static_cast<float>(ys);
 }
 
 int CZombie :: TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, float flDamage, int bitsDamageType )

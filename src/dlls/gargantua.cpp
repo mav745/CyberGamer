@@ -394,13 +394,13 @@ enum
 
 Task_t	tlGargFlame[] =
 {
-	{ TASK_STOP_MOVING,			(float)0		},
-	{ TASK_FACE_ENEMY,			(float)0		},
-	{ TASK_SOUND_ATTACK,		(float)0		},
-	// { TASK_PLAY_SEQUENCE,		(float)ACT_SIGNAL1	},
-	{ TASK_SET_ACTIVITY,		(float)ACT_MELEE_ATTACK2 },
-	{ TASK_FLAME_SWEEP,			(float)4.5		},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE	},
+	{ TASK_STOP_MOVING,			0.f		},
+	{ TASK_FACE_ENEMY,			0.f		},
+	{ TASK_SOUND_ATTACK,		0.f		},
+	// { TASK_PLAY_SEQUENCE,		static_cast<float>(ACT_SIGNAL1)	},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_MELEE_ATTACK2) },
+	{ TASK_FLAME_SWEEP,			4.5f		},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE)	},
 };
 
 Schedule_t	slGargFlame[] =
@@ -418,9 +418,9 @@ Schedule_t	slGargFlame[] =
 // primary melee attack
 Task_t	tlGargSwipe[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_FACE_ENEMY,			(float)0		},
-	{ TASK_MELEE_ATTACK1,		(float)0		},
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_FACE_ENEMY,			0.f		},
+	{ TASK_MELEE_ATTACK1,		0.f		},
 };
 
 Schedule_t	slGargSwipe[] =

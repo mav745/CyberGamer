@@ -403,8 +403,8 @@ void CController :: Precache()
 // Chase enemy schedule
 Task_t tlControllerChaseEnemy[] =
 {
-	{ TASK_GET_PATH_TO_ENEMY,	(float)128		},
-	{ TASK_WAIT_FOR_MOVEMENT,	(float)0		},
+	{ TASK_GET_PATH_TO_ENEMY,	128.f		},
+	{ TASK_WAIT_FOR_MOVEMENT,	0.f		},
 
 };
 
@@ -424,10 +424,10 @@ Schedule_t slControllerChaseEnemy[] =
 
 Task_t	tlControllerStrafe[] =
 {
-	{ TASK_WAIT,					(float)0.2					},
-	{ TASK_GET_PATH_TO_ENEMY,		(float)128					},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0					},
-	{ TASK_WAIT,					(float)1					},
+	{ TASK_WAIT,					0.2f					},
+	{ TASK_GET_PATH_TO_ENEMY,		128.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f					},
+	{ TASK_WAIT,					1.f					},
 };
 
 Schedule_t	slControllerStrafe[] =
@@ -444,10 +444,10 @@ Schedule_t	slControllerStrafe[] =
 
 Task_t	tlControllerTakeCover[] =
 {
-	{ TASK_WAIT,					(float)0.2					},
-	{ TASK_FIND_COVER_FROM_ENEMY,	(float)0					},
-	{ TASK_WAIT_FOR_MOVEMENT,		(float)0					},
-	{ TASK_WAIT,					(float)1					},
+	{ TASK_WAIT,					0.2f					},
+	{ TASK_FIND_COVER_FROM_ENEMY,	0.f					},
+	{ TASK_WAIT_FOR_MOVEMENT,		0.f					},
+	{ TASK_WAIT,					1.f					},
 };
 
 Schedule_t	slControllerTakeCover[] =
@@ -464,10 +464,10 @@ Schedule_t	slControllerTakeCover[] =
 
 Task_t	tlControllerFail[] =
 {
-	{ TASK_STOP_MOVING,			0				},
-	{ TASK_SET_ACTIVITY,		(float)ACT_IDLE },
-	{ TASK_WAIT,				(float)2		},
-	{ TASK_WAIT_PVS,			(float)0		},
+	{ TASK_STOP_MOVING,			0.f				},
+	{ TASK_SET_ACTIVITY,		static_cast<float>(ACT_IDLE) },
+	{ TASK_WAIT,				2.f		},
+	{ TASK_WAIT_PVS,			0.f		},
 };
 
 Schedule_t	slControllerFail[] =

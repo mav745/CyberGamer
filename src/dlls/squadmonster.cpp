@@ -348,7 +348,7 @@ int CSquadMonster :: SquadRecruit( int searchRadius, int maxMembers )
 	}
 	else
 	{
-		while ((pEntity = UTIL_FindEntityInSphere( pEntity, pev->origin, (float)searchRadius )) != NULL)
+		while ((pEntity = UTIL_FindEntityInSphere( pEntity, pev->origin, static_cast<float>(searchRadius) )) != NULL)
 		{
 			CSquadMonster *pRecruit = pEntity->MySquadMonsterPointer( );
 
