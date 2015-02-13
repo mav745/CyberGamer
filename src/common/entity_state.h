@@ -178,6 +178,7 @@ typedef struct clientdata_s
 
 typedef struct local_state_s
 {
+	double timestamp;
 	entity_state_t	playerstate;
 	clientdata_t	client;
 	weapon_data_t	weapondata[64];

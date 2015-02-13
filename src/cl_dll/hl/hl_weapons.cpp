@@ -356,7 +356,7 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 		{
 			m_fFireOnEmpty = TRUE;
 		}
-		gEngfuncs.Con_Printf("IN_ATTACK %.2f\n",m_flNextPrimaryAttack); 
+		//gEngfuncs.Con_Printf("IN_ATTACK %.2f\n",m_flNextPrimaryAttack); 
 		PrimaryAttack();
 	}
 	else if ( m_pPlayer->pev->button & IN_RELOAD && iMaxClip() != WEAPON_NOCLIP && !m_fInReload )
@@ -1085,11 +1085,10 @@ void _DLLEXPORT HUD_PostRunCmd( struct local_state_s *from, struct local_state_s
 	g_runfuncs = runfuncs;
 
 #if defined( CLIENT_WEAPONS )
-	if ( cl_lw && cl_lw->value )
-	{
-		//gEngfuncs.Con_Printf("to HUD_WeaponsPostThink\n");;
+	//MAV: предиктить веапон на демке в любом случае, 
+	//т.к. значение cl_lw в демке не сохраняецо
+	if (( cl_lw && cl_lw->value ) || gEngfuncs.pDemoAPI->IsPlayingback())
 		HUD_WeaponsPostThink( from, to, cmd, time, random_seed );
-	}
 	else
 #endif
 	{

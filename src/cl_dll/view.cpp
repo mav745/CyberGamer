@@ -514,6 +514,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	bob = V_CalcBob ( pparams );
 
 	// refresh position
+	//gEngfuncs.Con_Printf("V_CalcNormalRefdef %f %f\n", pparams->simorg[0], pparams->simorg[1]);
 	VectorCopy ( pparams->simorg, pparams->vieworg );
 	pparams->vieworg[2] += ( bob );
 	VectorAdd( pparams->vieworg, pparams->viewheight, pparams->vieworg );

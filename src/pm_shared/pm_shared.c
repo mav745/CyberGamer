@@ -289,6 +289,8 @@ void PM_PlayStepSound( int step, float fvol )
 	int irand;
 	vec3_t hvel;
 	
+//	pmove->Con_Printf("PM_PlayStepSound\n");
+	
 	if ( !pmove->runfuncs )
 	{
 		return;
@@ -298,6 +300,8 @@ void PM_PlayStepSound( int step, float fvol )
 	
 	irand = pmove->RandomLong(0,1) + ( pmove->iStepLeft * 2 );
 
+//	pmove->Con_Printf("irand %i\n",irand);
+	
 	// FIXME mp_footsteps needs to be a movevar
 	if ( pmove->multiplayer && !pmove->movevars->footsteps )
 		return;
@@ -312,7 +316,7 @@ void PM_PlayStepSound( int step, float fvol )
 	// used to alternate left and right foot
 	// FIXME, move to player state
 
-	//pmove->Con_Printf("irand %i\n",irand);
+	
 	switch (step)
 	{
 	default:
@@ -2659,17 +2663,20 @@ void PM_CheckFalling( void )
 		}
 		else if ( pmove->flFallVelocity > PLAYER_MAX_SAFE_FALL_SPEED )
 		{
-			// NOTE:  In the original game dll , there were no breaks after these cases, causing the first one to
-			// cascade into the second
-			//switch ( RandomLong(0,1) )
-			//{
-			//case 0:
-				//pmove->PM_PlaySound( CHAN_VOICE, "player/pl_fallpain2.wav", 1, ATTN_NORM, 0, PITCH_NORM );
-				//break;
-			//case 1:
-				pmove->PM_PlaySound( CHAN_VOICE, "player/pl_fallpain3.wav", 1, ATTN_NORM, 0, PITCH_NORM );
-			//	break;
-			//}
+			if (pmove->runfuncs)
+			{
+				// NOTE:  In the original game dll , there were no breaks after these cases, causing the first one to
+				// cascade into the second
+				//switch ( RandomLong(0,1) )
+				//{
+				//case 0:
+					//pmove->PM_PlaySound( CHAN_VOICE, "player/pl_fallpain2.wav", 1, ATTN_NORM, 0, PITCH_NORM );
+					//break;
+				//case 1:
+					pmove->PM_PlaySound( CHAN_VOICE, "player/pl_fallpain3.wav", 1, ATTN_NORM, 0, PITCH_NORM );
+				//	break;
+				//}
+			}
 			fvol = 1.0f;
 		}
 		else if ( pmove->flFallVelocity > PLAYER_MAX_SAFE_FALL_SPEED / 2 )
