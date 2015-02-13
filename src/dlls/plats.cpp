@@ -1701,7 +1701,7 @@ void CFuncTrackChange :: Spawn( void )
 
 	EnableUse();
 	pev->nextthink = pev->ltime + 2.0f;
-	SetThink( &CFuncTrackTrain::Find );
+	SetThink( &CFuncTrackChange::Find );
 	Precache();
 }
 
