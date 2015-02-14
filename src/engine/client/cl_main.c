@@ -193,7 +193,7 @@ static float CL_LerpPoint( void )
 
 	if( !f || SV_Active( ))
 	{
-		cl.time = cl.mtime[0];
+		//cl.time = cl.mtime[0];
 		return 1.0f;
 	}
 
@@ -208,14 +208,14 @@ static float CL_LerpPoint( void )
 
 	if( frac < 0 )
 	{
-		if( frac < -0.01f )
-			cl.time = cl.mtime[1];
+//		if( frac < -0.01f )
+//			cl.time = cl.mtime[1];
 		frac = 0.0f;
 	}
 	else if( frac > 1.0f )
 	{
-		if( frac > 1.01f )
-			cl.time = cl.mtime[0];
+//		if( frac > 1.01f )
+//			cl.time = cl.mtime[0];
 		frac = 1.0f;
 	}
 
@@ -1635,7 +1635,7 @@ void CL_InitLocal( void )
 	rate = Cvar_Get( "rate", "25000", CVAR_USERINFO|CVAR_ARCHIVE, "player network rate" );
 	hltv = Cvar_Get( "hltv", "0", CVAR_USERINFO|CVAR_LATCH, "HLTV mode" );
 	cl_showfps = Cvar_Get( "cl_showfps", "1", CVAR_ARCHIVE, "show client fps" );
-	cl_smooth = Cvar_Get ("cl_smooth", "1", CVAR_ARCHIVE|CVAR_READ_ONLY, "smooth up stair climbing and interpolate position in multiplayer" );
+	cl_smooth = Cvar_Get ("@cl_smooth", "0", CVAR_ARCHIVE|CVAR_READ_ONLY, "smooth up stair climbing and interpolate position in multiplayer" );
 	cl_cmdbackup = Cvar_Get( "cl_cmdbackup", "10", CVAR_ARCHIVE, "how many additional history commands are sent" );
 	cl_cmdrate = Cvar_Get( "cl_cmdrate", "30", CVAR_ARCHIVE, "Max number of command packets sent to server per second" );
 	cl_draw_particles = Cvar_Get( "cl_draw_particles", "1", CVAR_ARCHIVE, "Disable any particle effects" );
@@ -1732,14 +1732,15 @@ Host_ClientFrame
 
 ==================
 */
-void Host_ClientFrame( void )
+void Host_ClientFrame( double frametime )
 {
 	// if client is not active, do nothing
 	if( !cls.initialized ) return;
 
 	// decide the simulation time
 	cl.oldtime = cl.time;
-	cl.time += host.frametime;
+	//cl.time += host.frametime;
+	cl.time = host.realtime;
 
 	if( menu.hInstance )
 	{

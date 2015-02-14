@@ -1153,7 +1153,7 @@ void PM_WalkMove ()
 // Now try going back down from the end point
 //  press down the stepheight
 	VectorCopy (pmove->origin, dest);
-	dest[2] -= pmove->movevars->stepsize;
+	dest[2] -= pmove->movevars->stepsize*2.f;
 
 	trace = pmove->PM_PlayerTrace (pmove->origin, dest, PM_NORMAL, -1 );
 

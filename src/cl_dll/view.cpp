@@ -690,8 +690,9 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 
 	// smooth out stair step ups
 #if 1
-	if ( !pparams->smoothing && pparams->onground && pparams->simorg[2] - oldz > 0)
+	if ( !pparams->smoothing && pparams->onground )//&& pparams->simorg[2] - oldz > 0)
 	{
+		
 		float steptime;
 
 		steptime = pparams->time - lasttime;
@@ -699,11 +700,35 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	//FIXME		I_Error ("steptime < 0");
 			steptime = 0;
 
-		oldz += steptime * 150;
-		if (oldz > pparams->simorg[2])
-			oldz = pparams->simorg[2];
-		if (pparams->simorg[2] - oldz > 18)
-			oldz = pparams->simorg[2]- 18;
+		//
+		
+		
+		
+		//MAV: старый код сглаживает только подъём вверх.
+		//Лифты на сервах умеют дергаться вниз тоже
+		
+//		oldz += steptime * 150;
+//		if (oldz > pparams->simorg[2])
+//			oldz = pparams->simorg[2];
+//		if (pparams->simorg[2] - oldz > 18)
+//			oldz = pparams->simorg[2]-18;
+
+		float height_dif = pparams->simorg[2] - oldz, 
+				stepadd = steptime * 150;
+
+		if (height_dif >  18.f) //слишком отстал снизу
+			oldz = pparams->simorg[2]-18.f;
+		else if (height_dif < -18.f) //слишком отстал сверху
+			oldz = pparams->simorg[2]+18.f;
+		else //успевает плавно догнать
+		{
+			if (height_dif < -stepadd)
+				oldz -= stepadd;
+			else if (height_dif > stepadd)
+				oldz += stepadd;
+			else
+				oldz = pparams->simorg[2];
+		}
 		pparams->vieworg[2] += oldz - pparams->simorg[2];
 		view->origin[2] += oldz - pparams->simorg[2];
 	}
@@ -731,7 +756,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 
 	// Smooth out whole view in multiplayer when on trains, lifts
 	if ( cl_vsmoothing && cl_vsmoothing->value &&
-		(/* pparams->smoothing && */( pparams->maxclients > 1 ) ) )
+		( pparams->smoothing && ( pparams->maxclients > 1 ) ) )
 	{
 		int foundidx;
 		int i;
@@ -1766,3 +1791,4 @@ void V_Move( int mx, int my )
 }
 
 #endif
+

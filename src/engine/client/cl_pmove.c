@@ -943,6 +943,8 @@ void CL_PredictMovement( void )
 	// copy results out for rendering
 	//player->curstate.oldbuttons = clgame.pmove->oldbuttons;
 
+	//cl.refdef.time = (float)host.realtime;
+	cl.refdef.onground = (clgame.pmove->onground == -1)? FALSE : TRUE; 
 	VectorCopy( clgame.pmove->punchangle,cl.predicted_punchangle);
 	VectorCopy( clgame.pmove->view_ofs,  cl.predicted_viewofs   );
 	VectorCopy( clgame.pmove->origin  ,  cl.predicted_origin    );

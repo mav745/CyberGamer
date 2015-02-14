@@ -134,7 +134,7 @@ int CHudFlashlight::Draw(float flTime)
 
 	// draw the flashlight energy level
 	x = ScreenWidth - m_iWidth - m_iWidth/2 ;
-	int iOffset = static_cast<int>(m_iWidth) * (1.0f - m_flBat);
+	int iOffset = static_cast<int>(static_cast<float>(m_iWidth) * (1.0f - m_flBat));
 	if (iOffset < m_iWidth)
 	{
 		rc = *m_prc2;

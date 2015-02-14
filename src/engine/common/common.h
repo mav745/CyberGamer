@@ -641,7 +641,7 @@ CLIENT / SERVER SYSTEMS
 */
 void CL_Init( void );
 void CL_Shutdown( void );
-void Host_ClientFrame( void );
+void Host_ClientFrame(double frametime );
 qboolean CL_Active( void );
 
 void SV_Init( void );

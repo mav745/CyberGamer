@@ -91,7 +91,7 @@ void V_SetupRefDef( void )
 	if( glState.wideScreen && r_adjust_fov->integer )
 		V_AdjustFov( &cl.refdef.fov_x, &cl.refdef.fov_y, (float)cl.refdef.viewport[2], (float)cl.refdef.viewport[3], false );
 
-	if(cl.background)
+	if(cl.maxclients <= 1/*cl.background*/)
 	{
 		VectorCopy( cl.frame.local.client.origin, cl.refdef.simorg );
 		VectorCopy( cl.frame.local.client.view_ofs, cl.refdef.viewheight );
