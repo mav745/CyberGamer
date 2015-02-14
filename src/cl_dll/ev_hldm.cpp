@@ -457,7 +457,7 @@ void EV_FireGlock1( event_args_t *args )
 	vec3_t up, right, forward;
 
 	//gEngfuncs.Con_Printf("EV_FireGlock1");
-	
+
 	idx = args->entindex;
 	VectorCopy( args->origin, origin );
 	VectorCopy( args->angles, angles );
@@ -1419,7 +1419,7 @@ void EV_EgonFire( event_args_t *args )
 
 	if ( iStartup == 1 && EV_IsLocal( idx ) && !pBeam && !pBeam2 && cl_lw->value ) //Adrian: Added the cl_lw check for those lital people that hate weapon prediction.
 	{
-		vec3_t vecSrc, vecEnd, origin, angles, forward, right, up;
+		vec3_t vecSrc, vecEnd, angles, forward, right, up;//origin,
 		pmtrace_t tr;
 
 		cl_entity_t *pl = gEngfuncs.GetEntityByIndex( idx );

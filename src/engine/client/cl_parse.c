@@ -694,7 +694,6 @@ void CL_ParseClientData( sizebuf_t *msg )
 	int		idx;
 
 //	int wpns[32];
-	char txt[256];
 
 	// this is the frame update that this message corresponds to
 	i = cls.netchan.incoming_sequence;
@@ -748,12 +747,12 @@ void CL_ParseClientData( sizebuf_t *msg )
 	cl.predictcount++;
 	cl.predict[cl.predictcount & CL_UPDATE_MASK].client = *to_cd;
 	cl.predict[cl.predictcount & CL_UPDATE_MASK].timestamp = host.realtime;
-	
+
 	//sprintf(txt,"host.realtime %.2f\n",cl.predict[cl.predictcount & CL_UPDATE_MASK].timestamp);
 	//Sys_Print(txt);
-	
+
 	//memcpy(cl.predict[cl.predictcount & CL_UPDATE_MASK].weapondata,to_wd,32*sizeof(weapon_data_t));
-	
+
 //	for(i=0;i<32;i++) wpns[i] = !!(to_cd->weapons & (1<<i));
 //	sprintf(txt,"in weapons %i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i%i\n",
 //			wpns[ 0],wpns[ 1],wpns[ 2],wpns[ 3],wpns[ 4],
@@ -764,7 +763,7 @@ void CL_ParseClientData( sizebuf_t *msg )
 //			wpns[25],wpns[26],wpns[27],wpns[28],wpns[29],
 //			wpns[30],wpns[31]);
 //	Sys_Print(txt);
-	
+
 	memcpy(to_wd,from_wd,32*sizeof(weapon_data_t));
 
 	for( i = 0; i < MAX_WEAPONS; i++ )
@@ -777,9 +776,9 @@ void CL_ParseClientData( sizebuf_t *msg )
 
 		MSG_ReadWeaponData( msg, &from_wd[idx], &to_wd[idx], (float)cl.mtime[0] );
 	}
-	
+
 	memcpy(cl.predict[cl.predictcount & CL_UPDATE_MASK].weapondata,to_wd,32*sizeof(weapon_data_t));
-	
+
 }
 
 /*
