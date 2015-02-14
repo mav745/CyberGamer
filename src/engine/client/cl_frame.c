@@ -808,7 +808,20 @@ void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta )
 		if(( cls.demoplayback || cls.disable_servercount != cl.servercount ) && cl.video_prepped )
 			SCR_EndLoadingPlaque(); // get rid of loading plaque
 	}
-
+	// update state for all players
+	for( i = 0; i < cl.maxclients; i++ )
+	{
+		//char txt[64];
+		cl_entity_t *ent = CL_GetEntityByIndex( i + 1 );
+		if( !ent ) continue;
+		
+//		sprintf(txt,"entidx %i\n",i+1);
+//		Sys_Print(txt);
+		
+		clgame.dllFuncs.pfnProcessPlayerState( &newframe->playerstate[i], &ent->curstate );
+		newframe->playerstate[i].number = ent->index;
+	}
+	
 	// update local player states
 	if( player != NULL )
 	{
@@ -821,29 +834,25 @@ void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta )
 		ppcd = &newframe->local.client;
 		pwd = newframe->local.weapondata;
 
-		ps = &cl.predict[cl.predictcount & CL_UPDATE_MASK].playerstate;
+		
+		ps  = &cl.predict[cl.predictcount & CL_UPDATE_MASK].playerstate;
 		pcd = &cl.predict[cl.predictcount & CL_UPDATE_MASK].client;
-		wd = cl.predict[cl.predictcount & CL_UPDATE_MASK].weapondata;
+		wd  =  cl.predict[cl.predictcount & CL_UPDATE_MASK].weapondata;
+		
+		
 		
 //		sprintf(txt,"wd 0x%x, clip %i\n",wd,wd[2].m_iClip); 
 //		Sys_Print(txt); 
 		
 		clgame.dllFuncs.pfnTxferPredictionData( ps, pps, pcd, ppcd, wd, pwd );
 		clgame.dllFuncs.pfnTxferLocalOverrides( &player->curstate, pcd );
+		
+		
 	}
-
-	// update state for all players
-	for( i = 0; i < cl.maxclients; i++ )
-	{
-		cl_entity_t *ent = CL_GetEntityByIndex( i + 1 );
-		if( !ent ) continue;
-		clgame.dllFuncs.pfnProcessPlayerState( &newframe->playerstate[i], &ent->curstate );
-		newframe->playerstate[i].number = ent->index;
-	}
-
-	cl.frame = *newframe;
-	cl.predict[cl.predictcount & CL_UPDATE_MASK].playerstate = cl.frame.local.playerstate;
 	
+	cl.frame = *newframe;
+	//cl.frame.local.playerstate = CL_GetLocalPlayer()->index
+	//cl.predict[cl.predictcount & CL_UPDATE_MASK].playerstate = cl.frame.local.playerstate;
 }
 
 /*
