@@ -13,22 +13,22 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
-#include "gl_local.h"
 #include "studio.h"
 
-#define TEXTURES_HASH_SIZE	64
 
-static rgbdata_t	*R_LoadImage( char **buffer, const char *name, const byte *buf, size_t size, int *samples, texFlags_t *flags );
-static int	r_textureMinFilter = GL_LINEAR_MIPMAP_LINEAR;
-static int	r_textureMagFilter = GL_LINEAR;
-static gltexture_t	r_textures[MAX_TEXTURES];
-static gltexture_t	*r_texturesHashTable[TEXTURES_HASH_SIZE];
-static int	r_numTextures;
-static byte	*scaledImage = NULL;			// pointer to a scaled image
-static byte	data2D[BLOCK_SIZE_MAX*BLOCK_SIZE_MAX*4];	// intermediate texbuffer
-static rgbdata_t	r_image;					// generic pixelbuffer used for internal textures
+
+rgbdata_t	*R_LoadImage( char **buffer, const char *name, const byte *buf, size_t size, int *samples, texFlags_t *flags );
+int	r_textureMinFilter = GL_LINEAR_MIPMAP_LINEAR;
+int	r_textureMagFilter = GL_LINEAR;
+gltexture_t	r_textures[MAX_TEXTURES];
+gltexture_t	*r_texturesHashTable[TEXTURES_HASH_SIZE];
+int	r_numTextures;
+byte	*scaledImage = NULL;			// pointer to a scaled image
+byte	data2D[BLOCK_SIZE_MAX*BLOCK_SIZE_MAX*4];	// intermediate texbuffer
+rgbdata_t	r_image;					// generic pixelbuffer used for internal textures
 
 // internal tables
 static vec3_t	r_luminanceTable[256];	// RGB to luminance
@@ -67,34 +67,34 @@ const char *GL_Target( GLenum target )
 GL_Bind
 =================
 */
-void GL_Bind( GLint tmu, GLenum texnum )
-{
-	gltexture_t	*texture;
+//void GL_Bind( GLint tmu, GLenum texnum )
+//{
+//	gltexture_t	*texture;
 
-	// missed texture ?
-	if( texnum <= 0 ) texnum = tr.defaultTexture;
-	ASSERT( texnum > 0 && texnum < MAX_TEXTURES );
+//	// missed texture ?
+//	if( texnum <= 0 ) texnum = tr.defaultTexture;
+//	ASSERT( texnum > 0 && texnum < MAX_TEXTURES );
 
-	if( tmu != GL_KEEP_UNIT )
-		GL_SelectTexture( tmu );
-	else tmu = glState.activeTMU;
+//	if( tmu != GL_KEEP_UNIT )
+//		GL_SelectTexture( tmu );
+//	else tmu = glState.activeTMU;
 
-	texture = &r_textures[texnum];
+//	texture = &r_textures[texnum];
 
-	if( glState.currentTextureTargets[tmu] != texture->target )
-	{
-		if( glState.currentTextureTargets[tmu] != GL_NONE )
-			pglDisable( glState.currentTextureTargets[tmu] );
-		glState.currentTextureTargets[tmu] = texture->target;
-		pglEnable( glState.currentTextureTargets[tmu] );
-	}
+//	if( glState.currentTextureTargets[tmu] != texture->target )
+//	{
+//		if( glState.currentTextureTargets[tmu] != GL_NONE )
+//			glDisable( glState.currentTextureTargets[tmu] );
+//		glState.currentTextureTargets[tmu] = texture->target;
+//		glEnable( glState.currentTextureTargets[tmu] );
+//	}
 
-	if( glState.currentTextures[tmu] == texture->texnum )
-		return;
+//	if( glState.currentTextures[tmu] == texture->texnum )
+//		return;
 
-	pglBindTexture( texture->target, texture->texnum );
-	glState.currentTextures[tmu] = texture->texnum;
-}
+//	glBindTexture( texture->target, texture->texnum );
+//	glState.currentTextures[tmu] = texture->texnum;
+//}
 
 /*
 =================
@@ -126,224 +126,224 @@ void GL_SetTextureType( GLenum texnum, GLenum type )
 GL_TexFilter
 =================
 */
-void GL_TexFilter( gltexture_t *tex, qboolean update )
-{
-	qboolean	allowNearest;
-	vec4_t	zeroClampBorder = { 0.0f, 0.0f, 0.0f, 1.0f };
-	vec4_t	alphaZeroClampBorder = { 0.0f, 0.0f, 0.0f, 0.0f };
+//void GL_TexFilter( gltexture_t *tex, qboolean update )
+//{
+//	qboolean	allowNearest;
+//	vec4_t	zeroClampBorder = { 0.0f, 0.0f, 0.0f, 1.0f };
+//	vec4_t	alphaZeroClampBorder = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	switch( tex->texType )
-	{
-	case TEX_NOMIP:
-	case TEX_CUBEMAP:
-	case TEX_LIGHTMAP:
-		allowNearest = false;
-		break;
-	default:
-		allowNearest = true;
-		break;
-	}
+//	switch( tex->texType )
+//	{
+//	case TEX_NOMIP:
+//	case TEX_CUBEMAP:
+//	case TEX_LIGHTMAP:
+//		allowNearest = false;
+//		break;
+//	default:
+//		allowNearest = true;
+//		break;
+//	}
 
-	// set texture filter
-	if( tex->flags & TF_DEPTHMAP )
-	{
-		pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		pglTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+//	// set texture filter
+//	if( tex->flags & TF_DEPTHMAP )
+//	{
+//		glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+//		glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-		if( !( tex->flags & TF_NOCOMPARE ))
-		{
-			pglTexParameteri( tex->target, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL );
-			pglTexParameteri( tex->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB );
-		}
+//		if( !( tex->flags & TF_NOCOMPARE ))
+//		{
+//			glTexParameteri( tex->target, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL );
+//			glTexParameteri( tex->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB );
+//		}
 
-		if( tex->flags & TF_LUMINANCE )
-			pglTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE );
-		else pglTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY );
+//		if( tex->flags & TF_LUMINANCE )
+//			glTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE );
+//		else glTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY );
 
-		if( GL_Support( GL_ANISOTROPY_EXT ))
-			pglTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
-	}
-	else if( tex->flags & TF_NOMIPMAP )
-	{
-		if( tex->flags & TF_NEAREST )
-		{
-			pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-			pglTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-		}
-		else
-		{
-			if( r_textureMagFilter == GL_NEAREST && allowNearest )
-			{
-				pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMagFilter );
-				pglTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
-			}
-			else
-			{
-				pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-				pglTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-			}
-		}
-	}
-	else
-	{
-		if( tex->flags & TF_NEAREST )
-		{
-			pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
-			pglTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-		}
-		else
-		{
-			pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMinFilter );
-			pglTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
-		}
+//		if( GL_Support( GL_ANISOTROPY_EXT ))
+//			glTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
+//	}
+//	else if( tex->flags & TF_NOMIPMAP )
+//	{
+//		if( tex->flags & TF_NEAREST )
+//		{
+//			glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+//			glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+//		}
+//		else
+//		{
+//			if( r_textureMagFilter == GL_NEAREST && allowNearest )
+//			{
+//				glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMagFilter );
+//				glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
+//			}
+//			else
+//			{
+//				glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+//				glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+//			}
+//		}
+//	}
+//	else
+//	{
+//		if( tex->flags & TF_NEAREST )
+//		{
+//			glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
+//			glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+//		}
+//		else
+//		{
+//			glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMinFilter );
+//			glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
+//		}
 
-		// set texture anisotropy if available
-		if( GL_Support( GL_ANISOTROPY_EXT ) && !( tex->flags & TF_ALPHACONTRAST ))
-			pglTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_texture_anisotropy->value );
+//		// set texture anisotropy if available
+//		if( /*GL_Support( GL_ANISOTROPY_EXT ) &&*/ !( tex->flags & TF_ALPHACONTRAST ))
+//			glTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_texture_anisotropy->value );
 
-		// set texture LOD bias if available
-		if( GL_Support( GL_TEXTURE_LODBIAS ))
-			pglTexParameterf( tex->target, GL_TEXTURE_LOD_BIAS_EXT, gl_texture_lodbias->value );
-	}
+//		// set texture LOD bias if available
+//		//if( GL_Support( GL_TEXTURE_LODBIAS ))
+//			glTexParameterf( tex->target, GL_TEXTURE_LOD_BIAS_EXT, gl_texture_lodbias->value );
+//	}
 
-	if( update ) return;
+//	if( update ) return;
 
-	if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ) && !GL_Support( GL_CLAMP_TEXBORDER_EXT ))
-	{
-		// border is not support, use clamp instead
-		tex->flags &= ~(TF_BORDER||TF_ALPHA_BORDER);
-		tex->flags |= TF_CLAMP;
-	}
+//	if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ) && !GL_Support( GL_CLAMP_TEXBORDER_EXT ))
+//	{
+//		// border is not support, use clamp instead
+//		tex->flags &= ~(TF_BORDER||TF_ALPHA_BORDER);
+//		tex->flags |= TF_CLAMP;
+//	}
 
-	// set texture wrap
-	if( tex->flags & TF_CLAMP )
-	{
-		if( GL_Support( GL_CLAMPTOEDGE_EXT ))
-		{
-			pglTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+//	// set texture wrap
+//	if( tex->flags & TF_CLAMP )
+//	{
+//		if( GL_Support( GL_CLAMPTOEDGE_EXT ))
+//		{
+//			glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 
-			if( tex->target != GL_TEXTURE_1D )
-				pglTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+//			if( tex->target != GL_TEXTURE_1D )
+//				glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-				pglTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-		}
-		else
-		{
-			pglTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP );
+//			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+//				glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+//		}
+//		else
+//		{
+//			glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP );
 
-			if( tex->target != GL_TEXTURE_1D )
-				pglTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP );
+//			if( tex->target != GL_TEXTURE_1D )
+//				glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
-			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-				pglTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP );
-		}
-	}
-	else if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ))
-	{
-		pglTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER );
+//			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+//				glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP );
+//		}
+//	}
+//	else if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ))
+//	{
+//		glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER );
 
-		if( tex->target != GL_TEXTURE_1D )
-			pglTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER );
+//		if( tex->target != GL_TEXTURE_1D )
+//			glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER );
 
-		if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-			pglTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER );
+//		if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+//			glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER );
 
-		if( tex->flags & TF_BORDER )
-			pglTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, zeroClampBorder );
-		else if( tex->flags & TF_ALPHA_BORDER )
-			pglTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, alphaZeroClampBorder );
-	}
-	else
-	{
-		pglTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_REPEAT );
+//		if( tex->flags & TF_BORDER )
+//			glTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, zeroClampBorder );
+//		else if( tex->flags & TF_ALPHA_BORDER )
+//			glTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, alphaZeroClampBorder );
+//	}
+//	else
+//	{
+//		glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_REPEAT );
 
-		if( tex->target != GL_TEXTURE_1D )
-			pglTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_REPEAT );
+//		if( tex->target != GL_TEXTURE_1D )
+//			glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-		if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-			pglTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_REPEAT );
-	}
-}
+//		if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+//			glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_REPEAT );
+//	}
+//}
 
 /*
 =================
 R_SetTextureParameters
 =================
 */
-void R_SetTextureParameters( void )
-{
-	gltexture_t	*texture;
-	int		i;
+//void R_SetTextureParameters( void )
+//{
+//	gltexture_t	*texture;
+//	int		i;
 
-	if( !Q_stricmp( gl_texturemode->string, "GL_NEAREST" ))
-	{
-		r_textureMinFilter = GL_NEAREST;
-		r_textureMagFilter = GL_NEAREST;
-	}
-	else if( !Q_stricmp( gl_texturemode->string, "GL_LINEAR" ))
-	{
-		r_textureMinFilter = GL_LINEAR;
-		r_textureMagFilter = GL_LINEAR;
-	}
-	else if( !Q_stricmp( gl_texturemode->string, "GL_NEAREST_MIPMAP_NEAREST" ))
-	{
-		r_textureMinFilter = GL_NEAREST_MIPMAP_NEAREST;
-		r_textureMagFilter = GL_NEAREST;
-	}
-	else if( !Q_stricmp( gl_texturemode->string, "GL_LINEAR_MIPMAP_NEAREST" ))
-	{
-		r_textureMinFilter = GL_LINEAR_MIPMAP_NEAREST;
-		r_textureMagFilter = GL_LINEAR;
-	}
-	else if( !Q_stricmp( gl_texturemode->string, "GL_NEAREST_MIPMAP_LINEAR" ))
-	{
-		r_textureMinFilter = GL_NEAREST_MIPMAP_LINEAR;
-		r_textureMagFilter = GL_NEAREST;
-	}
-	else if( !Q_stricmp( gl_texturemode->string, "GL_LINEAR_MIPMAP_LINEAR" ))
-	{
-		r_textureMinFilter = GL_LINEAR_MIPMAP_LINEAR;
-		r_textureMagFilter = GL_LINEAR;
-	}
-	else
-	{
-		MsgDev( D_ERROR, "gl_texturemode invalid mode %s, defaulting to GL_LINEAR_MIPMAP_LINEAR\n", gl_texturemode->string );
-		Cvar_Set( "gl_texturemode", "GL_LINEAR_MIPMAP_LINEAR" );
-		r_textureMinFilter = GL_LINEAR_MIPMAP_LINEAR;
-		r_textureMagFilter = GL_LINEAR;
-	}
+//	if( !Q_stricmp( gl_texturemode->string, "GL_NEAREST" ))
+//	{
+//		r_textureMinFilter = GL_NEAREST;
+//		r_textureMagFilter = GL_NEAREST;
+//	}
+//	else if( !Q_stricmp( gl_texturemode->string, "GL_LINEAR" ))
+//	{
+//		r_textureMinFilter = GL_LINEAR;
+//		r_textureMagFilter = GL_LINEAR;
+//	}
+//	else if( !Q_stricmp( gl_texturemode->string, "GL_NEAREST_MIPMAP_NEAREST" ))
+//	{
+//		r_textureMinFilter = GL_NEAREST_MIPMAP_NEAREST;
+//		r_textureMagFilter = GL_NEAREST;
+//	}
+//	else if( !Q_stricmp( gl_texturemode->string, "GL_LINEAR_MIPMAP_NEAREST" ))
+//	{
+//		r_textureMinFilter = GL_LINEAR_MIPMAP_NEAREST;
+//		r_textureMagFilter = GL_LINEAR;
+//	}
+//	else if( !Q_stricmp( gl_texturemode->string, "GL_NEAREST_MIPMAP_LINEAR" ))
+//	{
+//		r_textureMinFilter = GL_NEAREST_MIPMAP_LINEAR;
+//		r_textureMagFilter = GL_NEAREST;
+//	}
+//	else if( !Q_stricmp( gl_texturemode->string, "GL_LINEAR_MIPMAP_LINEAR" ))
+//	{
+//		r_textureMinFilter = GL_LINEAR_MIPMAP_LINEAR;
+//		r_textureMagFilter = GL_LINEAR;
+//	}
+//	else
+//	{
+//		MsgDev( D_ERROR, "gl_texturemode invalid mode %s, defaulting to GL_LINEAR_MIPMAP_LINEAR\n", gl_texturemode->string );
+//		Cvar_Set( "gl_texturemode", "GL_LINEAR_MIPMAP_LINEAR" );
+//		r_textureMinFilter = GL_LINEAR_MIPMAP_LINEAR;
+//		r_textureMagFilter = GL_LINEAR;
+//	}
 
-	gl_texturemode->modified = false;
+//	gl_texturemode->modified = false;
 
-	if( GL_Support( GL_ANISOTROPY_EXT ))
-	{
-		if( gl_texture_anisotropy->value > glConfig.max_texture_anisotropy )
-			Cvar_SetFloat( "gl_anisotropy", glConfig.max_texture_anisotropy );
-		else if( gl_texture_anisotropy->value < 1.0f )
-			Cvar_SetFloat( "gl_anisotropy", 1.0f );
-	}
+////	if( GL_Support( GL_ANISOTROPY_EXT ))
+////	{
+//		if( gl_texture_anisotropy->value > glConfig.max_texture_anisotropy )
+//			Cvar_SetFloat( "gl_anisotropy", glConfig.max_texture_anisotropy );
+//		else if( gl_texture_anisotropy->value < 1.0f )
+//			Cvar_SetFloat( "gl_anisotropy", 1.0f );
+////	}
 
-	gl_texture_anisotropy->modified = false;
+//	gl_texture_anisotropy->modified = false;
 
-	if( GL_Support( GL_TEXTURE_LODBIAS ))
-	{
-		if( gl_texture_lodbias->value > glConfig.max_texture_lodbias )
-			Cvar_SetFloat( "gl_texture_lodbias", glConfig.max_texture_lodbias );
-		else if( gl_texture_lodbias->value < -glConfig.max_texture_lodbias )
-			Cvar_SetFloat( "gl_texture_lodbias", -glConfig.max_texture_lodbias );
-	}
+////	if( GL_Support( GL_TEXTURE_LODBIAS ))
+////	{
+//		if( gl_texture_lodbias->value > glConfig.max_texture_lodbias )
+//			Cvar_SetFloat( "gl_texture_lodbias", glConfig.max_texture_lodbias );
+//		else if( gl_texture_lodbias->value < -glConfig.max_texture_lodbias )
+//			Cvar_SetFloat( "gl_texture_lodbias", -glConfig.max_texture_lodbias );
+////	}
 
-	gl_texture_lodbias->modified = false;
+//	gl_texture_lodbias->modified = false;
 
-	// change all the existing mipmapped texture objects
-	for( i = 0, texture = r_textures; i < r_numTextures; i++, texture++ )
-	{
-		if( !texture->texnum ) continue;	// free slot
-		GL_Bind( GL_TEXTURE0, i );
-		GL_TexFilter( texture, true );
-	}
-}
+//	// change all the existing mipmapped texture objects
+//	for( i = 0, texture = r_textures; i < r_numTextures; i++, texture++ )
+//	{
+//		if( !texture->texnum ) continue;	// free slot
+//		GL_Bind( GL_TEXTURE0, i );
+//		GL_TexFilter( texture, true );
+//	}
+//}
 
 /*
 ===============
@@ -645,7 +645,7 @@ void GL_RoundImageDimensions( word *width, word *height, texFlags_t flags, qbool
 GL_TextureFormat
 ===============
 */
-static GLenum GL_TextureFormat( gltexture_t *tex, int *samples )
+GLenum GL_TextureFormat( gltexture_t *tex, int *samples )
 {
 	qboolean	compress;
 	GLenum	format;
@@ -894,7 +894,7 @@ GL_BuildMipMap
 Operates in place, quartering the size of the texture
 =================
 */
-static void GL_BuildMipMap( byte *in, int width, int height, qboolean isNormalMap )
+void GL_BuildMipMap( byte *in, int width, int height, qboolean isNormalMap )
 {
 	byte	*out = in;
 	vec3_t	normal;
@@ -945,47 +945,47 @@ GL_GenerateMipmaps
 sgis generate mipmap
 ===============
 */
-void GL_GenerateMipmaps( byte *buffer, rgbdata_t *pic, gltexture_t *tex, GLenum glTarget, GLenum inFormat, int side, qboolean subImage )
-{
-	int	mipLevel;
-	int	dataType = GL_UNSIGNED_BYTE;
-	int	w, h;
+//void GL_GenerateMipmaps( byte *buffer, rgbdata_t *pic, gltexture_t *tex, GLenum glTarget, GLenum inFormat, int side, qboolean subImage )
+//{
+//	int	mipLevel;
+//	int	dataType = GL_UNSIGNED_BYTE;
+//	int	w, h;
 
-	// not needs
-	if( tex->flags & TF_NOMIPMAP )
-		return;
+//	// not needs
+//	if( tex->flags & TF_NOMIPMAP )
+//		return;
 
-	if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
-	{
-		pglHint( GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST );
-		pglTexParameteri( glTarget, GL_GENERATE_MIPMAP_SGIS, GL_TRUE );
-		pglGetError(); // clear error queue on mips generate
-		return;
-	}
+//	if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
+//	{
+//		glHint( GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST );
+//		glTexParameteri( glTarget, GL_GENERATE_MIPMAP_SGIS, GL_TRUE );
+//		glGetError(); // clear error queue on mips generate
+//		return;
+//	}
 
-	// screen texture?
-	if( !buffer ) return;
+//	// screen texture?
+//	if( !buffer ) return;
 
-	mipLevel = 0;
-	w = tex->width;
-	h = tex->height;
+//	mipLevel = 0;
+//	w = tex->width;
+//	h = tex->height;
 
-	// software mipmap generator
-	while( w > 1 || h > 1 )
-	{
-		// build the mipmap
-		if( tex->flags & TF_ALPHACONTRAST ) Q_memset( buffer, pic->width >> mipLevel, w * h * 4 );
-		else GL_BuildMipMap( buffer, w, h, ( tex->flags & TF_NORMALMAP ));
+//	// software mipmap generator
+//	while( w > 1 || h > 1 )
+//	{
+//		// build the mipmap
+//		if( tex->flags & TF_ALPHACONTRAST ) Q_memset( buffer, pic->width >> mipLevel, w * h * 4 );
+//		else GL_BuildMipMap( buffer, w, h, ( tex->flags & TF_NORMALMAP ));
 
-		w = (w+1)>>1;
-		h = (h+1)>>1;
-		mipLevel++;
+//		w = (w+1)>>1;
+//		h = (h+1)>>1;
+//		mipLevel++;
 
-		if( subImage ) pglTexSubImage2D( tex->target + side, mipLevel, 0, 0, w, h, inFormat, dataType, buffer );
-		else pglTexImage2D( tex->target + side, mipLevel, tex->format, w, h, 0, inFormat, dataType, buffer );
-		if( pglGetError( )) break; // can't create mip levels
-	}
-}
+//		if( subImage ) glTexSubImage2D( tex->target + side, mipLevel, 0, 0, w, h, inFormat, dataType, buffer );
+//		else glTexImage2D( tex->target + side, mipLevel, tex->format, w, h, 0, inFormat, dataType, buffer );
+//		if( glGetError( )) break; // can't create mip levels
+//	}
+//}
 
 /*
 =================
@@ -1024,206 +1024,206 @@ GL_UploadTexture
 upload texture into video memory
 ===============
 */
-static void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImage, imgfilter_t *filter )
-{
-	byte		*buf, *data;
-	const byte	*bufend;
-	GLenum		outFormat, inFormat, glTarget;
-	uint		i, s, numSides, offset = 0, err;
-	int		texsize = 0, img_flags = 0, samples;
-	GLint		dataType = GL_UNSIGNED_BYTE;
+//static void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImage, imgfilter_t *filter )
+//{
+//	byte		*buf, *data;
+//	const byte	*bufend;
+//	GLenum		outFormat, inFormat, glTarget;
+//	uint		i, s, numSides, offset = 0, err;
+//	int		texsize = 0, img_flags = 0, samples;
+//	GLint		dataType = GL_UNSIGNED_BYTE;
 
-	ASSERT( pic != NULL && tex != NULL );
+//	ASSERT( pic != NULL && tex != NULL );
 
-	tex->srcWidth = tex->width = pic->width;
-	tex->srcHeight = tex->height = pic->height;
-	s = tex->srcWidth * tex->srcHeight;
+//	tex->srcWidth = tex->width = pic->width;
+//	tex->srcHeight = tex->height = pic->height;
+//	s = tex->srcWidth * tex->srcHeight;
 
-	tex->fogParams[0] = pic->fogParams[0];
-	tex->fogParams[1] = pic->fogParams[1];
-	tex->fogParams[2] = pic->fogParams[2];
-	tex->fogParams[3] = pic->fogParams[3];
+//	tex->fogParams[0] = pic->fogParams[0];
+//	tex->fogParams[1] = pic->fogParams[1];
+//	tex->fogParams[2] = pic->fogParams[2];
+//	tex->fogParams[3] = pic->fogParams[3];
 
-	// NOTE: normalmaps must be power of two or software mip generator will stop working
-	GL_RoundImageDimensions( &tex->width, &tex->height, tex->flags, ( tex->flags & TF_NORMALMAP ));
+//	// NOTE: normalmaps must be power of two or software mip generator will stop working
+//	GL_RoundImageDimensions( &tex->width, &tex->height, tex->flags, ( tex->flags & TF_NORMALMAP ));
 
-	if( s&3 )
-	{
-		// will be resample, just tell me for debug targets
-		MsgDev( D_NOTE, "GL_Upload: %s s&3 [%d x %d]\n", tex->name, tex->srcWidth, tex->srcHeight );
-	}
+//	if( s&3 )
+//	{
+//		// will be resample, just tell me for debug targets
+//		MsgDev( D_NOTE, "GL_Upload: %s s&3 [%d x %d]\n", tex->name, tex->srcWidth, tex->srcHeight );
+//	}
 
-	// copy flag about luma pixels
-	if( pic->flags & IMAGE_HAS_LUMA )
-		tex->flags |= TF_HAS_LUMA;
+//	// copy flag about luma pixels
+//	if( pic->flags & IMAGE_HAS_LUMA )
+//		tex->flags |= TF_HAS_LUMA;
 
-	// create luma texture from quake texture
-	if( tex->flags & TF_MAKELUMA )
-	{
-		img_flags |= IMAGE_MAKE_LUMA;
-		tex->flags &= ~TF_MAKELUMA;
-	}
+//	// create luma texture from quake texture
+//	if( tex->flags & TF_MAKELUMA )
+//	{
+//		img_flags |= IMAGE_MAKE_LUMA;
+//		tex->flags &= ~TF_MAKELUMA;
+//	}
 
-	if( !subImage && tex->flags & TF_KEEP_8BIT )
-		tex->original = FS_CopyImage( pic ); // because current pic will be expanded to rgba
+//	if( !subImage && tex->flags & TF_KEEP_8BIT )
+//		tex->original = FS_CopyImage( pic ); // because current pic will be expanded to rgba
 
-	if( !subImage && tex->flags & TF_KEEP_RGBDATA )
-		tex->original = pic; // no need to copy
+//	if( !subImage && tex->flags & TF_KEEP_RGBDATA )
+//		tex->original = pic; // no need to copy
 
-	// we need to expand image into RGBA buffer
-	if( pic->type == PF_INDEXED_24 || pic->type == PF_INDEXED_32 )
-		img_flags |= IMAGE_FORCE_RGBA;
+//	// we need to expand image into RGBA buffer
+//	if( pic->type == PF_INDEXED_24 || pic->type == PF_INDEXED_32 )
+//		img_flags |= IMAGE_FORCE_RGBA;
 
-	// processing image before uploading (force to rgba, make luma etc)
-	if( pic->buffer ) Image_Process( &pic, 0, 0, 0.0f, img_flags, filter );
+//	// processing image before uploading (force to rgba, make luma etc)
+//	if( pic->buffer ) Image_Process( &pic, 0, 0, 0.0f, img_flags, filter );
 
-	if( tex->flags & TF_LUMINANCE )
-	{
-		if( !( tex->flags & TF_DEPTHMAP ))
-		{
-			GL_MakeLuminance( pic );
-			tex->flags &= ~TF_LUMINANCE;
-		}
-		pic->flags &= ~IMAGE_HAS_COLOR;
-	}
+//	if( tex->flags & TF_LUMINANCE )
+//	{
+//		if( !( tex->flags & TF_DEPTHMAP ))
+//		{
+//			GL_MakeLuminance( pic );
+//			tex->flags &= ~TF_LUMINANCE;
+//		}
+//		pic->flags &= ~IMAGE_HAS_COLOR;
+//	}
 
-	samples = GL_CalcTextureSamples( pic->flags );
+//	samples = GL_CalcTextureSamples( pic->flags );
 
-	if( pic->flags & IMAGE_HAS_ALPHA )
-		tex->flags |= TF_HAS_ALPHA;
+//	if( pic->flags & IMAGE_HAS_ALPHA )
+//		tex->flags |= TF_HAS_ALPHA;
 
-	// determine format
-	inFormat = PFDesc[pic->type].glFormat;
-	outFormat = GL_TextureFormat( tex, &samples );
-	tex->format = outFormat;
+//	// determine format
+//	inFormat = PFDesc[pic->type].glFormat;
+//	outFormat = GL_TextureFormat( tex, &samples );
+//	tex->format = outFormat;
 
-	// determine target
-	tex->target = glTarget = GL_TEXTURE_2D;
-	numSides = 1;
+//	// determine target
+//	tex->target = glTarget = GL_TEXTURE_2D;
+//	numSides = 1;
 
-	if( tex->flags & TF_DEPTHMAP )
-	{
-		inFormat = GL_DEPTH_COMPONENT;
-		dataType = GL_FLOAT;
-	}
+//	if( tex->flags & TF_DEPTHMAP )
+//	{
+//		inFormat = GL_DEPTH_COMPONENT;
+//		dataType = GL_FLOAT;
+//	}
 
-	if( pic->flags & IMAGE_CUBEMAP )
-	{
-		if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
-		{
-			numSides = 6;
-			tex->target = glTarget = GL_TEXTURE_CUBE_MAP_ARB;
-			tex->flags |= TF_CUBEMAP;
+//	if( pic->flags & IMAGE_CUBEMAP )
+//	{
+//		if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
+//		{
+//			numSides = 6;
+//			tex->target = glTarget = GL_TEXTURE_CUBE_MAP_ARB;
+//			tex->flags |= TF_CUBEMAP;
 
-			if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ))
-			{
-				// don't use border for cubemaps
-				tex->flags &= ~(TF_BORDER|TF_ALPHA_BORDER);
-				tex->flags |= TF_CLAMP;
-			}
-		}
-		else
-		{
-			MsgDev( D_WARN, "GL_UploadTexture: cubemaps isn't supported, %s ignored\n", tex->name );
-			tex->flags &= ~TF_CUBEMAP;
-		}
-	}
-	else if( tex->flags & TF_TEXTURE_1D )
-	{
-		// determine target
-		tex->target = glTarget = GL_TEXTURE_1D;
-	}
-	else if( tex->flags & TF_TEXTURE_RECTANGLE )
-	{
-		if( glConfig.max_2d_rectangle_size )
-			tex->target = glTarget = glConfig.texRectangle;
-		// or leave as GL_TEXTURE_2D
-	}
-	else if( tex->flags & TF_TEXTURE_3D )
-	{
-		// determine target
-		tex->target = glTarget = GL_TEXTURE_3D;
-	}
+//			if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ))
+//			{
+//				// don't use border for cubemaps
+//				tex->flags &= ~(TF_BORDER|TF_ALPHA_BORDER);
+//				tex->flags |= TF_CLAMP;
+//			}
+//		}
+//		else
+//		{
+//			MsgDev( D_WARN, "GL_UploadTexture: cubemaps isn't supported, %s ignored\n", tex->name );
+//			tex->flags &= ~TF_CUBEMAP;
+//		}
+//	}
+//	else if( tex->flags & TF_TEXTURE_1D )
+//	{
+//		// determine target
+//		tex->target = glTarget = GL_TEXTURE_1D;
+//	}
+//	else if( tex->flags & TF_TEXTURE_RECTANGLE )
+//	{
+//		if( glConfig.max_2d_rectangle_size )
+//			tex->target = glTarget = glConfig.texRectangle;
+//		// or leave as GL_TEXTURE_2D
+//	}
+//	else if( tex->flags & TF_TEXTURE_3D )
+//	{
+//		// determine target
+//		tex->target = glTarget = GL_TEXTURE_3D;
+//	}
 
-	pglBindTexture( tex->target, tex->texnum );
+//	glBindTexture( tex->target, tex->texnum );
 
-	buf = pic->buffer;
-	bufend = pic->buffer + pic->size;
-	offset = pic->width * pic->height * PFDesc[pic->type].bpp;
+//	buf = pic->buffer;
+//	bufend = pic->buffer + pic->size;
+//	offset = pic->width * pic->height * PFDesc[pic->type].bpp;
 
-	// NOTE: probably this code relies when gl_compressed_textures is enabled
-	texsize = tex->width * tex->height * samples;
+//	// NOTE: probably this code relies when gl_compressed_textures is enabled
+//	texsize = tex->width * tex->height * samples;
 
-	// determine some texTypes
-	if( tex->flags & TF_NOPICMIP )
-		tex->texType = TEX_NOMIP;
-	else if( tex->flags & TF_CUBEMAP )
-		tex->texType = TEX_CUBEMAP;
-	else if(( tex->flags & TF_DECAL ) == TF_DECAL )
-		tex->texType = TEX_DECAL;
+//	// determine some texTypes
+//	if( tex->flags & TF_NOPICMIP )
+//		tex->texType = TEX_NOMIP;
+//	else if( tex->flags & TF_CUBEMAP )
+//		tex->texType = TEX_CUBEMAP;
+//	else if(( tex->flags & TF_DECAL ) == TF_DECAL )
+//		tex->texType = TEX_DECAL;
 
-	// uploading texture into video memory
-	for( i = 0; i < numSides; i++ )
-	{
-		if( buf != NULL && buf >= bufend )
-			Host_Error( "GL_UploadTexture: %s image buffer overflow\n", tex->name );
+//	// uploading texture into video memory
+//	for( i = 0; i < numSides; i++ )
+//	{
+//		if( buf != NULL && buf >= bufend )
+//			Host_Error( "GL_UploadTexture: %s image buffer overflow\n", tex->name );
 
-		// copy or resample the texture
-		if(( tex->width == tex->srcWidth && tex->height == tex->srcHeight ) || ( tex->flags & ( TF_TEXTURE_1D|TF_TEXTURE_3D )))
-		{
-			data = buf;
-		}
-		else
-		{
-			data = GL_ResampleTexture( buf, tex->srcWidth, tex->srcHeight, tex->width, tex->height, ( tex->flags & TF_NORMALMAP ));
-		}
+//		// copy or resample the texture
+//		if(( tex->width == tex->srcWidth && tex->height == tex->srcHeight ) || ( tex->flags & ( TF_TEXTURE_1D|TF_TEXTURE_3D )))
+//		{
+//			data = buf;
+//		}
+//		else
+//		{
+//			data = GL_ResampleTexture( buf, tex->srcWidth, tex->srcHeight, tex->width, tex->height, ( tex->flags & TF_NORMALMAP ));
+//		}
 
-		if( !glConfig.deviceSupportsGamma )
-		{
-			if(!( tex->flags & TF_NOMIPMAP ) && !( tex->flags & TF_SKYSIDE ) && !( tex->flags & TF_TEXTURE_3D ))
-				data = GL_ApplyGamma( data, tex->width * tex->height, ( tex->flags & TF_NORMALMAP ));
-		}
+//		if( !glConfig.deviceSupportsGamma )
+//		{
+//			if(!( tex->flags & TF_NOMIPMAP ) && !( tex->flags & TF_SKYSIDE ) && !( tex->flags & TF_TEXTURE_3D ))
+//				data = GL_ApplyGamma( data, tex->width * tex->height, ( tex->flags & TF_NORMALMAP ));
+//		}
 
-		if( glTarget == GL_TEXTURE_1D )
-		{
-			if( subImage ) pglTexSubImage1D( tex->target, 0, 0, tex->width, inFormat, dataType, data );
-			else pglTexImage1D( tex->target, 0, outFormat, tex->width, 0, inFormat, dataType, data );
-		}
-		else if( glTarget == GL_TEXTURE_CUBE_MAP_ARB )
-		{
-			if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & TF_NORMALMAP ))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-			if( subImage ) pglTexSubImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
-			else pglTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, 0, outFormat, tex->width, tex->height, 0, inFormat, dataType, data );
-			if( !GL_Support( GL_SGIS_MIPMAPS_EXT ) || ( tex->flags & TF_NORMALMAP ))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-		}
-		else if( glTarget == GL_TEXTURE_3D )
-		{
-			if( subImage ) pglTexSubImage3D( tex->target, 0, 0, 0, 0, tex->width, tex->height, pic->depth, inFormat, dataType, data );
-			else pglTexImage3D( tex->target, 0, outFormat, tex->width, tex->height, pic->depth, 0, inFormat, dataType, data );
-		}
-		else
-		{
-			if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-			if( subImage ) pglTexSubImage2D( tex->target, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
-			else pglTexImage2D( tex->target, 0, outFormat, tex->width, tex->height, 0, inFormat, dataType, data );
-			if( !GL_Support( GL_SGIS_MIPMAPS_EXT ) || ( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-		}
+//		if( glTarget == GL_TEXTURE_1D )
+//		{
+//			if( subImage ) glTexSubImage1D( tex->target, 0, 0, tex->width, inFormat, dataType, data );
+//			else glTexImage1D( tex->target, 0, outFormat, tex->width, 0, inFormat, dataType, data );
+//		}
+//		else if( glTarget == GL_TEXTURE_CUBE_MAP_ARB )
+//		{
+//			if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & TF_NORMALMAP ))
+//				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
+//			if( subImage ) glTexSubImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
+//			else glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, 0, outFormat, tex->width, tex->height, 0, inFormat, dataType, data );
+//			if( !GL_Support( GL_SGIS_MIPMAPS_EXT ) || ( tex->flags & TF_NORMALMAP ))
+//				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
+//		}
+////		else if( glTarget == GL_TEXTURE_3D )
+////		{
+////			if( subImage ) glTexSubImage3D( tex->target, 0, 0, 0, 0, tex->width, tex->height, pic->depth, inFormat, dataType, data );
+////			else glTexImage3D( tex->target, 0, outFormat, tex->width, tex->height, pic->depth, 0, inFormat, dataType, data );
+////		}
+//		else
+//		{
+//			if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
+//				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
+//			if( subImage ) glTexSubImage2D( tex->target, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
+//			else glTexImage2D( tex->target, 0, outFormat, tex->width, tex->height, 0, inFormat, dataType, data );
+//			if( !GL_Support( GL_SGIS_MIPMAPS_EXT ) || ( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
+//				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
+//		}
 
-		if( numSides > 1 && buf != NULL )
-			buf += offset;
-		tex->size += texsize;
+//		if( numSides > 1 && buf != NULL )
+//			buf += offset;
+//		tex->size += texsize;
 
-		// catch possible errors
-		err = pglGetError();
+//		// catch possible errors
+//		err = glGetError();
 
-		if( err != GL_NO_ERROR )
-			MsgDev( D_ERROR, "GL_UploadTexture: error %x while uploading %s [%s]\n", err, tex->name, GL_Target( glTarget ));
-	}
-}
+//		if( err != GL_NO_ERROR )
+//			MsgDev( D_ERROR, "GL_UploadTexture: error %x while uploading %s [%s]\n", err, tex->name, GL_Target( glTarget ));
+//	}
+//}
 
 /*
 ================
@@ -3590,7 +3590,7 @@ void R_FreeImage( gltexture_t *image )
 	if( image->flags & (TF_KEEP_RGBDATA|TF_KEEP_8BIT) && image->original )
 		FS_FreeImage( image->original );
 
-	pglDeleteTextures( 1, &image->texnum );
+	glDeleteTextures( 1, &image->texnum );
 	Q_memset( image, 0, sizeof( *image ));
 }
 
@@ -4280,33 +4280,33 @@ void R_InitImages( void )
 R_ShutdownImages
 ===============
 */
-void R_ShutdownImages( void )
-{
-	gltexture_t	*image;
-	int		i;
+//void R_ShutdownImages( void )
+//{
+//	gltexture_t	*image;
+//	int		i;
 
-	if( !glw_state.initialized ) return;
+//	if( !glw_state.initialized ) return;
 
-	for( i = ( MAX_TEXTURE_UNITS - 1); i >= 0; i-- )
-	{
-		if( i >= GL_MaxTextureUnits( ))
-			continue;
+//	for( i = ( MAX_TEXTURE_UNITS - 1); i >= 0; i-- )
+//	{
+//		if( i >= GL_MaxTextureUnits( ))
+//			continue;
 
-		GL_SelectTexture( i );
-		pglBindTexture( GL_TEXTURE_2D, 0 );
+//		GL_SelectTexture( i );
+//		glBindTexture( GL_TEXTURE_2D, 0 );
 
-		if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
-			pglBindTexture( GL_TEXTURE_CUBE_MAP_ARB, 0 );
-	}
+//		if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
+//			glBindTexture( GL_TEXTURE_CUBE_MAP_ARB, 0 );
+//	}
 
-	for( i = 0, image = r_textures; i < r_numTextures; i++, image++ )
-	{
-		if( !image->texnum ) continue;
-		GL_FreeTexture( i );
-	}
+//	for( i = 0, image = r_textures; i < r_numTextures; i++, image++ )
+//	{
+//		if( !image->texnum ) continue;
+//		GL_FreeTexture( i );
+//	}
 
-	Q_memset( tr.lightmapTextures, 0, sizeof( tr.lightmapTextures ));
-	Q_memset( r_texturesHashTable, 0, sizeof( r_texturesHashTable ));
-	Q_memset( r_textures, 0, sizeof( r_textures ));
-	r_numTextures = 0;
-}
+//	Q_memset( tr.lightmapTextures, 0, sizeof( tr.lightmapTextures ));
+//	Q_memset( r_texturesHashTable, 0, sizeof( r_texturesHashTable ));
+//	Q_memset( r_textures, 0, sizeof( r_textures ));
+//	r_numTextures = 0;
+//}

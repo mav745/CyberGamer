@@ -1,7 +1,7 @@
 CONFIG(debug, debug|release): CONFIG -= release
 else: CONFIG -= debug
 
-QT -= core gui
+QT += core gui opengl widgets
 
 TEMPLATE = app
 TARGET = hl
@@ -24,7 +24,11 @@ LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 \
 		-lwinmm -lwsock32 -luuid -lodbc32 -lodbccp32
 
 SOURCES += \
-	game.cpp
+	game.cpp \
+	main.cpp
 
 DISTFILES += \
 	game.rc
+
+HEADERS += \
+	game.hpp

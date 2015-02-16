@@ -24,6 +24,8 @@ GNU General Public License for more details.
 #include "protocol.h"
 #include "dlight.h"
 
+#include <gl/GL.h>
+
 extern byte	*r_temppool;
 
 #define BLOCK_SIZE		world.block_size	// lightmap blocksize
@@ -252,233 +254,233 @@ extern struct particle_s	*cl_free_trails;
 //
 // gl_backend.c
 //
-void GL_BackendStartFrame( void );
-void GL_BackendEndFrame( void );
-void GL_CleanUpTextureUnits( int last );
-void GL_Bind( GLint tmu, GLenum texnum );
-void GL_MultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t );
-void GL_SetTexCoordArrayMode( GLenum mode );
-void GL_LoadTexMatrix( const matrix4x4 m );
-void GL_LoadTexMatrixExt( const float *glmatrix );
-void GL_LoadMatrix( const matrix4x4 source );
-void GL_TexGen( GLenum coord, GLenum mode );
-void GL_SelectTexture( GLint texture );
-void GL_LoadIdentityTexMatrix( void );
-void GL_DisableAllTexGens( void );
-void GL_SetRenderMode( int mode );
-void GL_FrontFace( GLenum front );
-void GL_TextureTarget( uint target );
-void GL_Cull( GLenum cull );
-void R_ShowTextures( void );
+//void GL_BackendStartFrame( void );
+//void GL_BackendEndFrame( void );
+//void GL_CleanUpTextureUnits( int last );
+////void GL_Bind( GLint tmu, GLenum texnum );
+//void GL_MultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t );
+//void GL_SetTexCoordArrayMode( GLenum mode );
+//void GL_LoadTexMatrix( const matrix4x4 m );
+//void GL_LoadTexMatrixExt( const float *glmatrix );
+////void GL_LoadMatrix( const matrix4x4 source );
+//void GL_TexGen( GLenum coord, GLenum mode );
+////void GL_SelectTexture( GLint texture );
+//void GL_LoadIdentityTexMatrix( void );
+//void GL_DisableAllTexGens( void );
+////void GL_SetRenderMode( int mode );
+////void GL_FrontFace( GLenum front );
+//void GL_TextureTarget( uint target );
+////void GL_Cull( GLenum cull );
+////void R_ShowTextures( void );
 
-//
-// gl_cull.c
-//
-int R_CullModel( cl_entity_t *e, vec3_t origin, vec3_t mins, vec3_t maxs, float radius );
-qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint clipflags );
-qboolean R_CullSphere( const vec3_t centre, const float radius, const uint clipflags );
-qboolean R_CullSurface( msurface_t *surf, uint clipflags );
+////
+//// gl_cull.c
+////
+//int R_CullModel( cl_entity_t *e, vec3_t origin, vec3_t mins, vec3_t maxs, float radius );
+////qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint clipflags );
+//qboolean R_CullSphere( const vec3_t centre, const float radius, const uint clipflags );
+//qboolean R_CullSurface( msurface_t *surf, uint clipflags );
 
-//
-// gl_decals.c
-//
-void DrawSurfaceDecals( msurface_t *fa );
-float *R_DecalSetupVerts( decal_t *pDecal, msurface_t *surf, int texture, int *outCount );
-void DrawSingleDecal( decal_t *pDecal, msurface_t *fa );
-void R_EntityRemoveDecals( model_t *mod );
-void R_ClearDecals( void );
+////
+//// gl_decals.c
+////
+////void DrawSurfaceDecals( msurface_t *fa );
+//float *R_DecalSetupVerts( decal_t *pDecal, msurface_t *surf, int texture, int *outCount );
+////void DrawSingleDecal( decal_t *pDecal, msurface_t *fa );
+//void R_EntityRemoveDecals( model_t *mod );
+//void R_ClearDecals( void );
 
-//
-// gl_draw.c
-//
-void R_Set2DMode( qboolean enable );
-void R_DrawTileClear( int x, int y, int w, int h );
-void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data );
+////
+//// gl_draw.c
+////
+////void R_Set2DMode( qboolean enable );
+////void R_DrawTileClear( int x, int y, int w, int h );
+////void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data );
 
-//
-// gl_image.c
-//
-void R_SetTextureParameters( void );
-gltexture_t *R_GetTexture( GLenum texnum );
-void GL_SetTextureType( GLenum texnum, GLenum type );
-int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, imgfilter_t *filter );
-int GL_LoadTextureInternal( const char *name, rgbdata_t *pic, texFlags_t flags, qboolean update );
-byte *GL_ResampleTexture( const byte *source, int in_w, int in_h, int out_w, int out_h, qboolean isNormalMap );
-int GL_CreateTexture( const char *name, int width, int height, const void *buffer, texFlags_t flags );
-void GL_ProcessTexture( int texnum, float gamma, int topColor, int bottomColor );
-void GL_TexFilter( gltexture_t *tex, qboolean update );
-void R_FreeImage( gltexture_t *image );
-int GL_FindTexture( const char *name );
-void GL_FreeTexture( GLenum texnum );
-void GL_FreeImage( const char *name );
-const char *GL_Target( GLenum target );
-void R_TextureList_f( void );
-void R_InitImages( void );
-void R_ShutdownImages( void );
+////
+//// gl_image.c
+////
+////void R_SetTextureParameters( void );
+//gltexture_t *R_GetTexture( GLenum texnum );
+////void GL_SetTextureType( GLenum texnum, GLenum type );
+//int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, imgfilter_t *filter );
+////int GL_LoadTextureInternal( const char *name, rgbdata_t *pic, texFlags_t flags, qboolean update );
+////byte *GL_ResampleTexture( const byte *source, int in_w, int in_h, int out_w, int out_h, qboolean isNormalMap );
+//int GL_CreateTexture( const char *name, int width, int height, const void *buffer, texFlags_t flags );
+//void GL_ProcessTexture( int texnum, float gamma, int topColor, int bottomColor );
+////void GL_TexFilter( gltexture_t *tex, qboolean update );
+//void R_FreeImage( gltexture_t *image );
+//int GL_FindTexture( const char *name );
+//void GL_FreeTexture( GLenum texnum );
+//void GL_FreeImage( const char *name );
+//const char *GL_Target( GLenum target );
+//void R_TextureList_f( void );
+//void R_InitImages( void );
+//void R_ShutdownImages( void );
 
-//
-// gl_mirror.c
-//
-void R_BeginDrawMirror( msurface_t *fa );
-void R_EndDrawMirror( void );
-void R_DrawMirrors( void );
-void R_FindMirrors( const ref_params_t *fd );
+////
+//// gl_mirror.c
+////
+////void R_BeginDrawMirror( msurface_t *fa );
+////void R_EndDrawMirror( void );
+//void R_DrawMirrors( void );
+//void R_FindMirrors( const ref_params_t *fd );
 
-//
-// gl_refrag.c
-//
-void R_StoreEfrags( efrag_t **ppefrag, int framecount );
+////
+//// gl_refrag.c
+////
+//void R_StoreEfrags( efrag_t **ppefrag, int framecount );
 
-//
-// gl_rlight.c
-//
-void R_PushDlights( void );
-void R_AnimateLight( void );
-void R_GetLightSpot( vec3_t lightspot );
-void R_MarkLights( dlight_t *light, int bit, mnode_t *node );
-void R_LightDir( const vec3_t origin, vec3_t lightDir, float radius );
-void R_LightForPoint( const vec3_t point, color24 *ambientLight, qboolean invLight, qboolean useAmbient, float radius );
-int R_CountSurfaceDlights( msurface_t *surf );
-int R_CountDlights( void );
+////
+//// gl_rlight.c
+////
+//void R_PushDlights( void );
+//void R_AnimateLight( void );
+//void R_GetLightSpot( vec3_t lightspot );
+//void R_MarkLights( dlight_t *light, int bit, mnode_t *node );
+//void R_LightDir( const vec3_t origin, vec3_t lightDir, float radius );
+////void R_LightForPoint( const vec3_t point, color24 *ambientLight, qboolean invLight, qboolean useAmbient, float radius );
+//int R_CountSurfaceDlights( msurface_t *surf );
+//int R_CountDlights( void );
 
-//
-// gl_rmain.c
-//
-void R_ClearScene( void );
-void R_LoadIdentity( void );
-void R_RenderScene( const ref_params_t *fd );
-void R_DrawCubemapView( const vec3_t origin, const vec3_t angles, int size );
-void R_TranslateForEntity( cl_entity_t *e );
-void R_RotateForEntity( cl_entity_t *e );
-int R_ComputeFxBlend( cl_entity_t *e );
-qboolean R_InitRenderAPI( void );
-void R_SetupFrustum( void );
-void R_FindViewLeaf( void );
-void R_DrawFog( void );
+////
+//// gl_rmain.c
+////
+//void R_ClearScene( void );
+////void R_LoadIdentity( void );
+//void R_RenderScene( const ref_params_t *fd );
+//void R_DrawCubemapView( const vec3_t origin, const vec3_t angles, int size );
+//void R_TranslateForEntity( cl_entity_t *e );
+//void R_RotateForEntity( cl_entity_t *e );
+//int R_ComputeFxBlend( cl_entity_t *e );
+//qboolean R_InitRenderAPI( void );
+//void R_SetupFrustum( void );
+//void R_FindViewLeaf( void );
+//void R_DrawFog( void );
 
-//
-// gl_rmath.c
-//
-float V_CalcFov( float *fov_x, float width, float height );
-void V_AdjustFov( float *fov_x, float *fov_y, float width, float height, qboolean lock_x );
-void Matrix4x4_ToArrayFloatGL( const matrix4x4 in, float out[16] );
-void Matrix4x4_FromArrayFloatGL( matrix4x4 out, const float in[16] );
-void Matrix4x4_Concat( matrix4x4 out, const matrix4x4 in1, const matrix4x4 in2 );
-void Matrix4x4_ConcatTranslate( matrix4x4 out, float x, float y, float z );
-void Matrix4x4_ConcatRotate( matrix4x4 out, float angle, float x, float y, float z );
-void Matrix4x4_ConcatScale( matrix4x4 out, float x );
-void Matrix4x4_ConcatScale3( matrix4x4 out, float x, float y, float z );
-void Matrix4x4_CreateTranslate( matrix4x4 out, float x, float y, float z );
-void Matrix4x4_CreateRotate( matrix4x4 out, float angle, float x, float y, float z );
-void Matrix4x4_CreateScale( matrix4x4 out, float x );
-void Matrix4x4_CreateScale3( matrix4x4 out, float x, float y, float z );
-void Matrix4x4_CreateProjection(matrix4x4 out, float xMax, float xMin, float yMax, float yMin, float zNear, float zFar);
-void Matrix4x4_CreateOrtho(matrix4x4 m, float xLeft, float xRight, float yBottom, float yTop, float zNear, float zFar);
-void Matrix4x4_CreateModelview( matrix4x4 out );
+////
+//// gl_rmath.c
+////
+//float V_CalcFov( float *fov_x, float width, float height );
+//void V_AdjustFov( float *fov_x, float *fov_y, float width, float height, qboolean lock_x );
+//void Matrix4x4_ToArrayFloatGL( const matrix4x4 in, float out[16] );
+//void Matrix4x4_FromArrayFloatGL( matrix4x4 out, const float in[16] );
+//void Matrix4x4_Concat( matrix4x4 out, const matrix4x4 in1, const matrix4x4 in2 );
+//void Matrix4x4_ConcatTranslate( matrix4x4 out, float x, float y, float z );
+//void Matrix4x4_ConcatRotate( matrix4x4 out, float angle, float x, float y, float z );
+//void Matrix4x4_ConcatScale( matrix4x4 out, float x );
+//void Matrix4x4_ConcatScale3( matrix4x4 out, float x, float y, float z );
+//void Matrix4x4_CreateTranslate( matrix4x4 out, float x, float y, float z );
+//void Matrix4x4_CreateRotate( matrix4x4 out, float angle, float x, float y, float z );
+//void Matrix4x4_CreateScale( matrix4x4 out, float x );
+//void Matrix4x4_CreateScale3( matrix4x4 out, float x, float y, float z );
+//void Matrix4x4_CreateProjection(matrix4x4 out, float xMax, float xMin, float yMax, float yMin, float zNear, float zFar);
+//void Matrix4x4_CreateOrtho(matrix4x4 m, float xLeft, float xRight, float yBottom, float yTop, float zNear, float zFar);
+//void Matrix4x4_CreateModelview( matrix4x4 out );
 
-//
-// gl_rmisc.
-//
-void R_ParseTexFilters( const char *filename );
-imgfilter_t *R_FindTexFilter( const char *texname );
+////
+//// gl_rmisc.
+////
+//void R_ParseTexFilters( const char *filename );
+//imgfilter_t *R_FindTexFilter( const char *texname );
 
-//
-// gl_rsurf.c
-//
-void R_MarkLeaves( void );
-void R_DrawWorld( void );
-void R_DrawMirrors( void );
-void R_DrawWaterSurfaces( void );
-void R_DrawBrushModel( cl_entity_t *e );
-void GL_SubdivideSurface( msurface_t *fa );
-void GL_BuildPolygonFromSurface( model_t *mod, msurface_t *fa );
-void GL_SetupFogColorForSurfaces( void );
-void GL_RebuildLightmaps( void );
-void GL_BuildLightmaps( void );
-void GL_ResetFogColor( void );
+////
+//// gl_rsurf.c
+////
+//void R_MarkLeaves( void );
+//void R_DrawWorld( void );
+//void R_DrawMirrors( void );
+////void R_DrawWaterSurfaces( void );
+//void R_DrawBrushModel( cl_entity_t *e );
+//void GL_SubdivideSurface( msurface_t *fa );
+//void GL_BuildPolygonFromSurface( model_t *mod, msurface_t *fa );
+////void GL_SetupFogColorForSurfaces( void );
+//void GL_RebuildLightmaps( void );
+//void GL_BuildLightmaps( void );
+////void GL_ResetFogColor( void );
 
-//
-// gl_sprite.c
-//
-void R_SpriteInit( void );
-void Mod_LoadSpriteModel( model_t *mod, const void *buffer, qboolean *loaded, uint texFlags );
-mspriteframe_t *R_GetSpriteFrame( const model_t *pModel, int frame, float yaw );
-void R_DrawSpriteModel( cl_entity_t *e );
+////
+//// gl_sprite.c
+////
+//void R_SpriteInit( void );
+//void Mod_LoadSpriteModel( model_t *mod, const void *buffer, qboolean *loaded, uint texFlags );
+////mspriteframe_t *R_GetSpriteFrame( const model_t *pModel, int frame, float yaw );
+////void R_DrawSpriteModel( cl_entity_t *e );
 
-//
-// gl_studio.c
-//
-void R_StudioInit( void );
-void Mod_LoadStudioModel( model_t *mod, const void *buffer, qboolean *loaded );
-struct mstudiotex_s *R_StudioGetTexture( cl_entity_t *e );
-void R_DrawStudioModel( cl_entity_t *e );
+////
+//// gl_studio.c
+////
+//void R_StudioInit( void );
+//void Mod_LoadStudioModel( model_t *mod, const void *buffer, qboolean *loaded );
+//struct mstudiotex_s *R_StudioGetTexture( cl_entity_t *e );
+//void R_DrawStudioModel( cl_entity_t *e );
 
-//
-// gl_warp.c
-//
-void R_InitSky( struct mip_s *mt, struct texture_s *tx );
-void R_AddSkyBoxSurface( msurface_t *fa );
-void R_ClearSkyBox( void );
-void R_DrawSkyBox( void );
-void EmitSkyLayers( msurface_t *fa );
-void EmitSkyPolys( msurface_t *fa );
-void EmitWaterPolys( glpoly_t *polys, qboolean noCull );
-void R_DrawSkyChain( msurface_t *s );
+////
+//// gl_warp.c
+////
+//void R_InitSky( struct mip_s *mt, struct texture_s *tx );
+//void R_AddSkyBoxSurface( msurface_t *fa );
+//void R_ClearSkyBox( void );
+////void R_DrawSkyBox( void );
+////void EmitSkyLayers( msurface_t *fa );
+////void EmitSkyPolys( msurface_t *fa );
+////void EmitWaterPolys( glpoly_t *polys, qboolean noCull );
+////void R_DrawSkyChain( msurface_t *s );
 
-//
-// gl_vidnt.c
-//
-#define GL_CheckForErrors() GL_CheckForErrors_( __FILE__, __LINE__ )
-void GL_CheckForErrors_( const char *filename, const int fileline );
-void GL_UpdateSwapInterval( void );
-void GL_UpdateGammaRamp( void );
-qboolean GL_DeleteContext( void );
-qboolean GL_Support( int r_ext );
-void VID_CheckChanges( void );
-int GL_MaxTextureUnits( void );
-qboolean R_Init( void );
-void R_Shutdown( void );
+////
+//// gl_vidnt.c
+////
+//#define GL_CheckForErrors() GL_CheckForErrors_( __FILE__, __LINE__ )
+//void GL_CheckForErrors_( const char *filename, const int fileline );
+////void GL_UpdateSwapInterval( void );
+////void GL_UpdateGammaRamp( void );
+//qboolean GL_DeleteContext( void );
+////qboolean GL_Support( int r_ext );
+//void VID_CheckChanges( void );
+////int GL_MaxTextureUnits( void );
+//qboolean R_Init( void );
+//void R_Shutdown( void );
 
-//
-// renderer exports
-//
-qboolean R_Init( void );
-void R_Shutdown( void );
-void VID_CheckChanges( void );
-int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, imgfilter_t *filter );
-void GL_FreeImage( const char *name );
-qboolean VID_ScreenShot( const char *filename, int shot_type );
-qboolean VID_CubemapShot( const char *base, uint size, const float *vieworg, qboolean skyshot );
-void VID_RestoreGamma( void );
-void R_BeginFrame( qboolean clearScene );
-void R_RenderFrame( const ref_params_t *fd, qboolean drawWorld );
-void R_EndFrame( void );
-void R_ClearScene( void );
-void R_GetTextureParms( int *w, int *h, int texnum );
-void R_GetSpriteParms( int *frameWidth, int *frameHeight, int *numFrames, int curFrame, const struct model_s *pSprite );
-void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty );
-void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum );
-qboolean R_SpeedsMessage( char *out, size_t size );
-void R_SetupSky( const char *skyboxname );
-qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint clipflags );
-qboolean R_WorldToScreen( const vec3_t point, vec3_t screen );
-void R_ScreenToWorld( const vec3_t screen, vec3_t point );
-qboolean R_AddEntity( struct cl_entity_s *pRefEntity, int entityType );
-void Mod_LoadMapSprite( struct model_s *mod, const void *buffer, size_t size, qboolean *loaded );
-void Mod_UnloadSpriteModel( struct model_s *mod );
-void Mod_UnloadStudioModel( struct model_s *mod );
-void Mod_UnloadBrushModel( struct model_s *mod );
-void GL_SetRenderMode( int mode );
-void R_RunViewmodelEvents( void );
-void R_DrawViewModel( void );
-int R_GetSpriteTexture( const struct model_s *m_pSpriteModel, int frame );
-void R_DecalShoot( int textureIndex, int entityIndex, int modelIndex, vec3_t pos, int flags, vec3_t saxis, float scale );
-void R_RemoveEfrags( struct cl_entity_s *ent );
-void R_AddEfrags( struct cl_entity_s *ent );
-void R_DecalRemoveAll( int texture );
-byte *Mod_GetCurrentVis( void );
-void Mod_SetOrthoBounds( float *mins, float *maxs );
-void R_NewMap( void );
+//////
+////// renderer exports
+//////
+////qboolean R_Init( void );
+////void R_Shutdown( void );
+//void VID_CheckChanges( void );
+//int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, imgfilter_t *filter );
+//void GL_FreeImage( const char *name );
+//qboolean VID_ScreenShot( const char *filename, int shot_type );
+//qboolean VID_CubemapShot( const char *base, uint size, const float *vieworg, qboolean skyshot );
+////void VID_RestoreGamma( void );
+//void R_BeginFrame( qboolean clearScene );
+//void R_RenderFrame( const ref_params_t *fd, qboolean drawWorld );
+//void R_EndFrame( void );
+//void R_ClearScene( void );
+//void R_GetTextureParms( int *w, int *h, int texnum );
+//void R_GetSpriteParms( int *frameWidth, int *frameHeight, int *numFrames, int curFrame, const struct model_s *pSprite );
+////void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty );
+////void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum );
+//qboolean R_SpeedsMessage( char *out, size_t size );
+//void R_SetupSky( const char *skyboxname );
+//qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint clipflags );
+//qboolean R_WorldToScreen( const vec3_t point, vec3_t screen );
+//void R_ScreenToWorld( const vec3_t screen, vec3_t point );
+//qboolean R_AddEntity( struct cl_entity_s *pRefEntity, int entityType );
+//void Mod_LoadMapSprite( struct model_s *mod, const void *buffer, size_t size, qboolean *loaded );
+//void Mod_UnloadSpriteModel( struct model_s *mod );
+//void Mod_UnloadStudioModel( struct model_s *mod );
+//void Mod_UnloadBrushModel( struct model_s *mod );
+////void GL_SetRenderMode( int mode );
+//void R_RunViewmodelEvents( void );
+//void R_DrawViewModel( void );
+//int R_GetSpriteTexture( const struct model_s *m_pSpriteModel, int frame );
+//void R_DecalShoot( int textureIndex, int entityIndex, int modelIndex, vec3_t pos, int flags, vec3_t saxis, float scale );
+//void R_RemoveEfrags( struct cl_entity_s *ent );
+//void R_AddEfrags( struct cl_entity_s *ent );
+//void R_DecalRemoveAll( int texture );
+//byte *Mod_GetCurrentVis( void );
+//void Mod_SetOrthoBounds( float *mins, float *maxs );
+//void R_NewMap( void );
 
 /*
 =======================================================================
@@ -526,15 +528,17 @@ enum
 	GL_EXTCOUNT,		// must be last
 };
 
-enum
-{
-	GL_KEEP_UNIT = -1,
-	GL_TEXTURE0 = 0,
-	GL_TEXTURE1,
-	GL_TEXTURE2,
-	GL_TEXTURE3,		// g-cont. 4 units should be enough
-	MAX_TEXTURE_UNITS = 32	// can't acess to all over units without GLSL or cg
-};
+//enum
+//{
+//	GL_KEEP_UNIT = -1,
+//	GL_TEXTURE0 = 0,
+//	GL_TEXTURE1,
+//	GL_TEXTURE2,
+//	GL_TEXTURE3,		// g-cont. 4 units should be enough
+//	MAX_TEXTURE_UNITS = 32	// can't acess to all over units without GLSL or cg
+//};
+#define GL_KEEP_UNIT -1
+#define MAX_TEXTURE_UNITS 32
 
 typedef struct
 {

@@ -7,8 +7,8 @@ TEMPLATE = lib
 TARGET = client
 CONFIG += create_prl link_prl c++11 plugin
 
-debug:DESTDIR = $$PWD/../../build_d/valve/cl_dlls
-else:DESTDIR = $$PWD/../../build/valve/cl_dlls
+#debug:DESTDIR = $$PWD/../../build_d/valve/cl_dlls
+#else:DESTDIR = $$PWD/../../build/valve/cl_dlls
 
 debug:DLLDESTDIR = $$PWD/../../build_d/valve/cl_dlls
 else:DLLDESTDIR = $$PWD/../../build/valve/cl_dlls

@@ -13,10 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
-#include "gl_local.h"
-#include "vgui_draw.h"
 
 convar_t	*vgui_colorstrings;
 int	g_textures[VGUI_MAX_TEXTURES];
@@ -131,60 +130,60 @@ void VGUI_CreateTexture( int id, int width, int height )
 	g_iBoundTexture = id;
 }
 
-void VGUI_UploadTextureBlock( int id, int drawX, int drawY, const byte *rgba, int blockWidth, int blockHeight )
-{
-	if( id <= 0 || id >= VGUI_MAX_TEXTURES || g_textures[id] == 0 || g_textures[id] == cls.fillImage )
-	{
-		MsgDev( D_ERROR, "VGUI_UploadTextureBlock: bad texture %i. Ignored\n", id );
-		return;
-	}
+//void VGUI_UploadTextureBlock( int id, int drawX, int drawY, const byte *rgba, int blockWidth, int blockHeight )
+//{
+//	if( id <= 0 || id >= VGUI_MAX_TEXTURES || g_textures[id] == 0 || g_textures[id] == cls.fillImage )
+//	{
+//		MsgDev( D_ERROR, "VGUI_UploadTextureBlock: bad texture %i. Ignored\n", id );
+//		return;
+//	}
 
-	pglTexSubImage2D( GL_TEXTURE_2D, 0, drawX, drawY, blockWidth, blockHeight, GL_RGBA, GL_UNSIGNED_BYTE, rgba );
-	g_iBoundTexture = id;
-}
+//	glTexSubImage2D( GL_TEXTURE_2D, 0, drawX, drawY, blockWidth, blockHeight, GL_RGBA, GL_UNSIGNED_BYTE, rgba );
+//	g_iBoundTexture = id;
+//}
 
-void VGUI_SetupDrawingRect( int *pColor )
-{
-	pglEnable( GL_BLEND );
-	pglDisable( GL_ALPHA_TEST );
-	pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	pglColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
-}
+//void VGUI_SetupDrawingRect( int *pColor )
+//{
+//	glEnable( GL_BLEND );
+//	glDisable( GL_ALPHA_TEST );
+//	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//	glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
+//}
 
-void VGUI_SetupDrawingText( int *pColor )
-{
-	pglEnable( GL_BLEND );
-	pglEnable( GL_ALPHA_TEST );
-	pglAlphaFunc( GL_GREATER, 0.0f );
-	pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	pglColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
-}
+//void VGUI_SetupDrawingText( int *pColor )
+//{
+//	glEnable( GL_BLEND );
+//	glEnable( GL_ALPHA_TEST );
+//	glAlphaFunc( GL_GREATER, 0.0f );
+//	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//	glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
+//}
 
-void VGUI_SetupDrawingImage( int *pColor )
-{
-	pglEnable( GL_BLEND );
-	pglEnable( GL_ALPHA_TEST );
-	pglAlphaFunc( GL_GREATER, 0.0f );
-	pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	pglColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
-}
+//void VGUI_SetupDrawingImage( int *pColor )
+//{
+//	glEnable( GL_BLEND );
+//	glEnable( GL_ALPHA_TEST );
+//	glAlphaFunc( GL_GREATER, 0.0f );
+//	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//	glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
+//}
 
-void VGUI_BindTexture( int id )
-{
-	if( id > 0 && id < VGUI_MAX_TEXTURES && g_textures[id] )
-	{
-		GL_Bind( GL_TEXTURE0, g_textures[id] );
-		g_iBoundTexture = id;
-	}
-	else
-	{
-		// NOTE: same as bogus index 2700 in GoldSrc
-		id = g_iBoundTexture = 1;
-		GL_Bind( GL_TEXTURE0, g_textures[id] );
-	}
-}
+//void VGUI_BindTexture( int id )
+//{
+//	if( id > 0 && id < VGUI_MAX_TEXTURES && g_textures[id] )
+//	{
+//		GL_Bind( GL_TEXTURE0, g_textures[id] );
+//		g_iBoundTexture = id;
+//	}
+//	else
+//	{
+//		// NOTE: same as bogus index 2700 in GoldSrc
+//		id = g_iBoundTexture = 1;
+//		GL_Bind( GL_TEXTURE0, g_textures[id] );
+//	}
+//}
 
 /*
 ================
@@ -214,34 +213,34 @@ VGUI_EnableTexture
 disable texturemode for fill rectangle
 ================
 */
-void VGUI_EnableTexture( qboolean enable )
-{
-	if( enable ) pglEnable( GL_TEXTURE_2D );
-	else pglDisable( GL_TEXTURE_2D );
-}
+//void VGUI_EnableTexture( qboolean enable )
+//{
+//	if( enable ) glEnable( GL_TEXTURE_2D );
+//	else glDisable( GL_TEXTURE_2D );
+//}
 
-/*
-================
-VGUI_DrawQuad
+///*
+//================
+//VGUI_DrawQuad
 
-generic method to fill rectangle
-================
-*/
-void VGUI_DrawQuad( const vpoint_t *ul, const vpoint_t *lr )
-{
-	ASSERT( ul != NULL && lr != NULL );
+//generic method to fill rectangle
+//================
+//*/
+//void VGUI_DrawQuad( const vpoint_t *ul, const vpoint_t *lr )
+//{
+//	ASSERT( ul != NULL && lr != NULL );
 
-	pglBegin( GL_QUADS );
-		pglTexCoord2f( ul->coord[0], ul->coord[1] );
-		pglVertex2f( ul->point[0], ul->point[1] );
+//	glBegin( GL_QUADS );
+//		glTexCoord2f( ul->coord[0], ul->coord[1] );
+//		glVertex2f( ul->point[0], ul->point[1] );
 
-		pglTexCoord2f( lr->coord[0], ul->coord[1] );
-		pglVertex2f( lr->point[0], ul->point[1] );
+//		glTexCoord2f( lr->coord[0], ul->coord[1] );
+//		glVertex2f( lr->point[0], ul->point[1] );
 
-		pglTexCoord2f( lr->coord[0], lr->coord[1] );
-		pglVertex2f( lr->point[0], lr->point[1] );
+//		glTexCoord2f( lr->coord[0], lr->coord[1] );
+//		glVertex2f( lr->point[0], lr->point[1] );
 
-		pglTexCoord2f( ul->coord[0], lr->coord[1] );
-		pglVertex2f( ul->point[0], lr->point[1] );
-	pglEnd();
-}
+//		glTexCoord2f( ul->coord[0], lr->coord[1] );
+//		glVertex2f( ul->point[0], lr->point[1] );
+//	glEnd();
+//}

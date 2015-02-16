@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
-#include "gl_local.h"
 
 /*
 =============
@@ -64,217 +64,217 @@ int R_GetSpriteTexture( const model_t *m_pSpriteModel, int frame )
 R_DrawStretchPic
 =============
 */
-void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum )
-{
-	GL_Bind( GL_TEXTURE0, texnum );
+//void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum )
+//{
+//	GL_Bind( GL_TEXTURE0, texnum );
 
-	pglBegin( GL_QUADS );
-		pglTexCoord2f( s1, t1 );
-		pglVertex2f( x, y );
+//	glBegin( GL_QUADS );
+//		glTexCoord2f( s1, t1 );
+//		glVertex2f( x, y );
 
-		pglTexCoord2f( s2, t1 );
-		pglVertex2f( x + w, y );
+//		glTexCoord2f( s2, t1 );
+//		glVertex2f( x + w, y );
 
-		pglTexCoord2f( s2, t2 );
-		pglVertex2f( x + w, y + h );
+//		glTexCoord2f( s2, t2 );
+//		glVertex2f( x + w, y + h );
 
-		pglTexCoord2f( s1, t2 );
-		pglVertex2f( x, y + h );
-	pglEnd();
-}
+//		glTexCoord2f( s1, t2 );
+//		glVertex2f( x, y + h );
+//	glEnd();
+//}
 
-/*
-=============
-Draw_TileClear
+///*
+//=============
+//Draw_TileClear
 
-This repeats a 64*64 tile graphic to fill the screen around a sized down
-refresh window.
-=============
-*/
-void R_DrawTileClear( int x, int y, int w, int h )
-{
-	float		tw, th;
-	gltexture_t	*glt;
+//This repeats a 64*64 tile graphic to fill the screen around a sized down
+//refresh window.
+//=============
+//*/
+//void R_DrawTileClear( int x, int y, int w, int h )
+//{
+//	float		tw, th;
+//	gltexture_t	*glt;
 
-	GL_SetRenderMode( kRenderNormal );
-	pglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	GL_Bind( GL_TEXTURE0, cls.tileImage );
+//	GL_SetRenderMode( kRenderNormal );
+//	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+//	GL_Bind( GL_TEXTURE0, cls.tileImage );
 
-	glt = R_GetTexture( cls.tileImage );
-	tw = glt->srcWidth;
-	th = glt->srcHeight;
+//	glt = R_GetTexture( cls.tileImage );
+//	tw = glt->srcWidth;
+//	th = glt->srcHeight;
 
-	pglBegin( GL_QUADS );
-		pglTexCoord2f( (float)x / tw, (float)y / th );
-		pglVertex2f( (float)x, (float)y );
-		pglTexCoord2f((float)(x + w) / tw, (float)y / th );
-		pglVertex2f( (float)(x + w), (float)y );
-		pglTexCoord2f((float)(x + w) / tw, (float)(y + h) / th );
-		pglVertex2f( (float)(x + w), (float)(y + h) );
-		pglTexCoord2f( (float)x / tw, (float)(y + h) / th );
-		pglVertex2f( (float)x, (float)(y + h) );
-	pglEnd ();
-}
+//	glBegin( GL_QUADS );
+//		glTexCoord2f( (float)x / tw, (float)y / th );
+//		glVertex2f( (float)x, (float)y );
+//		glTexCoord2f((float)(x + w) / tw, (float)y / th );
+//		glVertex2f( (float)(x + w), (float)y );
+//		glTexCoord2f((float)(x + w) / tw, (float)(y + h) / th );
+//		glVertex2f( (float)(x + w), (float)(y + h) );
+//		glTexCoord2f( (float)x / tw, (float)(y + h) / th );
+//		glVertex2f( (float)x, (float)(y + h) );
+//	glEnd ();
+//}
 
-/*
-=============
-R_DrawStretchRaw
-=============
-*/
-void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
-{
-	byte		*raw = NULL;
-	gltexture_t	*tex;
+///*
+//=============
+//R_DrawStretchRaw
+//=============
+//*/
+//void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
+//{
+//	byte		*raw = NULL;
+//	gltexture_t	*tex;
 
-	if( !GL_Support( GL_ARB_TEXTURE_NPOT_EXT ))
-	{
-		int	width = 1, height = 1;
+//	if( !GL_Support( GL_ARB_TEXTURE_NPOT_EXT ))
+//	{
+//		int	width = 1, height = 1;
 
-		// check the dimensions
-		width = NearestPOW( cols, true );
-		height = NearestPOW( rows, false );
+//		// check the dimensions
+//		width = NearestPOW( cols, true );
+//		height = NearestPOW( rows, false );
 
-		if( cols != width || rows != height )
-		{
-			raw = GL_ResampleTexture( data, cols, rows, width, height, false );
-			cols = width;
-			rows = height;
-		}
-	}
-	else
-	{
-		raw = (byte *)data;
-	}
+//		if( cols != width || rows != height )
+//		{
+//			raw = GL_ResampleTexture( data, cols, rows, width, height, false );
+//			cols = width;
+//			rows = height;
+//		}
+//	}
+//	else
+//	{
+//		raw = (byte *)data;
+//	}
 
-	if( cols > glConfig.max_2d_texture_size )
-		Host_Error( "R_DrawStretchRaw: size %i exceeds hardware limits\n", cols );
-	if( rows > glConfig.max_2d_texture_size )
-		Host_Error( "R_DrawStretchRaw: size %i exceeds hardware limits\n", rows );
+//	if( cols > glConfig.max_2d_texture_size )
+//		Host_Error( "R_DrawStretchRaw: size %i exceeds hardware limits\n", cols );
+//	if( rows > glConfig.max_2d_texture_size )
+//		Host_Error( "R_DrawStretchRaw: size %i exceeds hardware limits\n", rows );
 
-	pglDisable( GL_BLEND );
-	pglDisable( GL_ALPHA_TEST );
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+//	glDisable( GL_BLEND );
+//	glDisable( GL_ALPHA_TEST );
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
-	tex = R_GetTexture( tr.cinTexture );
-	GL_Bind( GL_TEXTURE0, tr.cinTexture );
+//	tex = R_GetTexture( tr.cinTexture );
+//	GL_Bind( GL_TEXTURE0, tr.cinTexture );
 
-	if( cols == tex->width && rows == tex->height )
-	{
-		if( dirty )
-		{
-			pglTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, cols, rows, GL_BGRA, GL_UNSIGNED_BYTE, raw );
-		}
-	}
-	else
-	{
-		tex->width = cols;
-		tex->height = rows;
-		if( dirty )
-		{
-			pglTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
-		}
-	}
+//	if( cols == tex->width && rows == tex->height )
+//	{
+//		if( dirty )
+//		{
+//			glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, cols, rows, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+//		}
+//	}
+//	else
+//	{
+//		tex->width = cols;
+//		tex->height = rows;
+//		if( dirty )
+//		{
+//			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+//		}
+//	}
 
-	pglBegin( GL_QUADS );
-	pglTexCoord2f( 0, 0 );
-	pglVertex2f( x, y );
-	pglTexCoord2f( 1, 0 );
-	pglVertex2f( x + w, y );
-	pglTexCoord2f( 1, 1 );
-	pglVertex2f( x + w, y + h );
-	pglTexCoord2f( 0, 1 );
-	pglVertex2f( x, y + h );
-	pglEnd();
-}
+//	glBegin( GL_QUADS );
+//	glTexCoord2f( 0, 0 );
+//	glVertex2f( x, y );
+//	glTexCoord2f( 1, 0 );
+//	glVertex2f( x + w, y );
+//	glTexCoord2f( 1, 1 );
+//	glVertex2f( x + w, y + h );
+//	glTexCoord2f( 0, 1 );
+//	glVertex2f( x, y + h );
+//	glEnd();
+//}
 
-/*
-=============
-R_UploadStretchRaw
-=============
-*/
-void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data )
-{
-	byte		*raw = NULL;
-	gltexture_t	*tex;
+///*
+//=============
+//R_UploadStretchRaw
+//=============
+//*/
+//void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data )
+//{
+//	byte		*raw = NULL;
+//	gltexture_t	*tex;
 
-	if( !GL_Support( GL_ARB_TEXTURE_NPOT_EXT ))
-	{
-		// check the dimensions
-		width = NearestPOW( width, true );
-		height = NearestPOW( height, false );
-	}
-	else
-	{
-		width = bound( 128, width, glConfig.max_2d_texture_size );
-		height = bound( 128, height, glConfig.max_2d_texture_size );
-	}
+//	if( !GL_Support( GL_ARB_TEXTURE_NPOT_EXT ))
+//	{
+//		// check the dimensions
+//		width = NearestPOW( width, true );
+//		height = NearestPOW( height, false );
+//	}
+//	else
+//	{
+//		width = bound( 128, width, glConfig.max_2d_texture_size );
+//		height = bound( 128, height, glConfig.max_2d_texture_size );
+//	}
 
-	if( cols != width || rows != height )
-	{
-		raw = GL_ResampleTexture( data, cols, rows, width, height, false );
-		cols = width;
-		rows = height;
-	}
-	else
-	{
-		raw = (byte *)data;
-	}
+//	if( cols != width || rows != height )
+//	{
+//		raw = GL_ResampleTexture( data, cols, rows, width, height, false );
+//		cols = width;
+//		rows = height;
+//	}
+//	else
+//	{
+//		raw = (byte *)data;
+//	}
 
-	if( cols > glConfig.max_2d_texture_size )
-		Host_Error( "R_UploadStretchRaw: size %i exceeds hardware limits\n", cols );
-	if( rows > glConfig.max_2d_texture_size )
-		Host_Error( "R_UploadStretchRaw: size %i exceeds hardware limits\n", rows );
+//	if( cols > glConfig.max_2d_texture_size )
+//		Host_Error( "R_UploadStretchRaw: size %i exceeds hardware limits\n", cols );
+//	if( rows > glConfig.max_2d_texture_size )
+//		Host_Error( "R_UploadStretchRaw: size %i exceeds hardware limits\n", rows );
 
-	tex = R_GetTexture( texture );
-	GL_Bind( GL_KEEP_UNIT, texture );
-	tex->width = cols;
-	tex->height = rows;
+//	tex = R_GetTexture( texture );
+//	GL_Bind( GL_KEEP_UNIT, texture );
+//	tex->width = cols;
+//	tex->height = rows;
 
-	pglTexImage2D( GL_TEXTURE_2D, 0, tex->format, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
-	GL_TexFilter( tex, false );
-}
+//	glTexImage2D( GL_TEXTURE_2D, 0, tex->format, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+//	GL_TexFilter( tex, false );
+//}
 
-/*
-===============
-R_Set2DMode
-===============
-*/
-void R_Set2DMode( qboolean enable )
-{
-	if( enable )
-	{
-		if( glState.in2DMode )
-			return;
+///*
+//===============
+//R_Set2DMode
+//===============
+//*/
+//void R_Set2DMode( qboolean enable )
+//{
+//	if( enable )
+//	{
+//		if( glState.in2DMode )
+//			return;
 
-		// set 2D virtual screen size
-		pglViewport( 0, 0, glState.width, glState.height );
-		pglMatrixMode( GL_PROJECTION );
-		pglLoadIdentity();
-		pglOrtho( 0, glState.width, glState.height, 0, -99999, 99999 );
-		pglMatrixMode( GL_MODELVIEW );
-		pglLoadIdentity();
+//		// set 2D virtual screen size
+//		glViewport( 0, 0, glState.width, glState.height );
+//		glMatrixMode( GL_PROJECTION );
+//		glLoadIdentity();
+//		glOrtho( 0, glState.width, glState.height, 0, -99999, 99999 );
+//		glMatrixMode( GL_MODELVIEW );
+//		glLoadIdentity();
 
-		GL_Cull( 0 );
+//		GL_Cull( 0 );
 
-		pglDepthMask( GL_FALSE );
-		pglDisable( GL_DEPTH_TEST );
-		pglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+//		glDepthMask( GL_FALSE );
+//		glDisable( GL_DEPTH_TEST );
+//		glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
-		glState.in2DMode = true;
-		RI.currententity = NULL;
-		RI.currentmodel = NULL;
-	}
-	else
-	{
-		pglDepthMask( GL_TRUE );
-		pglEnable( GL_DEPTH_TEST );
-		glState.in2DMode = false;
+//		glState.in2DMode = true;
+//		RI.currententity = NULL;
+//		RI.currentmodel = NULL;
+//	}
+//	else
+//	{
+//		glDepthMask( GL_TRUE );
+//		glEnable( GL_DEPTH_TEST );
+//		glState.in2DMode = false;
 
-		pglMatrixMode( GL_PROJECTION );
-		GL_LoadMatrix( RI.projectionMatrix );
+//		glMatrixMode( GL_PROJECTION );
+//		GL_LoadMatrix( RI.projectionMatrix );
 
-		pglMatrixMode( GL_MODELVIEW );
-		GL_LoadMatrix( RI.worldviewMatrix );
+//		glMatrixMode( GL_MODELVIEW );
+//		GL_LoadMatrix( RI.worldviewMatrix );
 
-	}
-}
+//	}
+//}

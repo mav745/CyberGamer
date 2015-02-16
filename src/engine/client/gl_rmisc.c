@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
-#include "gl_local.h"
 #include "mod_local.h"
 
 typedef struct
@@ -160,7 +160,7 @@ static const char *R_DetailTextureForName( const char *name )
 		if( Q_stristr( name, table->texname ))
 		{
 			if(( table->lMin + table->lMax ) > 0 )
-				return va( table->detail, Com_RandomLong( table->lMin, table->lMax )); 
+				return va( table->detail, Com_RandomLong( table->lMin, table->lMax ));
 			return table->detail;
 		}
 	}
@@ -186,7 +186,7 @@ void R_CreateDetailTexturesList( const char *filename )
 		// detailtexture detected
 		if( detail_name )
 		{
-			if( !detail_txt ) detail_txt = FS_Open( filename, "w", false ); 
+			if( !detail_txt ) detail_txt = FS_Open( filename, "w", false );
 			if( !detail_txt )
 			{
 				MsgDev( D_ERROR, "Can't write %s\n", filename );
@@ -252,7 +252,7 @@ void R_ParseDetailTextures( const char *filename )
 
 		// read scales
 		pfile = COM_ParseFile( pfile, token );
-		xScale = Q_atof( token );		
+		xScale = Q_atof( token );
 
 		pfile = COM_ParseFile( pfile, token );
 		yScale = Q_atof( token );
@@ -457,7 +457,7 @@ void R_NewMap( void )
 		if( !Q_strncmp( tx->name, "sky", 3 ) && tx->width == 256 && tx->height == 128)
 			tr.skytexturenum = i;
 
- 		tx->texturechain = NULL;
+		tx->texturechain = NULL;
 	}
 
 	R_SetupSky( cl.refdef.movevars->skyName );

@@ -541,7 +541,7 @@ void Host_Frame( float time )
 		return;
 
 	Host_GetConsoleCommands ();
-	
+
 	Host_ServerFrame (); // server frame
 	Host_ClientFrame (time); // client frame
 
@@ -833,10 +833,10 @@ void Host_FreeCommon( void )
 Host_Main
 =================
 */
+
+double	oldtime, newtime;
 int EXPORT Host_Main( const char *progname, int bChangeGame, pfnChangeGame func )
 {
-	static double	oldtime, newtime;
-
 	pChangeGame = func;	// may be NULL
 
 	Host_InitCommon( progname, bChangeGame );
@@ -940,15 +940,25 @@ int EXPORT Host_Main( const char *progname, int bChangeGame, pfnChangeGame func 
 	SCR_CheckStartupVids();	// must be last
 
 	// main window message loop
-	while( !host.crashed )
-	{
-		newtime = Sys_DoubleTime ();
-		Host_Frame( (float)(newtime - oldtime) );
-		oldtime = newtime;
-	}
+//	while( !host.crashed )
+//	{
+//		newtime = Sys_DoubleTime ();
+//		Host_Frame( (float)(newtime - oldtime) );
+//		oldtime = newtime;
+//	}
 
 	// never reached
 	return 0;
+}
+
+int EXPORT Host_Iterate(  )
+{
+	if(host.crashed)
+		return 0;
+	newtime = Sys_DoubleTime ();
+	Host_Frame( (float)(newtime - oldtime) );
+	oldtime = newtime;
+	return 1;
 }
 
 /*

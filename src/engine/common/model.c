@@ -13,13 +13,14 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
+#include <qt/c_gate.h>
+
 #include "mod_local.h"
 #include "sprite.h"
 #include "mathlib.h"
 #include "studio.h"
 #include "wadfile.h"
 #include "world.h"
-#include "gl_local.h"
 #include "features.h"
 #include "client.h"
 

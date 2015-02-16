@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
-#include "gl_local.h"
 #include "mathlib.h"
 #include "library.h"
 #include "beamdef.h"
@@ -55,7 +55,7 @@ Static entity is the brush which has no custom origin and not rotated
 typically is a func_wall, func_breakable, func_ladder etc
 ===============
 */
-static qboolean R_StaticEntity( cl_entity_t *ent )
+qboolean R_StaticEntity( cl_entity_t *ent )
 {
 	if( !gl_allow_static->integer )
 		return false;
@@ -474,40 +474,40 @@ qboolean R_AddEntity( struct cl_entity_s *clent, int entityType )
 R_Clear
 =============
 */
-static void R_Clear( int bitMask )
-{
-	int	bits;
+//static void R_Clear( int bitMask )
+//{
+//	int	bits;
 
-	if( gl_overview->integer )
-		pglClearColor( 0.0f, 1.0f, 0.0f, 1.0f ); // green background (Valve rules)
-	else pglClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
+//	if( gl_overview->integer )
+//		glClearColor( 0.0f, 1.0f, 0.0f, 1.0f ); // green background (Valve rules)
+//	else glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
 
-	bits = GL_DEPTH_BUFFER_BIT;
+//	bits = GL_DEPTH_BUFFER_BIT;
 
-	if( RI.drawWorld && r_fastsky->integer )
-		bits |= GL_COLOR_BUFFER_BIT;
-	if( glState.stencilEnabled )
-		bits |= GL_STENCIL_BUFFER_BIT;
+//	if( RI.drawWorld && r_fastsky->integer )
+//		bits |= GL_COLOR_BUFFER_BIT;
+//	if( glState.stencilEnabled )
+//		bits |= GL_STENCIL_BUFFER_BIT;
 
-	bits &= bitMask;
+//	bits &= bitMask;
 
-	pglClear( bits );
+//	glClear( bits );
 
-	// change ordering for overview
-	if( RI.drawOrtho )
-	{
-		gldepthmin = 1.0f;
-		gldepthmax = 0.0f;
-	}
-	else
-	{
-		gldepthmin = 0.0f;
-		gldepthmax = 1.0f;
-	}
+//	// change ordering for overview
+//	if( RI.drawOrtho )
+//	{
+//		gldepthmin = 1.0f;
+//		gldepthmax = 0.0f;
+//	}
+//	else
+//	{
+//		gldepthmin = 0.0f;
+//		gldepthmax = 1.0f;
+//	}
 
-	pglDepthFunc( GL_LEQUAL );
-	pglDepthRange( gldepthmin, gldepthmax );
-}
+//	glDepthFunc( GL_LEQUAL );
+//	glDepthRange( gldepthmin, gldepthmax );
+//}
 
 //=============================================================================
 /*
@@ -623,7 +623,7 @@ void R_SetupFrustum( void )
 R_SetupProjectionMatrix
 =============
 */
-static void R_SetupProjectionMatrix( const ref_params_t *fd, matrix4x4 m )
+void R_SetupProjectionMatrix( const ref_params_t *fd, matrix4x4 m )
 {
 	GLdouble	xMin, xMax, yMin, yMax, zNear, zFar;
 
@@ -654,7 +654,7 @@ static void R_SetupProjectionMatrix( const ref_params_t *fd, matrix4x4 m )
 R_SetupModelviewMatrix
 =============
 */
-static void R_SetupModelviewMatrix( const ref_params_t *fd, matrix4x4 m )
+void R_SetupModelviewMatrix( const ref_params_t *fd, matrix4x4 m )
 {
 #if 0
 	Matrix4x4_LoadIdentity( m );
@@ -674,69 +674,69 @@ static void R_SetupModelviewMatrix( const ref_params_t *fd, matrix4x4 m )
 R_LoadIdentity
 =============
 */
-void R_LoadIdentity( void )
-{
-	if( tr.modelviewIdentity ) return;
+//void R_LoadIdentity( void )
+//{
+//	if( tr.modelviewIdentity ) return;
 
-	Matrix4x4_LoadIdentity( RI.objectMatrix );
-	Matrix4x4_Copy( RI.modelviewMatrix, RI.worldviewMatrix );
+//	Matrix4x4_LoadIdentity( RI.objectMatrix );
+//	Matrix4x4_Copy( RI.modelviewMatrix, RI.worldviewMatrix );
 
-	pglMatrixMode( GL_MODELVIEW );
-	GL_LoadMatrix( RI.modelviewMatrix );
-	tr.modelviewIdentity = true;
-}
+//	glMatrixMode( GL_MODELVIEW );
+//	GL_LoadMatrix( RI.modelviewMatrix );
+//	tr.modelviewIdentity = true;
+//}
 
-/*
-=============
-R_RotateForEntity
-=============
-*/
-void R_RotateForEntity( cl_entity_t *e )
-{
-	float	scale = 1.0f;
+///*
+//=============
+//R_RotateForEntity
+//=============
+//*/
+//void R_RotateForEntity( cl_entity_t *e )
+//{
+//	float	scale = 1.0f;
 
-	if( e == clgame.entities || R_StaticEntity( e ))
-	{
-		R_LoadIdentity();
-		return;
-	}
+//	if( e == clgame.entities || R_StaticEntity( e ))
+//	{
+//		R_LoadIdentity();
+//		return;
+//	}
 
-	if( e->model->type != mod_brush && e->curstate.scale > 0.0f )
-		scale = e->curstate.scale;
+//	if( e->model->type != mod_brush && e->curstate.scale > 0.0f )
+//		scale = e->curstate.scale;
 
-	Matrix4x4_CreateFromEntity( RI.objectMatrix, e->angles, e->origin, scale );
-	Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, RI.objectMatrix );
+//	Matrix4x4_CreateFromEntity( RI.objectMatrix, e->angles, e->origin, scale );
+//	Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, RI.objectMatrix );
 
-	pglMatrixMode( GL_MODELVIEW );
-	GL_LoadMatrix( RI.modelviewMatrix );
-	tr.modelviewIdentity = false;
-}
+//	glMatrixMode( GL_MODELVIEW );
+//	GL_LoadMatrix( RI.modelviewMatrix );
+//	tr.modelviewIdentity = false;
+//}
 
-/*
-=============
-R_TranslateForEntity
-=============
-*/
-void R_TranslateForEntity( cl_entity_t *e )
-{
-	float	scale = 1.0f;
+///*
+//=============
+//R_TranslateForEntity
+//=============
+//*/
+//void R_TranslateForEntity( cl_entity_t *e )
+//{
+//	float	scale = 1.0f;
 
-	if( e == clgame.entities || R_StaticEntity( e ))
-	{
-		R_LoadIdentity();
-		return;
-	}
+//	if( e == clgame.entities || R_StaticEntity( e ))
+//	{
+//		R_LoadIdentity();
+//		return;
+//	}
 
-	if( e->model->type != mod_brush && e->curstate.scale > 0.0f )
-		scale = e->curstate.scale;
+//	if( e->model->type != mod_brush && e->curstate.scale > 0.0f )
+//		scale = e->curstate.scale;
 
-	Matrix4x4_CreateFromEntity( RI.objectMatrix, vec3_origin, e->origin, scale );
-	Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, RI.objectMatrix );
+//	Matrix4x4_CreateFromEntity( RI.objectMatrix, vec3_origin, e->origin, scale );
+//	Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, RI.objectMatrix );
 
-	pglMatrixMode( GL_MODELVIEW );
-	GL_LoadMatrix( RI.modelviewMatrix );
-	tr.modelviewIdentity = false;
-}
+//	glMatrixMode( GL_MODELVIEW );
+//	GL_LoadMatrix( RI.modelviewMatrix );
+//	tr.modelviewIdentity = false;
+//}
 
 /*
 ===============
@@ -849,83 +849,83 @@ static void R_SetupFrame( void )
 R_SetupGL
 =============
 */
-static void R_SetupGL( void )
-{
-	if( RI.refdef.waterlevel >= 3 )
-	{
-		float	f;
-		f = sinf( (float)cl.time * 0.4f * ( (float)M_PI * 2.7f ));
-		RI.refdef.fov_x += f;
-		RI.refdef.fov_y -= f;
-	}
+//static void R_SetupGL( void )
+//{
+//	if( RI.refdef.waterlevel >= 3 )
+//	{
+//		float	f;
+//		f = sinf( (float)cl.time * 0.4f * ( (float)M_PI * 2.7f ));
+//		RI.refdef.fov_x += f;
+//		RI.refdef.fov_y -= f;
+//	}
 
-	R_SetupModelviewMatrix( &RI.refdef, RI.worldviewMatrix );
-	R_SetupProjectionMatrix( &RI.refdef, RI.projectionMatrix );
-//	if( RI.params & RP_MIRRORVIEW ) RI.projectionMatrix[0][0] = -RI.projectionMatrix[0][0];
+//	R_SetupModelviewMatrix( &RI.refdef, RI.worldviewMatrix );
+//	R_SetupProjectionMatrix( &RI.refdef, RI.projectionMatrix );
+////	if( RI.params & RP_MIRRORVIEW ) RI.projectionMatrix[0][0] = -RI.projectionMatrix[0][0];
 
-	Matrix4x4_Concat( RI.worldviewProjectionMatrix, RI.projectionMatrix, RI.worldviewMatrix );
+//	Matrix4x4_Concat( RI.worldviewProjectionMatrix, RI.projectionMatrix, RI.worldviewMatrix );
 
-	if( RP_NORMALPASS( ))
-	{
-		int	x, x2, y, y2;
+//	if( RP_NORMALPASS( ))
+//	{
+//		int	x, x2, y, y2;
 
-		// set up viewport (main, playersetup)
-		x = (int)floorf( RI.viewport[0] * glState.width / glState.width );
-		x2 = (int)ceilf(( RI.viewport[0] + RI.viewport[2] ) * glState.width / glState.width );
-		y = (int)floorf( glState.height - RI.viewport[1] * glState.height / glState.height );
-		y2 = (int)ceilf( glState.height - ( RI.viewport[1] + RI.viewport[3] ) * glState.height / glState.height );
+//		// set up viewport (main, playersetup)
+//		x = (int)floorf( RI.viewport[0] * glState.width / glState.width );
+//		x2 = (int)ceilf(( RI.viewport[0] + RI.viewport[2] ) * glState.width / glState.width );
+//		y = (int)floorf( glState.height - RI.viewport[1] * glState.height / glState.height );
+//		y2 = (int)ceilf( glState.height - ( RI.viewport[1] + RI.viewport[3] ) * glState.height / glState.height );
 
-		pglViewport( x, y2, x2 - x, y - y2 );
-	}
-	else
-	{
-		// envpass, mirrorpass
-		pglViewport( RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3] );
-	}
+//		glViewport( x, y2, x2 - x, y - y2 );
+//	}
+//	else
+//	{
+//		// envpass, mirrorpass
+//		glViewport( RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3] );
+//	}
 
-	pglMatrixMode( GL_PROJECTION );
-	GL_LoadMatrix( RI.projectionMatrix );
+//	glMatrixMode( GL_PROJECTION );
+//	GL_LoadMatrix( RI.projectionMatrix );
 
-	pglMatrixMode( GL_MODELVIEW );
-	GL_LoadMatrix( RI.worldviewMatrix );
+//	glMatrixMode( GL_MODELVIEW );
+//	GL_LoadMatrix( RI.worldviewMatrix );
 
-	if( RI.params & RP_CLIPPLANE )
-	{
-		GLdouble	clip[4];
-		mplane_t	*p = &RI.clipPlane;
+//	if( RI.params & RP_CLIPPLANE )
+//	{
+//		GLdouble	clip[4];
+//		mplane_t	*p = &RI.clipPlane;
 
-		clip[0] = p->normal[0];
-		clip[1] = p->normal[1];
-		clip[2] = p->normal[2];
-		clip[3] = -p->dist;
+//		clip[0] = p->normal[0];
+//		clip[1] = p->normal[1];
+//		clip[2] = p->normal[2];
+//		clip[3] = -p->dist;
 
-		pglClipPlane( GL_CLIP_PLANE0, clip );
-		pglEnable( GL_CLIP_PLANE0 );
-	}
+//		glClipPlane( GL_CLIP_PLANE0, clip );
+//		glEnable( GL_CLIP_PLANE0 );
+//	}
 
-	if( RI.params & RP_FLIPFRONTFACE )
-		GL_FrontFace( !glState.frontFace );
+//	if( RI.params & RP_FLIPFRONTFACE )
+//		GL_FrontFace( !glState.frontFace );
 
-	GL_Cull( GL_FRONT );
+//	GL_Cull( GL_FRONT );
 
-	pglDisable( GL_BLEND );
-	pglDisable( GL_ALPHA_TEST );
-	pglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-}
+//	glDisable( GL_BLEND );
+//	glDisable( GL_ALPHA_TEST );
+//	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+//}
 
-/*
-=============
-R_EndGL
-=============
-*/
-static void R_EndGL( void )
-{
-	if( RI.params & RP_FLIPFRONTFACE )
-		GL_FrontFace( !glState.frontFace );
+///*
+//=============
+//R_EndGL
+//=============
+//*/
+//static void R_EndGL( void )
+//{
+//	if( RI.params & RP_FLIPFRONTFACE )
+//		GL_FrontFace( !glState.frontFace );
 
-	if( RI.params & RP_CLIPPLANE )
-		pglDisable( GL_CLIP_PLANE0 );
-}
+//	if( RI.params & RP_CLIPPLANE )
+//		glDisable( GL_CLIP_PLANE0 );
+//}
 
 /*
 =============
@@ -1082,127 +1082,127 @@ R_DrawFog
 
 =============
 */
-void R_DrawFog( void )
-{
-	if( !RI.fogEnabled || RI.refdef.onlyClientDraw )
-		return;
+//void R_DrawFog( void )
+//{
+//	if( !RI.fogEnabled || RI.refdef.onlyClientDraw )
+//		return;
 
-	pglEnable( GL_FOG );
-	pglFogi( GL_FOG_MODE, GL_EXP );
-	pglFogf( GL_FOG_DENSITY, RI.fogDensity );
-	pglFogfv( GL_FOG_COLOR, RI.fogColor );
-	pglHint( GL_FOG_HINT, GL_NICEST );
-}
+//	glEnable( GL_FOG );
+//	glFogi( GL_FOG_MODE, GL_EXP );
+//	glFogf( GL_FOG_DENSITY, RI.fogDensity );
+//	glFogfv( GL_FOG_COLOR, RI.fogColor );
+//	glHint( GL_FOG_HINT, GL_NICEST );
+//}
 
-/*
-=============
-R_DrawEntitiesOnList
-=============
-*/
-void R_DrawEntitiesOnList( void )
-{
-	int	i;
+///*
+//=============
+//R_DrawEntitiesOnList
+//=============
+//*/
+//void R_DrawEntitiesOnList( void )
+//{
+//	int	i;
 
-	glState.drawTrans = false;
+//	glState.drawTrans = false;
 
-	// draw the solid submodels fog
-	R_DrawFog ();
+//	// draw the solid submodels fog
+//	R_DrawFog ();
 
-	// first draw solid entities
-	for( i = 0; i < tr.num_solid_entities; i++ )
-	{
-		if( RI.refdef.onlyClientDraw )
-			break;
+//	// first draw solid entities
+//	for( i = 0; i < tr.num_solid_entities; i++ )
+//	{
+//		if( RI.refdef.onlyClientDraw )
+//			break;
 
-		RI.currententity = tr.solid_entities[i];
-		RI.currentmodel = RI.currententity->model;
+//		RI.currententity = tr.solid_entities[i];
+//		RI.currentmodel = RI.currententity->model;
 
-		ASSERT( RI.currententity != NULL );
-		ASSERT( RI.currententity->model != NULL );
+//		ASSERT( RI.currententity != NULL );
+//		ASSERT( RI.currententity->model != NULL );
 
-		switch( RI.currentmodel->type )
-		{
-		case mod_brush:
-			R_DrawBrushModel( RI.currententity );
-			break;
-		case mod_studio:
-			R_DrawStudioModel( RI.currententity );
-			break;
-		case mod_sprite:
-			R_DrawSpriteModel( RI.currententity );
-			break;
-		default:
-			break;
-		}
-	}
+//		switch( RI.currentmodel->type )
+//		{
+//		case mod_brush:
+//			R_DrawBrushModel( RI.currententity );
+//			break;
+//		case mod_studio:
+//			R_DrawStudioModel( RI.currententity );
+//			break;
+//		case mod_sprite:
+//			R_DrawSpriteModel( RI.currententity );
+//			break;
+//		default:
+//			break;
+//		}
+//	}
 
-	if( !RI.refdef.onlyClientDraw )
-		  {
-		CL_DrawBeams( false );
-	}
+//	if( !RI.refdef.onlyClientDraw )
+//		  {
+//		CL_DrawBeams( false );
+//	}
 
-	if( RI.drawWorld )
-		clgame.dllFuncs.pfnDrawNormalTriangles();
+//	if( RI.drawWorld )
+//		clgame.dllFuncs.pfnDrawNormalTriangles();
 
-	// NOTE: some mods with custom renderer may generate glErrors
-	// so we clear it here
-	while( pglGetError() != GL_NO_ERROR );
+//	// NOTE: some mods with custom renderer may generate glErrors
+//	// so we clear it here
+//	while( glGetError() != GL_NO_ERROR );
 
-	// don't fogging translucent surfaces
-	if( !RI.fogCustom )
-		pglDisable( GL_FOG );
-	pglDepthMask( GL_FALSE );
-	glState.drawTrans = true;
+//	// don't fogging translucent surfaces
+//	if( !RI.fogCustom )
+//		glDisable( GL_FOG );
+//	glDepthMask( GL_FALSE );
+//	glState.drawTrans = true;
 
-	// then draw translucent entities
-	for( i = 0; i < tr.num_trans_entities; i++ )
-	{
-		if( RI.refdef.onlyClientDraw )
-			break;
+//	// then draw translucent entities
+//	for( i = 0; i < tr.num_trans_entities; i++ )
+//	{
+//		if( RI.refdef.onlyClientDraw )
+//			break;
 
-		RI.currententity = tr.trans_entities[i];
-		RI.currentmodel = RI.currententity->model;
+//		RI.currententity = tr.trans_entities[i];
+//		RI.currentmodel = RI.currententity->model;
 
-		ASSERT( RI.currententity != NULL );
-		ASSERT( RI.currententity->model != NULL );
+//		ASSERT( RI.currententity != NULL );
+//		ASSERT( RI.currententity->model != NULL );
 
-		switch( RI.currentmodel->type )
-		{
-		case mod_brush:
-			R_DrawBrushModel( RI.currententity );
-			break;
-		case mod_studio:
-			R_DrawStudioModel( RI.currententity );
-			break;
-		case mod_sprite:
-			R_DrawSpriteModel( RI.currententity );
-			break;
-		default:
-			break;
-		}
-	}
+//		switch( RI.currentmodel->type )
+//		{
+//		case mod_brush:
+//			R_DrawBrushModel( RI.currententity );
+//			break;
+//		case mod_studio:
+//			R_DrawStudioModel( RI.currententity );
+//			break;
+//		case mod_sprite:
+//			R_DrawSpriteModel( RI.currententity );
+//			break;
+//		default:
+//			break;
+//		}
+//	}
 
-	if( RI.drawWorld )
-		clgame.dllFuncs.pfnDrawTransparentTriangles ();
+//	if( RI.drawWorld )
+//		clgame.dllFuncs.pfnDrawTransparentTriangles ();
 
-	if( !RI.refdef.onlyClientDraw )
-	{
-		CL_DrawBeams( true );
-		CL_DrawParticles();
-	}
+//	if( !RI.refdef.onlyClientDraw )
+//	{
+//		CL_DrawBeams( true );
+//		CL_DrawParticles();
+//	}
 
-	// NOTE: some mods with custom renderer may generate glErrors
-	// so we clear it here
-	while( pglGetError() != GL_NO_ERROR );
+//	// NOTE: some mods with custom renderer may generate glErrors
+//	// so we clear it here
+//	while( glGetError() != GL_NO_ERROR );
 
-	glState.drawTrans = false;
-	pglDepthMask( GL_TRUE );
-	pglDisable( GL_BLEND );	// Trinity Render issues
+//	glState.drawTrans = false;
+//	glDepthMask( GL_TRUE );
+//	glDisable( GL_BLEND );	// Trinity Render issues
 
-	R_DrawViewModel();
+//	R_DrawViewModel();
 
-	CL_ExtraUpdate();
-}
+//	CL_ExtraUpdate();
+//}
 
 /*
 ================
@@ -1243,106 +1243,106 @@ void R_RenderScene( const ref_params_t *fd )
 R_BeginFrame
 ===============
 */
-void R_BeginFrame( qboolean clearScene )
-{
-	if(( gl_clear->integer || gl_overview->integer ) && clearScene && cls.state != ca_cinematic )
-	{
-		pglClear( GL_COLOR_BUFFER_BIT );
-	}
+//void R_BeginFrame( qboolean clearScene )
+//{
+//	if(( gl_clear->integer || gl_overview->integer ) && clearScene && cls.state != ca_cinematic )
+//	{
+//		glClear( GL_COLOR_BUFFER_BIT );
+//	}
 
-	// update gamma
-	if( vid_gamma->modified )
-	{
-		if( glConfig.deviceSupportsGamma )
-		{
-			SCR_RebuildGammaTable();
-			GL_UpdateGammaRamp();
-			vid_gamma->modified = false;
-		}
-		else
-		{
-			BuildGammaTable( vid_gamma->value, vid_texgamma->value );
-			GL_RebuildLightmaps();
-		}
-	}
+//	// update gamma
+//	if( vid_gamma->modified )
+//	{
+//		if( glConfig.deviceSupportsGamma )
+//		{
+//			SCR_RebuildGammaTable();
+//			//GL_UpdateGammaRamp();
+//			vid_gamma->modified = false;
+//		}
+//		else
+//		{
+//			BuildGammaTable( vid_gamma->value, vid_texgamma->value );
+//			GL_RebuildLightmaps();
+//		}
+//	}
 
-	R_Set2DMode( true );
+//	R_Set2DMode( true );
 
-	// draw buffer stuff
-	pglDrawBuffer( GL_BACK );
+//	// draw buffer stuff
+//	glDrawBuffer( GL_BACK );
 
-	// texturemode stuff
-	// update texture parameters
-	if( gl_texturemode->modified || gl_texture_anisotropy->modified || gl_texture_lodbias ->modified )
-		R_SetTextureParameters();
+//	// texturemode stuff
+//	// update texture parameters
+//	if( gl_texturemode->modified || gl_texture_anisotropy->modified || gl_texture_lodbias ->modified )
+//		R_SetTextureParameters();
 
-	// swapinterval stuff
-	GL_UpdateSwapInterval();
+//	// swapinterval stuff
+//	//GL_UpdateSwapInterval();
 
-	CL_ExtraUpdate ();
-}
+//	CL_ExtraUpdate ();
+//}
 
-/*
-===============
-R_RenderFrame
-===============
-*/
-void R_RenderFrame( const ref_params_t *fd, qboolean drawWorld )
-{
-	if( r_norefresh->integer )
-		return;
+///*
+//===============
+//R_RenderFrame
+//===============
+//*/
+//void R_RenderFrame( const ref_params_t *fd, qboolean drawWorld )
+//{
+//	if( r_norefresh->integer )
+//		return;
 
-	tr.realframecount++;
+//	tr.realframecount++;
 
-	if( RI.drawOrtho != gl_overview->integer )
-		tr.fResetVis = true;
+//	if( RI.drawOrtho != gl_overview->integer )
+//		tr.fResetVis = true;
 
-	// completely override rendering
-	if( clgame.drawFuncs.GL_RenderFrame != NULL )
-	{
-		if( clgame.drawFuncs.GL_RenderFrame( fd, drawWorld ))
-		{
-			RI.drawWorld = drawWorld;
-			tr.fResetVis = true;
-			return;
-		}
-	}
+//	// completely override rendering
+//	if( clgame.drawFuncs.GL_RenderFrame != NULL )
+//	{
+//		if( clgame.drawFuncs.GL_RenderFrame( fd, drawWorld ))
+//		{
+//			RI.drawWorld = drawWorld;
+//			tr.fResetVis = true;
+//			return;
+//		}
+//	}
 
-	if( drawWorld ) r_lastRefdef = *fd;
+//	if( drawWorld ) r_lastRefdef = *fd;
 
-	RI.params = RP_NONE;
-	RI.farClip = 0;
-	RI.clipFlags = 15;
-	RI.drawWorld = drawWorld;
-	RI.thirdPerson = cl.thirdperson;
-	RI.drawOrtho = (RI.drawWorld) ? gl_overview->integer : 0;
+//	RI.params = RP_NONE;
+//	RI.farClip = 0;
+//	RI.clipFlags = 15;
+//	RI.drawWorld = drawWorld;
+//	RI.thirdPerson = cl.thirdperson;
+//	RI.drawOrtho = (RI.drawWorld) ? gl_overview->integer : 0;
 
-	GL_BackendStartFrame();
+//	GL_BackendStartFrame();
 
-	if( !r_lockcull->integer )
-		VectorCopy( fd->vieworg, RI.cullorigin );
-	VectorCopy( fd->vieworg, RI.pvsorigin );
+//	if( !r_lockcull->integer )
+//		VectorCopy( fd->vieworg, RI.cullorigin );
+//	VectorCopy( fd->vieworg, RI.pvsorigin );
 
-	// setup viewport
-	RI.viewport[0] = fd->viewport[0];
-	RI.viewport[1] = fd->viewport[1];
-	RI.viewport[2] = fd->viewport[2];
-	RI.viewport[3] = fd->viewport[3];
+//	// setup viewport
+//	RI.viewport[0] = fd->viewport[0];
+//	RI.viewport[1] = fd->viewport[1];
+//	RI.viewport[2] = fd->viewport[2];
+//	RI.viewport[3] = fd->viewport[3];
 
-	if( gl_finish->integer && drawWorld )
-		pglFinish();
+//	if( gl_finish->integer && drawWorld )
+//		glFinish();
 
-	if( gl_allow_mirrors->integer )
-	{
-		// render mirrors
-		R_FindMirrors( fd );
-		R_DrawMirrors ();
-	}
+//	if( gl_allow_mirrors->integer )
+//	{
+//		// render mirrors
+//		R_FindMirrors( fd );
+//		R_DrawMirrors ();
+//	}
 
-	R_RenderScene( fd );
+//	R_RenderScene( fd );
 
-	GL_BackendEndFrame();
-}
+//	GL_BackendEndFrame();
+//}
 
 /*
 ===============
@@ -1354,8 +1354,8 @@ void R_EndFrame( void )
 	// flush any remaining 2D bits
 	R_Set2DMode( false );
 
-	if( !pwglSwapBuffers( glw_state.hDC ))
-		Sys_Error( "wglSwapBuffers() failed!\n" );
+	//if( !pwglSwapBuffers( glw_state.hDC ))
+	//	Sys_Error( "wglSwapBuffers() failed!\n" );
 }
 
 /*

@@ -13,7 +13,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
 #include "const.h"
 #include "triangleapi.h"
@@ -25,7 +26,6 @@ GNU General Public License for more details.
 #include "input.h"
 #include "shake.h"
 #include "sprite.h"
-#include "gl_local.h"
 #include "library.h"
 #include "vgui_draw.h"
 #include "sound.h"		// SND_STOP_LOOPING
@@ -388,7 +388,7 @@ SPR_AdjustSize
 draw hudsprite routine
 ====================
 */
-static void SPR_AdjustSize( float *x, float *y, float *w, float *h )
+void SPR_AdjustSize( float *x, float *y, float *w, float *h )
 {
 	float	xscale, yscale;
 
@@ -457,7 +457,7 @@ void PicAdjustSize( float *x, float *y, float *w, float *h )
 	if( h ) *h *= yscale;
 }
 
-static qboolean SPR_Scissor( float *x, float *y, float *width, float *height, float *u0, float *v0, float *u1, float *v1 )
+qboolean SPR_Scissor( float *x, float *y, float *width, float *height, float *u0, float *v0, float *u1, float *v1 )
 {
 	float	dudx, dvdy;
 
@@ -513,58 +513,58 @@ SPR_DrawGeneric
 draw hudsprite routine
 ====================
 */
-static void SPR_DrawGeneric( int frame, float x, float y, float width, float height, const wrect_t *prc )
-{
-	float	s1, s2, t1, t2;
-	int	texnum;
+//static void SPR_DrawGeneric( int frame, float x, float y, float width, float height, const wrect_t *prc )
+//{
+//	float	s1, s2, t1, t2;
+//	int	texnum;
 
-	if( width == -1 && height == -1 )
-	{
-		int	w, h;
+//	if( width == -1 && height == -1 )
+//	{
+//		int	w, h;
 
-		// assume we get sizes from image
-		R_GetSpriteParms( &w, &h, NULL, frame, clgame.ds.pSprite );
+//		// assume we get sizes from image
+//		R_GetSpriteParms( &w, &h, NULL, frame, clgame.ds.pSprite );
 
-		width = (float)w;
-		height = (float)h;
-	}
+//		width = (float)w;
+//		height = (float)h;
+//	}
 
-	if( prc )
-	{
-		wrect_t	rc;
+//	if( prc )
+//	{
+//		wrect_t	rc;
 
-		rc = *prc;
+//		rc = *prc;
 
-		// Sigh! some stupid modmakers set wrong rectangles in hud.txt
-		if( rc.left <= 0 || rc.left >= width ) rc.left = 0;
-		if( rc.top <= 0 || rc.top >= height ) rc.top = 0;
-		if( rc.right <= 0 || rc.right > width ) rc.right = (int)width;
-		if( rc.bottom <= 0 || rc.bottom > height ) rc.bottom = (int)height;
+//		// Sigh! some stupid modmakers set wrong rectangles in hud.txt
+//		if( rc.left <= 0 || rc.left >= width ) rc.left = 0;
+//		if( rc.top <= 0 || rc.top >= height ) rc.top = 0;
+//		if( rc.right <= 0 || rc.right > width ) rc.right = (int)width;
+//		if( rc.bottom <= 0 || rc.bottom > height ) rc.bottom = (int)height;
 
-		// calc user-defined rectangle
-		s1 = (float)rc.left / width;
-		t1 = (float)rc.top / height;
-		s2 = (float)rc.right / width;
-		t2 = (float)rc.bottom / height;
-		width = (float)(rc.right - rc.left);
-		height = (float)(rc.bottom - rc.top);
-	}
-	else
-	{
-		s1 = t1 = 0.0f;
-		s2 = t2 = 1.0f;
-	}
+//		// calc user-defined rectangle
+//		s1 = (float)rc.left / width;
+//		t1 = (float)rc.top / height;
+//		s2 = (float)rc.right / width;
+//		t2 = (float)rc.bottom / height;
+//		width = (float)(rc.right - rc.left);
+//		height = (float)(rc.bottom - rc.top);
+//	}
+//	else
+//	{
+//		s1 = t1 = 0.0f;
+//		s2 = t2 = 1.0f;
+//	}
 
-	// pass scissor test if supposed
-	if( clgame.ds.scissor_test && !SPR_Scissor( &x, &y, &width, &height, &s1, &t1, &s2, &t2 ))
-		return;
+//	// pass scissor test if supposed
+//	if( clgame.ds.scissor_test && !SPR_Scissor( &x, &y, &width, &height, &s1, &t1, &s2, &t2 ))
+//		return;
 
-	// scale for screen sizes
-	SPR_AdjustSize( &x, &y, &width, &height );
-	texnum = R_GetSpriteTexture( clgame.ds.pSprite, frame );
-	pglColor4ubv( clgame.ds.spriteColor );
-	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, texnum );
-}
+//	// scale for screen sizes
+//	SPR_AdjustSize( &x, &y, &width, &height );
+//	texnum = R_GetSpriteTexture( clgame.ds.pSprite, frame );
+//	glColor4ubv( clgame.ds.spriteColor );
+//	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, texnum );
+//}
 
 /*
 =============
@@ -633,47 +633,47 @@ fill screen with specfied color
 can be modulated
 =============
 */
-void CL_DrawScreenFade( void )
-{
-	screenfade_t	*sf = &clgame.fade;
-	int		iFadeAlpha, testFlags;
+//void CL_DrawScreenFade( void )
+//{
+//	screenfade_t	*sf = &clgame.fade;
+//	int		iFadeAlpha, testFlags;
 
-	// keep pushing reset time out indefinitely
-	if( sf->fadeFlags & FFADE_STAYOUT )
-		sf->fadeReset = (float)cl.time + 0.1f;
+//	// keep pushing reset time out indefinitely
+//	if( sf->fadeFlags & FFADE_STAYOUT )
+//		sf->fadeReset = (float)cl.time + 0.1f;
 
-	if( sf->fadeReset == 0.0f && sf->fadeEnd == 0.0f )
-		return;	// inactive
+//	if( sf->fadeReset == 0.0f && sf->fadeEnd == 0.0f )
+//		return;	// inactive
 
-	// all done?
-	if(( cl.time > sf->fadeReset ) && ( cl.time > sf->fadeEnd ))
-	{
-		Q_memset( &clgame.fade, 0, sizeof( clgame.fade ));
-		return;
-	}
+//	// all done?
+//	if(( cl.time > sf->fadeReset ) && ( cl.time > sf->fadeEnd ))
+//	{
+//		Q_memset( &clgame.fade, 0, sizeof( clgame.fade ));
+//		return;
+//	}
 
-	testFlags = (sf->fadeFlags & ~FFADE_MODULATE);
+//	testFlags = (sf->fadeFlags & ~FFADE_MODULATE);
 
-	// fading...
-	if( testFlags == FFADE_STAYOUT )
-	{
-		iFadeAlpha = sf->fadealpha;
-	}
-	else
-	{
-		iFadeAlpha = (int)(sf->fadeSpeed * ( sf->fadeEnd - (float)cl.time ));
-		if( sf->fadeFlags & FFADE_OUT ) iFadeAlpha += sf->fadealpha;
-		iFadeAlpha = bound( 0, iFadeAlpha, sf->fadealpha );
-	}
+//	// fading...
+//	if( testFlags == FFADE_STAYOUT )
+//	{
+//		iFadeAlpha = sf->fadealpha;
+//	}
+//	else
+//	{
+//		iFadeAlpha = (int)(sf->fadeSpeed * ( sf->fadeEnd - (float)cl.time ));
+//		if( sf->fadeFlags & FFADE_OUT ) iFadeAlpha += sf->fadealpha;
+//		iFadeAlpha = bound( 0, iFadeAlpha, sf->fadealpha );
+//	}
 
-	pglColor4ub( sf->fader, sf->fadeg, sf->fadeb, iFadeAlpha );
+//	glColor4ub( sf->fader, sf->fadeg, sf->fadeb, iFadeAlpha );
 
-	if( sf->fadeFlags & FFADE_MODULATE )
-		GL_SetRenderMode( kRenderTransAdd );
-	else GL_SetRenderMode( kRenderTransTexture );
-	R_DrawStretchPic( 0.f, 0.f, (float)scr_width->integer, (float)scr_height->integer, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//	if( sf->fadeFlags & FFADE_MODULATE )
+//		GL_SetRenderMode( kRenderTransAdd );
+//	else GL_SetRenderMode( kRenderTransTexture );
+//	R_DrawStretchPic( 0.f, 0.f, (float)scr_width->integer, (float)scr_height->integer, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
 /*
 ====================
@@ -925,46 +925,46 @@ CL_DrawLoading
 draw loading progress bar
 =============
 */
-static void CL_DrawLoading( float percent )
-{
-	int	x, y, width, height, right;
-	float	xscale, yscale, step, s2;
+//static void CL_DrawLoading( float percent )
+//{
+//	int	x, y, width, height, right;
+//	float	xscale, yscale, step, s2;
 
-	R_GetTextureParms( &width, &height, cls.loadingBar );
-	x = ( clgame.scrInfo.iWidth - width ) >> 1;
-	y = ( clgame.scrInfo.iHeight - height) >> 1;
+//	R_GetTextureParms( &width, &height, cls.loadingBar );
+//	x = ( clgame.scrInfo.iWidth - width ) >> 1;
+//	y = ( clgame.scrInfo.iHeight - height) >> 1;
 
-	xscale = (float)scr_width->integer / (float)clgame.scrInfo.iWidth;
-	yscale = (float)scr_height->integer / (float)clgame.scrInfo.iHeight;
+//	xscale = (float)scr_width->integer / (float)clgame.scrInfo.iWidth;
+//	yscale = (float)scr_height->integer / (float)clgame.scrInfo.iHeight;
 
-	x = (int)(x*xscale);
-	y = (int)(y*yscale);
-	width = (int)(width*xscale);
-	height = (int)(height*yscale);
+//	x = (int)(x*xscale);
+//	y = (int)(y*yscale);
+//	width = (int)(width*xscale);
+//	height = (int)(height*yscale);
 
-	if( cl_allow_levelshots->integer )
-		  {
-		pglColor4ub( 128, 128, 128, 255 );
-		GL_SetRenderMode( kRenderTransTexture );
-		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
+//	if( cl_allow_levelshots->integer )
+//		  {
+//		glColor4ub( 128, 128, 128, 255 );
+//		GL_SetRenderMode( kRenderTransTexture );
+//		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
 
-		step = (float)width / 100.0f;
-		right = (int)ceil( percent * step );
-		s2 = (float)right / width;
-		width = right;
+//		step = (float)width / 100.0f;
+//		right = (int)ceil( percent * step );
+//		s2 = (float)right / width;
+//		width = right;
 
-		pglColor4ub( 208, 152, 0, 255 );
-		GL_SetRenderMode( kRenderTransTexture );
-		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, s2, 1.f, cls.loadingBar );
-		pglColor4ub( 255, 255, 255, 255 );
-	}
-	else
-	{
-		pglColor4ub( 255, 255, 255, 255 );
-		GL_SetRenderMode( kRenderTransTexture );
-		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
-	}
-}
+//		glColor4ub( 208, 152, 0, 255 );
+//		GL_SetRenderMode( kRenderTransTexture );
+//		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, s2, 1.f, cls.loadingBar );
+//		glColor4ub( 255, 255, 255, 255 );
+//	}
+//	else
+//	{
+//		glColor4ub( 255, 255, 255, 255 );
+//		GL_SetRenderMode( kRenderTransTexture );
+//		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
+//	}
+//}
 
 /*
 =============
@@ -973,27 +973,27 @@ CL_DrawPause
 draw pause sign
 =============
 */
-static void CL_DrawPause( void )
-{
-	int	x, y, width, height;
-	float	xscale, yscale;
+//static void CL_DrawPause( void )
+//{
+//	int	x, y, width, height;
+//	float	xscale, yscale;
 
-	R_GetTextureParms( &width, &height, cls.pauseIcon );
-	x = ( clgame.scrInfo.iWidth - width ) >> 1;
-	y = ( clgame.scrInfo.iHeight - height) >> 1;
+//	R_GetTextureParms( &width, &height, cls.pauseIcon );
+//	x = ( clgame.scrInfo.iWidth - width ) >> 1;
+//	y = ( clgame.scrInfo.iHeight - height) >> 1;
 
-	xscale = scr_width->integer / (float)clgame.scrInfo.iWidth;
-	yscale = scr_height->integer / (float)clgame.scrInfo.iHeight;
+//	xscale = scr_width->integer / (float)clgame.scrInfo.iWidth;
+//	yscale = scr_height->integer / (float)clgame.scrInfo.iHeight;
 
-	x = (int)(x*xscale);
-	y = (int)(y*yscale);
-	width = (int)(width*xscale);
-	height = (int)(height*yscale);
+//	x = (int)(x*xscale);
+//	y = (int)(y*yscale);
+//	width = (int)(width*xscale);
+//	height = (int)(height*yscale);
 
-	pglColor4ub( 255, 255, 255, 255 );
-	GL_SetRenderMode( kRenderTransTexture );
-	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.pauseIcon );
-}
+//	glColor4ub( 255, 255, 255, 255 );
+//	GL_SetRenderMode( kRenderTransTexture );
+//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.pauseIcon );
+//}
 
 void CL_DrawHUD( int state )
 {
@@ -1294,31 +1294,31 @@ pfnSPR_Set
 
 =========
 */
-static void pfnSPR_Set( VHSPRITE hPic, int r, int g, int b )
-{
-	clgame.ds.pSprite = CL_GetSpritePointer( hPic );
-	clgame.ds.spriteColor[0] = bound( 0, r, 255 );
-	clgame.ds.spriteColor[1] = bound( 0, g, 255 );
-	clgame.ds.spriteColor[2] = bound( 0, b, 255 );
-	clgame.ds.spriteColor[3] = 255;
+//static void pfnSPR_Set( VHSPRITE hPic, int r, int g, int b )
+//{
+//	clgame.ds.pSprite = CL_GetSpritePointer( hPic );
+//	clgame.ds.spriteColor[0] = bound( 0, r, 255 );
+//	clgame.ds.spriteColor[1] = bound( 0, g, 255 );
+//	clgame.ds.spriteColor[2] = bound( 0, b, 255 );
+//	clgame.ds.spriteColor[3] = 255;
 
-	// set default state
-	pglDisable( GL_BLEND );
-	pglDisable( GL_ALPHA_TEST );
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-}
+//	// set default state
+//	glDisable( GL_BLEND );
+//	glDisable( GL_ALPHA_TEST );
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//}
 
-/*
-=========
-pfnSPR_Draw
+///*
+//=========
+//pfnSPR_Draw
 
-=========
-*/
-static void pfnSPR_Draw( int frame, int x, int y, const wrect_t *prc )
-{
-	pglEnable( GL_ALPHA_TEST );
-	SPR_DrawGeneric( frame, (float)x, (float)y, -1.f, -1.f, prc );
-}
+//=========
+//*/
+//static void pfnSPR_Draw( int frame, int x, int y, const wrect_t *prc )
+//{
+//	glEnable( GL_ALPHA_TEST );
+//	SPR_DrawGeneric( frame, (float)x, (float)y, -1.f, -1.f, prc );
+//}
 
 /*
 =========
@@ -1423,20 +1423,20 @@ pfnFillRGBA
 
 =============
 */
-static void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int b, int a )
-{
-	r = bound( 0, r, 255 );
-	g = bound( 0, g, 255 );
-	b = bound( 0, b, 255 );
-	a = bound( 0, a, 255 );
-	pglColor4ub( r, g, b, a );
+//static void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int b, int a )
+//{
+//	r = bound( 0, r, 255 );
+//	g = bound( 0, g, 255 );
+//	b = bound( 0, b, 255 );
+//	a = bound( 0, a, 255 );
+//	glColor4ub( r, g, b, a );
 
-	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
+//	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
 
-	GL_SetRenderMode( kRenderTransAdd );
-	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//	GL_SetRenderMode( kRenderTransAdd );
+//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
 /*
 =============
@@ -1674,7 +1674,7 @@ pfnDrawCharacter
 returns drawed chachter width (in real screen pixels)
 =============
 */
-static int pfnDrawCharacter( int x, int y, int number, int r, int g, int b )
+int pfnDrawCharacter( int x, int y, int number, int r, int g, int b )
 {
 	if( !cls.creditsFont.valid )
 		return 0;
@@ -2721,12 +2721,12 @@ pfnSPR_DrawGeneric
 
 =============
 */
-void pfnSPR_DrawGeneric( int frame, int x, int y, const wrect_t *prc, int blendsrc, int blenddst, int width, int height )
-{
-	pglEnable( GL_BLEND );
-	pglBlendFunc( blendsrc, blenddst ); // g-cont. are params is valid?
-	SPR_DrawGeneric( frame, (float)x, (float)y, (float)width, (float)height, prc );
-}
+//void pfnSPR_DrawGeneric( int frame, int x, int y, const wrect_t *prc, int blendsrc, int blenddst, int width, int height )
+//{
+//	glEnable( GL_BLEND );
+//	glBlendFunc( blendsrc, blenddst ); // g-cont. are params is valid?
+//	SPR_DrawGeneric( frame, (float)x, (float)y, (float)width, (float)height, prc );
+//}
 
 /*
 =============
@@ -2853,24 +2853,24 @@ pfnFillRGBABlend
 
 =============
 */
-void pfnFillRGBABlend( int x, int y, int width, int height, int r, int g, int b, int a )
-{
-	r = bound( 0, r, 255 );
-	g = bound( 0, g, 255 );
-	b = bound( 0, b, 255 );
-	a = bound( 0, a, 255 );
-	pglColor4ub( r, g, b, a );
+//void pfnFillRGBABlend( int x, int y, int width, int height, int r, int g, int b, int a )
+//{
+//	r = bound( 0, r, 255 );
+//	g = bound( 0, g, 255 );
+//	b = bound( 0, b, 255 );
+//	a = bound( 0, a, 255 );
+//	glColor4ub( r, g, b, a );
 
-	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
+//	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
 
-	pglEnable( GL_BLEND );
-	pglDisable( GL_ALPHA_TEST );
-	pglBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_ONE );
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//	glEnable( GL_BLEND );
+//	glDisable( GL_ALPHA_TEST );
+//	glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_ONE );
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
 /*
 =============
@@ -2907,167 +2907,167 @@ TriRenderMode
 set rendermode
 =============
 */
-void TriRenderMode( int mode )
-{
-	switch( mode )
-	{
-	case kRenderNormal:
-	default:	pglDisable( GL_BLEND );
-		pglDisable( GL_ALPHA_TEST );
-		pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		break;
-	case kRenderTransColor:
-	case kRenderTransAlpha:
-	case kRenderTransTexture:
-		// NOTE: TriAPI doesn't have 'solid' mode
-		pglEnable( GL_BLEND );
-		pglDisable( GL_ALPHA_TEST );
-		pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		break;
-	case kRenderGlow:
-	case kRenderTransAdd:
-		pglEnable( GL_BLEND );
-		pglDisable( GL_ALPHA_TEST );
-		pglBlendFunc( GL_SRC_ALPHA, GL_ONE );
-		pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		break;
-	}
-}
+//void TriRenderMode( int mode )
+//{
+//	switch( mode )
+//	{
+//	case kRenderNormal:
+//	default:	glDisable( GL_BLEND );
+//		glDisable( GL_ALPHA_TEST );
+//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//		break;
+//	case kRenderTransColor:
+//	case kRenderTransAlpha:
+//	case kRenderTransTexture:
+//		// NOTE: TriAPI doesn't have 'solid' mode
+//		glEnable( GL_BLEND );
+//		glDisable( GL_ALPHA_TEST );
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//		break;
+//	case kRenderGlow:
+//	case kRenderTransAdd:
+//		glEnable( GL_BLEND );
+//		glDisable( GL_ALPHA_TEST );
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//		break;
+//	}
+//}
 
-/*
-=============
-TriBegin
+///*
+//=============
+//TriBegin
 
-begin triangle sequence
-=============
-*/
-void TriBegin( int mode )
-{
-	switch( mode )
-	{
-	case TRI_POINTS:
-		mode = GL_POINTS;
-		break;
-	case TRI_TRIANGLES:
-		mode = GL_TRIANGLES;
-		break;
-	case TRI_TRIANGLE_FAN:
-		mode = GL_TRIANGLE_FAN;
-		break;
-	case TRI_QUADS:
-		mode = GL_QUADS;
-		break;
-	case TRI_LINES:
-		mode = GL_LINES;
-		break;
-	case TRI_TRIANGLE_STRIP:
-		mode = GL_TRIANGLE_STRIP;
-		break;
-	case TRI_QUAD_STRIP:
-		mode = GL_QUAD_STRIP;
-		break;
-	case TRI_POLYGON:
-	default:	mode = GL_POLYGON;
-		break;
-	}
+//begin triangle sequence
+//=============
+//*/
+//void TriBegin( int mode )
+//{
+//	switch( mode )
+//	{
+//	case TRI_POINTS:
+//		mode = GL_POINTS;
+//		break;
+//	case TRI_TRIANGLES:
+//		mode = GL_TRIANGLES;
+//		break;
+//	case TRI_TRIANGLE_FAN:
+//		mode = GL_TRIANGLE_FAN;
+//		break;
+//	case TRI_QUADS:
+//		mode = GL_QUADS;
+//		break;
+//	case TRI_LINES:
+//		mode = GL_LINES;
+//		break;
+//	case TRI_TRIANGLE_STRIP:
+//		mode = GL_TRIANGLE_STRIP;
+//		break;
+//	case TRI_QUAD_STRIP:
+//		mode = GL_QUAD_STRIP;
+//		break;
+//	case TRI_POLYGON:
+//	default:	mode = GL_POLYGON;
+//		break;
+//	}
 
-	pglBegin( mode );
-}
+//	glBegin( mode );
+//}
 
-/*
-=============
-TriEnd
+///*
+//=============
+//TriEnd
 
-draw triangle sequence
-=============
-*/
-void TriEnd( void )
-{
-	pglEnd();
-	pglDisable( GL_ALPHA_TEST );
-}
+//draw triangle sequence
+//=============
+//*/
+//void TriEnd( void )
+//{
+//	glEnd();
+//	glDisable( GL_ALPHA_TEST );
+//}
 
-/*
-=============
-TriColor4f
+///*
+//=============
+//TriColor4f
 
-=============
-*/
-void TriColor4f( float r, float g, float b, float a )
-{
-	clgame.ds.triColor[0] = (byte)bound( 0, (r * 255.0f), 255 );
-	clgame.ds.triColor[1] = (byte)bound( 0, (g * 255.0f), 255 );
-	clgame.ds.triColor[2] = (byte)bound( 0, (b * 255.0f), 255 );
-	clgame.ds.triColor[3] = (byte)bound( 0, (a * 255.0f), 255 );
-	pglColor4ub( clgame.ds.triColor[0], clgame.ds.triColor[1], clgame.ds.triColor[2], clgame.ds.triColor[3] );
-}
+//=============
+//*/
+//void TriColor4f( float r, float g, float b, float a )
+//{
+//	clgame.ds.triColor[0] = (byte)bound( 0, (r * 255.0f), 255 );
+//	clgame.ds.triColor[1] = (byte)bound( 0, (g * 255.0f), 255 );
+//	clgame.ds.triColor[2] = (byte)bound( 0, (b * 255.0f), 255 );
+//	clgame.ds.triColor[3] = (byte)bound( 0, (a * 255.0f), 255 );
+//	glColor4ub( clgame.ds.triColor[0], clgame.ds.triColor[1], clgame.ds.triColor[2], clgame.ds.triColor[3] );
+//}
 
-/*
-=============
-TriColor4ub
+///*
+//=============
+//TriColor4ub
 
-=============
-*/
-void TriColor4ub( byte r, byte g, byte b, byte a )
-{
-	clgame.ds.triColor[0] = r;
-	clgame.ds.triColor[1] = g;
-	clgame.ds.triColor[2] = b;
-	clgame.ds.triColor[3] = a;
-	pglColor4ub( r, g, b, a );
-}
+//=============
+//*/
+//void TriColor4ub( byte r, byte g, byte b, byte a )
+//{
+//	clgame.ds.triColor[0] = r;
+//	clgame.ds.triColor[1] = g;
+//	clgame.ds.triColor[2] = b;
+//	clgame.ds.triColor[3] = a;
+//	glColor4ub( r, g, b, a );
+//}
 
-/*
-=============
-TriTexCoord2f
+///*
+//=============
+//TriTexCoord2f
 
-=============
-*/
-void TriTexCoord2f( float u, float v )
-{
-	pglTexCoord2f( u, v );
-}
+//=============
+//*/
+//void TriTexCoord2f( float u, float v )
+//{
+//	glTexCoord2f( u, v );
+//}
 
-/*
-=============
-TriVertex3fv
+///*
+//=============
+//TriVertex3fv
 
-=============
-*/
-void TriVertex3fv( const float *v )
-{
-	pglVertex3fv( v );
-}
+//=============
+//*/
+//void TriVertex3fv( const float *v )
+//{
+//	glVertex3fv( v );
+//}
 
-/*
-=============
-TriVertex3f
+///*
+//=============
+//TriVertex3f
 
-=============
-*/
-void TriVertex3f( float x, float y, float z )
-{
-	pglVertex3f( x, y, z );
-}
+//=============
+//*/
+//void TriVertex3f( float x, float y, float z )
+//{
+//	glVertex3f( x, y, z );
+//}
 
-/*
-=============
-TriBrightness
+///*
+//=============
+//TriBrightness
 
-=============
-*/
-void TriBrightness( float brightness )
-{
-	rgba_t	rgba;
+//=============
+//*/
+//void TriBrightness( float brightness )
+//{
+//	rgba_t	rgba;
 
-	brightness = max( 0.0f, brightness );
-	rgba[0] = (byte)(clgame.ds.triColor[0] * brightness);
-	rgba[1] = (byte)(clgame.ds.triColor[1] * brightness);
-	rgba[2] = (byte)(clgame.ds.triColor[2] * brightness);
+//	brightness = max( 0.0f, brightness );
+//	rgba[0] = (byte)(clgame.ds.triColor[0] * brightness);
+//	rgba[1] = (byte)(clgame.ds.triColor[1] * brightness);
+//	rgba[2] = (byte)(clgame.ds.triColor[2] * brightness);
 
-	pglColor3ub( rgba[0], rgba[1], rgba[2] );
-}
+//	glColor3ub( rgba[0], rgba[1], rgba[2] );
+//}
 
 /*
 =============
@@ -3096,31 +3096,31 @@ TriSpriteTexture
 bind current texture
 =============
 */
-int TriSpriteTexture( model_t *pSpriteModel, int frame )
-{
-	int	gl_texturenum;
-	msprite_t	*psprite;
+//int TriSpriteTexture( model_t *pSpriteModel, int frame )
+//{
+//	int	gl_texturenum;
+//	msprite_t	*psprite;
 
-	if(( gl_texturenum = R_GetSpriteTexture( pSpriteModel, frame )) == 0 )
-		return 0;
+//	if(( gl_texturenum = R_GetSpriteTexture( pSpriteModel, frame )) == 0 )
+//		return 0;
 
-	if( gl_texturenum <= 0 || gl_texturenum > MAX_TEXTURES )
-	{
-		MsgDev( D_ERROR, "TriSpriteTexture: bad index %i\n", gl_texturenum );
-		gl_texturenum = tr.defaultTexture;
-	}
+//	if( gl_texturenum <= 0 || gl_texturenum > MAX_TEXTURES )
+//	{
+//		MsgDev( D_ERROR, "TriSpriteTexture: bad index %i\n", gl_texturenum );
+//		gl_texturenum = tr.defaultTexture;
+//	}
 
-	psprite = pSpriteModel->cache.data;
-	if( psprite->texFormat == SPR_ALPHTEST )
-	{
-		pglEnable( GL_ALPHA_TEST );
-		pglAlphaFunc( GL_GREATER, 0.0f );
-	}
+//	psprite = pSpriteModel->cache.data;
+//	if( psprite->texFormat == SPR_ALPHTEST )
+//	{
+//		glEnable( GL_ALPHA_TEST );
+//		glAlphaFunc( GL_GREATER, 0.0f );
+//	}
 
-	GL_Bind( GL_TEXTURE0, gl_texturenum );
+//	GL_Bind( GL_TEXTURE0, gl_texturenum );
 
-	return 1;
-}
+//	return 1;
+//}
 
 /*
 =============
@@ -3150,51 +3150,51 @@ TriFog
 enables global fog on the level
 =============
 */
-void TriFog( float flFogColor[3], float flStart, float flEnd, int bOn )
-{
-	if( RI.fogEnabled ) return;
-	RI.fogCustom = true;
+//void TriFog( float flFogColor[3], float flStart, float flEnd, int bOn )
+//{
+//	if( RI.fogEnabled ) return;
+//	RI.fogCustom = true;
 
-	if( !bOn )
-	{
-		pglDisable( GL_FOG );
-		RI.fogCustom = false;
-		return;
-	}
+//	if( !bOn )
+//	{
+//		glDisable( GL_FOG );
+//		RI.fogCustom = false;
+//		return;
+//	}
 
-	// copy fog params
-	RI.fogColor[0] = flFogColor[0] / 255.0f;
-	RI.fogColor[1] = flFogColor[1] / 255.0f;
-	RI.fogColor[2] = flFogColor[2] / 255.0f;
-	RI.fogStart = flStart;
-	RI.fogDensity = 0.0f;
-	RI.fogEnd = flEnd;
+//	// copy fog params
+//	RI.fogColor[0] = flFogColor[0] / 255.0f;
+//	RI.fogColor[1] = flFogColor[1] / 255.0f;
+//	RI.fogColor[2] = flFogColor[2] / 255.0f;
+//	RI.fogStart = flStart;
+//	RI.fogDensity = 0.0f;
+//	RI.fogEnd = flEnd;
 
-	if( VectorIsNull( RI.fogColor ))
-	{
-		pglDisable( GL_FOG );
-		return;
-	}
+//	if( VectorIsNull( RI.fogColor ))
+//	{
+//		glDisable( GL_FOG );
+//		return;
+//	}
 
-	pglEnable( GL_FOG );
-	pglFogi( GL_FOG_MODE, GL_LINEAR );
-	pglFogf( GL_FOG_START, RI.fogStart );
-	pglFogf( GL_FOG_END, RI.fogEnd );
-	pglFogfv( GL_FOG_COLOR, RI.fogColor );
-	pglHint( GL_FOG_HINT, GL_NICEST );
-}
+//	glEnable( GL_FOG );
+//	glFogi( GL_FOG_MODE, GL_LINEAR );
+//	glFogf( GL_FOG_START, RI.fogStart );
+//	glFogf( GL_FOG_END, RI.fogEnd );
+//	glFogfv( GL_FOG_COLOR, RI.fogColor );
+//	glHint( GL_FOG_HINT, GL_NICEST );
+//}
 
-/*
-=============
-TriGetMatrix
+///*
+//=============
+//TriGetMatrix
 
-very strange export
-=============
-*/
-void TriGetMatrix( const int pname, float *matrix )
-{
-	pglGetFloatv( pname, matrix );
-}
+//very strange export
+//=============
+//*/
+//void TriGetMatrix( const int pname, float *matrix )
+//{
+//	glGetFloatv( pname, matrix );
+//}
 
 /*
 =============
@@ -3236,12 +3236,12 @@ TriColor4fRendermode
 Heavy legacy of Quake...
 =============
 */
-void TriColor4fRendermode( float r, float g, float b, float a, int rendermode )
-{
-	if( rendermode == kRenderTransAlpha )
-		pglColor4f( r, g, b, a );
-	else pglColor4f( r * a, g * a, b * a, 1.0f );
-}
+//void TriColor4fRendermode( float r, float g, float b, float a, int rendermode )
+//{
+//	if( rendermode == kRenderTransAlpha )
+//		glColor4f( r, g, b, a );
+//	else glColor4f( r * a, g * a, b * a, 1.0f );
+//}
 
 /*
 =============

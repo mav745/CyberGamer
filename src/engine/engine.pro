@@ -1,14 +1,14 @@
 CONFIG(debug, debug|release): CONFIG -= release
 else: CONFIG -= debug
 
-QT -= core gui
+QT += core gui opengl widgets
 
 TEMPLATE = lib
 TARGET = xash
 CONFIG += create_prl link_prl c++11 plugin
 
-debug:DESTDIR = $$PWD/../../build_d/
-else:DESTDIR = $$PWD/../../build/
+#debug:DESTDIR = $$PWD/../../build_d/
+#else:DESTDIR = $$PWD/../../build/
 
 debug:DLLDESTDIR = $$PWD/../../build_d/
 else:DLLDESTDIR = $$PWD/../../build/
@@ -61,7 +61,9 @@ HEADERS += \
 	client/vgui/vgui_draw.h \
 	client/vgui/vgui_main.h \
 	client/vox.h \
-	common/world.h
+	common/world.h \
+	qt/window.hpp \
+	qt/c_gate.h
 
 SOURCES += \
 	common/avikit.c \
@@ -166,4 +168,6 @@ SOURCES += \
 	client/vgui/vgui_int.cpp \
 	client/vgui/vgui_surf.cpp \
 	common/world.c \
-	common/zone.c
+	common/zone.c \
+	qt/window.cpp \
+	qt/c_gate.cpp

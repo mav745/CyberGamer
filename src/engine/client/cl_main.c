@@ -13,11 +13,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
 #include "net_encode.h"
 #include "cl_tent.h"
-#include "gl_local.h"
 #include "input.h"
 #include "../cl_dll/kbutton.h"
 #include "vgui_draw.h"
@@ -885,7 +885,7 @@ void CL_Crashed( void )
 
 	// never write video.cfg here because reason to crash may be provoked
 	// with some renderer variables
-	VID_RestoreGamma();
+	//VID_RestoreGamma();
 }
 
 /*
@@ -1781,7 +1781,7 @@ void Host_ClientFrame( double frametime )
 
 	// update audio
 	S_RenderFrame( &cl.refdef );
-	
+
 	// decay dynamic lights
 	CL_DecayLights ();
 

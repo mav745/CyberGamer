@@ -57,7 +57,7 @@ char *Sys_GetClipboardData( void )
 
 		if(( hClipboardData = GetClipboardData( CF_TEXT )) != 0 )
 		{
-			if(( cliptext = GlobalLock( hClipboardData )) != 0 ) 
+			if(( cliptext = GlobalLock( hClipboardData )) != 0 )
 			{
 				data = Z_Malloc( GlobalSize( hClipboardData ) + 1 );
 				Q_strcpy( data, cliptext );
@@ -82,11 +82,11 @@ void Sys_SetClipboardData( const byte *buffer, size_t size )
 
 	if( OpenClipboard( NULL ) != 0 )
 	{
-		HGLOBAL hResult = GlobalAlloc( GMEM_MOVEABLE, size ); 
-		byte *bufferCopy = (byte *)GlobalLock( hResult ); 
+		HGLOBAL hResult = GlobalAlloc( GMEM_MOVEABLE, size );
+		byte *bufferCopy = (byte *)GlobalLock( hResult );
 
-		Q_memcpy( bufferCopy, buffer, size ); 
-		GlobalUnlock( hResult ); 
+		Q_memcpy( bufferCopy, buffer, size );
+		GlobalUnlock( hResult );
 
 		if( SetClipboardData( CF_DIB, hResult ) == NULL )
 		{
@@ -260,7 +260,7 @@ qboolean _Sys_GetParmFromCmdLine( char *parm, char *out, size_t size )
 	int	argc = Sys_CheckParm( parm );
 
 	if( !argc ) return false;
-	if( !out ) return false;	
+	if( !out ) return false;
 	if( !host.argv[argc + 1] ) return false;
 	Q_strncpy( out, host.argv[argc+1], size );
 
@@ -276,8 +276,8 @@ void Sys_SendKeyEvents( void )
 		if( !GetMessage( &msg, NULL, 0, 0 ))
 			Sys_Quit ();
 
-      		TranslateMessage( &msg );
-      		DispatchMessage( &msg );
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
 	}
 }
 
@@ -298,7 +298,7 @@ qboolean Sys_LoadLibrary( dll_info_t *dll )
 
 	MsgDev( D_NOTE, "Sys_LoadLibrary: Loading %s", dll->name );
 
-	if( dll->fcts ) 
+	if( dll->fcts )
 	{
 		// lookup export table
 		for( func = dll->fcts; func && func->name != NULL; func++ )
@@ -308,7 +308,7 @@ qboolean Sys_LoadLibrary( dll_info_t *dll )
 	if( !dll->link ) dll->link = LoadLibrary ( dll->name ); // environment pathes
 
 	// no DLL found
-	if( !dll->link ) 
+	if( !dll->link )
 	{
 		Q_snprintf( errorstring, sizeof( errorstring ), "Sys_LoadLibrary: couldn't load %s\n", dll->name );
 		goto error;
@@ -323,14 +323,14 @@ qboolean Sys_LoadLibrary( dll_info_t *dll )
 			goto error;
 		}
 	}
-          MsgDev( D_NOTE, " - ok\n" );
+		  MsgDev( D_NOTE, " - ok\n" );
 
 	return true;
 error:
 	MsgDev( D_NOTE, " - failed\n" );
-	Sys_FreeLibrary( dll ); // trying to free 
+	Sys_FreeLibrary( dll ); // trying to free
 	if( dll->crash ) Sys_Error( errorstring );
-	else MsgDev( D_ERROR, errorstring );			
+	else MsgDev( D_ERROR, errorstring );
 
 	return false;
 }
@@ -374,7 +374,7 @@ void Sys_WaitForQuit( void )
 {
 	MSG	msg;
 
-	Con_RegisterHotkeys();		
+	Con_RegisterHotkeys();
 
 	msg.message = 0;
 
@@ -385,7 +385,7 @@ void Sys_WaitForQuit( void )
 		{
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
-		} 
+		}
 		else Sys_Sleep( 20 );
 	}
 }
@@ -414,7 +414,7 @@ long _stdcall Sys_Crash( PEXCEPTION_POINTERS pInfo )
 
 		// all other states keep unchanged to let debugger find bug
 		Con_DestroyConsole();
-          }
+		  }
 
 	if( host.oldFilter )
 		return host.oldFilter( pInfo );
@@ -433,7 +433,7 @@ void Sys_Error( const char *error, ... )
 {
 	va_list	argptr;
 	char	text[MAX_SYSPATH];
-         
+
 	if( host.state == HOST_ERR_FATAL )
 		return; // don't multiple executes
 
@@ -441,7 +441,7 @@ void Sys_Error( const char *error, ... )
 	if( host.change_game ) Sys_Sleep( 200 );
 
 	error_on_exit = true;
-	host.state = HOST_ERR_FATAL;	
+	host.state = HOST_ERR_FATAL;
 	va_start( argptr, error );
 	Q_vsprintf( text, error, argptr );
 	va_end( argptr );
@@ -450,8 +450,8 @@ void Sys_Error( const char *error, ... )
 
 	if( host.type == HOST_NORMAL )
 	{
-		if( host.hWnd ) ShowWindow( host.hWnd, SW_HIDE );
-		VID_RestoreGamma();
+		//if( host.hWnd ) ShowWindow( host.hWnd, SW_HIDE );
+		//VID_RestoreGamma();
 	}
 
 	if( host.developer > 0 )
@@ -485,16 +485,16 @@ void Sys_Break( const char *error, ... )
 	if( host.state == HOST_ERR_FATAL )
 		return; // don't multiple executes
 
-	error_on_exit = true;	
-	host.state = HOST_ERR_FATAL;         
+	error_on_exit = true;
+	host.state = HOST_ERR_FATAL;
 	va_start( argptr, error );
 	Q_vsprintf( text, error, argptr );
 	va_end( argptr );
 
 	if( host.type == HOST_NORMAL )
 	{
-		if( host.hWnd ) ShowWindow( host.hWnd, SW_HIDE );
-		VID_RestoreGamma();
+		//if( host.hWnd ) ShowWindow( host.hWnd, SW_HIDE );
+		//VID_RestoreGamma();
 	}
 
 	if( host.type != HOST_NORMAL || host.developer > 0 )
@@ -537,7 +537,7 @@ void Sys_Print( const char *pMsg )
 	char		buffer[32768];
 	char		logbuf[32768];
 	char		*b = buffer;
-	char		*c = logbuf;	
+	char		*c = logbuf;
 	int		i = 0;
 
 	if( host.type == HOST_NORMAL )
@@ -605,7 +605,7 @@ void Msg( const char *pMsg, ... )
 {
 	va_list	argptr;
 	char	text[8192];
-	
+
 	va_start( argptr, pMsg );
 	Q_vsnprintf( text, sizeof( text ), pMsg, argptr );
 	va_end( argptr );

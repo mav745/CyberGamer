@@ -18,6 +18,8 @@ GNU General Public License for more details.
 #include "mod_local.h"
 #include "gl_export.h"
 
+#include <gl/GL.h>
+
 convar_t *gl_round_down;
 
 #define LERPBYTE( i )	r = resamplerow1[i]; out[i] = (byte)(((( resamplerow2[i] - r ) * lerp)>>16 ) + r )
@@ -83,37 +85,37 @@ static byte palette_hl[768] =
 147,255,247,199,255,255,255,159,91,83
 };
 
-static float FILTER[NUM_FILTERS][FILTER_SIZE][FILTER_SIZE] = 
-{ 
-{ // regular blur 
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, 
-{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f }, 
-{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f }, 
-{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f }, 
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, 
-}, 
-{ // light blur 
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, 
-{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f }, 
-{ 0.0f, 1.0f, 4.0f, 1.0f, 0.0f }, 
-{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f }, 
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }, 
-}, 
-{ // find edges 
-{ 0.0f,  0.0f,  0.0f,  0.0f, 0.0f }, 
-{ 0.0f, -1.0f, -1.0f, -1.0f, 0.0f }, 
-{ 0.0f, -1.0f,  8.0f, -1.0f, 0.0f }, 
-{ 0.0f, -1.0f, -1.0f, -1.0f, 0.0f }, 
-{ 0.0f,  0.0f,  0.0f,  0.0f, 0.0f }, 
-}, 
-{ // emboss  
-{-0.7f, -0.7f, -0.7f, -0.7f, 0.0f }, 
-{-0.7f, -0.7f, -0.7f,  0.0f, 0.7f }, 
-{-0.7f, -0.7f,  0.0f,  0.7f, 0.7f }, 
-{-0.7f,  0.0f,  0.7f,  0.7f, 0.7f }, 
-{ 0.0f,  0.7f,  0.7f,  0.7f, 0.7f }, 
+static float FILTER[NUM_FILTERS][FILTER_SIZE][FILTER_SIZE] =
+{
+{ // regular blur
+{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f },
+{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f },
+{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f },
+{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+},
+{ // light blur
+{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f },
+{ 0.0f, 1.0f, 4.0f, 1.0f, 0.0f },
+{ 0.0f, 1.0f, 1.0f, 1.0f, 0.0f },
+{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+},
+{ // find edges
+{ 0.0f,  0.0f,  0.0f,  0.0f, 0.0f },
+{ 0.0f, -1.0f, -1.0f, -1.0f, 0.0f },
+{ 0.0f, -1.0f,  8.0f, -1.0f, 0.0f },
+{ 0.0f, -1.0f, -1.0f, -1.0f, 0.0f },
+{ 0.0f,  0.0f,  0.0f,  0.0f, 0.0f },
+},
+{ // emboss
+{-0.7f, -0.7f, -0.7f, -0.7f, 0.0f },
+{-0.7f, -0.7f, -0.7f,  0.0f, 0.7f },
+{-0.7f, -0.7f,  0.0f,  0.7f, 0.7f },
+{-0.7f,  0.0f,  0.7f,  0.7f, 0.7f },
+{ 0.0f,  0.7f,  0.7f,  0.7f, 0.7f },
 }
-}; 
+};
 
 /*
 =============================================================================
@@ -172,7 +174,7 @@ void Image_Init( void )
 	switch( host.type )
 	{
 	case HOST_NORMAL:
-		image.cmd_flags = IL_USE_LERPING|IL_ALLOW_OVERWRITE;		
+		image.cmd_flags = IL_USE_LERPING|IL_ALLOW_OVERWRITE;
 		image.loadformats = load_game;
 		image.saveformats = save_game;
 		break;
@@ -198,7 +200,7 @@ byte *Image_Copy( size_t size )
 	out = Mem_Alloc( host.imagepool, size );
 	Q_memcpy( out, image.tempbuffer, size );
 
-	return out; 
+	return out;
 }
 
 /*
@@ -272,14 +274,14 @@ int Image_ComparePalette( const byte *pal )
 		return PAL_QUAKE1;
 	else if( !Q_memcmp( palette_hl, pal, 768 ))
 		return PAL_HALFLIFE;
-	return PAL_CUSTOM;		
+	return PAL_CUSTOM;
 }
 
 void Image_SetPalette( const byte *pal, uint *d_table )
 {
 	int	i;
 	byte	rgba[4];
-	
+
 	// setup palette
 	switch( image.d_rendermode )
 	{
@@ -332,7 +334,7 @@ void Image_SetPalette( const byte *pal, uint *d_table )
 			rgba[3] = pal[i*4+3];
 			d_table[i] = *(uint *)rgba;
 		}
-		break;	
+		break;
 	}
 }
 
@@ -391,7 +393,7 @@ void Image_GetPaletteLMP( const byte *pal, int rendermode )
 		d_8to24table[0] = 0;
 		image.d_currentpal = d_8to24table;
 	}
-	else Image_GetPaletteHL(); // default half-life palette          
+	else Image_GetPaletteHL(); // default half-life palette
 }
 
 void Image_ConvertPalTo24bit( rgbdata_t *pic )
@@ -448,10 +450,10 @@ void Image_PaletteHueReplace( byte *palSrc, int newHue, int start, int end )
 		r = palSrc[i*3+0];
 		g = palSrc[i*3+1];
 		b = palSrc[i*3+2];
-		
+
 		maxcol = max( max( r, g ), b ) / 255.0f;
 		mincol = min( min( r, g ), b ) / 255.0f;
-		
+
 		val = maxcol;
 		sat = (maxcol - mincol) / maxcol;
 
@@ -828,7 +830,7 @@ void Image_Resample24Lerp( const void *indata, int inwidth, int inheight, void *
 	byte	*out = (byte *)outdata;
 	byte	*resamplerow1;
 	byte	*resamplerow2;
-	
+
 	fstep = (int)(inheight * 65536.0f / outheight);
 
 	resamplerow1 = (byte *)Mem_Alloc( host.imagepool, outwidth * 3 * 2 );
@@ -1032,7 +1034,7 @@ byte *Image_ResampleInternal( const void *indata, int inwidth, int inheight, int
 	case PF_INDEXED_32:
 		image.tempbuffer = (byte *)Mem_Realloc( host.imagepool, image.tempbuffer, outwidth * outheight );
 		Image_Resample8Nolerp( indata, inwidth, inheight, image.tempbuffer, outwidth, outheight );
-		break;		
+		break;
 	case PF_RGB_24:
 	case PF_BGR_24:
 		image.tempbuffer = (byte *)Mem_Realloc( host.imagepool, image.tempbuffer, outwidth * outheight * 3 );
@@ -1048,7 +1050,7 @@ byte *Image_ResampleInternal( const void *indata, int inwidth, int inheight, int
 	default:
 		MsgDev( D_WARN, "Image_Resample: unsupported format %s\n", PFDesc[type].name );
 		*resampled = false;
-		return (byte *)indata;	
+		return (byte *)indata;
 	}
 
 	*resampled = true;
@@ -1089,7 +1091,7 @@ byte *Image_FloodInternal( const byte *indata, int inwidth, int inheight, int ou
 	default:
 		MsgDev( D_WARN, "Image_Flood: unsupported format %s\n", PFDesc[type].name );
 		*resampled = false;
-		return (byte *)indata;	
+		return (byte *)indata;
 	}
 
 	if( samples == 1 ) Q_memset( out, 0xFF, newsize );	// last palette color
@@ -1121,7 +1123,7 @@ byte *Image_FlipInternal( const byte *in, word *srcwidth, word *srcheight, int t
 {
 	int	i, x, y;
 	word	width = *srcwidth;
-	word	height = *srcheight; 
+	word	height = *srcheight;
 	int	samples = PFDesc[type].bpp;
 	qboolean	flip_x = ( flags & IMAGE_FLIP_X ) ? true : false;
 	qboolean	flip_y = ( flags & IMAGE_FLIP_Y ) ? true : false;
@@ -1149,7 +1151,7 @@ byte *Image_FlipInternal( const byte *in, word *srcwidth, word *srcheight, int t
 		break;
 	default:
 		MsgDev( D_WARN, "Image_Flip: unsupported format %s\n", PFDesc[type].name );
-		return (byte *)in;	
+		return (byte *)in;
 	}
 
 	out = image.tempbuffer;
@@ -1173,12 +1175,12 @@ byte *Image_FlipInternal( const byte *in, word *srcwidth, word *srcheight, int t
 	if( flags & IMAGE_ROT_90 )
 	{
 		*srcwidth = height;
-		*srcheight = width;		
+		*srcheight = width;
 	}
 	else
 	{
 		*srcwidth = width;
-		*srcheight = height;	
+		*srcheight = height;
 	}
 
 	return image.tempbuffer;
@@ -1192,7 +1194,7 @@ byte *Image_CreateLumaInternal( byte *fin, int width, int height, int type, int 
 	if(!( flags & IMAGE_HAS_LUMA ))
 	{
 		MsgDev( D_WARN, "Image_MakeLuma: image doesn't has luma pixels\n" );
-		return (byte *)fin;	  
+		return (byte *)fin;
 	}
 
 	switch( type )
@@ -1226,7 +1228,7 @@ byte *Image_CreateLumaInternal( byte *fin, int width, int height, int type, int 
 	default:
 		// another formats does ugly result :(
 		MsgDev( D_WARN, "Image_MakeLuma: unsupported format %s\n", PFDesc[type].name );
-		return (byte *)fin;	
+		return (byte *)fin;
 	}
 
 	return image.tempbuffer;
@@ -1245,10 +1247,10 @@ qboolean Image_AddIndexedImageToPack( const byte *in, int width, int height )
 	image.size = mipsize;
 
 	if( expand_to_rgba ) image.size *= 4;
-	else Image_CopyPalette32bit(); 
+	else Image_CopyPalette32bit();
 
 	// reallocate image buffer
-	image.rgba = Mem_Alloc( host.imagepool, image.size );	
+	image.rgba = Mem_Alloc( host.imagepool, image.size );
 	if( !expand_to_rgba ) Q_memcpy( image.rgba, in, image.size );
 	else if( !Image_Copy8bitRGBA( in, image.rgba, mipsize ))
 		return false; // probably pallette not installed
@@ -1266,7 +1268,7 @@ force to unpack any image to 32-bit buffer
 qboolean Image_Decompress( const byte *data )
 {
 	byte	*fin, *fout;
-	int	i, size; 
+	int	i, size;
 
 	if( !data ) return false;
 	fin = (byte *)data;
@@ -1281,8 +1283,8 @@ qboolean Image_Decompress( const byte *data )
 		if( image.flags & IMAGE_HAS_ALPHA )
 		{
 			if( image.flags & IMAGE_COLORINDEX )
-				Image_GetPaletteLMP( image.palette, LUMP_DECAL ); 
-			else Image_GetPaletteLMP( image.palette, LUMP_TRANSPARENT ); 
+				Image_GetPaletteLMP( image.palette, LUMP_DECAL );
+			else Image_GetPaletteLMP( image.palette, LUMP_TRANSPARENT );
 		}
 		else Image_GetPaletteLMP( image.palette, LUMP_NORMAL );
 		// intentional falltrough
@@ -1411,22 +1413,22 @@ qboolean Image_RemapInternal( rgbdata_t *pic, int topColor, int bottomColor )
 	return true;
 }
 
-/* 
-================== 
+/*
+==================
 Image_ApplyFilter
 
-Applies a 5 x 5 filtering matrix to the texture, then runs it through a simulated OpenGL texture environment 
-blend with the original data to derive a new texture.  Freaky, funky, and *f--king* *fantastic*.  You can do 
-reasonable enough "fake bumpmapping" with this baby... 
+Applies a 5 x 5 filtering matrix to the texture, then runs it through a simulated OpenGL texture environment
+blend with the original data to derive a new texture.  Freaky, funky, and *f--king* *fantastic*.  You can do
+reasonable enough "fake bumpmapping" with this baby...
 
-Filtering algorithm from http://www.student.kuleuven.ac.be/~m0216922/CG/filtering.html 
-All credit due 
-================== 
+Filtering algorithm from http://www.student.kuleuven.ac.be/~m0216922/CG/filtering.html
+All credit due
+==================
 */
 qboolean Image_ApplyFilter( rgbdata_t *pic, int filter, float factor, float bias, flFlags_t flags, GLenum blendFunc )
-{ 
-	int	i, x, y; 
-	uint	*fin, *fout; 
+{
+	int	i, x, y;
+	uint	*fin, *fout;
 	size_t	size;
 
 	// first expand the image into 32-bit buffer
@@ -1437,94 +1439,94 @@ qboolean Image_ApplyFilter( rgbdata_t *pic, int filter, float factor, float bias
 	fout = (uint *)image.tempbuffer;
 	fin = (uint *)pic->buffer;
 
-	for( x = 0; x < image.width; x++ ) 
-	{ 
-		for( y = 0; y < image.height; y++ ) 
-		{ 
-			vec3_t	vout = { 0.0f, 0.0f, 0.0f }; 
+	for( x = 0; x < image.width; x++ )
+	{
+		for( y = 0; y < image.height; y++ )
+		{
+			vec3_t	vout = { 0.0f, 0.0f, 0.0f };
 			int	pos_x, pos_y;
 
-			for( pos_x = 0; pos_x < FILTER_SIZE; pos_x++ ) 
-			{ 
-				for( pos_y = 0; pos_y < FILTER_SIZE; pos_y++ ) 
-				{ 
-					int	img_x = (x - (FILTER_SIZE / 2) + pos_x + image.width) % image.width; 
-					int	img_y = (y - (FILTER_SIZE / 2) + pos_y + image.height) % image.height; 
+			for( pos_x = 0; pos_x < FILTER_SIZE; pos_x++ )
+			{
+				for( pos_y = 0; pos_y < FILTER_SIZE; pos_y++ )
+				{
+					int	img_x = (x - (FILTER_SIZE / 2) + pos_x + image.width) % image.width;
+					int	img_y = (y - (FILTER_SIZE / 2) + pos_y + image.height) % image.height;
 
-					// casting's a unary operation anyway, so the othermost set of brackets in the left part 
-					// of the rvalue should not be necessary... but i'm paranoid when it comes to C... 
-					vout[0] += ((float)((byte *)&fin[img_y * image.width + img_x])[0]) * FILTER[filter][pos_x][pos_y]; 
-					vout[1] += ((float)((byte *)&fin[img_y * image.width + img_x])[1]) * FILTER[filter][pos_x][pos_y]; 
-					vout[2] += ((float)((byte *)&fin[img_y * image.width + img_x])[2]) * FILTER[filter][pos_x][pos_y]; 
-				} 
-			} 
+					// casting's a unary operation anyway, so the othermost set of brackets in the left part
+					// of the rvalue should not be necessary... but i'm paranoid when it comes to C...
+					vout[0] += ((float)((byte *)&fin[img_y * image.width + img_x])[0]) * FILTER[filter][pos_x][pos_y];
+					vout[1] += ((float)((byte *)&fin[img_y * image.width + img_x])[1]) * FILTER[filter][pos_x][pos_y];
+					vout[2] += ((float)((byte *)&fin[img_y * image.width + img_x])[2]) * FILTER[filter][pos_x][pos_y];
+				}
+			}
 
-			// multiply by factor, add bias, and clamp 
-			for( i = 0; i < 3; i++ ) 
-			{ 
-				vout[i] *= factor; 
-				vout[i] += bias; 
+			// multiply by factor, add bias, and clamp
+			for( i = 0; i < 3; i++ )
+			{
+				vout[i] *= factor;
+				vout[i] += bias;
 				vout[i] = bound( 0.0f, vout[i], 255.0f );
-			} 
+			}
 
-			if( flags & FILTER_GRAYSCALE ) 
-			{ 
-				// NTSC greyscale conversion standard 
-				float avg = (vout[0] * 30.0f + vout[1] * 59.0f + vout[2] * 11.0f) / 100.0f; 
+			if( flags & FILTER_GRAYSCALE )
+			{
+				// NTSC greyscale conversion standard
+				float avg = (vout[0] * 30.0f + vout[1] * 59.0f + vout[2] * 11.0f) / 100.0f;
 
-				// divide by 255 so GL operations work as expected 
-				vout[0] = avg / 255.0f; 
-				vout[1] = avg / 255.0f; 
-				vout[2] = avg / 255.0f; 
-			} 
+				// divide by 255 so GL operations work as expected
+				vout[0] = avg / 255.0f;
+				vout[1] = avg / 255.0f;
+				vout[2] = avg / 255.0f;
+			}
 
-			// write to temp - first, write data in (to get the alpha channel quickly and 
-			// easily, which will be left well alone by this particular operation...!) 
-			fout[y * image.width + x] = fin[y * image.width + x]; 
+			// write to temp - first, write data in (to get the alpha channel quickly and
+			// easily, which will be left well alone by this particular operation...!)
+			fout[y * image.width + x] = fin[y * image.width + x];
 
-			// now write in each element, applying the blend operator.  blend 
-			// operators are based on standard OpenGL TexEnv modes, and the 
-			// formulas are derived from the OpenGL specs (http://www.opengl.org). 
-			for( i = 0; i < 3; i++ ) 
-			{ 
-				// divide by 255 so GL operations work as expected 
-				float	src = ((float)((byte *)&fin[y * image.width + x])[i]) / 255.0f; 
+			// now write in each element, applying the blend operator.  blend
+			// operators are based on standard OpenGL TexEnv modes, and the
+			// formulas are derived from the OpenGL specs (http://www.opengl.org).
+			for( i = 0; i < 3; i++ )
+			{
+				// divide by 255 so GL operations work as expected
+				float	src = ((float)((byte *)&fin[y * image.width + x])[i]) / 255.0f;
 				float	tmp;
 
-				switch( blendFunc ) 
-				{ 
-				case GL_ADD: 
-					tmp = vout[i] + src; 
-					break; 
-				case GL_BLEND: 
-					// default is FUNC_ADD here 
-					// CsS + CdD works out as Src * Dst * 2 
-					tmp = vout[i] * src * 2.0f; 
-					break; 
-				case GL_DECAL: 
-					// same as GL_REPLACE unless there's alpha, which we ignore for this 
-				case GL_REPLACE: 
-					tmp = vout[i]; 
-					break; 
-				case GL_ADD_SIGNED: 
-					tmp = (vout[i] + src) - 0.5f; 
-					break; 
-				case GL_MODULATE: 
-				default:	// same as default 
-					tmp = vout[i] * src; 
-					break; 
-				} 
+				switch( blendFunc )
+				{
+				case GL_ADD:
+					tmp = vout[i] + src;
+					break;
+				case GL_BLEND:
+					// default is FUNC_ADD here
+					// CsS + CdD works out as Src * Dst * 2
+					tmp = vout[i] * src * 2.0f;
+					break;
+				case GL_DECAL:
+					// same as GL_REPLACE unless there's alpha, which we ignore for this
+				case GL_REPLACE:
+					tmp = vout[i];
+					break;
+				case GL_ADD_SIGNED:
+					tmp = (vout[i] + src) - 0.5f;
+					break;
+				case GL_MODULATE:
+				default:	// same as default
+					tmp = vout[i] * src;
+					break;
+				}
 
-				// multiply back by 255 to get the proper byte scale 
-				tmp *= 255.0f; 
+				// multiply back by 255 to get the proper byte scale
+				tmp *= 255.0f;
 
-				// bound the temp target again now, cos the operation may have thrown it out 
+				// bound the temp target again now, cos the operation may have thrown it out
 				tmp = bound( 0.0f, tmp, 255.0f );
-				// and copy it in 
-				((byte *)&fout[y * image.width + x])[i] = (byte)tmp; 
-			} 
-		} 
-	} 
+				// and copy it in
+				((byte *)&fout[y * image.width + x])[i] = (byte)tmp;
+			}
+		}
+	}
 
 	// copy result back
 	Q_memcpy( fin, fout, size );
@@ -1537,7 +1539,7 @@ qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uin
 	rgbdata_t	*pic = *pix;
 	qboolean	result = true;
 	byte	*out;
-				
+
 	// check for buffers
 	if( !pic || !pic->buffer )
 	{
@@ -1607,7 +1609,7 @@ qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uin
 		}
 
 		if( flags & IMAGE_ROUNDFILLER )
-	         		out = Image_FloodInternal( pic->buffer, pic->width, pic->height, w, h, pic->type, &resampled );
+					out = Image_FloodInternal( pic->buffer, pic->width, pic->height, w, h, pic->type, &resampled );
 		else out = Image_ResampleInternal((uint *)pic->buffer, pic->width, pic->height, w, h, pic->type, &resampled );
 
 		if( resampled ) // resampled or filled

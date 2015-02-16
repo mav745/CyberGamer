@@ -13,26 +13,26 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
 #include "keydefs.h"
 #include "protocol.h"		// get the protocol version
 #include "con_nprint.h"
-#include "gl_local.h"
 #include "qfont.h"
 
 convar_t	*con_notifytime;
 convar_t	*scr_conspeed;
 convar_t	*con_fontsize;
 
-#define CON_TIMES		5	// need for 4 lines
-#define COLOR_DEFAULT	'7'
-#define CON_HISTORY		64
-#define MAX_DBG_NOTIFY	128
-#define CON_MAXCMDS		4096	// auto-complete intermediate list
-#define CON_NUMFONTS	3	// maxfonts
+//#define CON_TIMES		5	// need for 4 lines
+//#define COLOR_DEFAULT	'7'
+//#define CON_HISTORY		64
+//#define MAX_DBG_NOTIFY	128
+//#define CON_MAXCMDS		4096	// auto-complete intermediate list
+//#define CON_NUMFONTS	3	// maxfonts
 
-#define CON_TEXTSIZE	131072	// 128 kb buffer
+//#define CON_TEXTSIZE	131072	// 128 kb buffer
 
 // console color typeing
 rgba_t g_color_table[8] =
@@ -47,72 +47,72 @@ rgba_t g_color_table[8] =
 {240, 180,  24, 255},	// default color (can be changed by user)
 };
 
-typedef struct
-{
-	string		buffer;
-	int		cursor;
-	int		scroll;
-	int		widthInChars;
-} field_t;
+//typedef struct
+//{
+//	string		buffer;
+//	int		cursor;
+//	int		scroll;
+//	int		widthInChars;
+//} field_t;
 
-typedef struct
-{
-	string		szNotify;
-	float		expire;
-	rgba_t		color;
-	int		key_dest;
-} notify_t;
+//typedef struct
+//{
+//	string		szNotify;
+//	float		expire;
+//	rgba_t		color;
+//	int		key_dest;
+//} notify_t;
 
-typedef struct
-{
-	qboolean		initialized;
+//typedef struct
+//{
+//	qboolean		initialized;
 
-	short		text[CON_TEXTSIZE];
-	int		current;		// line where next message will be printed
-	int		display;		// bottom of console displays this line
-	int		x;		// offset in current line for next print
+//	short		text[CON_TEXTSIZE];
+//	int		current;		// line where next message will be printed
+//	int		display;		// bottom of console displays this line
+//	int		x;		// offset in current line for next print
 
-	int 		linewidth;	// characters across screen
-	int		totallines;	// total lines in console scrollback
+//	int 		linewidth;	// characters across screen
+//	int		totallines;	// total lines in console scrollback
 
-	float		displayFrac;	// aproaches finalFrac at scr_conspeed
-	float		finalFrac;	// 0.0 to 1.0 lines of console to display
+//	float		displayFrac;	// aproaches finalFrac at scr_conspeed
+//	float		finalFrac;	// 0.0 to 1.0 lines of console to display
 
-	int		vislines;		// in scanlines
-	double		times[CON_TIMES];	// host.realtime the line was generated for transparent notify lines
-	rgba_t		color;
+//	int		vislines;		// in scanlines
+//	double		times[CON_TIMES];	// host.realtime the line was generated for transparent notify lines
+//	rgba_t		color;
 
-	// console images
-	int		background;	// console background
+//	// console images
+//	int		background;	// console background
 
-	// conchars
-	cl_font_t		chars[CON_NUMFONTS];// fonts.wad/font1.fnt
-	cl_font_t		*curFont, *lastUsedFont;
+//	// conchars
+//	cl_font_t		chars[CON_NUMFONTS];// fonts.wad/font1.fnt
+//	cl_font_t		*curFont, *lastUsedFont;
 
-	// console input
-	field_t		input;
+//	// console input
+//	field_t		input;
 
-	// chatfiled
-	field_t		chat;
-	string		chat_cmd;		// can be overrieded by user
+//	// chatfiled
+//	field_t		chat;
+//	string		chat_cmd;		// can be overrieded by user
 
-	// console history
-	field_t		historyLines[CON_HISTORY];
-	int		historyLine;	// the line being displayed from history buffer will be <= nextHistoryLine
-	int		nextHistoryLine;	// the last line in the history buffer, not masked
+//	// console history
+//	field_t		historyLines[CON_HISTORY];
+//	int		historyLine;	// the line being displayed from history buffer will be <= nextHistoryLine
+//	int		nextHistoryLine;	// the last line in the history buffer, not masked
 
-	notify_t		notify[MAX_DBG_NOTIFY]; // for Con_NXPrintf
-	qboolean		draw_notify;	// true if we have NXPrint message
+//	notify_t		notify[MAX_DBG_NOTIFY]; // for Con_NXPrintf
+//	qboolean		draw_notify;	// true if we have NXPrint message
 
-	// console auto-complete
-	string		shortestMatch;
-	field_t		*completionField;	// con.input or dedicated server fake field-line
-	char		*completionString;
-	char		*cmds[CON_MAXCMDS];
-	int		matchCount;
-} console_t;
+//	// console auto-complete
+//	string		shortestMatch;
+//	field_t		*completionField;	// con.input or dedicated server fake field-line
+//	char		*completionString;
+//	char		*cmds[CON_MAXCMDS];
+//	int		matchCount;
+//} console_t;
 
-static console_t		con;
+console_t		con;
 
 void Field_CharEvent( field_t *edit, int ch );
 
@@ -505,40 +505,40 @@ static void Con_LoadConchars( void )
 
 }
 
-static int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
-{
-	int	width, height;
-	float	s1, t1, s2, t2;
-	wrect_t	*rc;
+//static int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
+//{
+//	int	width, height;
+//	float	s1, t1, s2, t2;
+//	wrect_t	*rc;
 
-	number &= 255;
+//	number &= 255;
 
-	if( !con.curFont || !con.curFont->valid )
-		return 0;
+//	if( !con.curFont || !con.curFont->valid )
+//		return 0;
 
-	if( number < 32 ) return 0;
-	if( y < -con.curFont->charHeight )
-		return 0;
+//	if( number < 32 ) return 0;
+//	if( y < -con.curFont->charHeight )
+//		return 0;
 
-	rc = &con.curFont->fontRc[number];
+//	rc = &con.curFont->fontRc[number];
 
-	pglColor4ubv( color );
-	R_GetTextureParms( &width, &height, con.curFont->hFontTexture );
+//	glColor4ubv( color );
+//	R_GetTextureParms( &width, &height, con.curFont->hFontTexture );
 
-	// calc rectangle
-	s1 = (float)rc->left / width;
-	t1 = (float)rc->top / height;
-	s2 = (float)rc->right / width;
-	t2 = (float)rc->bottom / height;
-	width = rc->right - rc->left;
-	height = rc->bottom - rc->top;
+//	// calc rectangle
+//	s1 = (float)rc->left / width;
+//	t1 = (float)rc->top / height;
+//	s2 = (float)rc->right / width;
+//	t2 = (float)rc->bottom / height;
+//	width = rc->right - rc->left;
+//	height = rc->bottom - rc->top;
 
-	TextAdjustSize( &x, &y, &width, &height );
-	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, s1, t1, s2, t2, con.curFont->hFontTexture );
-	pglColor4ub( 255, 255, 255, 255 ); // don't forget reset color
+//	TextAdjustSize( &x, &y, &width, &height );
+//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, s1, t1, s2, t2, con.curFont->hFontTexture );
+//	glColor4ub( 255, 255, 255, 255 ); // don't forget reset color
 
-	return con.curFont->charWidths[number];
-}
+//	return con.curFont->charWidths[number];
+//}
 
 void Con_SetFont( int fontNum )
 {
@@ -652,7 +652,7 @@ int Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qb
 		s++;
 	}
 
-	pglColor4ub( 255, 255, 255, 255 );
+	glColor4ub( 255, 255, 255, 255 );
 	return drawLen;
 }
 
@@ -1280,70 +1280,70 @@ void Field_CharEvent( field_t *edit, int ch )
 Field_DrawInputLine
 ==================
 */
-void Field_DrawInputLine( int x, int y, field_t *edit )
-{
-	int	len, cursorChar;
-	int	drawLen, hideChar = -1;
-	int	prestep, curPos;
-	char	str[MAX_SYSPATH];
-	byte	*colorDefault;
+//void Field_DrawInputLine( int x, int y, field_t *edit )
+//{
+//	int	len, cursorChar;
+//	int	drawLen, hideChar = -1;
+//	int	prestep, curPos;
+//	char	str[MAX_SYSPATH];
+//	byte	*colorDefault;
 
-	drawLen = edit->widthInChars;
-	len = Q_strlen( edit->buffer ) + 1;
-	colorDefault = g_color_table[ColorIndex( COLOR_DEFAULT )];
+//	drawLen = edit->widthInChars;
+//	len = Q_strlen( edit->buffer ) + 1;
+//	colorDefault = g_color_table[ColorIndex( COLOR_DEFAULT )];
 
-	// guarantee that cursor will be visible
-	if( len <= drawLen )
-	{
-		prestep = 0;
-	}
-	else
-	{
-		if( edit->scroll + drawLen > len )
-		{
-			edit->scroll = len - drawLen;
-			if( edit->scroll < 0 ) edit->scroll = 0;
-		}
+//	// guarantee that cursor will be visible
+//	if( len <= drawLen )
+//	{
+//		prestep = 0;
+//	}
+//	else
+//	{
+//		if( edit->scroll + drawLen > len )
+//		{
+//			edit->scroll = len - drawLen;
+//			if( edit->scroll < 0 ) edit->scroll = 0;
+//		}
 
-		prestep = edit->scroll;
-	}
+//		prestep = edit->scroll;
+//	}
 
-	if( prestep + drawLen > len )
-		drawLen = len - prestep;
+//	if( prestep + drawLen > len )
+//		drawLen = len - prestep;
 
-	// extract <drawLen> characters from the field at <prestep>
-	ASSERT( drawLen < MAX_SYSPATH );
+//	// extract <drawLen> characters from the field at <prestep>
+//	ASSERT( drawLen < MAX_SYSPATH );
 
-	Q_memcpy( str, edit->buffer + prestep, drawLen );
-	str[drawLen] = 0;
+//	Q_memcpy( str, edit->buffer + prestep, drawLen );
+//	str[drawLen] = 0;
 
-	// save char for overstrike
-	cursorChar = str[edit->cursor - prestep];
+//	// save char for overstrike
+//	cursorChar = str[edit->cursor - prestep];
 
-	if( host.key_overstrike && cursorChar && !((int)( host.realtime * 4 ) & 1 ))
-		hideChar = edit->cursor - prestep; // skip this char
+//	if( host.key_overstrike && cursorChar && !((int)( host.realtime * 4 ) & 1 ))
+//		hideChar = edit->cursor - prestep; // skip this char
 
-	// draw it
-	Con_DrawGenericString( x, y, str, colorDefault, false, hideChar );
+//	// draw it
+//	Con_DrawGenericString( x, y, str, colorDefault, false, hideChar );
 
-	// draw the cursor
-	if((int)( host.realtime * 4 ) & 1 ) return; // off blink
+//	// draw the cursor
+//	if((int)( host.realtime * 4 ) & 1 ) return; // off blink
 
-	// calc cursor position
-	str[edit->cursor - prestep] = 0;
-	Con_DrawStringLen( str, &curPos, NULL );
+//	// calc cursor position
+//	str[edit->cursor - prestep] = 0;
+//	Con_DrawStringLen( str, &curPos, NULL );
 
-	if( host.key_overstrike && cursorChar )
-	{
-		// overstrike cursor
-		pglEnable( GL_BLEND );
-		pglDisable( GL_ALPHA_TEST );
-		pglBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA );
-		pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		Con_DrawGenericChar( x + curPos, y, cursorChar, colorDefault );
-	}
-	else Con_DrawCharacter( x + curPos, y, '_', colorDefault );
-}
+//	if( host.key_overstrike && cursorChar )
+//	{
+//		// overstrike cursor
+//		glEnable( GL_BLEND );
+//		glDisable( GL_ALPHA_TEST );
+//		glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA );
+//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//		Con_DrawGenericChar( x + curPos, y, cursorChar, colorDefault );
+//	}
+//	else Con_DrawCharacter( x + curPos, y, '_', colorDefault );
+//}
 
 /*
 =============================================================================
@@ -1608,164 +1608,164 @@ Con_DrawNotify
 Draws the last few lines of output transparently over the game top
 ================
 */
-void Con_DrawNotify( void )
-{
-	int	i, x, v = 0;
-	int	start, currentColor;
-	short	*text;
-	float	time;
+//void Con_DrawNotify( void )
+//{
+//	int	i, x, v = 0;
+//	int	start, currentColor;
+//	short	*text;
+//	float	time;
 
-	if( !con.curFont ) return;
+//	if( !con.curFont ) return;
 
-	if( host.developer && ( !Cvar_VariableInteger( "cl_background" ) && !Cvar_VariableInteger( "sv_background" )))
-	{
-		currentColor = 7;
-		pglColor4ubv( g_color_table[currentColor] );
+//	if( host.developer && ( !Cvar_VariableInteger( "cl_background" ) && !Cvar_VariableInteger( "sv_background" )))
+//	{
+//		currentColor = 7;
+//		glColor4ubv( g_color_table[currentColor] );
 
-		for( i = con.current - CON_TIMES + 1; i <= con.current; i++ )
-		{
-			if( i < 0 ) continue;
-			time = (float)con.times[i % CON_TIMES];
-			if( time == 0 ) continue;
-			time = (float)host.realtime - time;
+//		for( i = con.current - CON_TIMES + 1; i <= con.current; i++ )
+//		{
+//			if( i < 0 ) continue;
+//			time = (float)con.times[i % CON_TIMES];
+//			if( time == 0 ) continue;
+//			time = (float)host.realtime - time;
 
-			if( time > con_notifytime->value )
-				continue;	// expired
+//			if( time > con_notifytime->value )
+//				continue;	// expired
 
-			text = con.text + (i % con.totallines) * con.linewidth;
-			start = con.curFont->charWidths[' ']; // offset one space at left screen side
+//			text = con.text + (i % con.totallines) * con.linewidth;
+//			start = con.curFont->charWidths[' ']; // offset one space at left screen side
 
-			for( x = 0; x < con.linewidth; x++ )
-			{
-				if((( text[x] >> 8 ) & 7 ) != currentColor )
-					currentColor = ( text[x] >> 8 ) & 7;
-				start += Con_DrawCharacter( start, v, text[x] & 0xFF, g_color_table[currentColor] );
-			}
-			v += con.curFont->charHeight;
-		}
-	}
+//			for( x = 0; x < con.linewidth; x++ )
+//			{
+//				if((( text[x] >> 8 ) & 7 ) != currentColor )
+//					currentColor = ( text[x] >> 8 ) & 7;
+//				start += Con_DrawCharacter( start, v, text[x] & 0xFF, g_color_table[currentColor] );
+//			}
+//			v += con.curFont->charHeight;
+//		}
+//	}
 
-	if( cls.key_dest == key_message )
-	{
-		string	buf;
-		int	len;
+//	if( cls.key_dest == key_message )
+//	{
+//		string	buf;
+//		int	len;
 
-		currentColor = 7;
-		pglColor4ubv( g_color_table[currentColor] );
+//		currentColor = 7;
+//		glColor4ubv( g_color_table[currentColor] );
 
-		start = con.curFont->charWidths[' ']; // offset one space at left screen side
+//		start = con.curFont->charWidths[' ']; // offset one space at left screen side
 
-		// update chatline position from client.dll
-		if( clgame.dllFuncs.pfnChatInputPosition )
-			clgame.dllFuncs.pfnChatInputPosition( &start, &v );
+//		// update chatline position from client.dll
+//		if( clgame.dllFuncs.pfnChatInputPosition )
+//			clgame.dllFuncs.pfnChatInputPosition( &start, &v );
 
-		Q_snprintf( buf, sizeof( buf ), "%s: ", con.chat_cmd );
+//		Q_snprintf( buf, sizeof( buf ), "%s: ", con.chat_cmd );
 
-		Con_DrawStringLen( buf, &len, NULL );
-		Con_DrawString( start, v, buf, g_color_table[7] );
+//		Con_DrawStringLen( buf, &len, NULL );
+//		Con_DrawString( start, v, buf, g_color_table[7] );
 
-		Field_DrawInputLine( start + len, v, &con.chat );
-	}
+//		Field_DrawInputLine( start + len, v, &con.chat );
+//	}
 
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
-/*
-================
-Con_DrawConsole
+///*
+//================
+//Con_DrawConsole
 
-Draws the console with the solid background
-================
-*/
-void Con_DrawSolidConsole( float frac )
-{
-	int	i, x, y;
-	int	rows;
-	short	*text;
-	int	row;
-	int	lines, start;
-	int	currentColor;
-	string	curbuild;
+//Draws the console with the solid background
+//================
+//*/
+//void Con_DrawSolidConsole( float frac )
+//{
+//	int	i, x, y;
+//	int	rows;
+//	short	*text;
+//	int	row;
+//	int	lines, start;
+//	int	currentColor;
+//	string	curbuild;
 
-	lines = (int)((float)scr_height->integer * frac);
-	if( lines <= 0 ) return;
-	if( lines > scr_height->integer )
-		lines = scr_height->integer;
+//	lines = (int)((float)scr_height->integer * frac);
+//	if( lines <= 0 ) return;
+//	if( lines > scr_height->integer )
+//		lines = scr_height->integer;
 
-	// draw the background
-	y = (int)(frac * (float)scr_height->integer);
+//	// draw the background
+//	y = (int)(frac * (float)scr_height->integer);
 
-	if( y >= 1 )
-	{
-		GL_SetRenderMode( kRenderNormal );
-		R_DrawStretchPic( 0, (float)(y - scr_height->integer), (float)scr_width->integer, (float)scr_height->integer, 0, 0, 1, 1, con.background );
-	}
-	else y = 0;
+//	if( y >= 1 )
+//	{
+//		GL_SetRenderMode( kRenderNormal );
+//		R_DrawStretchPic( 0, (float)(y - scr_height->integer), (float)scr_width->integer, (float)scr_height->integer, 0, 0, 1, 1, con.background );
+//	}
+//	else y = 0;
 
-	if( !con.curFont ) return; // nothing to draw
+//	if( !con.curFont ) return; // nothing to draw
 
-	if( host.developer )
-	{
-		// draw current version
-		byte	*color = g_color_table[7];
-		int	stringLen, width = 0, charH;
+//	if( host.developer )
+//	{
+//		// draw current version
+//		byte	*color = g_color_table[7];
+//		int	stringLen, width = 0, charH;
 
-		Q_snprintf( curbuild, MAX_STRING, "Xash3D %i/%g (hw build %i)", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum( ));
-		Con_DrawStringLen( curbuild, &stringLen, &charH );
-		start = scr_width->integer - stringLen;
-		stringLen = Con_StringLength( curbuild );
+//		Q_snprintf( curbuild, MAX_STRING, "Xash3D %i/%g (hw build %i)", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum( ));
+//		Con_DrawStringLen( curbuild, &stringLen, &charH );
+//		start = scr_width->integer - stringLen;
+//		stringLen = Con_StringLength( curbuild );
 
-		for( i = 0; i < stringLen; i++ )
-			width += Con_DrawCharacter( start + width, 0, curbuild[i], color );
-	}
+//		for( i = 0; i < stringLen; i++ )
+//			width += Con_DrawCharacter( start + width, 0, curbuild[i], color );
+//	}
 
-	// draw the text
-	con.vislines = lines;
-	rows = ( lines - QCHAR_WIDTH ) / QCHAR_WIDTH; // rows of text to draw
-	y = lines - ( con.curFont->charHeight * 3 );
+//	// draw the text
+//	con.vislines = lines;
+//	rows = ( lines - QCHAR_WIDTH ) / QCHAR_WIDTH; // rows of text to draw
+//	y = lines - ( con.curFont->charHeight * 3 );
 
-	// draw from the bottom up
-	if( con.display != con.current )
-	{
-		start = con.curFont->charWidths[' ']; // offset one space at left screen side
+//	// draw from the bottom up
+//	if( con.display != con.current )
+//	{
+//		start = con.curFont->charWidths[' ']; // offset one space at left screen side
 
-		// draw red arrows to show the buffer is backscrolled
-		for( x = 0; x < con.linewidth; x += 4 )
-			Con_DrawCharacter(( x + 1 ) * start, y, '^', g_color_table[1] );
-		y -= con.curFont->charHeight;
-		rows--;
-	}
+//		// draw red arrows to show the buffer is backscrolled
+//		for( x = 0; x < con.linewidth; x += 4 )
+//			Con_DrawCharacter(( x + 1 ) * start, y, '^', g_color_table[1] );
+//		y -= con.curFont->charHeight;
+//		rows--;
+//	}
 
-	row = con.display;
-	if( con.x == 0 ) row--;
+//	row = con.display;
+//	if( con.x == 0 ) row--;
 
-	currentColor = 7;
-	pglColor4ubv( g_color_table[currentColor] );
+//	currentColor = 7;
+//	glColor4ubv( g_color_table[currentColor] );
 
-	for( i = 0; i < rows; i++, y -= con.curFont->charHeight, row-- )
-	{
-		if( row < 0 ) break;
-		if( con.current - row >= con.totallines )
-		{
-			// past scrollback wrap point
-			continue;
-		}
+//	for( i = 0; i < rows; i++, y -= con.curFont->charHeight, row-- )
+//	{
+//		if( row < 0 ) break;
+//		if( con.current - row >= con.totallines )
+//		{
+//			// past scrollback wrap point
+//			continue;
+//		}
 
-		text = con.text + ( row % con.totallines ) * con.linewidth;
-		start = con.curFont->charWidths[' ']; // offset one space at left screen side
+//		text = con.text + ( row % con.totallines ) * con.linewidth;
+//		start = con.curFont->charWidths[' ']; // offset one space at left screen side
 
-		for( x = 0; x < con.linewidth; x++ )
-		{
-			if((( text[x] >> 8 ) & 7 ) != currentColor )
-				currentColor = ( text[x] >> 8 ) & 7;
-			start += Con_DrawCharacter( start, y, text[x] & 0xFF, g_color_table[currentColor] );
-		}
-	}
+//		for( x = 0; x < con.linewidth; x++ )
+//		{
+//			if((( text[x] >> 8 ) & 7 ) != currentColor )
+//				currentColor = ( text[x] >> 8 ) & 7;
+//			start += Con_DrawCharacter( start, y, text[x] & 0xFF, g_color_table[currentColor] );
+//		}
+//	}
 
-	// draw the input prompt, user text, and cursor if desired
-	Con_DrawInput();
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//	// draw the input prompt, user text, and cursor if desired
+//	Con_DrawInput();
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
 /*
 ==================

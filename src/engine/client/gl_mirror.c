@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
-#include "gl_local.h"
 #include "mod_local.h"
 #include "mathlib.h"
 
@@ -26,57 +26,57 @@ R_BeginDrawMirror
 Setup texture matrix for mirror texture
 ================
 */
-void R_BeginDrawMirror( msurface_t *fa )
-{
-	matrix4x4		m1, m2, matrix;
-	GLfloat		genVector[4][4];
-	mextrasurf_t	*es;
-	int		i;
+//void R_BeginDrawMirror( msurface_t *fa )
+//{
+//	matrix4x4		m1, m2, matrix;
+//	GLfloat		genVector[4][4];
+//	mextrasurf_t	*es;
+//	int		i;
 
-	es = SURF_INFO( fa, RI.currentmodel );
-	Matrix4x4_Copy( matrix, es->mirrormatrix );
+//	es = SURF_INFO( fa, RI.currentmodel );
+//	Matrix4x4_Copy( matrix, es->mirrormatrix );
 
-	Matrix4x4_LoadIdentity( m1 );
-	Matrix4x4_ConcatScale( m1, 0.5f );
-	Matrix4x4_Concat( m2, m1, matrix );
+//	Matrix4x4_LoadIdentity( m1 );
+//	Matrix4x4_ConcatScale( m1, 0.5f );
+//	Matrix4x4_Concat( m2, m1, matrix );
 
-	Matrix4x4_LoadIdentity( m1 );
-	Matrix4x4_ConcatTranslate( m1, 0.5f, 0.5f, 0.5f );
-	Matrix4x4_Concat( matrix, m1, m2 );
+//	Matrix4x4_LoadIdentity( m1 );
+//	Matrix4x4_ConcatTranslate( m1, 0.5f, 0.5f, 0.5f );
+//	Matrix4x4_Concat( matrix, m1, m2 );
 
-	for( i = 0; i < 4; i++ )
-	{
-		genVector[0][i] = i == 0 ? 1.f : 0.f;
-		genVector[1][i] = i == 1 ? 1.f : 0.f;
-		genVector[2][i] = i == 2 ? 1.f : 0.f;
-		genVector[3][i] = i == 3 ? 1.f : 0.f;
-	}
+//	for( i = 0; i < 4; i++ )
+//	{
+//		genVector[0][i] = i == 0 ? 1.f : 0.f;
+//		genVector[1][i] = i == 1 ? 1.f : 0.f;
+//		genVector[2][i] = i == 2 ? 1.f : 0.f;
+//		genVector[3][i] = i == 3 ? 1.f : 0.f;
+//	}
 
-	GL_TexGen( GL_S, GL_OBJECT_LINEAR );
-	GL_TexGen( GL_T, GL_OBJECT_LINEAR );
-	GL_TexGen( GL_R, GL_OBJECT_LINEAR );
-	GL_TexGen( GL_Q, GL_OBJECT_LINEAR );
+//	GL_TexGen( GL_S, GL_OBJECT_LINEAR );
+//	GL_TexGen( GL_T, GL_OBJECT_LINEAR );
+//	GL_TexGen( GL_R, GL_OBJECT_LINEAR );
+//	GL_TexGen( GL_Q, GL_OBJECT_LINEAR );
 
-	pglTexGenfv( GL_S, GL_OBJECT_PLANE, genVector[0] );
-	pglTexGenfv( GL_T, GL_OBJECT_PLANE, genVector[1] );
-	pglTexGenfv( GL_R, GL_OBJECT_PLANE, genVector[2] );
-	pglTexGenfv( GL_Q, GL_OBJECT_PLANE, genVector[3] );
+//	glTexGenfv( GL_S, GL_OBJECT_PLANE, genVector[0] );
+//	glTexGenfv( GL_T, GL_OBJECT_PLANE, genVector[1] );
+//	glTexGenfv( GL_R, GL_OBJECT_PLANE, genVector[2] );
+//	glTexGenfv( GL_Q, GL_OBJECT_PLANE, genVector[3] );
 
-	GL_LoadTexMatrix( matrix );
-}
+//	GL_LoadTexMatrix( matrix );
+//}
 
-/*
-================
-R_EndDrawMirror
+///*
+//================
+//R_EndDrawMirror
 
-Restore identity texmatrix
-================
-*/
-void R_EndDrawMirror( void )
-{
-	GL_CleanUpTextureUnits( 0 );
-	pglMatrixMode( GL_MODELVIEW );
-}
+//Restore identity texmatrix
+//================
+//*/
+//void R_EndDrawMirror( void )
+//{
+//	GL_CleanUpTextureUnits( 0 );
+//	glMatrixMode( GL_MODELVIEW );
+//}
 
 /*
 =============================================================
@@ -131,44 +131,44 @@ R_AllocateMirrorTexture
 Allocate the screen texture and make copy
 ================
 */
-int R_AllocateMirrorTexture( void )
-{
-	rgbdata_t	r_screen;
-	int	i, texture;
-	char	txName[16];
+//int R_AllocateMirrorTexture( void )
+//{
+//	rgbdata_t	r_screen;
+//	int	i, texture;
+//	char	txName[16];
 
-	i = tr.num_mirrors_used;
-	if( i >= MAX_MIRRORS )
-	{
-		MsgDev( D_ERROR, "R_AllocateMirrorTexture: mirror textures limit exceeded!\n" );
-		return 0;	// disable
-	}
+//	i = tr.num_mirrors_used;
+//	if( i >= MAX_MIRRORS )
+//	{
+//		MsgDev( D_ERROR, "R_AllocateMirrorTexture: mirror textures limit exceeded!\n" );
+//		return 0;	// disable
+//	}
 
-	texture = tr.mirrorTextures[i];
-	tr.num_mirrors_used++;
+//	texture = tr.mirrorTextures[i];
+//	tr.num_mirrors_used++;
 
-	if( !texture )
-	{
-		// not initialized ?
-		Q_memset( &r_screen, 0, sizeof( r_screen ));
-		Q_snprintf( txName, sizeof( txName ), "*screen%i", i );
+//	if( !texture )
+//	{
+//		// not initialized ?
+//		Q_memset( &r_screen, 0, sizeof( r_screen ));
+//		Q_snprintf( txName, sizeof( txName ), "*screen%i", i );
 
-		r_screen.width = RI.viewport[2];
-		r_screen.height = RI.viewport[3];
-		r_screen.type = PF_RGBA_32;
-		r_screen.size = r_screen.width * r_screen.height * 4;
-		r_screen.flags = IMAGE_HAS_COLOR;
-		r_screen.buffer = NULL; // create empty texture for now
-		tr.mirrorTextures[i] = GL_LoadTextureInternal( txName, &r_screen, TF_IMAGE, false );
-		GL_SetTextureType( tr.mirrorTextures[i], TEX_SCREENCOPY );
-		texture = tr.mirrorTextures[i];
-	}
+//		r_screen.width = RI.viewport[2];
+//		r_screen.height = RI.viewport[3];
+//		r_screen.type = PF_RGBA_32;
+//		r_screen.size = r_screen.width * r_screen.height * 4;
+//		r_screen.flags = IMAGE_HAS_COLOR;
+//		r_screen.buffer = NULL; // create empty texture for now
+//		tr.mirrorTextures[i] = GL_LoadTextureInternal( txName, &r_screen, TF_IMAGE, false );
+//		GL_SetTextureType( tr.mirrorTextures[i], TEX_SCREENCOPY );
+//		texture = tr.mirrorTextures[i];
+//	}
 
-	GL_Bind( GL_TEXTURE0, texture );
-	pglCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3], 0 );
+//	GL_Bind( GL_TEXTURE0, texture );
+//	glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3], 0 );
 
-	return texture;
-}
+//	return texture;
+//}
 
 /*
 ================

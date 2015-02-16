@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
-#include "gl_local.h"
 #include "r_efx.h"
 #include "event_flags.h"
 #include "entity_types.h"
@@ -30,9 +30,9 @@ PARTICLES MANAGEMENT
 
 ==============================================================
 */
-#define SPARK_COLORCOUNT	9
-#define TRACER_WIDTH	0.5f
-#define SIMSHIFT		10
+//#define SPARK_COLORCOUNT	9
+//#define TRACER_WIDTH	0.5f
+//#define SIMSHIFT		10
 
 // particle velocities
 static const float	cl_avertexnormals[NUMVERTEXNORMALS][3] =
@@ -41,11 +41,11 @@ static const float	cl_avertexnormals[NUMVERTEXNORMALS][3] =
 };
 
 // particle ramps
-static int ramp1[8] = { 0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61 };
-static int ramp2[8] = { 0x6f, 0x6e, 0x6d, 0x6c, 0x6b, 0x6a, 0x68, 0x66 };
-static int ramp3[6] = { 0x6d, 0x6b, 6, 5, 4, 3 };
+int ramp1[8] = { 0x6f, 0x6d, 0x6b, 0x69, 0x67, 0x65, 0x63, 0x61 };
+int ramp2[8] = { 0x6f, 0x6e, 0x6d, 0x6c, 0x6b, 0x6a, 0x68, 0x66 };
+int ramp3[6] = { 0x6d, 0x6b, 6, 5, 4, 3 };
 
-static int boxpnt[6][4] =
+int boxpnt[6][4] =
 {
 { 0, 4, 6, 2 }, // +X
 { 0, 1, 5, 4 }, // +Y
@@ -55,7 +55,7 @@ static int boxpnt[6][4] =
 { 7, 6, 4, 5 }, // -Z
 };
 
-static rgb_t gTracerColors[] =
+rgb_t gTracerColors[] =
 {
 { 255, 255, 255 },		// White
 { 255, 0, 0 },		// Red
@@ -71,7 +71,7 @@ static rgb_t gTracerColors[] =
 { 255, 120, 70 },		// Darker red streaks (garg)
 };
 
-static int gSparkRamp[SPARK_COLORCOUNT][3] =
+int gSparkRamp[SPARK_COLORCOUNT][3] =
 {
 { 255, 255, 255 },
 { 255, 247, 199 },
@@ -306,225 +306,225 @@ static void CL_TracerImplosion( particle_t *p, float frametime )
 	VectorMA( p->org, frametime, p->vel, p->org );
 }
 
-static void CL_BulletTracerDraw( particle_t *p, float frametime )
-{
-	vec3_t	lineDir, viewDir, cross;
-	vec3_t	vecEnd, vecStart, vecDir;
-	float	sDistance, eDistance, totalDist;
-	float	dDistance, dTotal, fOffset;
-	int	alpha = (int)(traceralpha->value * 255);
-	float	width = 3.0f, life, frac, length;
-	vec3_t	tmp;
+//static void CL_BulletTracerDraw( particle_t *p, float frametime )
+//{
+//	vec3_t	lineDir, viewDir, cross;
+//	vec3_t	vecEnd, vecStart, vecDir;
+//	float	sDistance, eDistance, totalDist;
+//	float	dDistance, dTotal, fOffset;
+//	int	alpha = (int)(traceralpha->value * 255);
+//	float	width = 3.0f, life, frac, length;
+//	vec3_t	tmp;
 
-	// calculate distance
-	VectorCopy( p->vel, vecDir );
-	totalDist = VectorNormalizeLength( vecDir );
+//	// calculate distance
+//	VectorCopy( p->vel, vecDir );
+//	totalDist = VectorNormalizeLength( vecDir );
 
-	length = p->ramp; // ramp used as length
+//	length = p->ramp; // ramp used as length
 
-	// calculate fraction
-	life = ( totalDist + length ) / ( max( 1.0f, tracerspeed->value ));
-	frac = life - ( p->die - (float)cl.time ) + frametime;
+//	// calculate fraction
+//	life = ( totalDist + length ) / ( max( 1.0f, tracerspeed->value ));
+//	frac = life - ( p->die - (float)cl.time ) + frametime;
 
-	// calculate our distance along our path
-	sDistance = tracerspeed->value * frac;
-	eDistance = sDistance - length;
+//	// calculate our distance along our path
+//	sDistance = tracerspeed->value * frac;
+//	eDistance = sDistance - length;
 
-	// clip to start
-	sDistance = max( 0.0f, sDistance );
-	eDistance = max( 0.0f, eDistance );
+//	// clip to start
+//	sDistance = max( 0.0f, sDistance );
+//	eDistance = max( 0.0f, eDistance );
 
-	if(( sDistance == 0.0f ) && ( eDistance == 0.0f ))
-		return;
+//	if(( sDistance == 0.0f ) && ( eDistance == 0.0f ))
+//		return;
 
-	// clip it
-	if( totalDist != 0.0f )
-	{
-		sDistance = min( sDistance, totalDist );
-		eDistance = min( eDistance, totalDist );
-	}
+//	// clip it
+//	if( totalDist != 0.0f )
+//	{
+//		sDistance = min( sDistance, totalDist );
+//		eDistance = min( eDistance, totalDist );
+//	}
 
-	// get our delta to calculate the tc offset
-	dDistance	= fabsf( sDistance - eDistance );
-	dTotal = ( length != 0.0f ) ? length : 0.01f;
-	fOffset = ( dDistance / dTotal );
+//	// get our delta to calculate the tc offset
+//	dDistance	= fabsf( sDistance - eDistance );
+//	dTotal = ( length != 0.0f ) ? length : 0.01f;
+//	fOffset = ( dDistance / dTotal );
 
-	// find our points along our path
-	VectorMA( p->org, sDistance, vecDir, vecEnd );
-	VectorMA( p->org, eDistance, vecDir, vecStart );
+//	// find our points along our path
+//	VectorMA( p->org, sDistance, vecDir, vecEnd );
+//	VectorMA( p->org, eDistance, vecDir, vecStart );
 
-	// setup our info for drawing the line
-	VectorSubtract( vecEnd, vecStart, lineDir );
-	VectorSubtract( vecEnd, RI.vieworg, viewDir );
+//	// setup our info for drawing the line
+//	VectorSubtract( vecEnd, vecStart, lineDir );
+//	VectorSubtract( vecEnd, RI.vieworg, viewDir );
 
-	CrossProduct( lineDir, viewDir, cross );
-	VectorNormalize( cross );
+//	CrossProduct( lineDir, viewDir, cross );
+//	VectorNormalize( cross );
 
-	GL_SetRenderMode( kRenderTransTexture );
+//	GL_SetRenderMode( kRenderTransTexture );
 
-	GL_Bind( GL_TEXTURE0, cls.particleImage );
-	pglBegin( GL_QUADS );
+//	GL_Bind( GL_TEXTURE0, cls.particleImage );
+//	glBegin( GL_QUADS );
 
-	pglColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
+//	glColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
 
-	VectorMA( vecStart, -width, cross, tmp );
-	pglTexCoord2f( 1.0f, 0.0f );
-	pglVertex3fv( tmp );
+//	VectorMA( vecStart, -width, cross, tmp );
+//	glTexCoord2f( 1.0f, 0.0f );
+//	glVertex3fv( tmp );
 
-	VectorMA( vecStart, width, cross, tmp );
-	pglTexCoord2f( 0.0f, 0.0f );
-	pglVertex3fv( tmp );
+//	VectorMA( vecStart, width, cross, tmp );
+//	glTexCoord2f( 0.0f, 0.0f );
+//	glVertex3fv( tmp );
 
-	VectorMA( vecEnd, width, cross, tmp );
-	pglTexCoord2f( 0.0f, fOffset );
-	pglVertex3fv( tmp );
+//	VectorMA( vecEnd, width, cross, tmp );
+//	glTexCoord2f( 0.0f, fOffset );
+//	glVertex3fv( tmp );
 
-	VectorMA( vecEnd, -width, cross, tmp );
-	pglTexCoord2f( 1.0f, fOffset );
-	pglVertex3fv( tmp );
+//	VectorMA( vecEnd, -width, cross, tmp );
+//	glTexCoord2f( 1.0f, fOffset );
+//	glVertex3fv( tmp );
 
-	pglEnd();
-}
+//	glEnd();
+//}
 
-/*
-================
-CL_UpdateParticle
+///*
+//================
+//CL_UpdateParticle
 
-update particle color, position etc
-================
-*/
-void CL_UpdateParticle( particle_t *p, float ft )
-{
-	float	time3 = 15.0f * ft;
-	float	time2 = 10.0f * ft;
-	float	time1 = 5.0f * ft;
-	float	dvel = 4 * ft;
-	float	grav = ft * clgame.movevars.gravity * 0.05f;
-	float	size = 1.5f;
-	int	i, iRamp, alpha = 255;
-	vec3_t	right, up;
-	rgb_t	color;
+//update particle color, position etc
+//================
+//*/
+//void CL_UpdateParticle( particle_t *p, float ft )
+//{
+//	float	time3 = 15.0f * ft;
+//	float	time2 = 10.0f * ft;
+//	float	time1 = 5.0f * ft;
+//	float	dvel = 4 * ft;
+//	float	grav = ft * clgame.movevars.gravity * 0.05f;
+//	float	size = 1.5f;
+//	int	i, iRamp, alpha = 255;
+//	vec3_t	right, up;
+//	rgb_t	color;
 
-	r_stats.c_particle_count++;
+//	r_stats.c_particle_count++;
 
-	switch( p->type )
-	{
-	case pt_static:
-		break;
-	case pt_tracer:
-	case pt_clientcustom:
-		if( p->callback )
-		{
-			p->callback( p, ft );
-		}
-		if( p->type == pt_tracer )
-			return; // already drawed
-		break;
-	case pt_fire:
-		p->ramp += time1;
-		if( p->ramp >= 6 ) p->die = -1;
-		else p->color = ramp3[(int)p->ramp];
-		p->vel[2] += grav;
-		break;
-	case pt_explode:
-		p->ramp += time2;
-		if( p->ramp >= 8 ) p->die = -1;
-		else p->color = ramp1[(int)p->ramp];
-		for( i = 0; i < 3; i++ )
-			p->vel[i] += p->vel[i] * dvel;
-		p->vel[2] -= grav;
-		break;
-	case pt_explode2:
-		p->ramp += time3;
-		if( p->ramp >= 8 ) p->die = -1;
-		else p->color = ramp2[(int)p->ramp];
-		for( i = 0; i < 3; i++ )
-			p->vel[i] -= p->vel[i] * ft;
-		p->vel[2] -= grav;
-		break;
-	case pt_blob:
-	case pt_blob2:
-		p->ramp += time2;
-		iRamp = (int)p->ramp >> SIMSHIFT;
+//	switch( p->type )
+//	{
+//	case pt_static:
+//		break;
+//	case pt_tracer:
+//	case pt_clientcustom:
+//		if( p->callback )
+//		{
+//			p->callback( p, ft );
+//		}
+//		if( p->type == pt_tracer )
+//			return; // already drawed
+//		break;
+//	case pt_fire:
+//		p->ramp += time1;
+//		if( p->ramp >= 6 ) p->die = -1;
+//		else p->color = ramp3[(int)p->ramp];
+//		p->vel[2] += grav;
+//		break;
+//	case pt_explode:
+//		p->ramp += time2;
+//		if( p->ramp >= 8 ) p->die = -1;
+//		else p->color = ramp1[(int)p->ramp];
+//		for( i = 0; i < 3; i++ )
+//			p->vel[i] += p->vel[i] * dvel;
+//		p->vel[2] -= grav;
+//		break;
+//	case pt_explode2:
+//		p->ramp += time3;
+//		if( p->ramp >= 8 ) p->die = -1;
+//		else p->color = ramp2[(int)p->ramp];
+//		for( i = 0; i < 3; i++ )
+//			p->vel[i] -= p->vel[i] * ft;
+//		p->vel[2] -= grav;
+//		break;
+//	case pt_blob:
+//	case pt_blob2:
+//		p->ramp += time2;
+//		iRamp = (int)p->ramp >> SIMSHIFT;
 
-		if( iRamp >= SPARK_COLORCOUNT )
-		{
-			p->ramp = 0.0f;
-			iRamp = 0;
-		}
+//		if( iRamp >= SPARK_COLORCOUNT )
+//		{
+//			p->ramp = 0.0f;
+//			iRamp = 0;
+//		}
 
-		p->color = CL_LookupColor( gSparkRamp[iRamp][0], gSparkRamp[iRamp][1], gSparkRamp[iRamp][2] );
+//		p->color = CL_LookupColor( gSparkRamp[iRamp][0], gSparkRamp[iRamp][1], gSparkRamp[iRamp][2] );
 
-		for( i = 0; i < 2; i++ )
-			p->vel[i] -= p->vel[i] * 0.5f * ft;
-		p->vel[2] -= grav * 5.0f;
+//		for( i = 0; i < 2; i++ )
+//			p->vel[i] -= p->vel[i] * 0.5f * ft;
+//		p->vel[2] -= grav * 5.0f;
 
-		if( Com_RandomLong( 0, 3 ))
-		{
-			p->type = pt_blob;
-			alpha = 0;
-		}
-		else
-		{
-			p->type = pt_blob2;
-			alpha = 255;
-		}
-		break;
-	case pt_grav:
-		p->vel[2] -= grav * 20;
-		break;
-	case pt_slowgrav:
-		p->vel[2] -= grav;
-		break;
-	case pt_vox_grav:
-		p->vel[2] -= grav * 8;
-		break;
-	case pt_vox_slowgrav:
-		p->vel[2] -= grav * 4;
-		break;
-	}
+//		if( Com_RandomLong( 0, 3 ))
+//		{
+//			p->type = pt_blob;
+//			alpha = 0;
+//		}
+//		else
+//		{
+//			p->type = pt_blob2;
+//			alpha = 255;
+//		}
+//		break;
+//	case pt_grav:
+//		p->vel[2] -= grav * 20;
+//		break;
+//	case pt_slowgrav:
+//		p->vel[2] -= grav;
+//		break;
+//	case pt_vox_grav:
+//		p->vel[2] -= grav * 8;
+//		break;
+//	case pt_vox_slowgrav:
+//		p->vel[2] -= grav * 4;
+//		break;
+//	}
 
-#if 0
-	// HACKHACK a scale up to keep particles from disappearing
-	size += (p->org[0] - RI.vieworg[0]) * RI.vforward[0];
-	size += (p->org[1] - RI.vieworg[1]) * RI.vforward[1];
-	size += (p->org[2] - RI.vieworg[2]) * RI.vforward[2];
+//#if 0
+//	// HACKHACK a scale up to keep particles from disappearing
+//	size += (p->org[0] - RI.vieworg[0]) * RI.vforward[0];
+//	size += (p->org[1] - RI.vieworg[1]) * RI.vforward[1];
+//	size += (p->org[2] - RI.vieworg[2]) * RI.vforward[2];
 
-	if( size < 20.0f ) size = 1.0f;
-	else size = 1.0f + size * 0.004f;
-#endif
-	// scale the axes by radius
-	VectorScale( RI.vright, size, right );
-	VectorScale( RI.vup, size, up );
+//	if( size < 20.0f ) size = 1.0f;
+//	else size = 1.0f + size * 0.004f;
+//#endif
+//	// scale the axes by radius
+//	VectorScale( RI.vright, size, right );
+//	VectorScale( RI.vup, size, up );
 
-	p->color = bound( 0, p->color, 255 );
-	VectorSet( color, clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2] );
+//	p->color = bound( 0, p->color, 255 );
+//	VectorSet( color, clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2] );
 
-	GL_SetRenderMode( kRenderTransTexture );
-	pglColor4ub( color[0], color[1], color[2], alpha );
+//	GL_SetRenderMode( kRenderTransTexture );
+//	glColor4ub( color[0], color[1], color[2], alpha );
 
-	GL_Bind( GL_TEXTURE0, cls.particleImage );
+//	GL_Bind( GL_TEXTURE0, cls.particleImage );
 
-	// add the 4 corner vertices.
-	pglBegin( GL_QUADS );
+//	// add the 4 corner vertices.
+//	glBegin( GL_QUADS );
 
-	pglTexCoord2f( 0.0f, 1.0f );
-	pglVertex3f( p->org[0] - right[0] + up[0], p->org[1] - right[1] + up[1], p->org[2] - right[2] + up[2] );
-	pglTexCoord2f( 0.0f, 0.0f );
-	pglVertex3f( p->org[0] + right[0] + up[0], p->org[1] + right[1] + up[1], p->org[2] + right[2] + up[2] );
-	pglTexCoord2f( 1.0f, 0.0f );
-	pglVertex3f( p->org[0] + right[0] - up[0], p->org[1] + right[1] - up[1], p->org[2] + right[2] - up[2] );
-	pglTexCoord2f( 1.0f, 1.0f );
-	pglVertex3f( p->org[0] - right[0] - up[0], p->org[1] - right[1] - up[1], p->org[2] - right[2] - up[2] );
+//	glTexCoord2f( 0.0f, 1.0f );
+//	glVertex3f( p->org[0] - right[0] + up[0], p->org[1] - right[1] + up[1], p->org[2] - right[2] + up[2] );
+//	glTexCoord2f( 0.0f, 0.0f );
+//	glVertex3f( p->org[0] + right[0] + up[0], p->org[1] + right[1] + up[1], p->org[2] + right[2] + up[2] );
+//	glTexCoord2f( 1.0f, 0.0f );
+//	glVertex3f( p->org[0] + right[0] - up[0], p->org[1] + right[1] - up[1], p->org[2] + right[2] - up[2] );
+//	glTexCoord2f( 1.0f, 1.0f );
+//	glVertex3f( p->org[0] - right[0] - up[0], p->org[1] - right[1] - up[1], p->org[2] - right[2] - up[2] );
 
-	pglEnd();
+//	glEnd();
 
-	if( p->type != pt_clientcustom )
-	{
-		// update position.
-		VectorMA( p->org, ft, p->vel, p->org );
-	}
-}
+//	if( p->type != pt_clientcustom )
+//	{
+//		// update position.
+//		VectorMA( p->org, ft, p->vel, p->org );
+//	}
+//}
 
 void CL_DrawParticles( void )
 {
@@ -1366,38 +1366,38 @@ CL_DrawTracer
 draws a single tracer
 ================
 */
-void CL_DrawTracer( vec3_t start, vec3_t delta, float width, rgb_t color, int alpha, float startV, float endV )
-{
-	// Clip the tracer
-	vec3_t	verts[4];
+//void CL_DrawTracer( vec3_t start, vec3_t delta, float width, rgb_t color, int alpha, float startV, float endV )
+//{
+//	// Clip the tracer
+//	vec3_t	verts[4];
 
-	if ( !CL_TracerComputeVerts( start, delta, width, verts ))
-		return;
+//	if ( !CL_TracerComputeVerts( start, delta, width, verts ))
+//		return;
 
-	// NOTE: Gotta get the winding right so it's not backface culled
-	// (we need to turn of backface culling for these bad boys)
+//	// NOTE: Gotta get the winding right so it's not backface culled
+//	// (we need to turn of backface culling for these bad boys)
 
-	GL_SetRenderMode( kRenderTransTexture );
+//	GL_SetRenderMode( kRenderTransTexture );
 
-	pglColor4ub( color[0], color[1], color[2], alpha );
+//	glColor4ub( color[0], color[1], color[2], alpha );
 
-	GL_Bind( GL_TEXTURE0, cls.particleImage );
-	pglBegin( GL_QUADS );
+//	GL_Bind( GL_TEXTURE0, cls.particleImage );
+//	glBegin( GL_QUADS );
 
-	pglTexCoord2f( 0.0f, endV );
-	pglVertex3fv( verts[2] );
+//	glTexCoord2f( 0.0f, endV );
+//	glVertex3fv( verts[2] );
 
-	pglTexCoord2f( 1.0f, endV );
-	pglVertex3fv( verts[3] );
+//	glTexCoord2f( 1.0f, endV );
+//	glVertex3fv( verts[3] );
 
-	pglTexCoord2f( 1.0f, startV );
-	pglVertex3fv( verts[1] );
+//	glTexCoord2f( 1.0f, startV );
+//	glVertex3fv( verts[1] );
 
-	pglTexCoord2f( 0.0f, startV );
-	pglVertex3fv( verts[0] );
+//	glTexCoord2f( 0.0f, startV );
+//	glVertex3fv( verts[0] );
 
-	pglEnd();
-}
+//	glEnd();
+//}
 
 /*
 ===============

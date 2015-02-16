@@ -13,11 +13,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
 #include "const.h"
 #include "entity_types.h"
-#include "gl_local.h"
 #include "vgui_draw.h"
 
 /*
@@ -313,7 +313,7 @@ void V_CalcRefDef( void )
 //		char txt[64];
 //		sprintf(txt,"V_CalcRefDef, %.2f\n",cl.refdef.simorg[2]);
 //		Sys_Print(txt);
-		
+
 		clgame.dllFuncs.pfnCalcRefdef( &cl.refdef );
 		V_MergeOverviewRefdef( &cl.refdef );
 		R_RenderFrame( &cl.refdef, true );

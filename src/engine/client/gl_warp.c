@@ -13,19 +13,19 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
-#include "gl_local.h"
 #include "com_model.h"
 #include "wadfile.h"
 
-#define MAX_CLIP_VERTS	64 // skybox clip vertices
-#define TURBSCALE		( 256.0f / ( M_PI2 ))
-static float		speedscale;
-static const char*		r_skyBoxSuffix[6] = { "rt", "bk", "lf", "ft", "up", "dn" };
-static const int		r_skyTexOrder[6] = { 0, 2, 1, 3, 4, 5 };
+//#define MAX_CLIP_VERTS	64 // skybox clip vertices
+//#define TURBSCALE		( 256.0f / ( M_PI2 ))
+float		speedscale;
+const char*		r_skyBoxSuffix[6] = { "rt", "bk", "lf", "ft", "up", "dn" };
+const int		r_skyTexOrder[6] = { 0, 2, 1, 3, 4, 5 };
 
-static const vec3_t skyclip[6] =
+const vec3_t skyclip[6] =
 {
 {  1,  1,  0 },
 {  1, -1,  0 },
@@ -36,7 +36,7 @@ static const vec3_t skyclip[6] =
 };
 
 // 1 = s, 2 = t, 3 = 2048
-static const int st_to_vec[6][3] =
+const int st_to_vec[6][3] =
 {
 {  3, -1,  2 },
 { -3,  1,  2 },
@@ -47,7 +47,7 @@ static const int st_to_vec[6][3] =
 };
 
 // s = [0]/[2], t = [1]/[2]
-static const int vec_to_st[6][3] =
+const int vec_to_st[6][3] =
 {
 { -2,  3,  1 },
 {  2,  3, -1 },
@@ -240,42 +240,42 @@ loc1:
 	ClipSkyPolygon( newc[1], newv[1][0], stage + 1 );
 }
 
-void MakeSkyVec( float s, float t, int axis )
-{
-	int	j, k, farclip;
-	vec3_t	v, b;
+//void MakeSkyVec( float s, float t, int axis )
+//{
+//	int	j, k, farclip;
+//	vec3_t	v, b;
 
-	farclip = (int)RI.farClip;
+//	farclip = (int)RI.farClip;
 
-	b[0] = s * (farclip >> 1);
-	b[1] = t * (farclip >> 1);
-	b[2] = (float)(farclip >> 1);
+//	b[0] = s * (farclip >> 1);
+//	b[1] = t * (farclip >> 1);
+//	b[2] = (float)(farclip >> 1);
 
-	for( j = 0; j < 3; j++ )
-	{
-		k = st_to_vec[axis][j];
-		v[j] = (k < 0) ? -b[-k-1] : b[k-1];
-		v[j] += RI.cullorigin[j];
-	}
+//	for( j = 0; j < 3; j++ )
+//	{
+//		k = st_to_vec[axis][j];
+//		v[j] = (k < 0) ? -b[-k-1] : b[k-1];
+//		v[j] += RI.cullorigin[j];
+//	}
 
-	// avoid bilerp seam
-	s = (s + 1.0f) * 0.5f;
-	t = (t + 1.0f) * 0.5f;
+//	// avoid bilerp seam
+//	s = (s + 1.0f) * 0.5f;
+//	t = (t + 1.0f) * 0.5f;
 
-	if( s < 1.0f / 512.0f )
-		s = 1.0f / 512.0f;
-	else if( s > 511.0f / 512.0f )
-		s = 511.0f / 512.0f;
-	if( t < 1.0f / 512.0f )
-		t = 1.0f / 512.0f;
-	else if( t > 511.0f / 512.0f )
-		t = 511.0f / 512.0f;
+//	if( s < 1.0f / 512.0f )
+//		s = 1.0f / 512.0f;
+//	else if( s > 511.0f / 512.0f )
+//		s = 511.0f / 512.0f;
+//	if( t < 1.0f / 512.0f )
+//		t = 1.0f / 512.0f;
+//	else if( t > 511.0f / 512.0f )
+//		t = 511.0f / 512.0f;
 
-	t = 1.0f - t;
+//	t = 1.0f - t;
 
-	pglTexCoord2f( s, t );
-	pglVertex3fv( v );
-}
+//	glTexCoord2f( s, t );
+//	glVertex3fv( v );
+//}
 
 /*
 ==============
@@ -354,58 +354,58 @@ void R_UnloadSkybox( void )
 R_DrawSkybox
 ==============
 */
-void R_DrawSkyBox( void )
-{
-	int	i;
+//void R_DrawSkyBox( void )
+//{
+//	int	i;
 
-	if( clgame.movevars.skyangle )
-	{
-		// check for no sky at all
-		for( i = 0; i < 6; i++ )
-		{
-			if( RI.skyMins[0][i] < RI.skyMaxs[0][i] && RI.skyMins[1][i] < RI.skyMaxs[1][i] )
-				break;
-		}
+//	if( clgame.movevars.skyangle )
+//	{
+//		// check for no sky at all
+//		for( i = 0; i < 6; i++ )
+//		{
+//			if( RI.skyMins[0][i] < RI.skyMaxs[0][i] && RI.skyMins[1][i] < RI.skyMaxs[1][i] )
+//				break;
+//		}
 
-		if( i == 6 ) return; // nothing visible
-	}
+//		if( i == 6 ) return; // nothing visible
+//	}
 
-	RI.isSkyVisible = true;
+//	RI.isSkyVisible = true;
 
-	// don't fogging skybox (this fix old Half-Life bug)
-	if( !RI.fogCustom )
-		pglDisable( GL_FOG );
-	pglDisable( GL_BLEND );
-	pglDisable( GL_ALPHA_TEST );
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+//	// don't fogging skybox (this fix old Half-Life bug)
+//	if( !RI.fogCustom )
+//		glDisable( GL_FOG );
+//	glDisable( GL_BLEND );
+//	glDisable( GL_ALPHA_TEST );
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
-	if( clgame.movevars.skyangle && !VectorIsNull( (float *)&clgame.movevars.skydir_x ))
-	{
-		matrix4x4	m;
-		Matrix4x4_CreateRotate( m, clgame.movevars.skyangle, clgame.movevars.skydir_x, clgame.movevars.skydir_y, clgame.movevars.skydir_z );
-		Matrix4x4_ConcatTranslate( m, -RI.vieworg[0], -RI.vieworg[1], -RI.vieworg[2] );
-		Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, m );
-		GL_LoadMatrix( RI.modelviewMatrix );
-		tr.modelviewIdentity = false;
-	}
+//	if( clgame.movevars.skyangle && !VectorIsNull( (float *)&clgame.movevars.skydir_x ))
+//	{
+//		matrix4x4	m;
+//		Matrix4x4_CreateRotate( m, clgame.movevars.skyangle, clgame.movevars.skydir_x, clgame.movevars.skydir_y, clgame.movevars.skydir_z );
+//		Matrix4x4_ConcatTranslate( m, -RI.vieworg[0], -RI.vieworg[1], -RI.vieworg[2] );
+//		Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, m );
+//		GL_LoadMatrix( RI.modelviewMatrix );
+//		tr.modelviewIdentity = false;
+//	}
 
-	for( i = 0; i < 6; i++ )
-	{
-		if( RI.skyMins[0][i] >= RI.skyMaxs[0][i] || RI.skyMins[1][i] >= RI.skyMaxs[1][i] )
-			continue;
+//	for( i = 0; i < 6; i++ )
+//	{
+//		if( RI.skyMins[0][i] >= RI.skyMaxs[0][i] || RI.skyMins[1][i] >= RI.skyMaxs[1][i] )
+//			continue;
 
-		GL_Bind( GL_TEXTURE0, tr.skyboxTextures[r_skyTexOrder[i]] );
+//		GL_Bind( GL_TEXTURE0, tr.skyboxTextures[r_skyTexOrder[i]] );
 
-		pglBegin( GL_QUADS );
-		MakeSkyVec( RI.skyMins[0][i], RI.skyMins[1][i], i );
-		MakeSkyVec( RI.skyMins[0][i], RI.skyMaxs[1][i], i );
-		MakeSkyVec( RI.skyMaxs[0][i], RI.skyMaxs[1][i], i );
-		MakeSkyVec( RI.skyMaxs[0][i], RI.skyMins[1][i], i );
-		pglEnd();
-	}
+//		glBegin( GL_QUADS );
+//		MakeSkyVec( RI.skyMins[0][i], RI.skyMins[1][i], i );
+//		MakeSkyVec( RI.skyMins[0][i], RI.skyMaxs[1][i], i );
+//		MakeSkyVec( RI.skyMaxs[0][i], RI.skyMaxs[1][i], i );
+//		MakeSkyVec( RI.skyMaxs[0][i], RI.skyMins[1][i], i );
+//		glEnd();
+//	}
 
-	R_LoadIdentity();
-}
+//	R_LoadIdentity();
+//}
 
 /*
 ===============
@@ -582,153 +582,153 @@ EmitWaterPolys
 Does a water warp on the pre-fragmented glpoly_t chain
 =============
 */
-void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
-{
-	glpoly_t	*p;
-	float	*v, nv, waveHeight;
-	float	s, t, os, ot;
-	int	i;
+//void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
+//{
+//	glpoly_t	*p;
+//	float	*v, nv, waveHeight;
+//	float	s, t, os, ot;
+//	int	i;
 
-	if( noCull ) pglDisable( GL_CULL_FACE );
+//	if( noCull ) glDisable( GL_CULL_FACE );
 
-	// set the current waveheight
-	waveHeight = RI.currentWaveHeight;
+//	// set the current waveheight
+//	waveHeight = RI.currentWaveHeight;
 
-	// reset fog color for nonlightmapped water
-	GL_ResetFogColor();
+//	// reset fog color for nonlightmapped water
+//	GL_ResetFogColor();
 
-	for( p = polys; p; p = p->next )
-	{
-		pglBegin( GL_POLYGON );
+//	for( p = polys; p; p = p->next )
+//	{
+//		glBegin( GL_POLYGON );
 
-		for( i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE )
-		{
-			if( waveHeight )
-			{
-				nv = v[2] + waveHeight + ( waveHeight * sinf(v[0] * 0.02f + (float)cl.time)
-					* sinf(v[1] * 0.02f + (float)cl.time) * sinf(v[2] * 0.02f + (float)cl.time));
-				nv -= waveHeight;
-			}
-			else nv = v[2];
+//		for( i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE )
+//		{
+//			if( waveHeight )
+//			{
+//				nv = v[2] + waveHeight + ( waveHeight * sinf(v[0] * 0.02f + (float)cl.time)
+//					* sinf(v[1] * 0.02f + (float)cl.time) * sinf(v[2] * 0.02f + (float)cl.time));
+//				nv -= waveHeight;
+//			}
+//			else nv = v[2];
 
-			os = v[3];
-			ot = v[4];
+//			os = v[3];
+//			ot = v[4];
 
-			s = os + r_turbsin[(int)((ot * 0.125f + (float)cl.time ) * TURBSCALE) & 255];
-			s *= ( 1.0f / SUBDIVIDE_SIZE );
+//			s = os + r_turbsin[(int)((ot * 0.125f + (float)cl.time ) * TURBSCALE) & 255];
+//			s *= ( 1.0f / SUBDIVIDE_SIZE );
 
-			t = ot + r_turbsin[(int)((os * 0.125f + (float)cl.time ) * TURBSCALE) & 255];
-			t *= ( 1.0f / SUBDIVIDE_SIZE );
+//			t = ot + r_turbsin[(int)((os * 0.125f + (float)cl.time ) * TURBSCALE) & 255];
+//			t *= ( 1.0f / SUBDIVIDE_SIZE );
 
-			if( glState.activeTMU != 0 )
-				GL_MultiTexCoord2f( glState.activeTMU, s, t );
-			else pglTexCoord2f( s, t );
-			pglVertex3f( v[0], v[1], nv );
-		}
-		pglEnd();
-	}
+//			if( glState.activeTMU != 0 )
+//				GL_MultiTexCoord2f( glState.activeTMU, s, t );
+//			else glTexCoord2f( s, t );
+//			glVertex3f( v[0], v[1], nv );
+//		}
+//		glEnd();
+//	}
 
-	// restore culling
-	if( noCull ) pglEnable( GL_CULL_FACE );
+//	// restore culling
+//	if( noCull ) glEnable( GL_CULL_FACE );
 
-	GL_SetupFogColorForSurfaces();
-}
+//	GL_SetupFogColorForSurfaces();
+//}
 
-/*
-=============
-EmitSkyPolys
-=============
-*/
-void EmitSkyPolys( msurface_t *fa )
-{
-	glpoly_t	*p;
-	float	*v;
-	int	i;
-	float	s, t;
-	vec3_t	dir;
-	float	length;
+///*
+//=============
+//EmitSkyPolys
+//=============
+//*/
+//void EmitSkyPolys( msurface_t *fa )
+//{
+//	glpoly_t	*p;
+//	float	*v;
+//	int	i;
+//	float	s, t;
+//	vec3_t	dir;
+//	float	length;
 
-	for( p = fa->polys; p; p = p->next )
-	{
-		pglBegin( GL_POLYGON );
+//	for( p = fa->polys; p; p = p->next )
+//	{
+//		glBegin( GL_POLYGON );
 
-		for( i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE )
-		{
-			VectorSubtract( v, RI.vieworg, dir );
-			dir[2] *= 3.0f; // flatten the sphere
+//		for( i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE )
+//		{
+//			VectorSubtract( v, RI.vieworg, dir );
+//			dir[2] *= 3.0f; // flatten the sphere
 
-			length = VectorLength( dir );
-			length = 6.0f * 63.0f / length;
+//			length = VectorLength( dir );
+//			length = 6.0f * 63.0f / length;
 
-			dir[0] *= length;
-			dir[1] *= length;
+//			dir[0] *= length;
+//			dir[1] *= length;
 
-			s = ( speedscale + dir[0] ) * (1.0f / 128.0f);
-			t = ( speedscale + dir[1] ) * (1.0f / 128.0f);
+//			s = ( speedscale + dir[0] ) * (1.0f / 128.0f);
+//			t = ( speedscale + dir[1] ) * (1.0f / 128.0f);
 
-			pglTexCoord2f( s, t );
-			pglVertex3fv( v );
-		}
-		pglEnd ();
-	}
-}
+//			glTexCoord2f( s, t );
+//			glVertex3fv( v );
+//		}
+//		glEnd ();
+//	}
+//}
 
-/*
-=================
-R_DrawSkyChain
-=================
-*/
-void R_DrawSkyChain( msurface_t *s )
-{
-	msurface_t	*fa;
+///*
+//=================
+//R_DrawSkyChain
+//=================
+//*/
+//void R_DrawSkyChain( msurface_t *s )
+//{
+//	msurface_t	*fa;
 
-	GL_SetRenderMode( kRenderNormal );
-	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
+//	GL_SetRenderMode( kRenderNormal );
+//	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
 
-	speedscale = (float)cl.time * 8.0f;
-	speedscale -= (int)speedscale & ~127;
+//	speedscale = (float)cl.time * 8.0f;
+//	speedscale -= (int)speedscale & ~127;
 
-	for( fa = s; fa; fa = fa->texturechain )
-		EmitSkyPolys( fa );
+//	for( fa = s; fa; fa = fa->texturechain )
+//		EmitSkyPolys( fa );
 
-	GL_SetRenderMode( kRenderTransTexture );
-	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
+//	GL_SetRenderMode( kRenderTransTexture );
+//	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
 
-	speedscale = (float)cl.time * 16.0f;
-	speedscale -= (int)speedscale & ~127;
+//	speedscale = (float)cl.time * 16.0f;
+//	speedscale -= (int)speedscale & ~127;
 
-	for( fa = s; fa; fa = fa->texturechain )
-		EmitSkyPolys( fa );
+//	for( fa = s; fa; fa = fa->texturechain )
+//		EmitSkyPolys( fa );
 
-	pglDisable( GL_BLEND );
-}
+//	glDisable( GL_BLEND );
+//}
 
-/*
-===============
-EmitBothSkyLayers
+///*
+//===============
+//EmitBothSkyLayers
 
-Does a sky warp on the pre-fragmented glpoly_t chain
-This will be called for brushmodels, the world
-will have them chained together.
-===============
-*/
-void EmitSkyLayers( msurface_t *fa )
-{
-	GL_SetRenderMode( kRenderNormal );
-	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
+//Does a sky warp on the pre-fragmented glpoly_t chain
+//This will be called for brushmodels, the world
+//will have them chained together.
+//===============
+//*/
+//void EmitSkyLayers( msurface_t *fa )
+//{
+//	GL_SetRenderMode( kRenderNormal );
+//	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
 
-	speedscale = (float)cl.time * 8.0f;
-	speedscale -= (int)speedscale & ~127;
+//	speedscale = (float)cl.time * 8.0f;
+//	speedscale -= (int)speedscale & ~127;
 
-	EmitSkyPolys( fa );
+//	EmitSkyPolys( fa );
 
-	GL_SetRenderMode( kRenderTransTexture );
-	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
+//	GL_SetRenderMode( kRenderTransTexture );
+//	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
 
-	speedscale = (float)cl.time * 16.0f;
-	speedscale -= (int)speedscale & ~127;
+//	speedscale = (float)cl.time * 16.0f;
+//	speedscale -= (int)speedscale & ~127;
 
-	EmitSkyPolys( fa );
+//	EmitSkyPolys( fa );
 
-	pglDisable( GL_BLEND );
-}
+//	glDisable( GL_BLEND );
+//}

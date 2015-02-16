@@ -7,8 +7,8 @@ TEMPLATE = lib
 TARGET = menu
 CONFIG += create_prl link_prl c++11 plugin
 
-debug:DESTDIR = $$PWD/../../build_d/
-else:DESTDIR = $$PWD/../../build/
+#debug:DESTDIR = $$PWD/../../build_d/
+#else:DESTDIR = $$PWD/../../build/
 
 debug:DLLDESTDIR = $$PWD/../../build_d/
 else:DLLDESTDIR = $$PWD/../../build/

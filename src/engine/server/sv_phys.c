@@ -18,7 +18,10 @@ GNU General Public License for more details.
 #include "const.h"
 #include "library.h"
 #include "triangleapi.h"
-#include "gl_export.h"
+//#include "gl_export.h"
+
+#include <gl/GL.h>
+
 
 typedef int (*PHYSICAPI)( int, server_physics_api_t*, physics_interface_t* );
 extern triangleapi_t gTriApi;
@@ -1850,16 +1853,16 @@ void SV_DrawDebugTriangles( void )
 	if( svgame.physFuncs.DrawDebugTriangles != NULL )
 	{
 		// debug draws only
-		pglDisable( GL_BLEND );
-		pglDepthMask( GL_FALSE );
-		pglDisable( GL_TEXTURE_2D );
+		glDisable( GL_BLEND );
+		glDepthMask( GL_FALSE );
+		glDisable( GL_TEXTURE_2D );
 
 		// draw wireframe overlay
 		svgame.physFuncs.DrawDebugTriangles ();
 
-		pglEnable( GL_TEXTURE_2D );
-		pglDepthMask( GL_TRUE );
-		pglEnable( GL_BLEND );
+		glEnable( GL_TEXTURE_2D );
+		glDepthMask( GL_TRUE );
+		glEnable( GL_BLEND );
 	}
 }
 

@@ -13,25 +13,25 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
 #include "mathlib.h"
 #include "const.h"
 #include "r_studioint.h"
 #include "studio.h"
 #include "pm_local.h"
-#include "gl_local.h"
 #include "cl_tent.h"
 
 // NOTE: enable this if you want merge both 'model' and 'modelT' files into one model slot.
 // otherwise it's uses two slots in models[] array for models with external textures
 #define STUDIO_MERGE_TEXTURES
 
-#define EVENT_CLIENT	5000	// less than this value it's a server-side studio events
-#define MAXARRAYVERTS	16384	// used for draw shadows
-#define LEGS_BONES_COUNT	8
+//#define EVENT_CLIENT	5000	// less than this value it's a server-side studio events
+//#define MAXARRAYVERTS	16384	// used for draw shadows
+//#define LEGS_BONES_COUNT	8
 
-static vec3_t hullcolor[8] =
+vec3_t hullcolor[8] =
 {
 { 1.0f, 1.0f, 1.0f },
 { 1.0f, 0.5f, 0.5f },
@@ -56,26 +56,26 @@ const char *legs_bones[] =
 { "Bip01 R Foot" },
 };
 
-typedef struct studiolight_s
-{
-	vec3_t		lightvec;			// light vector
-	vec3_t		lightcolor;		// ambient light color
-	vec3_t		lightspot;		// potential coords where placed lightsource
+//typedef struct studiolight_s
+//{
+//	vec3_t		lightvec;			// light vector
+//	vec3_t		lightcolor;		// ambient light color
+//	vec3_t		lightspot;		// potential coords where placed lightsource
 
-	vec3_t		blightvec[MAXSTUDIOBONES];	// ambient lightvectors per bone
-	vec3_t		dlightvec[MAX_DLIGHTS][MAXSTUDIOBONES];
-	vec3_t		dlightcolor[MAX_DLIGHTS];	// ambient dynamic light colors
-	vec3_t		elightvec[MAX_ELIGHTS][MAXSTUDIOBONES];
-	vec3_t		elightcolor[MAX_ELIGHTS];	// ambient entity light colors
-	int		numdlights;
-	int		numelights;
-} studiolight_t;
+//	vec3_t		blightvec[MAXSTUDIOBONES];	// ambient lightvectors per bone
+//	vec3_t		dlightvec[MAX_DLIGHTS][MAXSTUDIOBONES];
+//	vec3_t		dlightcolor[MAX_DLIGHTS];	// ambient dynamic light colors
+//	vec3_t		elightvec[MAX_ELIGHTS][MAXSTUDIOBONES];
+//	vec3_t		elightcolor[MAX_ELIGHTS];	// ambient entity light colors
+//	int		numdlights;
+//	int		numelights;
+//} studiolight_t;
 
-typedef struct sortedmesh_s
-{
-	mstudiomesh_t	*mesh;
-	int		flags;			// face flags
-} sortedmesh_t;
+//typedef struct sortedmesh_s
+//{
+//	mstudiomesh_t	*mesh;
+//	int		flags;			// face flags
+//} sortedmesh_t;
 
 convar_t			*r_studio_lerping;
 convar_t			*r_studio_lambert;
@@ -86,28 +86,28 @@ convar_t			*r_customdraw_playermodel;
 convar_t			*cl_himodels;
 cvar_t			r_shadows = { "r_shadows", "0", 0, 0 };	// dead cvar. especially disabled
 cvar_t			r_shadowalpha = { "r_shadowalpha", "0.5", 0, 0.8f };
-static r_studio_interface_t	*pStudioDraw;
-static float		aliasXscale, aliasYscale;	// software renderer scale
-static matrix3x4		g_aliastransform;		// software renderer transform
-static matrix3x4		g_rotationmatrix;
-static vec3_t		g_chrome_origin;
-static vec2_t		g_chrome[MAXSTUDIOVERTS];	// texture coords for surface normals
-static sortedmesh_t		g_sortedMeshes[MAXSTUDIOMESHES];
-static matrix3x4		g_bonestransform[MAXSTUDIOBONES];
-static matrix3x4		g_lighttransform[MAXSTUDIOBONES];
-static matrix3x4		g_rgCachedBonesTransform[MAXSTUDIOBONES];
-static matrix3x4		g_rgCachedLightTransform[MAXSTUDIOBONES];
-static vec3_t		g_chromeright[MAXSTUDIOBONES];// chrome vector "right" in bone reference frames
-static vec3_t		g_chromeup[MAXSTUDIOBONES];	// chrome vector "up" in bone reference frames
-static int		g_chromeage[MAXSTUDIOBONES];	// last time chrome vectors were updated
-static vec3_t		g_xformverts[MAXSTUDIOVERTS];
-static vec3_t		g_xformnorms[MAXSTUDIOVERTS];
-static vec3_t		g_xarrayverts[MAXARRAYVERTS];
-static uint		g_xarrayelems[MAXARRAYVERTS*6];
-static uint		g_nNumArrayVerts;
-static uint		g_nNumArrayElems;
-static vec3_t		g_lightvalues[MAXSTUDIOVERTS];
-static studiolight_t	g_studiolight;
+r_studio_interface_t	*pStudioDraw;
+float		aliasXscale, aliasYscale;	// software renderer scale
+matrix3x4		g_aliastransform;		// software renderer transform
+matrix3x4		g_rotationmatrix;
+vec3_t		g_chrome_origin;
+vec2_t		g_chrome[MAXSTUDIOVERTS];	// texture coords for surface normals
+sortedmesh_t		g_sortedMeshes[MAXSTUDIOMESHES];
+matrix3x4		g_bonestransform[MAXSTUDIOBONES];
+matrix3x4		g_lighttransform[MAXSTUDIOBONES];
+matrix3x4		g_rgCachedBonesTransform[MAXSTUDIOBONES];
+matrix3x4		g_rgCachedLightTransform[MAXSTUDIOBONES];
+vec3_t		g_chromeright[MAXSTUDIOBONES];// chrome vector "right" in bone reference frames
+vec3_t		g_chromeup[MAXSTUDIOBONES];	// chrome vector "up" in bone reference frames
+int		g_chromeage[MAXSTUDIOBONES];	// last time chrome vectors were updated
+vec3_t		g_xformverts[MAXSTUDIOVERTS];
+vec3_t		g_xformnorms[MAXSTUDIOVERTS];
+vec3_t		g_xarrayverts[MAXARRAYVERTS];
+uint		g_xarrayelems[MAXARRAYVERTS*6];
+uint		g_nNumArrayVerts;
+uint		g_nNumArrayElems;
+vec3_t		g_lightvalues[MAXSTUDIOVERTS];
+studiolight_t	g_studiolight;
 char			g_nCachedBoneNames[MAXSTUDIOBONES][32];
 int			g_nCachedBones;		// number of bones in cache
 int			g_nStudioCount;		// for chrome update
@@ -242,7 +242,7 @@ R_StudioComputeBBox
 Compute a full bounding box for current sequence
 ================
 */
-static qboolean R_StudioComputeBBox( cl_entity_t *e, vec3_t bbox[8] )
+qboolean R_StudioComputeBBox( cl_entity_t *e, vec3_t bbox[8] )
 {
 	vec3_t	tmp_mins, tmp_maxs;
 	vec3_t	vectors[3], angles, p1, p2;
@@ -1769,26 +1769,26 @@ R_StudioSetupSkin
 
 ===============
 */
-static void R_StudioSetupSkin( mstudiotexture_t *ptexture, int index )
-{
-	short	*pskinref;
-	int	m_skinnum;
+//static void R_StudioSetupSkin( mstudiotexture_t *ptexture, int index )
+//{
+//	short	*pskinref;
+//	int	m_skinnum;
 
-	R_StudioSetupTextureHeader ();
+//	R_StudioSetupTextureHeader ();
 
-	if( !m_pTextureHeader ) return;
+//	if( !m_pTextureHeader ) return;
 
-	// NOTE: user can comment call StudioRemapColors and remap_info will be unavailable
-	if( m_fDoRemap ) ptexture = CL_GetRemapInfoForEntity( RI.currententity )->ptexture;
+//	// NOTE: user can comment call StudioRemapColors and remap_info will be unavailable
+//	if( m_fDoRemap ) ptexture = CL_GetRemapInfoForEntity( RI.currententity )->ptexture;
 
-	// safety bounding the skinnum
-	m_skinnum = bound( 0, RI.currententity->curstate.skin, ( m_pTextureHeader->numskinfamilies - 1 ));
-	pskinref = (short *)((byte *)m_pTextureHeader + m_pTextureHeader->skinindex);
-	if( m_skinnum != 0 && m_skinnum < m_pTextureHeader->numskinfamilies )
-		pskinref += (m_skinnum * m_pTextureHeader->numskinref);
+//	// safety bounding the skinnum
+//	m_skinnum = bound( 0, RI.currententity->curstate.skin, ( m_pTextureHeader->numskinfamilies - 1 ));
+//	pskinref = (short *)((byte *)m_pTextureHeader + m_pTextureHeader->skinindex);
+//	if( m_skinnum != 0 && m_skinnum < m_pTextureHeader->numskinfamilies )
+//		pskinref += (m_skinnum * m_pTextureHeader->numskinref);
 
-	GL_Bind( GL_TEXTURE0, ptexture[pskinref[index]].index );
-}
+//	GL_Bind( GL_TEXTURE0, ptexture[pskinref[index]].index );
+//}
 
 /*
 ===============
@@ -1863,34 +1863,34 @@ R_StudioRenderShadow
 just a prefab for render shadow
 ===============
 */
-void R_StudioRenderShadow( int iSprite, float *p1, float *p2, float *p3, float *p4 )
-{
-	if( !p1 || !p2 || !p3 || !p4 )
-		return;
+//void R_StudioRenderShadow( int iSprite, float *p1, float *p2, float *p3, float *p4 )
+//{
+//	if( !p1 || !p2 || !p3 || !p4 )
+//		return;
 
-	if( TriSpriteTexture( Mod_Handle( iSprite ), 0 ))
-	{
-		pglEnable( GL_BLEND );
-		pglDisable( GL_ALPHA_TEST );
-		pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		pglColor4f( 0.0f, 0.0f, 0.0f, 1.0f ); // render only alpha
+//	if( TriSpriteTexture( Mod_Handle( iSprite ), 0 ))
+//	{
+//		glEnable( GL_BLEND );
+//		glDisable( GL_ALPHA_TEST );
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//		glColor4f( 0.0f, 0.0f, 0.0f, 1.0f ); // render only alpha
 
-		pglBegin( GL_QUADS );
-			pglTexCoord2f( 0.0f, 0.0f );
-			pglVertex3fv( p1 );
-			pglTexCoord2f( 0.0f, 1.0f );
-			pglVertex3fv( p2 );
-			pglTexCoord2f( 1.0f, 1.0f );
-			pglVertex3fv( p3 );
-			pglTexCoord2f( 1.0f, 0.0f );
-			pglVertex3fv( p4 );
-		pglEnd();
+//		glBegin( GL_QUADS );
+//			glTexCoord2f( 0.0f, 0.0f );
+//			glVertex3fv( p1 );
+//			glTexCoord2f( 0.0f, 1.0f );
+//			glVertex3fv( p2 );
+//			glTexCoord2f( 1.0f, 1.0f );
+//			glVertex3fv( p3 );
+//			glTexCoord2f( 1.0f, 0.0f );
+//			glVertex3fv( p4 );
+//		glEnd();
 
-		pglDisable( GL_BLEND );
-		pglDisable( GL_ALPHA_TEST );
-	}
-}
+//		glDisable( GL_BLEND );
+//		glDisable( GL_ALPHA_TEST );
+//	}
+//}
 
 /*
 ===============
@@ -1899,12 +1899,13 @@ R_StudioMeshCompare
 Sorting opaque entities by model type
 ===============
 */
-static int R_StudioMeshCompare( const sortedmesh_t *a, const sortedmesh_t *b )
+int R_StudioMeshCompare( const void *a, const void *b )
 {
-	if( a->flags & STUDIO_NF_ADDITIVE )
+	const sortedmesh_t *ma = (sortedmesh_t *)a, *mb = (sortedmesh_t *)b;
+	if( ma->flags & STUDIO_NF_ADDITIVE )
 		return 1;
 
-	if( a->flags & STUDIO_NF_TRANSPARENT )
+	if( ma->flags & STUDIO_NF_TRANSPARENT )
 		return -1;
 
 	return 0;
@@ -1916,247 +1917,247 @@ R_StudioDrawPoints
 
 ===============
 */
-static void R_StudioDrawPoints( void )
-{
-	int		i, j, m_skinnum;
-	byte		*pvertbone;
-	byte		*pnormbone;
-	vec3_t		*pstudioverts;
-	vec3_t		*pstudionorms;
-	mstudiotexture_t	*ptexture;
-	mstudiomesh_t	*pmesh;
-	short		*pskinref;
-	float		*av, *lv, *nv, scale;
+//static void R_StudioDrawPoints( void )
+//{
+//	int		i, j, m_skinnum;
+//	byte		*pvertbone;
+//	byte		*pnormbone;
+//	vec3_t		*pstudioverts;
+//	vec3_t		*pstudionorms;
+//	mstudiotexture_t	*ptexture;
+//	mstudiomesh_t	*pmesh;
+//	short		*pskinref;
+//	float		*av, *lv, *nv, scale;
 
-	R_StudioSetupTextureHeader ();
+//	R_StudioSetupTextureHeader ();
 
-	g_nNumArrayVerts = g_nNumArrayElems = 0;
+//	g_nNumArrayVerts = g_nNumArrayElems = 0;
 
-	if( !m_pTextureHeader ) return;
-	if( RI.currententity->curstate.renderfx == kRenderFxGlowShell )
-		g_nStudioCount++;
+//	if( !m_pTextureHeader ) return;
+//	if( RI.currententity->curstate.renderfx == kRenderFxGlowShell )
+//		g_nStudioCount++;
 
-	// safety bounding the skinnum
-	m_skinnum = bound( 0, RI.currententity->curstate.skin, ( m_pTextureHeader->numskinfamilies - 1 ));
-	pvertbone = ((byte *)m_pStudioHeader + m_pSubModel->vertinfoindex);
-	pnormbone = ((byte *)m_pStudioHeader + m_pSubModel->norminfoindex);
+//	// safety bounding the skinnum
+//	m_skinnum = bound( 0, RI.currententity->curstate.skin, ( m_pTextureHeader->numskinfamilies - 1 ));
+//	pvertbone = ((byte *)m_pStudioHeader + m_pSubModel->vertinfoindex);
+//	pnormbone = ((byte *)m_pStudioHeader + m_pSubModel->norminfoindex);
 
-	// NOTE: user can comment call StudioRemapColors and remap_info will be unavailable
-	if( m_fDoRemap ) ptexture = CL_GetRemapInfoForEntity( RI.currententity )->ptexture;
-	else ptexture = (mstudiotexture_t *)((byte *)m_pTextureHeader + m_pTextureHeader->textureindex);
+//	// NOTE: user can comment call StudioRemapColors and remap_info will be unavailable
+//	if( m_fDoRemap ) ptexture = CL_GetRemapInfoForEntity( RI.currententity )->ptexture;
+//	else ptexture = (mstudiotexture_t *)((byte *)m_pTextureHeader + m_pTextureHeader->textureindex);
 
-	ASSERT( ptexture != NULL );
+//	ASSERT( ptexture != NULL );
 
-	pmesh = (mstudiomesh_t *)((byte *)m_pStudioHeader + m_pSubModel->meshindex);
-	pstudioverts = (vec3_t *)((byte *)m_pStudioHeader + m_pSubModel->vertindex);
-	pstudionorms = (vec3_t *)((byte *)m_pStudioHeader + m_pSubModel->normindex);
+//	pmesh = (mstudiomesh_t *)((byte *)m_pStudioHeader + m_pSubModel->meshindex);
+//	pstudioverts = (vec3_t *)((byte *)m_pStudioHeader + m_pSubModel->vertindex);
+//	pstudionorms = (vec3_t *)((byte *)m_pStudioHeader + m_pSubModel->normindex);
 
-	pskinref = (short *)((byte *)m_pTextureHeader + m_pTextureHeader->skinindex);
-	if( m_skinnum != 0 && m_skinnum < m_pTextureHeader->numskinfamilies )
-		pskinref += (m_skinnum * m_pTextureHeader->numskinref);
+//	pskinref = (short *)((byte *)m_pTextureHeader + m_pTextureHeader->skinindex);
+//	if( m_skinnum != 0 && m_skinnum < m_pTextureHeader->numskinfamilies )
+//		pskinref += (m_skinnum * m_pTextureHeader->numskinref);
 
-	for( i = 0; i < m_pSubModel->numverts; i++ )
-		Matrix3x4_VectorTransform( g_bonestransform[pvertbone[i]], pstudioverts[i], g_xformverts[i] );
+//	for( i = 0; i < m_pSubModel->numverts; i++ )
+//		Matrix3x4_VectorTransform( g_bonestransform[pvertbone[i]], pstudioverts[i], g_xformverts[i] );
 
-	if( g_nForceFaceFlags & STUDIO_NF_CHROME )
-	{
-		scale = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
+//	if( g_nForceFaceFlags & STUDIO_NF_CHROME )
+//	{
+//		scale = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
 
-		for( i = 0; i < m_pSubModel->numnorms; i++ )
-			Matrix3x4_VectorRotate( g_bonestransform[pnormbone[i]], pstudionorms[i], g_xformnorms[i] );
-	}
+//		for( i = 0; i < m_pSubModel->numnorms; i++ )
+//			Matrix3x4_VectorRotate( g_bonestransform[pnormbone[i]], pstudionorms[i], g_xformnorms[i] );
+//	}
 
-	lv = (float *)g_lightvalues;
-	for( j = 0; j < m_pSubModel->nummesh; j++ )
-	{
-		g_nFaceFlags = ptexture[pskinref[pmesh[j].skinref]].flags;
+//	lv = (float *)g_lightvalues;
+//	for( j = 0; j < m_pSubModel->nummesh; j++ )
+//	{
+//		g_nFaceFlags = ptexture[pskinref[pmesh[j].skinref]].flags;
 
-		// fill in sortedmesh info
-		g_sortedMeshes[j].mesh = &pmesh[j];
-		g_sortedMeshes[j].flags = g_nFaceFlags;
+//		// fill in sortedmesh info
+//		g_sortedMeshes[j].mesh = &pmesh[j];
+//		g_sortedMeshes[j].flags = g_nFaceFlags;
 
-		for( i = 0; i < pmesh[j].numnorms; i++, lv += 3, pstudionorms++, pnormbone++ )
-		{
-			R_StudioLighting( lv, *pnormbone, g_nFaceFlags, (float *)pstudionorms );
+//		for( i = 0; i < pmesh[j].numnorms; i++, lv += 3, pstudionorms++, pnormbone++ )
+//		{
+//			R_StudioLighting( lv, *pnormbone, g_nFaceFlags, (float *)pstudionorms );
 
-			if(( g_nFaceFlags & STUDIO_NF_CHROME ) || ( g_nForceFaceFlags & STUDIO_NF_CHROME ))
-				R_StudioSetupChrome( g_chrome[(float (*)[3])lv - g_lightvalues], *pnormbone, (float *)pstudionorms );
-		}
-	}
+//			if(( g_nFaceFlags & STUDIO_NF_CHROME ) || ( g_nForceFaceFlags & STUDIO_NF_CHROME ))
+//				R_StudioSetupChrome( g_chrome[(float (*)[3])lv - g_lightvalues], *pnormbone, (float *)pstudionorms );
+//		}
+//	}
 
-	if( r_studio_sort_textures->integer )
-	{
-		// sort opaque and translucent for right results
-		qsort( g_sortedMeshes, m_pSubModel->nummesh, sizeof( sortedmesh_t ), R_StudioMeshCompare );
-	}
+//	if( r_studio_sort_textures->integer )
+//	{
+//		// sort opaque and translucent for right results
+//		qsort( g_sortedMeshes, m_pSubModel->nummesh, sizeof( sortedmesh_t ), R_StudioMeshCompare );
+//	}
 
-	for( j = 0; j < m_pSubModel->nummesh; j++ )
-	{
-		float	s, t, alpha;
-		short	*ptricmds;
+//	for( j = 0; j < m_pSubModel->nummesh; j++ )
+//	{
+//		float	s, t, alpha;
+//		short	*ptricmds;
 
-		pmesh = g_sortedMeshes[j].mesh;
-		ptricmds = (short *)((byte *)m_pStudioHeader + pmesh->triindex);
+//		pmesh = g_sortedMeshes[j].mesh;
+//		ptricmds = (short *)((byte *)m_pStudioHeader + pmesh->triindex);
 
-		g_nFaceFlags = ptexture[pskinref[pmesh->skinref]].flags;
-		s = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].width;
-		t = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].height;
+//		g_nFaceFlags = ptexture[pskinref[pmesh->skinref]].flags;
+//		s = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].width;
+//		t = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].height;
 
-		if( g_iRenderMode != kRenderTransAdd )
-			pglDepthMask( GL_TRUE );
-		else pglDepthMask( GL_FALSE );
+//		if( g_iRenderMode != kRenderTransAdd )
+//			glDepthMask( GL_TRUE );
+//		else glDepthMask( GL_FALSE );
 
-		// check bounds
-		if( ptexture[pskinref[pmesh->skinref]].index < 0 || ptexture[pskinref[pmesh->skinref]].index > MAX_TEXTURES )
-			ptexture[pskinref[pmesh->skinref]].index = tr.defaultTexture;
+//		// check bounds
+//		if( ptexture[pskinref[pmesh->skinref]].index < 0 || ptexture[pskinref[pmesh->skinref]].index > MAX_TEXTURES )
+//			ptexture[pskinref[pmesh->skinref]].index = tr.defaultTexture;
 
-		if( g_nForceFaceFlags & STUDIO_NF_CHROME )
-		{
-			color24	*clr;
-			clr = &RI.currententity->curstate.rendercolor;
-			pglColor4ub( clr->r, clr->g, clr->b, 255 );
-			alpha = 1.0f;
-		}
-		else if( g_nFaceFlags & STUDIO_NF_TRANSPARENT && R_StudioOpaque( RI.currententity ))
-		{
-			GL_SetRenderMode( kRenderTransAlpha );
-			pglAlphaFunc( GL_GREATER, 0.0f );
-			alpha = 1.0f;
-		}
-		else if( g_nFaceFlags & STUDIO_NF_ADDITIVE )
-		{
-			GL_SetRenderMode( kRenderTransAdd );
-			alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
-			pglBlendFunc( GL_SRC_ALPHA, GL_ONE );
-			pglDepthMask( GL_FALSE );
-		}
-		else if( g_nFaceFlags & STUDIO_NF_ALPHA )
-		{
-			GL_SetRenderMode( kRenderTransTexture );
-			alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
-			pglDepthMask( GL_FALSE );
-		}
-		else
-		{
-			GL_SetRenderMode( g_iRenderMode );
+//		if( g_nForceFaceFlags & STUDIO_NF_CHROME )
+//		{
+//			color24	*clr;
+//			clr = &RI.currententity->curstate.rendercolor;
+//			glColor4ub( clr->r, clr->g, clr->b, 255 );
+//			alpha = 1.0f;
+//		}
+//		else if( g_nFaceFlags & STUDIO_NF_TRANSPARENT && R_StudioOpaque( RI.currententity ))
+//		{
+//			GL_SetRenderMode( kRenderTransAlpha );
+//			glAlphaFunc( GL_GREATER, 0.0f );
+//			alpha = 1.0f;
+//		}
+//		else if( g_nFaceFlags & STUDIO_NF_ADDITIVE )
+//		{
+//			GL_SetRenderMode( kRenderTransAdd );
+//			alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
+//			glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+//			glDepthMask( GL_FALSE );
+//		}
+//		else if( g_nFaceFlags & STUDIO_NF_ALPHA )
+//		{
+//			GL_SetRenderMode( kRenderTransTexture );
+//			alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
+//			glDepthMask( GL_FALSE );
+//		}
+//		else
+//		{
+//			GL_SetRenderMode( g_iRenderMode );
 
-			if( g_iRenderMode == kRenderNormal )
-			{
-				pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-				alpha = 1.0f;
-			}
-			else alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
-		}
+//			if( g_iRenderMode == kRenderNormal )
+//			{
+//				glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//				alpha = 1.0f;
+//			}
+//			else alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
+//		}
 
-		if( !( g_nForceFaceFlags & STUDIO_NF_CHROME ))
-		{
-			GL_Bind( GL_TEXTURE0, ptexture[pskinref[pmesh->skinref]].index );
-		}
+//		if( !( g_nForceFaceFlags & STUDIO_NF_CHROME ))
+//		{
+//			GL_Bind( GL_TEXTURE0, ptexture[pskinref[pmesh->skinref]].index );
+//		}
 
-		while( i = *( ptricmds++ ))
-		{
-			int	vertexState = 0;
-			qboolean	tri_strip;
+//		while( i = *( ptricmds++ ))
+//		{
+//			int	vertexState = 0;
+//			qboolean	tri_strip;
 
-			if( i < 0 )
-			{
-				pglBegin( GL_TRIANGLE_FAN );
-				tri_strip = false;
-				i = -i;
-			}
-			else
-			{
-				pglBegin( GL_TRIANGLE_STRIP );
-				tri_strip = true;
-			}
+//			if( i < 0 )
+//			{
+//				glBegin( GL_TRIANGLE_FAN );
+//				tri_strip = false;
+//				i = -i;
+//			}
+//			else
+//			{
+//				glBegin( GL_TRIANGLE_STRIP );
+//				tri_strip = true;
+//			}
 
-			r_stats.c_studio_polys += (i - 2);
+//			r_stats.c_studio_polys += (i - 2);
 
-			for( ; i > 0; i--, ptricmds += 4 )
-			{
-				// build in indices
-				if( vertexState++ < 3 )
-				{
-					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
-				}
-				else if( tri_strip )
-				{
-					// flip triangles between clockwise and counter clockwise
-					if( vertexState & 1 )
-					{
-						// draw triangle [n-2 n-1 n]
-						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 2;
-						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 1;
-						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
-					}
-					else
-					{
-						// draw triangle [n-1 n-2 n]
-						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 1;
-						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 2;
-						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
-					}
-				}
-				else
-				{
-					// draw triangle fan [0 n-1 n]
-					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - ( vertexState - 1 );
-					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 1;
-					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
-				}
+//			for( ; i > 0; i--, ptricmds += 4 )
+//			{
+//				// build in indices
+//				if( vertexState++ < 3 )
+//				{
+//					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
+//				}
+//				else if( tri_strip )
+//				{
+//					// flip triangles between clockwise and counter clockwise
+//					if( vertexState & 1 )
+//					{
+//						// draw triangle [n-2 n-1 n]
+//						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 2;
+//						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 1;
+//						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
+//					}
+//					else
+//					{
+//						// draw triangle [n-1 n-2 n]
+//						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 1;
+//						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 2;
+//						g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
+//					}
+//				}
+//				else
+//				{
+//					// draw triangle fan [0 n-1 n]
+//					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - ( vertexState - 1 );
+//					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts - 1;
+//					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
+//				}
 
-				if( g_nFaceFlags & STUDIO_NF_CHROME || ( g_nForceFaceFlags & STUDIO_NF_CHROME ))
-					pglTexCoord2f( g_chrome[ptricmds[1]][0] * s, g_chrome[ptricmds[1]][1] * t );
-				else pglTexCoord2f( ptricmds[2] * s, ptricmds[3] * t );
+//				if( g_nFaceFlags & STUDIO_NF_CHROME || ( g_nForceFaceFlags & STUDIO_NF_CHROME ))
+//					glTexCoord2f( g_chrome[ptricmds[1]][0] * s, g_chrome[ptricmds[1]][1] * t );
+//				else glTexCoord2f( ptricmds[2] * s, ptricmds[3] * t );
 
-				if(!( g_nForceFaceFlags & STUDIO_NF_CHROME ))
-										{
-					if( g_iRenderMode == kRenderTransAdd )
-					{
-						pglColor4f( 1.0f, 1.0f, 1.0f, alpha );
-					}
-					else if( g_iRenderMode == kRenderTransColor )
-					{
-						color24	*clr;
-						clr = &RI.currententity->curstate.rendercolor;
-						pglColor4ub( clr->r, clr->g, clr->b, (byte)(alpha * 255) );
-					}
-					else if( g_nFaceFlags & STUDIO_NF_FULLBRIGHT )
-					{
-						pglColor4f( 1.0f, 1.0f, 1.0f, alpha );
-					}
-					else
-					{
-						lv = (float *)g_lightvalues[ptricmds[1]];
-						pglColor4f( lv[0], lv[1], lv[2], alpha );
-					}
-				}
+//				if(!( g_nForceFaceFlags & STUDIO_NF_CHROME ))
+//										{
+//					if( g_iRenderMode == kRenderTransAdd )
+//					{
+//						glColor4f( 1.0f, 1.0f, 1.0f, alpha );
+//					}
+//					else if( g_iRenderMode == kRenderTransColor )
+//					{
+//						color24	*clr;
+//						clr = &RI.currententity->curstate.rendercolor;
+//						glColor4ub( clr->r, clr->g, clr->b, (byte)(alpha * 255) );
+//					}
+//					else if( g_nFaceFlags & STUDIO_NF_FULLBRIGHT )
+//					{
+//						glColor4f( 1.0f, 1.0f, 1.0f, alpha );
+//					}
+//					else
+//					{
+//						lv = (float *)g_lightvalues[ptricmds[1]];
+//						glColor4f( lv[0], lv[1], lv[2], alpha );
+//					}
+//				}
 
-				av = g_xformverts[ptricmds[0]];
+//				av = g_xformverts[ptricmds[0]];
 
-				if( g_nForceFaceFlags & STUDIO_NF_CHROME )
-				{
-					vec3_t	scaled_vertex;
-					nv = (float *)g_xformnorms[ptricmds[1]];
-					VectorMA( av, scale, nv, scaled_vertex );
-					pglVertex3fv( scaled_vertex );
-				}
-				else
-				{
-					pglVertex3f( av[0], av[1], av[2] );
-					ASSERT( g_nNumArrayVerts < MAXARRAYVERTS );
-					VectorCopy( av, g_xarrayverts[g_nNumArrayVerts] ); // store off vertex
-					g_nNumArrayVerts++;
-				}
-			}
-			pglEnd();
-		}
-	}
+//				if( g_nForceFaceFlags & STUDIO_NF_CHROME )
+//				{
+//					vec3_t	scaled_vertex;
+//					nv = (float *)g_xformnorms[ptricmds[1]];
+//					VectorMA( av, scale, nv, scaled_vertex );
+//					glVertex3fv( scaled_vertex );
+//				}
+//				else
+//				{
+//					glVertex3f( av[0], av[1], av[2] );
+//					ASSERT( g_nNumArrayVerts < MAXARRAYVERTS );
+//					VectorCopy( av, g_xarrayverts[g_nNumArrayVerts] ); // store off vertex
+//					g_nNumArrayVerts++;
+//				}
+//			}
+//			glEnd();
+//		}
+//	}
 
-	// restore depthmask for next call StudioDrawPoints
-	if( g_iRenderMode != kRenderTransAdd )
-		pglDepthMask( GL_TRUE );
-}
+//	// restore depthmask for next call StudioDrawPoints
+//	if( g_iRenderMode != kRenderTransAdd )
+//		glDepthMask( GL_TRUE );
+//}
 
 /*
 ===============
@@ -2164,239 +2165,239 @@ R_StudioDrawHulls
 
 ===============
 */
-static void R_StudioDrawHulls( void )
-{
-	int	i, j;
-	float	alpha;
+//static void R_StudioDrawHulls( void )
+//{
+//	int	i, j;
+//	float	alpha;
 
-	if( r_drawentities->integer == 4 )
-		alpha = 0.5f;
-	else alpha = 1.0f;
+//	if( r_drawentities->integer == 4 )
+//		alpha = 0.5f;
+//	else alpha = 1.0f;
 
-	pglDisable( GL_TEXTURE_2D );
+//	glDisable( GL_TEXTURE_2D );
 
-	for( i = 0; i < m_pStudioHeader->numhitboxes; i++ )
-	{
-		mstudiobbox_t	*pbboxes = (mstudiobbox_t *)((byte *)m_pStudioHeader + m_pStudioHeader->hitboxindex);
-		vec3_t		v[8], v2[8], bbmin, bbmax;
+//	for( i = 0; i < m_pStudioHeader->numhitboxes; i++ )
+//	{
+//		mstudiobbox_t	*pbboxes = (mstudiobbox_t *)((byte *)m_pStudioHeader + m_pStudioHeader->hitboxindex);
+//		vec3_t		v[8], v2[8], bbmin, bbmax;
 
-		VectorCopy( pbboxes[i].bbmin, bbmin );
-		VectorCopy( pbboxes[i].bbmax, bbmax );
+//		VectorCopy( pbboxes[i].bbmin, bbmin );
+//		VectorCopy( pbboxes[i].bbmax, bbmax );
 
-		v[0][0] = bbmin[0];
-		v[0][1] = bbmax[1];
-		v[0][2] = bbmin[2];
+//		v[0][0] = bbmin[0];
+//		v[0][1] = bbmax[1];
+//		v[0][2] = bbmin[2];
 
-		v[1][0] = bbmin[0];
-		v[1][1] = bbmin[1];
-		v[1][2] = bbmin[2];
+//		v[1][0] = bbmin[0];
+//		v[1][1] = bbmin[1];
+//		v[1][2] = bbmin[2];
 
-		v[2][0] = bbmax[0];
-		v[2][1] = bbmax[1];
-		v[2][2] = bbmin[2];
+//		v[2][0] = bbmax[0];
+//		v[2][1] = bbmax[1];
+//		v[2][2] = bbmin[2];
 
-		v[3][0] = bbmax[0];
-		v[3][1] = bbmin[1];
-		v[3][2] = bbmin[2];
+//		v[3][0] = bbmax[0];
+//		v[3][1] = bbmin[1];
+//		v[3][2] = bbmin[2];
 
-		v[4][0] = bbmax[0];
-		v[4][1] = bbmax[1];
-		v[4][2] = bbmax[2];
+//		v[4][0] = bbmax[0];
+//		v[4][1] = bbmax[1];
+//		v[4][2] = bbmax[2];
 
-		v[5][0] = bbmax[0];
-		v[5][1] = bbmin[1];
-		v[5][2] = bbmax[2];
+//		v[5][0] = bbmax[0];
+//		v[5][1] = bbmin[1];
+//		v[5][2] = bbmax[2];
 
-		v[6][0] = bbmin[0];
-		v[6][1] = bbmax[1];
-		v[6][2] = bbmax[2];
+//		v[6][0] = bbmin[0];
+//		v[6][1] = bbmax[1];
+//		v[6][2] = bbmax[2];
 
-		v[7][0] = bbmin[0];
-		v[7][1] = bbmin[1];
-		v[7][2] = bbmax[2];
+//		v[7][0] = bbmin[0];
+//		v[7][1] = bbmin[1];
+//		v[7][2] = bbmax[2];
 
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[0], v2[0] );
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[1], v2[1] );
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[2], v2[2] );
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[3], v2[3] );
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[4], v2[4] );
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[5], v2[5] );
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[6], v2[6] );
-		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[7], v2[7] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[0], v2[0] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[1], v2[1] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[2], v2[2] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[3], v2[3] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[4], v2[4] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[5], v2[5] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[6], v2[6] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pbboxes[i].bone], v[7], v2[7] );
 
-		j = (pbboxes[i].group % 8);
+//		j = (pbboxes[i].group % 8);
 
-		// set properly color for hull
-		pglColor4f( hullcolor[j][0], hullcolor[j][1], hullcolor[j][2], alpha );
+//		// set properly color for hull
+//		glColor4f( hullcolor[j][0], hullcolor[j][1], hullcolor[j][2], alpha );
 
-		pglBegin( GL_QUAD_STRIP );
-		for( j = 0; j < 10; j++ )
-			pglVertex3fv( v2[j & 7] );
-		pglEnd( );
+//		glBegin( GL_QUAD_STRIP );
+//		for( j = 0; j < 10; j++ )
+//			glVertex3fv( v2[j & 7] );
+//		glEnd( );
 
-		pglBegin( GL_QUAD_STRIP );
-		pglVertex3fv( v2[6] );
-		pglVertex3fv( v2[0] );
-		pglVertex3fv( v2[4] );
-		pglVertex3fv( v2[2] );
-		pglEnd( );
+//		glBegin( GL_QUAD_STRIP );
+//		glVertex3fv( v2[6] );
+//		glVertex3fv( v2[0] );
+//		glVertex3fv( v2[4] );
+//		glVertex3fv( v2[2] );
+//		glEnd( );
 
-		pglBegin( GL_QUAD_STRIP );
-		pglVertex3fv( v2[1] );
-		pglVertex3fv( v2[7] );
-		pglVertex3fv( v2[3] );
-		pglVertex3fv( v2[5] );
-		pglEnd( );
-	}
+//		glBegin( GL_QUAD_STRIP );
+//		glVertex3fv( v2[1] );
+//		glVertex3fv( v2[7] );
+//		glVertex3fv( v2[3] );
+//		glVertex3fv( v2[5] );
+//		glEnd( );
+//	}
 
-	pglEnable( GL_TEXTURE_2D );
-}
+//	glEnable( GL_TEXTURE_2D );
+//}
 
-/*
-===============
-R_StudioDrawAbsBBox
+///*
+//===============
+//R_StudioDrawAbsBBox
 
-===============
-*/
-static void R_StudioDrawAbsBBox( void )
-{
-	vec3_t	bbox[8];
-	int	i;
+//===============
+//*/
+//static void R_StudioDrawAbsBBox( void )
+//{
+//	vec3_t	bbox[8];
+//	int	i;
 
-	// looks ugly, skip
-	if( RI.currententity == &clgame.viewent )
-		return;
+//	// looks ugly, skip
+//	if( RI.currententity == &clgame.viewent )
+//		return;
 
-	if( !R_StudioComputeBBox( RI.currententity, bbox ))
-		return;
+//	if( !R_StudioComputeBBox( RI.currententity, bbox ))
+//		return;
 
-	pglDisable( GL_TEXTURE_2D );
-	pglDisable( GL_DEPTH_TEST );
+//	glDisable( GL_TEXTURE_2D );
+//	glDisable( GL_DEPTH_TEST );
 
-	pglColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	// red bboxes for studiomodels
-	pglBegin( GL_LINES );
+//	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	// red bboxes for studiomodels
+//	glBegin( GL_LINES );
 
-	for( i = 0; i < 2; i += 1 )
-	{
-		pglVertex3fv( bbox[i+0] );
-		pglVertex3fv( bbox[i+2] );
-		pglVertex3fv( bbox[i+4] );
-		pglVertex3fv( bbox[i+6] );
-		pglVertex3fv( bbox[i+0] );
-		pglVertex3fv( bbox[i+4] );
-		pglVertex3fv( bbox[i+2] );
-		pglVertex3fv( bbox[i+6] );
-		pglVertex3fv( bbox[i*2+0] );
-		pglVertex3fv( bbox[i*2+1] );
-		pglVertex3fv( bbox[i*2+4] );
-		pglVertex3fv( bbox[i*2+5] );
-	}
+//	for( i = 0; i < 2; i += 1 )
+//	{
+//		glVertex3fv( bbox[i+0] );
+//		glVertex3fv( bbox[i+2] );
+//		glVertex3fv( bbox[i+4] );
+//		glVertex3fv( bbox[i+6] );
+//		glVertex3fv( bbox[i+0] );
+//		glVertex3fv( bbox[i+4] );
+//		glVertex3fv( bbox[i+2] );
+//		glVertex3fv( bbox[i+6] );
+//		glVertex3fv( bbox[i*2+0] );
+//		glVertex3fv( bbox[i*2+1] );
+//		glVertex3fv( bbox[i*2+4] );
+//		glVertex3fv( bbox[i*2+5] );
+//	}
 
-	pglEnd();
-	pglEnable( GL_TEXTURE_2D );
-	pglEnable( GL_DEPTH_TEST );
-}
+//	glEnd();
+//	glEnable( GL_TEXTURE_2D );
+//	glEnable( GL_DEPTH_TEST );
+//}
 
-/*
-===============
-R_StudioDrawBones
+///*
+//===============
+//R_StudioDrawBones
 
-===============
-*/
-static void R_StudioDrawBones( void )
-{
-	mstudiobone_t	*pbones = (mstudiobone_t *) ((byte *)m_pStudioHeader + m_pStudioHeader->boneindex);
-	vec3_t		point;
-	int		i;
+//===============
+//*/
+//static void R_StudioDrawBones( void )
+//{
+//	mstudiobone_t	*pbones = (mstudiobone_t *) ((byte *)m_pStudioHeader + m_pStudioHeader->boneindex);
+//	vec3_t		point;
+//	int		i;
 
-	pglDisable( GL_TEXTURE_2D );
+//	glDisable( GL_TEXTURE_2D );
 
-	for( i = 0; i < m_pStudioHeader->numbones; i++ )
-	{
-		if( pbones[i].parent >= 0 )
-		{
-			pglPointSize( 3.0f );
-			pglColor3f( 1, 0.7f, 0 );
-			pglBegin( GL_LINES );
+//	for( i = 0; i < m_pStudioHeader->numbones; i++ )
+//	{
+//		if( pbones[i].parent >= 0 )
+//		{
+//			glPointSize( 3.0f );
+//			glColor3f( 1, 0.7f, 0 );
+//			glBegin( GL_LINES );
 
-			Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
-			pglVertex3fv( point );
-			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			pglVertex3fv( point );
+//			Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
+//			glVertex3fv( point );
+//			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
+//			glVertex3fv( point );
 
-			pglEnd();
+//			glEnd();
 
-			pglColor3f( 0, 0, 0.8f );
-			pglBegin( GL_POINTS );
-			if( pbones[pbones[i].parent].parent != -1 )
-			{
-				Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
-				pglVertex3fv( point );
-			}
-			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			pglVertex3fv( point );
-			pglEnd();
-		}
-		else
-		{
-			// draw parent bone node
-			pglPointSize( 5.0f );
-			pglColor3f( 0.8f, 0, 0 );
-			pglBegin( GL_POINTS );
-			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			pglVertex3fv( point );
-			pglEnd();
-		}
-	}
+//			glColor3f( 0, 0, 0.8f );
+//			glBegin( GL_POINTS );
+//			if( pbones[pbones[i].parent].parent != -1 )
+//			{
+//				Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
+//				glVertex3fv( point );
+//			}
+//			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
+//			glVertex3fv( point );
+//			glEnd();
+//		}
+//		else
+//		{
+//			// draw parent bone node
+//			glPointSize( 5.0f );
+//			glColor3f( 0.8f, 0, 0 );
+//			glBegin( GL_POINTS );
+//			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
+//			glVertex3fv( point );
+//			glEnd();
+//		}
+//	}
 
-	pglPointSize( 1.0f );
-	pglEnable( GL_TEXTURE_2D );
-}
+//	glPointSize( 1.0f );
+//	glEnable( GL_TEXTURE_2D );
+//}
 
-static void R_StudioDrawAttachments( void )
-{
-	int	i;
+//static void R_StudioDrawAttachments( void )
+//{
+//	int	i;
 
-	pglDisable( GL_TEXTURE_2D );
-	pglDisable( GL_DEPTH_TEST );
+//	glDisable( GL_TEXTURE_2D );
+//	glDisable( GL_DEPTH_TEST );
 
-	for( i = 0; i < m_pStudioHeader->numattachments; i++ )
-	{
-		mstudioattachment_t	*pattachments;
-		vec3_t		v[4];
+//	for( i = 0; i < m_pStudioHeader->numattachments; i++ )
+//	{
+//		mstudioattachment_t	*pattachments;
+//		vec3_t		v[4];
 
-		pattachments = (mstudioattachment_t *)((byte *)m_pStudioHeader + m_pStudioHeader->attachmentindex);
-		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].org, v[0] );
-		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[0], v[1] );
-		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[1], v[2] );
-		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[2], v[3] );
+//		pattachments = (mstudioattachment_t *)((byte *)m_pStudioHeader + m_pStudioHeader->attachmentindex);
+//		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].org, v[0] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[0], v[1] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[1], v[2] );
+//		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[2], v[3] );
 
-		pglBegin( GL_LINES );
-		pglColor3f( 1, 0, 0 );
-		pglVertex3fv( v[0] );
-		pglColor3f( 1, 1, 1 );
-		pglVertex3fv (v[1] );
-		pglColor3f( 1, 0, 0 );
-		pglVertex3fv (v[0] );
-		pglColor3f( 1, 1, 1 );
-		pglVertex3fv (v[2] );
-		pglColor3f( 1, 0, 0 );
-		pglVertex3fv (v[0] );
-		pglColor3f( 1, 1, 1 );
-		pglVertex3fv( v[3] );
-		pglEnd();
+//		glBegin( GL_LINES );
+//		glColor3f( 1, 0, 0 );
+//		glVertex3fv( v[0] );
+//		glColor3f( 1, 1, 1 );
+//		glVertex3fv (v[1] );
+//		glColor3f( 1, 0, 0 );
+//		glVertex3fv (v[0] );
+//		glColor3f( 1, 1, 1 );
+//		glVertex3fv (v[2] );
+//		glColor3f( 1, 0, 0 );
+//		glVertex3fv (v[0] );
+//		glColor3f( 1, 1, 1 );
+//		glVertex3fv( v[3] );
+//		glEnd();
 
-		pglPointSize( 5.0f );
-		pglColor3f( 0, 1, 0 );
-		pglBegin( GL_POINTS );
-		pglVertex3fv( v[0] );
-		pglEnd();
-		pglPointSize( 1.0f );
-	}
+//		glPointSize( 5.0f );
+//		glColor3f( 0, 1, 0 );
+//		glBegin( GL_POINTS );
+//		glVertex3fv( v[0] );
+//		glEnd();
+//		glPointSize( 1.0f );
+//	}
 
-	pglEnable( GL_TEXTURE_2D );
-	pglEnable( GL_DEPTH_TEST );
-}
+//	glEnable( GL_TEXTURE_2D );
+//	glEnable( GL_DEPTH_TEST );
+//}
 
 /*
 ===============
@@ -2561,44 +2562,44 @@ R_StudioSetupRenderer
 
 ===============
 */
-static void R_StudioSetupRenderer( int rendermode )
-{
-	g_iRenderMode = bound( 0, rendermode, kRenderTransAdd );
-	pglShadeModel( GL_SMOOTH );	// enable gouraud shading
-	if( clgame.ds.cullMode != GL_NONE ) GL_Cull( GL_FRONT );
+//static void R_StudioSetupRenderer( int rendermode )
+//{
+//	g_iRenderMode = bound( 0, rendermode, kRenderTransAdd );
+//	glShadeModel( GL_SMOOTH );	// enable gouraud shading
+//	if( clgame.ds.cullMode != GL_NONE ) GL_Cull( GL_FRONT );
 
-	// enable depthmask on studiomodels
-	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
-		pglDepthMask( GL_TRUE );
+//	// enable depthmask on studiomodels
+//	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
+//		glDepthMask( GL_TRUE );
 
-	pglAlphaFunc( GL_GREATER, 0.0f );
+//	glAlphaFunc( GL_GREATER, 0.0f );
 
-	if( g_iBackFaceCull )
-		GL_FrontFace( true );
-}
+//	if( g_iBackFaceCull )
+//		GL_FrontFace( true );
+//}
 
-/*
-===============
-R_StudioRestoreRenderer
+///*
+//===============
+//R_StudioRestoreRenderer
 
-===============
-*/
-static void R_StudioRestoreRenderer( void )
-{
-	pglTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-	pglShadeModel( GL_FLAT );
+//===============
+//*/
+//static void R_StudioRestoreRenderer( void )
+//{
+//	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+//	glShadeModel( GL_FLAT );
 
-	// restore depthmask state for sprites etc
-	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
-		pglDepthMask( GL_FALSE );
-	else pglDepthMask( GL_TRUE );
+//	// restore depthmask state for sprites etc
+//	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
+//		glDepthMask( GL_FALSE );
+//	else glDepthMask( GL_TRUE );
 
-	if( g_iBackFaceCull )
-		GL_FrontFace( false );
+//	if( g_iBackFaceCull )
+//		GL_FrontFace( false );
 
-	g_iBackFaceCull = false;
-	m_fDoRemap = false;
-}
+//	g_iBackFaceCull = false;
+//	m_fDoRemap = false;
+//}
 
 /*
 ===============
@@ -2649,80 +2650,80 @@ void R_StudioDeformShadow( void )
 	}
 }
 
-static void R_StudioDrawPlanarShadow( void )
-{
-	if( RI.currententity->curstate.effects & EF_NOSHADOW )
-		return;
+//static void R_StudioDrawPlanarShadow( void )
+//{
+//	if( RI.currententity->curstate.effects & EF_NOSHADOW )
+//		return;
 
-	R_StudioDeformShadow ();
+//	R_StudioDeformShadow ();
 
-	if( glState.stencilEnabled )
-		pglEnable( GL_STENCIL_TEST );
+//	if( glState.stencilEnabled )
+//		glEnable( GL_STENCIL_TEST );
 
-	pglEnableClientState( GL_VERTEX_ARRAY );
-	pglVertexPointer( 3, GL_FLOAT, 12, g_xarrayverts );
+//	glEnableClientState( GL_VERTEX_ARRAY );
+//	glVertexPointer( 3, GL_FLOAT, 12, g_xarrayverts );
 
-	if( GL_Support( GL_DRAW_RANGEELEMENTS_EXT ))
-		pglDrawRangeElementsEXT( GL_TRIANGLES, 0, g_nNumArrayVerts, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
-	else pglDrawElements( GL_TRIANGLES, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
+//	/*if( GL_Support( GL_DRAW_RANGEELEMENTS_EXT ))
+//		glDrawRangeElementsEXT( GL_TRIANGLES, 0, g_nNumArrayVerts, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
+//	else */glDrawElements( GL_TRIANGLES, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
 
-	if( glState.stencilEnabled )
-		pglDisable( GL_STENCIL_TEST );
+//	if( glState.stencilEnabled )
+//		glDisable( GL_STENCIL_TEST );
 
-	pglDisableClientState( GL_VERTEX_ARRAY );
-}
+//	glDisableClientState( GL_VERTEX_ARRAY );
+//}
 
-/*
-===============
-GL_StudioDrawShadow
+///*
+//===============
+//GL_StudioDrawShadow
 
-NOTE: this code sucessfully working with ShadowHack only in Release build
-===============
-*/
-static void GL_StudioDrawShadow( void )
-{
-	int	rendermode;
-	float	shadow_alpha;
-	float	shadow_alpha2;
-	GLenum	depthmode;
-	GLenum	depthmode2;
+//NOTE: this code sucessfully working with ShadowHack only in Release build
+//===============
+//*/
+//static void GL_StudioDrawShadow( void )
+//{
+//	int	rendermode;
+//	float	shadow_alpha;
+//	float	shadow_alpha2;
+//	GLenum	depthmode;
+//	GLenum	depthmode2;
 
-	pglDepthMask( GL_TRUE );
+//	glDepthMask( GL_TRUE );
 
-	if( r_shadows.value != 0.0f )
-	{
-		if( RI.currententity->baseline.movetype != MOVETYPE_FLY )
-		{
-			rendermode = RI.currententity->baseline.rendermode;
+//	if( r_shadows.value != 0.0f )
+//	{
+//		if( RI.currententity->baseline.movetype != MOVETYPE_FLY )
+//		{
+//			rendermode = RI.currententity->baseline.rendermode;
 
-			if( rendermode == kRenderNormal && RI.currententity != &clgame.viewent )
-			{
-				shadow_alpha = 1.0f - r_shadowalpha.value * 0.5f;
-				pglDisable( GL_TEXTURE_2D );
-				pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-				pglEnable( GL_BLEND );
-				pglShadeModel( GL_FLAT );
-				shadow_alpha2 = 1.0f - shadow_alpha;
+//			if( rendermode == kRenderNormal && RI.currententity != &clgame.viewent )
+//			{
+//				shadow_alpha = 1.0f - r_shadowalpha.value * 0.5f;
+//				glDisable( GL_TEXTURE_2D );
+//				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//				glEnable( GL_BLEND );
+//				glShadeModel( GL_FLAT );
+//				shadow_alpha2 = 1.0f - shadow_alpha;
 
-				pglColor4f( 0.0f, 0.0f, 0.0f, shadow_alpha2 );
+//				glColor4f( 0.0f, 0.0f, 0.0f, shadow_alpha2 );
 
-				depthmode = GL_LESS;
-				pglDepthFunc( depthmode );
+//				depthmode = GL_LESS;
+//				glDepthFunc( depthmode );
 
-				R_StudioDrawPlanarShadow();
+//				R_StudioDrawPlanarShadow();
 
-				depthmode2 = GL_LEQUAL;
-				pglDepthFunc( depthmode2 );
+//				depthmode2 = GL_LEQUAL;
+//				glDepthFunc( depthmode2 );
 
-				pglEnable( GL_TEXTURE_2D );
-				pglDisable( GL_BLEND );
+//				glEnable( GL_TEXTURE_2D );
+//				glDisable( GL_BLEND );
 
-				pglColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-				pglShadeModel( GL_SMOOTH );
-			}
-		}
-	}
-}
+//				glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+//				glShadeModel( GL_SMOOTH );
+//			}
+//		}
+//	}
+//}
 
 /*
 ====================
@@ -3314,46 +3315,46 @@ void R_RunViewmodelEvents( void )
 R_DrawViewModel
 =================
 */
-void R_DrawViewModel( void )
-{
-	if( RI.refdef.onlyClientDraw || r_drawviewmodel->integer == 0 )
-		return;
+//void R_DrawViewModel( void )
+//{
+//	if( RI.refdef.onlyClientDraw || r_drawviewmodel->integer == 0 )
+//		return;
 
-	// ignore in thirdperson, camera view or client is died
-	if( cl.thirdperson || cl.refdef.health <= 0 || cl.refdef.viewentity != ( cl.playernum + 1 ))
-		return;
+//	// ignore in thirdperson, camera view or client is died
+//	if( cl.thirdperson || cl.refdef.health <= 0 || cl.refdef.viewentity != ( cl.playernum + 1 ))
+//		return;
 
-	if( RI.params & RP_NONVIEWERREF )
-		return;
+//	if( RI.params & RP_NONVIEWERREF )
+//		return;
 
-	if( !Mod_Extradata( clgame.viewent.model ))
-		return;
+//	if( !Mod_Extradata( clgame.viewent.model ))
+//		return;
 
-	RI.currententity = &clgame.viewent;
-	RI.currentmodel = RI.currententity->model;
-	if( !RI.currentmodel ) return;
+//	RI.currententity = &clgame.viewent;
+//	RI.currentmodel = RI.currententity->model;
+//	if( !RI.currentmodel ) return;
 
-	RI.currententity->curstate.renderamt = R_ComputeFxBlend( RI.currententity );
+//	RI.currententity->curstate.renderamt = R_ComputeFxBlend( RI.currententity );
 
-	// hack the depth range to prevent view model from poking into walls
-	pglDepthRange( gldepthmin, gldepthmin + 0.3f * ( gldepthmax - gldepthmin ));
+//	// hack the depth range to prevent view model from poking into walls
+//	glDepthRange( gldepthmin, gldepthmin + 0.3f * ( gldepthmax - gldepthmin ));
 
-	// backface culling for left-handed weapons
-	if( r_lefthand->integer == 1 || g_iBackFaceCull )
-		GL_FrontFace( !glState.frontFace );
+//	// backface culling for left-handed weapons
+//	if( r_lefthand->integer == 1 || g_iBackFaceCull )
+//		GL_FrontFace( !glState.frontFace );
 
-	pStudioDraw->StudioDrawModel( STUDIO_RENDER );
+//	pStudioDraw->StudioDrawModel( STUDIO_RENDER );
 
-	// restore depth range
-	pglDepthRange( gldepthmin, gldepthmax );
+//	// restore depth range
+//	glDepthRange( gldepthmin, gldepthmax );
 
-	// backface culling for left-handed weapons
-	if( r_lefthand->integer == 1 || g_iBackFaceCull )
-		GL_FrontFace( !glState.frontFace );
+//	// backface culling for left-handed weapons
+//	if( r_lefthand->integer == 1 || g_iBackFaceCull )
+//		GL_FrontFace( !glState.frontFace );
 
-	RI.currententity = NULL;
-	RI.currentmodel = NULL;
-}
+//	RI.currententity = NULL;
+//	RI.currentmodel = NULL;
+//}
 
 /*
 ====================

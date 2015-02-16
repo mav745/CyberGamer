@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
-#include "gl_local.h"
 #include "vgui_draw.h"
 #include "qfont.h"
 
@@ -418,7 +418,7 @@ text to the screen.
 void SCR_UpdateScreen( void )
 {
 //	char txt[64];
-	
+
 	if( !V_PreRender( )) return;
 
 	switch( cls.state )
@@ -430,12 +430,12 @@ void SCR_UpdateScreen( void )
 		SCR_DrawPlaque();
 		break;
 	case ca_active:
-		
+
 		V_RenderView();
-		
+
 //		sprintf(txt,"ca_active, %.2f\n",cl.refdef.simorg[2]);
 //		Sys_Print(txt);
-		
+
 		break;
 	case ca_cinematic:
 		SCR_DrawCinematic();

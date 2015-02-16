@@ -13,14 +13,14 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
 #include "r_efx.h"
 #include "entity_types.h"
 #include "triangleapi.h"
 #include "cl_tent.h"
 #include "pm_local.h"
-#include "gl_local.h"
 #include "studio.h"
 #include "wadfile.h"	// acess decal size
 #include "sound.h"

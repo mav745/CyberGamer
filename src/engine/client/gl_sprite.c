@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
-#include "gl_local.h"
 #include "pm_local.h"
 #include "sprite.h"
 #include "studio.h"
@@ -29,9 +29,9 @@ GNU General Public License for more details.
 convar_t		*r_sprite_lerping;
 convar_t		*r_sprite_lighting;
 char		group_suffix[8];
-static vec3_t	sprite_mins, sprite_maxs;
-static float	sprite_radius;
-static uint	r_texFlags = 0;
+vec3_t	sprite_mins, sprite_maxs;
+float	sprite_radius;
+uint	r_texFlags = 0;
 
 /*
 ====================
@@ -840,33 +840,33 @@ qboolean R_SpriteOccluded( cl_entity_t *e, vec3_t origin, int *alpha, float *psc
 R_DrawSpriteQuad
 =================
 */
-static void R_DrawSpriteQuad( mspriteframe_t *frame, vec3_t org, vec3_t v_right, vec3_t v_up, float scale )
-{
-	vec3_t	point;
+//void R_DrawSpriteQuad( mspriteframe_t *frame, vec3_t org, vec3_t v_right, vec3_t v_up, float scale )
+//{
+//	vec3_t	point;
 
-	r_stats.c_sprite_polys++;
+//	r_stats.c_sprite_polys++;
 
-	pglBegin( GL_QUADS );
-		pglTexCoord2f( 0.0f, 1.0f );
-		VectorMA( org, frame->down * scale, v_up, point );
-		VectorMA( point, frame->left * scale, v_right, point );
-		pglVertex3fv( point );
-		pglTexCoord2f( 0.0f, 0.0f );
-		VectorMA( org, frame->up * scale, v_up, point );
-		VectorMA( point, frame->left * scale, v_right, point );
-		pglVertex3fv( point );
-		pglTexCoord2f( 1.0f, 0.0f );
-		VectorMA( org, frame->up * scale, v_up, point );
-		VectorMA( point, frame->right * scale, v_right, point );
-		pglVertex3fv( point );
-				pglTexCoord2f( 1.0f, 1.0f );
-		VectorMA( org, frame->down * scale, v_up, point );
-		VectorMA( point, frame->right * scale, v_right, point );
-		pglVertex3fv( point );
-	pglEnd();
-}
+//	glBegin( GL_QUADS );
+//		glTexCoord2f( 0.0f, 1.0f );
+//		VectorMA( org, frame->down * scale, v_up, point );
+//		VectorMA( point, frame->left * scale, v_right, point );
+//		glVertex3fv( point );
+//		glTexCoord2f( 0.0f, 0.0f );
+//		VectorMA( org, frame->up * scale, v_up, point );
+//		VectorMA( point, frame->left * scale, v_right, point );
+//		glVertex3fv( point );
+//		glTexCoord2f( 1.0f, 0.0f );
+//		VectorMA( org, frame->up * scale, v_up, point );
+//		VectorMA( point, frame->right * scale, v_right, point );
+//		glVertex3fv( point );
+//				glTexCoord2f( 1.0f, 1.0f );
+//		VectorMA( org, frame->down * scale, v_up, point );
+//		VectorMA( point, frame->right * scale, v_right, point );
+//		glVertex3fv( point );
+//	glEnd();
+//}
 
-static qboolean R_SpriteHasLightmap( cl_entity_t *e, int texFormat )
+qboolean R_SpriteHasLightmap( cl_entity_t *e, int texFormat )
 {
 	if( !r_sprite_lighting->integer )
 		return false;
@@ -898,222 +898,222 @@ static qboolean R_SpriteHasLightmap( cl_entity_t *e, int texFormat )
 R_DrawSpriteModel
 =================
 */
-void R_DrawSpriteModel( cl_entity_t *e )
-{
-	mspriteframe_t	*frame, *oldframe;
-	msprite_t		*psprite;
-	model_t		*model;
-	int		i, alpha, type;
-	float		angle, dot, sr, cr, flAlpha;
-	float		lerp = 1.0f, ilerp, scale;
-	vec3_t		v_forward, v_right, v_up;
-	vec3_t		origin, color, color2;
+//void R_DrawSpriteModel( cl_entity_t *e )
+//{
+//	mspriteframe_t	*frame, *oldframe;
+//	msprite_t		*psprite;
+//	model_t		*model;
+//	int		i, alpha, type;
+//	float		angle, dot, sr, cr, flAlpha;
+//	float		lerp = 1.0f, ilerp, scale;
+//	vec3_t		v_forward, v_right, v_up;
+//	vec3_t		origin, color, color2;
 
-	if( RI.params & RP_ENVVIEW )
-		return;
+//	if( RI.params & RP_ENVVIEW )
+//		return;
 
-	model = e->model;
-	psprite = (msprite_t * )model->cache.data;
-	VectorCopy( e->origin, origin );	// set render origin
+//	model = e->model;
+//	psprite = (msprite_t * )model->cache.data;
+//	VectorCopy( e->origin, origin );	// set render origin
 
-	// do movewith
-	if( e->curstate.aiment > 0 && e->curstate.movetype == MOVETYPE_FOLLOW )
-	{
-		cl_entity_t	*parent;
+//	// do movewith
+//	if( e->curstate.aiment > 0 && e->curstate.movetype == MOVETYPE_FOLLOW )
+//	{
+//		cl_entity_t	*parent;
 
-		parent = CL_GetEntityByIndex( e->curstate.aiment );
+//		parent = CL_GetEntityByIndex( e->curstate.aiment );
 
-		if( parent && parent->model )
-		{
-			if( parent->model->type == mod_studio && e->curstate.body > 0 )
-			{
-				int num = bound( 1, e->curstate.body, MAXSTUDIOATTACHMENTS );
-				VectorCopy( parent->attachment[num-1], origin );
-			}
-			else VectorCopy( parent->origin, origin );
-		}
-	}
+//		if( parent && parent->model )
+//		{
+//			if( parent->model->type == mod_studio && e->curstate.body > 0 )
+//			{
+//				int num = bound( 1, e->curstate.body, MAXSTUDIOATTACHMENTS );
+//				VectorCopy( parent->attachment[num-1], origin );
+//			}
+//			else VectorCopy( parent->origin, origin );
+//		}
+//	}
 
-	alpha = e->curstate.renderamt;
-	scale = e->curstate.scale;
+//	alpha = e->curstate.renderamt;
+//	scale = e->curstate.scale;
 
-	if( R_SpriteOccluded( e, origin, &alpha, &scale ))
-		return; // sprite culled
+//	if( R_SpriteOccluded( e, origin, &alpha, &scale ))
+//		return; // sprite culled
 
-	r_stats.c_sprite_models_drawn++;
+//	r_stats.c_sprite_models_drawn++;
 
-	if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
-	{
-		pglEnable( GL_ALPHA_TEST );
-		pglAlphaFunc( GL_GREATER, 0.0f );
-	}
+//	if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
+//	{
+//		glEnable( GL_ALPHA_TEST );
+//		glAlphaFunc( GL_GREATER, 0.0f );
+//	}
 
-	if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
-		pglDisable( GL_DEPTH_TEST );
+//	if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
+//		glDisable( GL_DEPTH_TEST );
 
-	// select properly rendermode
-	switch( e->curstate.rendermode )
-	{
-	case kRenderTransAlpha:
-	case kRenderTransColor:
-	case kRenderTransTexture:
-		pglEnable( GL_BLEND );
-		pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		break;
-	case kRenderGlow:
-	case kRenderTransAdd:
-	case kRenderWorldGlow:
-		pglDisable( GL_FOG );
-		pglEnable( GL_BLEND );
-		pglBlendFunc( GL_SRC_ALPHA, GL_ONE );
-		break;
-	case kRenderNormal:
-	default:
-		if( psprite->texFormat == SPR_INDEXALPHA )
-		{
-			pglEnable( GL_BLEND );
-			pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		}
-		else pglDisable( GL_BLEND );
-		break;
-	}
+//	// select properly rendermode
+//	switch( e->curstate.rendermode )
+//	{
+//	case kRenderTransAlpha:
+//	case kRenderTransColor:
+//	case kRenderTransTexture:
+//		glEnable( GL_BLEND );
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//		break;
+//	case kRenderGlow:
+//	case kRenderTransAdd:
+//	case kRenderWorldGlow:
+//		glDisable( GL_FOG );
+//		glEnable( GL_BLEND );
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+//		break;
+//	case kRenderNormal:
+//	default:
+//		if( psprite->texFormat == SPR_INDEXALPHA )
+//		{
+//			glEnable( GL_BLEND );
+//			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//		}
+//		else glDisable( GL_BLEND );
+//		break;
+//	}
 
-	// all sprites can have color
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//	// all sprites can have color
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-	// add basecolor (any rendermode can colored sprite)
-	color[0] = (float)e->curstate.rendercolor.r * ( 1.0f / 255.0f );
-	color[1] = (float)e->curstate.rendercolor.g * ( 1.0f / 255.0f );
-	color[2] = (float)e->curstate.rendercolor.b * ( 1.0f / 255.0f );
+//	// add basecolor (any rendermode can colored sprite)
+//	color[0] = (float)e->curstate.rendercolor.r * ( 1.0f / 255.0f );
+//	color[1] = (float)e->curstate.rendercolor.g * ( 1.0f / 255.0f );
+//	color[2] = (float)e->curstate.rendercolor.b * ( 1.0f / 255.0f );
 
-	if( R_SpriteHasLightmap( e, psprite->texFormat ))
-	{
-		color24	lightColor;
-		qboolean	invLight;
+//	if( R_SpriteHasLightmap( e, psprite->texFormat ))
+//	{
+//		color24	lightColor;
+//		qboolean	invLight;
 
-		invLight = (e->curstate.effects & EF_INVLIGHT) ? true : false;
-		R_LightForPoint( origin, &lightColor, invLight, true, sprite_radius );
-		color2[0] = (float)lightColor.r * ( 1.0f / 255.0f );
-		color2[1] = (float)lightColor.g * ( 1.0f / 255.0f );
-		color2[2] = (float)lightColor.b * ( 1.0f / 255.0f );
+//		invLight = (e->curstate.effects & EF_INVLIGHT) ? true : false;
+//		R_LightForPoint( origin, &lightColor, invLight, true, sprite_radius );
+//		color2[0] = (float)lightColor.r * ( 1.0f / 255.0f );
+//		color2[1] = (float)lightColor.g * ( 1.0f / 255.0f );
+//		color2[2] = (float)lightColor.b * ( 1.0f / 255.0f );
 
-		if( glState.drawTrans )
-			pglDepthMask( GL_TRUE );
+//		if( glState.drawTrans )
+//			glDepthMask( GL_TRUE );
 
-		// NOTE: sprites with 'lightmap' looks ugly when alpha func is GL_GREATER 0.0
-		pglAlphaFunc( GL_GEQUAL, 0.5f );
-	}
+//		// NOTE: sprites with 'lightmap' looks ugly when alpha func is GL_GREATER 0.0
+//		glAlphaFunc( GL_GEQUAL, 0.5f );
+//	}
 
-	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
-		frame = oldframe = R_GetSpriteFrame( model, (int)e->curstate.frame, e->angles[YAW] );
-	else lerp = R_GetSpriteFrameInterpolant( e, &oldframe, &frame );
+//	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
+//		frame = oldframe = R_GetSpriteFrame( model, (int)e->curstate.frame, e->angles[YAW] );
+//	else lerp = R_GetSpriteFrameInterpolant( e, &oldframe, &frame );
 
-	type = psprite->type;
+//	type = psprite->type;
 
-	// automatically roll parallel sprites if requested
-	if( e->angles[ROLL] != 0.0f && type == SPR_FWD_PARALLEL )
-		type = SPR_FWD_PARALLEL_ORIENTED;
+//	// automatically roll parallel sprites if requested
+//	if( e->angles[ROLL] != 0.0f && type == SPR_FWD_PARALLEL )
+//		type = SPR_FWD_PARALLEL_ORIENTED;
 
-	switch( type )
-	{
-	case SPR_ORIENTED:
-		AngleVectors( e->angles, v_forward, v_right, v_up );
-		VectorScale( v_forward, 0.01f, v_forward );	// to avoid z-fighting
-		VectorSubtract( origin, v_forward, origin );
-		break;
-	case SPR_FACING_UPRIGHT:
-		VectorSet( v_right, origin[1] - RI.vieworg[1], -(origin[0] - RI.vieworg[0]), 0.0f );
-		VectorSet( v_up, 0.0f, 0.0f, 1.0f );
-		VectorNormalize( v_right );
-		break;
-	case SPR_FWD_PARALLEL_UPRIGHT:
-		dot = RI.vforward[2];
-		if(( dot > 0.999848f ) || ( dot < -0.999848f ))	// cos(1 degree) = 0.999848
-			return; // invisible
-		VectorSet( v_up, 0.0f, 0.0f, 1.0f );
-		VectorSet( v_right, RI.vforward[1], -RI.vforward[0], 0.0f );
-		VectorNormalize( v_right );
-		break;
-	case SPR_FWD_PARALLEL_ORIENTED:
-		angle = e->angles[ROLL] * (M_PI2 / 360.0f);
-		SinCos( angle, &sr, &cr );
-		for( i = 0; i < 3; i++ )
-		{
-			v_right[i] = (RI.vright[i] * cr + RI.vup[i] * sr);
-			v_up[i] = RI.vright[i] * -sr + RI.vup[i] * cr;
-		}
-		break;
-	case SPR_FWD_PARALLEL: // normal sprite
-	default:
-		VectorCopy( RI.vright, v_right );
-		VectorCopy( RI.vup, v_up );
-		break;
-	}
+//	switch( type )
+//	{
+//	case SPR_ORIENTED:
+//		AngleVectors( e->angles, v_forward, v_right, v_up );
+//		VectorScale( v_forward, 0.01f, v_forward );	// to avoid z-fighting
+//		VectorSubtract( origin, v_forward, origin );
+//		break;
+//	case SPR_FACING_UPRIGHT:
+//		VectorSet( v_right, origin[1] - RI.vieworg[1], -(origin[0] - RI.vieworg[0]), 0.0f );
+//		VectorSet( v_up, 0.0f, 0.0f, 1.0f );
+//		VectorNormalize( v_right );
+//		break;
+//	case SPR_FWD_PARALLEL_UPRIGHT:
+//		dot = RI.vforward[2];
+//		if(( dot > 0.999848f ) || ( dot < -0.999848f ))	// cos(1 degree) = 0.999848
+//			return; // invisible
+//		VectorSet( v_up, 0.0f, 0.0f, 1.0f );
+//		VectorSet( v_right, RI.vforward[1], -RI.vforward[0], 0.0f );
+//		VectorNormalize( v_right );
+//		break;
+//	case SPR_FWD_PARALLEL_ORIENTED:
+//		angle = e->angles[ROLL] * (M_PI2 / 360.0f);
+//		SinCos( angle, &sr, &cr );
+//		for( i = 0; i < 3; i++ )
+//		{
+//			v_right[i] = (RI.vright[i] * cr + RI.vup[i] * sr);
+//			v_up[i] = RI.vright[i] * -sr + RI.vup[i] * cr;
+//		}
+//		break;
+//	case SPR_FWD_PARALLEL: // normal sprite
+//	default:
+//		VectorCopy( RI.vright, v_right );
+//		VectorCopy( RI.vup, v_up );
+//		break;
+//	}
 
-	flAlpha = (float)alpha * ( 1.0f / 255.0f );
+//	flAlpha = (float)alpha * ( 1.0f / 255.0f );
 
-	if( psprite->facecull == SPR_CULL_NONE )
-		GL_Cull( GL_NONE );
+//	if( psprite->facecull == SPR_CULL_NONE )
+//		GL_Cull( GL_NONE );
 
-	if( oldframe == frame )
-	{
-		// draw the single non-lerped frame
-		pglColor4f( color[0], color[1], color[2], flAlpha );
-		GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
-		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
-	}
-	else
-	{
-		// draw two combined lerped frames
-		lerp = bound( 0.0f, lerp, 1.0f );
-		ilerp = 1.0f - lerp;
+//	if( oldframe == frame )
+//	{
+//		// draw the single non-lerped frame
+//		glColor4f( color[0], color[1], color[2], flAlpha );
+//		GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
+//		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
+//	}
+//	else
+//	{
+//		// draw two combined lerped frames
+//		lerp = bound( 0.0f, lerp, 1.0f );
+//		ilerp = 1.0f - lerp;
 
-		if( ilerp != 0.0f )
-		{
-			pglColor4f( color[0], color[1], color[2], flAlpha * ilerp );
-			GL_Bind( GL_TEXTURE0, oldframe->gl_texturenum );
-			R_DrawSpriteQuad( oldframe, origin, v_right, v_up, scale );
-		}
+//		if( ilerp != 0.0f )
+//		{
+//			glColor4f( color[0], color[1], color[2], flAlpha * ilerp );
+//			GL_Bind( GL_TEXTURE0, oldframe->gl_texturenum );
+//			R_DrawSpriteQuad( oldframe, origin, v_right, v_up, scale );
+//		}
 
-		if( lerp != 0.0f )
-		{
-			pglColor4f( color[0], color[1], color[2], flAlpha * lerp );
-			GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
-			R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
-		}
-	}
+//		if( lerp != 0.0f )
+//		{
+//			glColor4f( color[0], color[1], color[2], flAlpha * lerp );
+//			GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
+//			R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
+//		}
+//	}
 
-	// draw the sprite 'lightmap' :-)
-	if( R_SpriteHasLightmap( e, psprite->texFormat ))
-	{
-		pglEnable( GL_BLEND );
-		pglDepthFunc( GL_EQUAL );
-		pglDisable( GL_ALPHA_TEST );
-		pglBlendFunc( GL_ZERO, GL_SRC_COLOR );
-		pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//	// draw the sprite 'lightmap' :-)
+//	if( R_SpriteHasLightmap( e, psprite->texFormat ))
+//	{
+//		glEnable( GL_BLEND );
+//		glDepthFunc( GL_EQUAL );
+//		glDisable( GL_ALPHA_TEST );
+//		glBlendFunc( GL_ZERO, GL_SRC_COLOR );
+//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-		pglColor4f( color2[0], color2[1], color2[2], flAlpha );
-		GL_Bind( GL_TEXTURE0, tr.whiteTexture );
-		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
+//		glColor4f( color2[0], color2[1], color2[2], flAlpha );
+//		GL_Bind( GL_TEXTURE0, tr.whiteTexture );
+//		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
 
-		if( glState.drawTrans )
-			pglDepthMask( GL_FALSE );
-	}
+//		if( glState.drawTrans )
+//			glDepthMask( GL_FALSE );
+//	}
 
-	if( psprite->facecull == SPR_CULL_NONE )
-		GL_Cull( GL_FRONT );
+//	if( psprite->facecull == SPR_CULL_NONE )
+//		GL_Cull( GL_FRONT );
 
-	if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
-		pglEnable( GL_DEPTH_TEST );
+//	if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
+//		glEnable( GL_DEPTH_TEST );
 
-	if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
-		pglDisable( GL_ALPHA_TEST );
+//	if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
+//		glDisable( GL_ALPHA_TEST );
 
-	pglDisable( GL_BLEND );
-	pglDepthFunc( GL_LEQUAL );
-	pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-	pglColor4ub( 255, 255, 255, 255 );
+//	glDisable( GL_BLEND );
+//	glDepthFunc( GL_LEQUAL );
+//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+//	glColor4ub( 255, 255, 255, 255 );
 
-	if( RI.fogCustom || ( RI.fogEnabled && !glState.drawTrans ))
-		pglEnable( GL_FOG );
-}
+//	if( RI.fogCustom || ( RI.fogEnabled && !glState.drawTrans ))
+//		glEnable( GL_FOG );
+//}

@@ -608,7 +608,7 @@ void CL_InitClientMove( void )
 
 	memset(gDemoFuncsPlayed,0,sizeof(int)*MULTIPLAYER_BACKUP);
 	gPrevMsg = 0;
-	
+
 	Pmove_Init ();
 
 	clgame.pmove->server = false;	// running at client
@@ -699,8 +699,7 @@ void CL_SetSolidEntities( void )
 
 void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state, usercmd_t *ucmd )
 {
-	char txt[64];
-	
+
 	pmove->player_index = cl.playernum;
 	pmove->multiplayer = (cl.maxclients > 1) ? true : false;
 	pmove->time = (float)cl.time; // probably never used
@@ -716,7 +715,7 @@ void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state
 	pmove->usehull = (cd->flags & FL_DUCKING) ? 1 : 0; // reset hull
 	//if (!cls.demoplayback)
 	pmove->flTimeStepSound = cd->flTimeStepSound;
-	
+
 	//pmove->iStepLeft = state->iStepLeft;
 	pmove->flFallVelocity = state->flFallVelocity;
 	pmove->flSwimTime = (float)cd->flSwimTime;
@@ -766,30 +765,27 @@ void CL_PostRunCmd( usercmd_t *ucmd, int random_seed, int pred_frame )
 {
 	local_state_t	*from, *to;
 	//double time;
-	
+
 //	char txt[64];
-	
+
 	// TODO: write real predicting code
 
 	from = &cl.predict[(cl.predictcount + pred_frame    ) & CL_UPDATE_MASK];
 	to   = &cl.predict[(cl.predictcount + pred_frame + 1) & CL_UPDATE_MASK];
-
 	//time = to->timestamp;
-	
+
 //	sprintf(txt,"prev %f, now %f\n",from->timestamp,to->timestamp);
 //	Sys_Print(txt);
-	
-	*to = *from;
-	
-	VectorCopy(clgame.pmove->origin,to->playerstate.origin);
 
-	clgame.dllFuncs.pfnPostRunCmd( 
-				from, to, ucmd, clgame.pmove->runfuncs, 
+	*to = *from;
+
+	clgame.dllFuncs.pfnPostRunCmd(
+				from, to, ucmd, clgame.pmove->runfuncs,
 				//clgame.pmove->time,
 				//cl.frames[(cls.netchan + pred_frame) & CL_UPDATE_MASK].time,
 				from->timestamp+(float)pred_frame*host.realframetime,//cl.time+float(pred_frame)*cl.frame.time,
 				random_seed );
-	
+
 }
 
 /*
@@ -870,16 +866,16 @@ void CL_PredictMovement( void )
 	{
 		if (outgoing_command != gPrevMsg)
 		{
-			int i; 
-			for(i = gPrevMsg;i < outgoing_command;i++) 
+			int i;
+			for(i = gPrevMsg;i < outgoing_command;i++)
 				gDemoFuncsPlayed[i & CL_UPDATE_MASK] = false;
-			
+
 			gPrevMsg = outgoing_command;
 		}
 	}
 //		gDemoFuncsPlayed[outgoing_command & CL_UPDATE_MASK] = false;
 //	}
-	
+
 //	sprintf(txt,"%.2f / ",cd->view_ofs[2]);
 //	Sys_Print(txt);
 
@@ -905,43 +901,41 @@ void CL_PredictMovement( void )
 			break;
 
 		clgame.pmove->cmd = cl.cmds[current_command_mod/*frame*/];
-		
+
 		// motor!
 		if (!cls.demoplayback)
 			clgame.pmove->runfuncs = (outgoing_command - current_command == 1)? TRUE : FALSE;
 		else
 		{
 			//MAV: дабы звуки шагов проигрывались равномерно на демке.
-			//Не гарантирую, что момент звука шага на демке совпадает 
+			//Не гарантирую, что момент звука шага на демке совпадает
 			//с реальным звуком на момент записи
 			clgame.pmove->runfuncs = !gDemoFuncsPlayed[current_command_mod];
 			gDemoFuncsPlayed[current_command_mod] = true;
 		}
 		clgame.dllFuncs.pfnPlayerMove( clgame.pmove, false ); // run frames
-	
-		
+
 //		sprintf(txt,"%i(%i), ",current_command,clgame.pmove->flTimeStepSound);
 //		Sys_Print(txt);
-		
+
 		//clgame.pmove->runfuncs = ( current_command > outgoing_command - 1 ) ? true : false;
-		
+
 		//cl.predictcount = predictcount + frame;
 
 		//clgame.pmove->runfuncs = (outgoing_command - current_command == 1)? TRUE : FALSE;
-		
+
 		CL_PostRunCmd( &clgame.pmove->cmd, current_command,frame-1 );
 		//sprintf(txt,"(%i)%.2f ",clgame.pmove->cmd.buttons,clgame.pmove->view_ofs[2]);
 		//Sys_Print(txt);
 		//cls.netchan.last_predicted = current_command;
-		
+
 		frame++;
 	}
 //	Sys_Print("\n");
 
-		
-	
+
 	//clgame.pmove->runfuncs = true;
-	
+
 
 	//cl.predictcount = predictcount;
 	//cl.predictcount++;
@@ -949,7 +943,7 @@ void CL_PredictMovement( void )
 	//player->curstate.oldbuttons = clgame.pmove->oldbuttons;
 
 	//cl.refdef.time = (float)host.realtime;
-	cl.refdef.onground = (clgame.pmove->onground == -1)? FALSE : TRUE; 
+	cl.refdef.onground = (clgame.pmove->onground == -1)? FALSE : TRUE;
 	VectorCopy( clgame.pmove->punchangle,cl.predicted_punchangle);
 	VectorCopy( clgame.pmove->view_ofs,  cl.predicted_viewofs   );
 	VectorCopy( clgame.pmove->origin  ,  cl.predicted_origin    );

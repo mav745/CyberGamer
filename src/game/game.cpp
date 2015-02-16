@@ -13,6 +13,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
+#include "game.hpp"
+
 #include <windows.h>
 
 #define GAME_PATH	"valve"	// default dir to start from
@@ -23,8 +25,9 @@ GNU General Public License for more details.
 typedef void (*pfnChangeGame)( const char *progname );
 typedef int (*pfnInit)( const char *progname, int bChangeGame, pfnChangeGame func );
 typedef void (*pfnShutdown)( void );
-
+typedef int (*pfnIterate)( void );
 pfnInit Host_Main;
+pfnIterate Host_Iterate;
 pfnShutdown Host_Shutdown = NULL;
 char szGameDir[128]; // safe place to keep gamedir
 HINSTANCE	hEngine;
@@ -45,6 +48,11 @@ void Sys_LoadEngine( void )
 	if(( Host_Main = (pfnInit)GetProcAddress( hEngine, "Host_Main" )) == NULL )
 	{
 		Sys_Error( "xash.dll missed 'Host_Main' export" );
+	}
+
+	if(( Host_Iterate = (pfnIterate)GetProcAddress( hEngine, "Host_Iterate" )) == NULL )
+	{
+		Sys_Error( "xash.dll missed 'Host_Iterate' export" );
 	}
 
 	// this is non-fatal for us but change game will not working
@@ -69,9 +77,31 @@ void Sys_ChangeGame( const char *progname )
 	Host_Main( szGameDir, TRUE, ( Host_Shutdown != NULL ) ? Sys_ChangeGame : NULL );
 }
 
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+//int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+//{
+//	Sys_LoadEngine();
+
+//	return Host_Main( GAME_PATH, FALSE, ( Host_Shutdown != NULL ) ? Sys_ChangeGame : NULL );
+//}
+
+
+
+void Game::timerEvent(QTimerEvent *te)
+{
+	if(!Host_Iterate())
+		theTimer.stop();
+}
+
+
+Game::Game()
 {
 	Sys_LoadEngine();
+	Host_Main( GAME_PATH, FALSE, ( Host_Shutdown != NULL ) ? Sys_ChangeGame : NULL );
+	theTimer.start(1, Qt::PreciseTimer, this);
+}
 
-	return Host_Main( GAME_PATH, FALSE, ( Host_Shutdown != NULL ) ? Sys_ChangeGame : NULL );
+
+Game::~Game()
+{
+
 }

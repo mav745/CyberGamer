@@ -13,9 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include <qt/c_gate.h>
+
 #include "client.h"
-#include "gl_local.h"
 #include "studio.h"
 
 /*
@@ -55,7 +55,7 @@ qboolean CL_CmpStudioTextures( int numtexs, mstudiotexture_t *p1, mstudiotexture
 
 		if( p1->index != p2->index )
 			return false;
-	} 
+	}
 	return true;
 }
 
@@ -238,7 +238,7 @@ void CL_AllocRemapInfo( int topcolor, int bottomcolor )
 	if( !phdr ) return;	// missed header ???
 
 	src = (mstudiotexture_t *)(((byte *)phdr) + phdr->textureindex);
-	dst = (clgame.remap_info[i] ? clgame.remap_info[i]->ptexture : NULL); 
+	dst = (clgame.remap_info[i] ? clgame.remap_info[i]->ptexture : NULL);
 
 	// NOTE: we must copy all the structures 'mstudiotexture_t' for easy access when model is rendering
 	if( !CL_CmpStudioTextures( phdr->numtextures, src, dst ) || clgame.remap_info[i]->model != RI.currentmodel )
@@ -247,7 +247,7 @@ void CL_AllocRemapInfo( int topcolor, int bottomcolor )
 		// e.g. playermodel 'barney' with playermodel 'gordon'
 		if( clgame.remap_info[i] ) CL_FreeRemapInfo( clgame.remap_info[i] ); // free old info
 		size = sizeof( remap_info_t ) + ( sizeof( mstudiotexture_t ) * phdr->numtextures );
-		info = clgame.remap_info[i] = Mem_Alloc( clgame.mempool, size );	
+		info = clgame.remap_info[i] = Mem_Alloc( clgame.mempool, size );
 		info->ptexture = (mstudiotexture_t *)(info + 1); // textures are immediately comes after remap_info
 	}
 	else
@@ -327,7 +327,7 @@ void CL_FreeRemapInfo( remap_info_t *info )
 			GL_FreeTexture( info->ptexture[i].index );
 	}
 
-	Mem_Free( info ); // release struct	
+	Mem_Free( info ); // release struct
 }
 
 /*
@@ -346,7 +346,7 @@ void CL_ClearAllRemaps( void )
 		for( i = 0; i < clgame.maxRemapInfos; i++ )
 		{
 			if( clgame.remap_info[i] )
-				CL_FreeRemapInfo( clgame.remap_info[i] ); 
+				CL_FreeRemapInfo( clgame.remap_info[i] );
 		}
 		Mem_Free( clgame.remap_info );
 	}

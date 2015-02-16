@@ -13,10 +13,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
 #include "const.h"
-#include "gl_local.h"
 #include "library.h"
 #include "input.h"
 
@@ -238,7 +238,7 @@ static void UI_ConvertGameInfo( GAMEINFO *out, gameinfo_t *in )
 		out->flags |= GFL_NOMODELS;
 }
 
-static qboolean PIC_Scissor( float *x, float *y, float *width, float *height, float *u0, float *v0, float *u1, float *v1 )
+qboolean PIC_Scissor( float *x, float *y, float *width, float *height, float *u0, float *v0, float *u1, float *v1 )
 {
 	float	dudx, dvdy;
 
@@ -293,48 +293,48 @@ PIC_DrawGeneric
 draw hudsprite routine
 ====================
 */
-static void PIC_DrawGeneric( float x, float y, float width, float height, const wrect_t *prc )
-{
-	float	s1, s2, t1, t2;
-	int	w, h;
+//static void PIC_DrawGeneric( float x, float y, float width, float height, const wrect_t *prc )
+//{
+//	float	s1, s2, t1, t2;
+//	int	w, h;
 
-	// assume we get sizes from image
-	R_GetTextureParms( &w, &h, menu.ds.gl_texturenum );
+//	// assume we get sizes from image
+//	R_GetTextureParms( &w, &h, menu.ds.gl_texturenum );
 
-	if( prc )
-	{
-		// calc user-defined rectangle
-		s1 = (float)prc->left / (float)w;
-		t1 = (float)prc->top / (float)h;
-		s2 = (float)prc->right / (float)w;
-		t2 = (float)prc->bottom / (float)h;
+//	if( prc )
+//	{
+//		// calc user-defined rectangle
+//		s1 = (float)prc->left / (float)w;
+//		t1 = (float)prc->top / (float)h;
+//		s2 = (float)prc->right / (float)w;
+//		t2 = (float)prc->bottom / (float)h;
 
-		if( width == -1 && height == -1 )
-		{
-			width = (float)(prc->right - prc->left);
-			height = (float)(prc->bottom - prc->top);
-		}
-	}
-	else
-	{
-		s1 = t1 = 0.0f;
-		s2 = t2 = 1.0f;
-	}
+//		if( width == -1 && height == -1 )
+//		{
+//			width = (float)(prc->right - prc->left);
+//			height = (float)(prc->bottom - prc->top);
+//		}
+//	}
+//	else
+//	{
+//		s1 = t1 = 0.0f;
+//		s2 = t2 = 1.0f;
+//	}
 
-	if( width == -1 && height == -1 )
-	{
-		width = (float)w;
-		height = (float)h;
-	}
+//	if( width == -1 && height == -1 )
+//	{
+//		width = (float)w;
+//		height = (float)h;
+//	}
 
-	// pass scissor test if supposed
-	if( menu.ds.scissor_test && !PIC_Scissor( &x, &y, &width, &height, &s1, &t1, &s2, &t2 ))
-		return;
+//	// pass scissor test if supposed
+//	if( menu.ds.scissor_test && !PIC_Scissor( &x, &y, &width, &height, &s1, &t1, &s2, &t2 ))
+//		return;
 
-	PicAdjustSize( &x, &y, &width, &height );
-	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, menu.ds.gl_texturenum );
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//	PicAdjustSize( &x, &y, &width, &height );
+//	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, menu.ds.gl_texturenum );
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
 /*
 ===============================================================================
@@ -404,15 +404,15 @@ pfnPIC_Set
 
 =========
 */
-void pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a )
-{
-	menu.ds.gl_texturenum = hPic;
-	r = bound( 0, r, 255 );
-	g = bound( 0, g, 255 );
-	b = bound( 0, b, 255 );
-	a = bound( 0, a, 255 );
-	pglColor4ub( r, g, b, a );
-}
+//void pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a )
+//{
+//	menu.ds.gl_texturenum = hPic;
+//	r = bound( 0, r, 255 );
+//	g = bound( 0, g, 255 );
+//	b = bound( 0, b, 255 );
+//	a = bound( 0, a, 255 );
+//	glColor4ub( r, g, b, a );
+//}
 
 /*
 =========
@@ -504,17 +504,17 @@ pfnFillRGBA
 
 =============
 */
-static void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int b, int a )
-{
-	r = bound( 0, r, 255 );
-	g = bound( 0, g, 255 );
-	b = bound( 0, b, 255 );
-	a = bound( 0, a, 255 );
-	pglColor4ub( r, g, b, a );
-	GL_SetRenderMode( kRenderTransTexture );
-	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//static void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int b, int a )
+//{
+//	r = bound( 0, r, 255 );
+//	g = bound( 0, g, 255 );
+//	b = bound( 0, b, 255 );
+//	a = bound( 0, a, 255 );
+//	glColor4ub( r, g, b, a );
+//	GL_SetRenderMode( kRenderTransTexture );
+//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
 /*
 =============
@@ -553,43 +553,43 @@ pfnDrawCharacter
 quakefont draw character
 =============
 */
-static void pfnDrawCharacter( int ix, int iy, int iwidth, int iheight, int ch, int ulRGBA, HIMAGE hFont )
-{
-	rgba_t	color;
-	float	row, col, size;
-	float	s1, t1, s2, t2;
-	float	x = (float)ix, y = (float)iy;
-	float	width = (float)iwidth;
-	float	height = (float)iheight;
+//static void pfnDrawCharacter( int ix, int iy, int iwidth, int iheight, int ch, int ulRGBA, HIMAGE hFont )
+//{
+//	rgba_t	color;
+//	float	row, col, size;
+//	float	s1, t1, s2, t2;
+//	float	x = (float)ix, y = (float)iy;
+//	float	width = (float)iwidth;
+//	float	height = (float)iheight;
 
-	ch &= 255;
+//	ch &= 255;
 
-	if( ch == ' ' ) return;
-	if( y < -height ) return;
+//	if( ch == ' ' ) return;
+//	if( y < -height ) return;
 
-	color[3] = (ulRGBA & 0xFF000000) >> 24;
-	color[0] = (ulRGBA & 0xFF0000) >> 16;
-	color[1] = (ulRGBA & 0xFF00) >> 8;
-	color[2] = (ulRGBA & 0xFF) >> 0;
-	pglColor4ubv( color );
+//	color[3] = (ulRGBA & 0xFF000000) >> 24;
+//	color[0] = (ulRGBA & 0xFF0000) >> 16;
+//	color[1] = (ulRGBA & 0xFF00) >> 8;
+//	color[2] = (ulRGBA & 0xFF) >> 0;
+//	glColor4ubv( color );
 
-	col = (ch & 15) * 0.0625f + (0.5f / 256.0f);
-	row = (ch >> 4) * 0.0625f + (0.5f / 256.0f);
-	size = 0.0625f - (1.0f / 256.0f);
+//	col = (ch & 15) * 0.0625f + (0.5f / 256.0f);
+//	row = (ch >> 4) * 0.0625f + (0.5f / 256.0f);
+//	size = 0.0625f - (1.0f / 256.0f);
 
-	s1 = col;
-	t1 = row;
-	s2 = s1 + size;
-	t2 = t1 + size;
+//	s1 = col;
+//	t1 = row;
+//	s2 = s1 + size;
+//	t2 = t1 + size;
 
-	// pass scissor test if supposed
-	if( menu.ds.scissor_test && !PIC_Scissor( &x, &y, &width, &height, &s1, &t1, &s2, &t2 ))
-		return;
+//	// pass scissor test if supposed
+//	if( menu.ds.scissor_test && !PIC_Scissor( &x, &y, &width, &height, &s1, &t1, &s2, &t2 ))
+//		return;
 
-	GL_SetRenderMode( kRenderTransTexture );
-	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, hFont );
-	pglColor4ub( 255, 255, 255, 255 );
-}
+//	GL_SetRenderMode( kRenderTransTexture );
+//	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, hFont );
+//	glColor4ub( 255, 255, 255, 255 );
+//}
 
 /*
 =============
@@ -890,7 +890,7 @@ static ui_enginefuncs_t gEngfuncs =
 	pfnPIC_DrawAdditive,
 	pfnPIC_EnableScissor,
 	pfnPIC_DisableScissor,
-	pfnFillRGBA,
+	pfnFillRGBA_menu,
 	pfnCvar_RegisterVariable,
 	Cvar_VariableValue,
 	Cvar_VariableString,
@@ -911,7 +911,7 @@ static ui_enginefuncs_t gEngfuncs =
 	UI_GetLogoWidth,
 	UI_GetLogoHeight,
 	UI_GetLogoLength,
-	pfnDrawCharacter,
+	pfnDrawCharacterQ,
 	UI_DrawConsoleString,
 	UI_DrawSetTextColor,
 	Con_DrawStringLen,

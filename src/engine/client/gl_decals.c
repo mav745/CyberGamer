@@ -13,28 +13,28 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "client.h"
-#include "gl_local.h"
 #include "cl_tent.h"
 
-#define DECAL_OVERLAP_DISTANCE	2
-#define DECAL_DISTANCE		4	// too big values produce more clipped polygons
-#define MAX_DECALCLIPVERT		32	// produced vertexes of fragmented decal
-#define DECAL_CACHEENTRY		256	// MUST BE POWER OF 2 or code below needs to change!
-#define DECAL_TRANSPARENT_THRESHOLD	230	// transparent decals draw with GL_MODULATE
+//#define DECAL_OVERLAP_DISTANCE	2
+//#define DECAL_DISTANCE		4	// too big values produce more clipped polygons
+//#define MAX_DECALCLIPVERT		32	// produced vertexes of fragmented decal
+//#define DECAL_CACHEENTRY		256	// MUST BE POWER OF 2 or code below needs to change!
+//#define DECAL_TRANSPARENT_THRESHOLD	230	// transparent decals draw with GL_MODULATE
 
-// empirically determined constants for minimizing overalpping decals
-#define MAX_OVERLAP_DECALS		6
-#define DECAL_OVERLAP_DIST		8
-#define MIN_DECAL_SCALE		0.01f
-#define MAX_DECAL_SCALE		16.0f
+//// empirically determined constants for minimizing overalpping decals
+//#define MAX_OVERLAP_DECALS		6
+//#define DECAL_OVERLAP_DIST		8
+//#define MIN_DECAL_SCALE		0.01f
+//#define MAX_DECAL_SCALE		16.0f
 
-// clip edges
-#define LEFT_EDGE			0
-#define RIGHT_EDGE			1
-#define TOP_EDGE			2
-#define BOTTOM_EDGE			3
+//// clip edges
+//#define LEFT_EDGE			0
+//#define RIGHT_EDGE			1
+//#define TOP_EDGE			2
+//#define BOTTOM_EDGE			3
 
 // This structure contains the information used to create new decals
 typedef struct
@@ -939,155 +939,155 @@ float *R_DecalSetupVerts( decal_t *pDecal, msurface_t *surf, int texture, int *o
 	return v;
 }
 
-void DrawSingleDecal( decal_t *pDecal, msurface_t *fa )
-{
-	float	*v;
-	int	i, numVerts;
+//void DrawSingleDecal( decal_t *pDecal, msurface_t *fa )
+//{
+//	float	*v;
+//	int	i, numVerts;
 
-	v = R_DecalSetupVerts( pDecal, fa, pDecal->texture, &numVerts );
-	if( !numVerts ) return;
+//	v = R_DecalSetupVerts( pDecal, fa, pDecal->texture, &numVerts );
+//	if( !numVerts ) return;
 
-	GL_Bind( GL_TEXTURE0, pDecal->texture );
+//	GL_Bind( GL_TEXTURE0, pDecal->texture );
 
-	pglBegin( GL_POLYGON );
+//	glBegin( GL_POLYGON );
 
-	for( i = 0; i < numVerts; i++, v += VERTEXSIZE )
-	{
-		pglTexCoord2f( v[3], v[4] );
-		pglVertex3fv( v );
-	}
+//	for( i = 0; i < numVerts; i++, v += VERTEXSIZE )
+//	{
+//		glTexCoord2f( v[3], v[4] );
+//		glVertex3fv( v );
+//	}
 
-	pglEnd();
-}
+//	glEnd();
+//}
 
-void DrawSurfaceDecals( msurface_t *fa )
-{
-	decal_t		*p;
-	cl_entity_t	*e;
+//void DrawSurfaceDecals( msurface_t *fa )
+//{
+//	decal_t		*p;
+//	cl_entity_t	*e;
 
-	if( !fa->pdecals ) return;
+//	if( !fa->pdecals ) return;
 
-	e = RI.currententity;
-	ASSERT( e != NULL );
+//	e = RI.currententity;
+//	ASSERT( e != NULL );
 
-	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
-	{
-		pglDepthMask( GL_FALSE );
-		pglEnable( GL_BLEND );
+//	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
+//	{
+//		glDepthMask( GL_FALSE );
+//		glEnable( GL_BLEND );
 
-		if( e->curstate.rendermode == kRenderTransAlpha )
-			pglDisable( GL_ALPHA_TEST );
-	}
+//		if( e->curstate.rendermode == kRenderTransAlpha )
+//			glDisable( GL_ALPHA_TEST );
+//	}
 
-	if( e->curstate.rendermode == kRenderTransColor )
-		pglEnable( GL_TEXTURE_2D );
+//	if( e->curstate.rendermode == kRenderTransColor )
+//		glEnable( GL_TEXTURE_2D );
 
-	if( e->curstate.rendermode == kRenderTransTexture || e->curstate.rendermode == kRenderTransAdd )
-		GL_Cull( GL_NONE );
+//	if( e->curstate.rendermode == kRenderTransTexture || e->curstate.rendermode == kRenderTransAdd )
+//		GL_Cull( GL_NONE );
 
-	pglEnable( GL_POLYGON_OFFSET_FILL );
-	pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//	glEnable( GL_POLYGON_OFFSET_FILL );
+//	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	if( fa->flags & SURF_TRANSPARENT && glState.stencilEnabled )
-	{
-		mtexinfo_t	*tex = fa->texinfo;
+//	if( fa->flags & SURF_TRANSPARENT && glState.stencilEnabled )
+//	{
+//		mtexinfo_t	*tex = fa->texinfo;
 
-		for( p = fa->pdecals; p; p = p->pnext )
-		{
-			if( p->texture )
-			{
-				float *o, *v;
-				int i, numVerts;
-				o = R_DecalSetupVerts( p, fa, p->texture, &numVerts );
+//		for( p = fa->pdecals; p; p = p->pnext )
+//		{
+//			if( p->texture )
+//			{
+//				float *o, *v;
+//				int i, numVerts;
+//				o = R_DecalSetupVerts( p, fa, p->texture, &numVerts );
 
-				pglEnable( GL_STENCIL_TEST );
-				pglStencilFunc( GL_ALWAYS, 1, 0xFFFFFFFF );
-				pglColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
+//				glEnable( GL_STENCIL_TEST );
+//				glStencilFunc( GL_ALWAYS, 1, 0xFFFFFFFF );
+//				glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
 
-				pglStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
-				pglBegin( GL_POLYGON );
+//				glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+//				glBegin( GL_POLYGON );
 
-				for( i = 0, v = o; i < numVerts; i++, v += VERTEXSIZE )
-				{
-					v[5] = ( DotProduct( v, tex->vecs[0] ) + tex->vecs[0][3] ) / tex->texture->width;
-					v[6] = ( DotProduct( v, tex->vecs[1] ) + tex->vecs[1][3] ) / tex->texture->height;
+//				for( i = 0, v = o; i < numVerts; i++, v += VERTEXSIZE )
+//				{
+//					v[5] = ( DotProduct( v, tex->vecs[0] ) + tex->vecs[0][3] ) / tex->texture->width;
+//					v[6] = ( DotProduct( v, tex->vecs[1] ) + tex->vecs[1][3] ) / tex->texture->height;
 
-					pglTexCoord2f( v[5], v[6] );
-					pglVertex3fv( v );
-				}
+//					glTexCoord2f( v[5], v[6] );
+//					glVertex3fv( v );
+//				}
 
-				pglEnd();
-				pglStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
+//				glEnd();
+//				glStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
 
-				pglEnable( GL_ALPHA_TEST );
-				pglBegin( GL_POLYGON );
+//				glEnable( GL_ALPHA_TEST );
+//				glBegin( GL_POLYGON );
 
-				for( i = 0, v = o; i < numVerts; i++, v += VERTEXSIZE )
-				{
-					pglTexCoord2f( v[5], v[6] );
-					pglVertex3fv( v );
-				}
+//				for( i = 0, v = o; i < numVerts; i++, v += VERTEXSIZE )
+//				{
+//					glTexCoord2f( v[5], v[6] );
+//					glVertex3fv( v );
+//				}
 
-				pglEnd();
-				pglDisable( GL_ALPHA_TEST );
+//				glEnd();
+//				glDisable( GL_ALPHA_TEST );
 
-				pglColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-				pglStencilFunc( GL_EQUAL, 0, 0xFFFFFFFF );
-				pglStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-			}
-		}
-	}
+//				glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+//				glStencilFunc( GL_EQUAL, 0, 0xFFFFFFFF );
+//				glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+//			}
+//		}
+//	}
 
-	for( p = fa->pdecals; p; p = p->pnext )
-	{
-		if( p->texture )
-		{
-			gltexture_t *glt = R_GetTexture( p->texture );
+//	for( p = fa->pdecals; p; p = p->pnext )
+//	{
+//		if( p->texture )
+//		{
+//			gltexture_t *glt = R_GetTexture( p->texture );
 
-			// normal HL decal with alpha-channel
-			if( glt->flags & TF_HAS_ALPHA )
-			{
-				// draw transparent decals with GL_MODULATE
-				if( glt->fogParams[3] > DECAL_TRANSPARENT_THRESHOLD )
-					pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-				else pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-				pglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			}
-			else
-			{
-				// color decal like detail texture. Base color is 127 127 127
-				pglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-				pglBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
-							  }
+//			// normal HL decal with alpha-channel
+//			if( glt->flags & TF_HAS_ALPHA )
+//			{
+//				// draw transparent decals with GL_MODULATE
+//				if( glt->fogParams[3] > DECAL_TRANSPARENT_THRESHOLD )
+//					glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+//				else glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+//				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//			}
+//			else
+//			{
+//				// color decal like detail texture. Base color is 127 127 127
+//				glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+//				glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+//							  }
 
-			DrawSingleDecal( p, fa );
-		}
-	}
+//			DrawSingleDecal( p, fa );
+//		}
+//	}
 
-	if( fa->flags & SURF_TRANSPARENT && glState.stencilEnabled )
-		pglDisable( GL_STENCIL_TEST );
+//	if( fa->flags & SURF_TRANSPARENT && glState.stencilEnabled )
+//		glDisable( GL_STENCIL_TEST );
 
-	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
-	{
-		pglDepthMask( GL_TRUE );
-		pglDisable( GL_BLEND );
+//	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
+//	{
+//		glDepthMask( GL_TRUE );
+//		glDisable( GL_BLEND );
 
-		if( e->curstate.rendermode == kRenderTransAlpha )
-			pglEnable( GL_ALPHA_TEST );
-	}
+//		if( e->curstate.rendermode == kRenderTransAlpha )
+//			glEnable( GL_ALPHA_TEST );
+//	}
 
-	pglDisable( GL_POLYGON_OFFSET_FILL );
+//	glDisable( GL_POLYGON_OFFSET_FILL );
 
-	if( e->curstate.rendermode == kRenderTransTexture || e->curstate.rendermode == kRenderTransAdd )
-		GL_Cull( GL_FRONT );
+//	if( e->curstate.rendermode == kRenderTransTexture || e->curstate.rendermode == kRenderTransAdd )
+//		GL_Cull( GL_FRONT );
 
-	if( e->curstate.rendermode == kRenderTransColor )
-		pglDisable( GL_TEXTURE_2D );
+//	if( e->curstate.rendermode == kRenderTransColor )
+//		glDisable( GL_TEXTURE_2D );
 
-	// restore blendfunc here
-	if( e->curstate.rendermode == kRenderTransAdd || e->curstate.rendermode == kRenderGlow )
-		pglBlendFunc( GL_SRC_ALPHA, GL_ONE );
-}
+//	// restore blendfunc here
+//	if( e->curstate.rendermode == kRenderTransAdd || e->curstate.rendermode == kRenderGlow )
+//		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+//}
 
 /*
 =============================================================
