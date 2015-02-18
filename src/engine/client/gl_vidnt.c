@@ -480,11 +480,12 @@ GL_Support
 */
 qboolean GL_Support( int r_ext )
 {
-	if( r_ext >= 0 && r_ext < GL_EXTCOUNT )
-		return glConfig.extension[r_ext] ? true : false;
-	MsgDev( D_ERROR, "GL_Support: invalid extension %d\n", r_ext );
+	return true;
+//	if( r_ext >= 0 && r_ext < GL_EXTCOUNT )
+//		return glConfig.extension[r_ext] ? true : false;
+//	MsgDev( D_ERROR, "GL_Support: invalid extension %d\n", r_ext );
 
-	return false;
+//	return false;
 }
 
 /*

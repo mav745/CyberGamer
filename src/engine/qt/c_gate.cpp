@@ -2,6 +2,7 @@
 #include "window.hpp"
 
 #include <QDebug>
+#include <QLabel>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 
@@ -42,7 +43,7 @@ void GL_SelectTexture( GLint tmu )
 	if( glState.activeTMU == tmu )
 		return;
 	glState.activeTMU = tmu;
-	//xW->glActiveTexture( tmu + GL_TEXTURE0_ARB );
+	xW->glActiveTexture( tmu + GL_TEXTURE0 );
 }
 
 void GL_Bind( GLint tmu, GLenum texnum )
@@ -62,15 +63,15 @@ void GL_Bind( GLint tmu, GLenum texnum )
 	if( glState.currentTextureTargets[tmu] != texture->target )
 	{
 		if( glState.currentTextureTargets[tmu] != GL_NONE )
-			//xW->glDisable( glState.currentTextureTargets[tmu] );
+			xW->glDisable( glState.currentTextureTargets[tmu] );
 		glState.currentTextureTargets[tmu] = texture->target;
-		//xW->glEnable( glState.currentTextureTargets[tmu] );
+		xW->glEnable( glState.currentTextureTargets[tmu] );
 	}
 
 	if( glState.currentTextures[tmu] == texture->texnum )
 		return;
 
-	//xW->glBindTexture( texture->target, texture->texnum );
+	xW->glBindTexture( GL_TEXTURE_2D, texture->texid );
 	glState.currentTextures[tmu] = texture->texnum;
 }
 void GL_TexFilter( gltexture_t *tex, qboolean update )
@@ -94,40 +95,40 @@ void GL_TexFilter( gltexture_t *tex, qboolean update )
 	// set texture filter
 	if( tex->flags & TF_DEPTHMAP )
 	{
-		//xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		//xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
 		if( !( tex->flags & TF_NOCOMPARE ))
 		{
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL );
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB );
 		}
 
-		//if( tex->flags & TF_LUMINANCE )
-			//xW->glTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE );
-		//else //xW->glTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY );
+		if( tex->flags & TF_LUMINANCE )
+			xW->glTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE );
+		else xW->glTexParameteri( tex->target, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY );
 
 		//if( GL_Support( GL_ANISOTROPY_EXT ))
-			//xW->glTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
+			xW->glTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f );
 	}
 	else if( tex->flags & TF_NOMIPMAP )
 	{
 		if( tex->flags & TF_NEAREST )
 		{
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 		}
 		else
 		{
 			if( r_textureMagFilter == GL_NEAREST && allowNearest )
 			{
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMagFilter );
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
+				xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMagFilter );
+				xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
 			}
 			else
 			{
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+				xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+				xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 			}
 		}
 	}
@@ -135,22 +136,22 @@ void GL_TexFilter( gltexture_t *tex, qboolean update )
 	{
 		if( tex->flags & TF_NEAREST )
 		{
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 		}
 		else
 		{
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMinFilter );
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMinFilter );
+			xW->glTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
 		}
 
 		// set texture anisotropy if available
-		//if( /*GL_Support( GL_ANISOTROPY_EXT ) &&*/ !( tex->flags & TF_ALPHACONTRAST ))
-			//xW->glTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_texture_anisotropy->value );
+		if( /*GL_Support( GL_ANISOTROPY_EXT ) &&*/ !( tex->flags & TF_ALPHACONTRAST ))
+			xW->glTexParameterf( tex->target, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_texture_anisotropy->value );
 
 		// set texture LOD bias if available
 		//if( GL_Support( GL_TEXTURE_LODBIAS ))
-			//xW->glTexParameterf( tex->target, GL_TEXTURE_LOD_BIAS_EXT, gl_texture_lodbias->value );
+			xW->glTexParameterf( tex->target, GL_TEXTURE_LOD_BIAS_EXT, gl_texture_lodbias->value );
 	}
 
 	if( update ) return;
@@ -165,51 +166,51 @@ void GL_TexFilter( gltexture_t *tex, qboolean update )
 	// set texture wrap
 	if( tex->flags & TF_CLAMP )
 	{
-		if( GL_Support( GL_CLAMPTOEDGE_EXT ))
-		{
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+//		if( GL_Support( GL_CLAMPTOEDGE_EXT ))
+//		{
+			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 
-			//if( tex->target != GL_TEXTURE_1D )
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+			if( tex->target != GL_TEXTURE_1D )
+				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			//if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-		}
-		else
-		{
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP );
+			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+//		}
+//		else
+//		{
+//			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP );
 
-			//if( tex->target != GL_TEXTURE_1D )
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP );
+//			if( tex->target != GL_TEXTURE_1D )
+//				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP );
 
-			//if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-				//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP );
-		}
+//			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+//				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP );
+//		}
 	}
 	else if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ))
 	{
-		//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER );
+		xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER );
 
-		//if( tex->target != GL_TEXTURE_1D )
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER );
+		if( tex->target != GL_TEXTURE_1D )
+			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER );
 
-		//if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER );
+		if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER );
 
-		//if( tex->flags & TF_BORDER )
-			//xW->glTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, zeroClampBorder );
-		//else if( tex->flags & TF_ALPHA_BORDER )
-			//xW->glTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, alphaZeroClampBorder );
+		if( tex->flags & TF_BORDER )
+			xW->glTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, zeroClampBorder );
+		else if( tex->flags & TF_ALPHA_BORDER )
+			xW->glTexParameterfv( tex->target, GL_TEXTURE_BORDER_COLOR, alphaZeroClampBorder );
 	}
 	else
 	{
-		//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_REPEAT );
+		xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_REPEAT );
 
-		//if( tex->target != GL_TEXTURE_1D )
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_REPEAT );
+		if( tex->target != GL_TEXTURE_1D )
+			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
-		//if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-			//xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_REPEAT );
+		if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_REPEAT );
 	}
 }
 
@@ -290,13 +291,13 @@ void GL_Cull( GLenum cull )
 {
 	if( !cull )
 	{
-		//xW->glDisable( GL_CULL_FACE );
+		xW->glDisable( GL_CULL_FACE );
 		glState.faceCull = 0;
 		return;
 	}
 
-	//xW->glEnable( GL_CULL_FACE );
-	//xW->glCullFace( cull );
+	xW->glEnable( GL_CULL_FACE );
+	xW->glCullFace( cull );
 	glState.faceCull = cull;
 }
 
@@ -307,7 +308,7 @@ GL_FrontFace
 */
 void GL_FrontFace( GLenum front )
 {
-	//xW->glFrontFace( front ? GL_CW : GL_CCW );
+	xW->glFrontFace( front ? GL_CW : GL_CCW );
 	glState.frontFace = front;
 }
 
@@ -317,82 +318,82 @@ void GL_SetRenderMode( int mode )
 	{
 	case kRenderNormal:
 	default:
-		//xW->glDisable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
+		xW->glDisable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
 		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 		break;
 	case kRenderTransColor:
 	case kRenderTransTexture:
-		//xW->glEnable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		xW->glEnable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderTransAlpha:
-		//xW->glDisable( GL_BLEND );
-		//xW->glEnable( GL_ALPHA_TEST );
+		xW->glDisable( GL_BLEND );
+		xW->glEnable( GL_ALPHA_TEST );
 		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderGlow:
 	case kRenderTransAdd:
-		//xW->glEnable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		xW->glEnable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum )
 {
-	GL_Bind( GL_TEXTURE0, texnum );
+	GL_Bind( 0, texnum );
 
-	GLfloat uv[] = {s1, t1, 0, // bottom left corner
-						 s2,  t1, 0, // top left corner
-						   s2,  t2, 0, // top right corner
-						   s1, t2, 0,}; // bottom right corner
+	xW->glBegin( GL_QUADS );
+		xW->glTexCoord2f( s1, t1 );
+		xW->glVertex2f( x, y );
 
-	xW->drawQuad(x, y, w, h, uv, texnum);
+		xW->glTexCoord2f( s2, t1 );
+		xW->glVertex2f( x + w, y );
+
+		xW->glTexCoord2f( s2, t2 );
+		xW->glVertex2f( x + w, y + h );
+
+		xW->glTexCoord2f( s1, t2 );
+		xW->glVertex2f( x, y + h );
+	xW->glEnd();
 }
 
-/*
-=============
-Draw_TileClear
-
-This repeats a 64*64 tile graphic to fill the screen around a sized down
-refresh window.
-=============
-*/
 void R_DrawTileClear( int x, int y, int w, int h )
 {
 	float		tw, th;
 	gltexture_t	*glt;
-	float fx = (float)x, fy = (float)y, fw = (float)w, fh = (float)h;
 
 	GL_SetRenderMode( kRenderNormal );
-	////////xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	GL_Bind( GL_TEXTURE0, cls.tileImage );
+	xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	GL_Bind( 0, cls.tileImage );
 
 	glt = R_GetTexture( cls.tileImage );
 	tw = glt->srcWidth;
 	th = glt->srcHeight;
 
-	GLfloat uv[] = {fx/tw, fy/th, // bottom left corner
-					(fx+fw)/tw,  fy/th, // top left corner
-					 (fx+fw)/tw,  (fy+fh)/th, // top right corner
-					 fx/tw, (fy+fh)/th}; // bottom right corner
-	xW->drawQuad(x, y, w, h, uv, cls.tileImage);
+	xW->glBegin( GL_QUADS );
+		xW->glTexCoord2f( (float)x / tw, (float)y / th );
+		xW->glVertex2f( (float)x, (float)y );
+		xW->glTexCoord2f((float)(x + w) / tw, (float)y / th );
+		xW->glVertex2f( (float)(x + w), (float)y );
+		xW->glTexCoord2f((float)(x + w) / tw, (float)(y + h) / th );
+		xW->glVertex2f( (float)(x + w), (float)(y + h) );
+		xW->glTexCoord2f( (float)x / tw, (float)(y + h) / th );
+		xW->glVertex2f( (float)x, (float)(y + h) );
+	xW->glEnd ();
 }
 
-/*
-=============
-R_DrawStretchRaw
-=============
-*/
 void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
 {
 	byte		*raw = NULL;
-//	gltexture_t	*tex;
+	gltexture_t	*tex;
 
 	int	width = 1, height = 1;
 
@@ -406,48 +407,109 @@ void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, c
 		cols = width;
 		rows = height;
 	}
+	else
+		raw = (byte *)data;
 
-	//xW->glDisable( GL_BLEND );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_ALPHA_TEST );
+	//glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
-//	tex = R_GetTexture( tr.cinTexture );
-//	GL_Bind( GL_TEXTURE0, tr.cinTexture );
+	tex = R_GetTexture( tr.cinTexture );
+	GL_Bind( 0, tr.cinTexture );
 
-//	tex->width = cols;
-//	tex->height = rows;
-	xW->glBindTexture( GL_TEXTURE_2D, tr.cinTexture );
-	if( dirty )
-		xW->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+	if( cols == tex->width && rows == tex->height )
+	{
+		if( dirty )
+		{
+			xW->glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, cols, rows, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+		}
+	}
+	else
+	{
+		tex->width = cols;
+		tex->height = rows;
+		if( dirty )
+		{
+			xW->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+		}
+	}
 
-	GLfloat uv[] = {0, 0, // bottom left corner
-					1,  0, // top left corner
-					1,  1, // top right corner
-					0, 1}; // bottom right corner
-	xW->drawQuad(x, y, w, h, uv, tr.cinTexture);
+	xW->glBegin( GL_QUADS );
+	xW->glTexCoord2f( 0, 0 );
+	xW->glVertex2f( x, y );
+	xW->glTexCoord2f( 1, 0 );
+	xW->glVertex2f( x + w, y );
+	xW->glTexCoord2f( 1, 1 );
+	xW->glVertex2f( x + w, y + h );
+	xW->glTexCoord2f( 0, 1 );
+	xW->glVertex2f( x, y + h );
+	xW->glEnd();
 }
 
-/*
-=============
-R_UploadStretchRaw
-=============
-*/
+//void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
+//{
+//	byte		*raw = NULL;
+//	gltexture_t	*tex;
+
+//	int	width = 1, height = 1;
+
+//	// check the dimensions
+//	width = NearestPOW( cols, true );
+//	height = NearestPOW( rows, false );
+
+//	if( cols != width || rows != height )
+//	{
+//		raw = GL_ResampleTexture( data, cols, rows, width, height, false );
+//		cols = width;
+//		rows = height;
+//	}
+//	else
+//		raw = data;
+
+//	xW->glDisable( GL_BLEND );
+//	xW->glDisable( GL_ALPHA_TEST );
+//	//xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+
+//	tex = R_GetTexture( tr.cinTexture );
+//	GL_Bind( 0, tr.cinTexture );
+
+//	if( cols == tex->width && rows == tex->height )
+//	{
+//		if( dirty )
+//		{
+//			xW->glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, cols, rows, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+//		}
+//	}
+//	else
+//	{
+//		tex->width = cols;
+//		tex->height = rows;
+//		if( dirty )
+//		{
+//			xW->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+//		}
+//	}
+
+//	xW->glBegin( GL_QUADS );
+//	xW->glTexCoord2f( 0, 0 );
+//	xW->glVertex2f( x, y );
+//	xW->glTexCoord2f( 1, 0 );
+//	xW->glVertex2f( x + w, y );
+//	xW->glTexCoord2f( 1, 1 );
+//	xW->glVertex2f( x + w, y + h );
+//	xW->glTexCoord2f( 0, 1 );
+//	xW->glVertex2f( x, y + h );
+//	xW->glEnd();
+//}
+
 void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data )
 {
 	byte		*raw = NULL;
 	gltexture_t	*tex;
 
-	if( !GL_Support( GL_ARB_TEXTURE_NPOT_EXT ))
-	{
-		// check the dimensions
-		width = NearestPOW( width, true );
-		height = NearestPOW( height, false );
-	}
-	else
-	{
-		width = bound( 128, width, glConfig.max_2d_texture_size );
-		height = bound( 128, height, glConfig.max_2d_texture_size );
-	}
+	// check the dimensions
+	width = NearestPOW( width, true );
+	height = NearestPOW( height, false );
 
 	if( cols != width || rows != height )
 	{
@@ -460,25 +522,15 @@ void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height,
 		raw = (byte *)data;
 	}
 
-	if( cols > glConfig.max_2d_texture_size )
-		Host_Error( "R_UploadStretchRaw: size %i exceeds hardware limits\n", cols );
-	if( rows > glConfig.max_2d_texture_size )
-		Host_Error( "R_UploadStretchRaw: size %i exceeds hardware limits\n", rows );
-
 	tex = R_GetTexture( texture );
 	GL_Bind( GL_KEEP_UNIT, texture );
 	tex->width = cols;
 	tex->height = rows;
 
-	//xW->glTexImage2D( GL_TEXTURE_2D, 0, tex->format, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
+	xW->glTexImage2D( GL_TEXTURE_2D, 0, tex->format, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
 	GL_TexFilter( tex, false );
 }
 
-/*
-===============
-R_Set2DMode
-===============
-*/
 void R_Set2DMode( qboolean enable )
 {
 	if( enable )
@@ -487,18 +539,18 @@ void R_Set2DMode( qboolean enable )
 			return;
 
 		// set 2D virtual screen size
-		//xW->glViewport( 0, 0, glState.width, glState.height );
-//		////xW->glMatrixMode( GL_PROJECTION );
-//		////xW->glLoadIdentity();
-//		//xW->glOrtho( 0, glState.width, glState.height, 0, -99999, 99999 );
-//		////xW->glMatrixMode( GL_MODELVIEW );
-//		////xW->glLoadIdentity();
+		xW->glViewport( 0, 0, glState.width, glState.height );
+		xW->glMatrixMode( GL_PROJECTION );
+		xW->glLoadIdentity();
+		xW->glOrtho( 0, glState.width, glState.height, 0, -99999, 99999 );
+		xW->glMatrixMode( GL_MODELVIEW );
+		xW->glLoadIdentity();
 
 		GL_Cull( 0 );
 
-		//xW->glDepthMask( GL_FALSE );
-		//xW->glDisable( GL_DEPTH_TEST );
-//		//////xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+		xW->glDepthMask( GL_FALSE );
+		xW->glDisable( GL_DEPTH_TEST );
+		xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		glState.in2DMode = true;
 		RI.currententity = NULL;
@@ -506,18 +558,21 @@ void R_Set2DMode( qboolean enable )
 	}
 	else
 	{
-		//xW->glDepthMask( GL_TRUE );
-		//xW->glEnable( GL_DEPTH_TEST );
+		xW->glDepthMask( GL_TRUE );
+		xW->glEnable( GL_DEPTH_TEST );
 		glState.in2DMode = false;
 
-//		////xW->glMatrixMode( GL_PROJECTION );
-//		GL_LoadMatrix( RI.projectionMatrix );
+		xW->glMatrixMode( GL_PROJECTION );
+		GL_LoadMatrix( RI.projectionMatrix );
 
-//		////xW->glMatrixMode( GL_MODELVIEW );
-//		GL_LoadMatrix( RI.worldviewMatrix );
+		xW->glMatrixMode( GL_MODELVIEW );
+		GL_LoadMatrix( RI.worldviewMatrix );
 
 	}
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////
 
 int R_AllocateMirrorTexture()
 {
@@ -553,7 +608,7 @@ int R_AllocateMirrorTexture()
 	}
 
 	GL_Bind( GL_TEXTURE0, texture );
-	//xW->glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3], 0 );
+	xW->glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3], 0 );
 
 	return texture;
 }
@@ -567,7 +622,7 @@ void CL_BulletTracerDraw( particle_t *p, float frametime )
 	float	dDistance, dTotal, fOffset;
 	int	alpha = (int)(traceralpha->value * 255);
 	float	width = 3.0f, life, frac, length;
-	vec3_t	tmp1,tmp2,tmp3,tmp4;
+	vec3_t	tmp;
 
 	// calculate distance
 	VectorCopy( p->vel, vecDir );
@@ -616,88 +671,27 @@ void CL_BulletTracerDraw( particle_t *p, float frametime )
 	GL_SetRenderMode( kRenderTransTexture );
 
 	GL_Bind( GL_TEXTURE0, cls.particleImage );
-	//////xW->glBegin( GL_QUADS );
+	glBegin( GL_QUADS );
 
-	//////xW->glColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
+	glColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
 
-	VectorMA( vecStart, -width, cross, tmp1 );
-//	////xW->glTexCoord2f( 1.0f, 0.0f );
-//	////xW->glVertex3fv( tmp );
+	VectorMA( vecStart, -width, cross, tmp );
+	glTexCoord2f( 1.0f, 0.0f );
+	glVertex3fv( tmp );
 
-	VectorMA( vecStart, width, cross, tmp2 );
-//	////xW->glTexCoord2f( 0.0f, 0.0f );
-//	////xW->glVertex3fv( tmp );
+	VectorMA( vecStart, width, cross, tmp );
+	glTexCoord2f( 0.0f, 0.0f );
+	glVertex3fv( tmp );
 
-	VectorMA( vecEnd, width, cross, tmp3 );
-//	////xW->glTexCoord2f( 0.0f, fOffset );
-//	////xW->glVertex3fv( tmp );
+	VectorMA( vecEnd, width, cross, tmp );
+	glTexCoord2f( 0.0f, fOffset );
+	glVertex3fv( tmp );
 
-	VectorMA( vecEnd, -width, cross, tmp4 );
-	//////xW->glTexCoord2f( 1.0f, fOffset );
-	//////xW->glVertex3fv( tmp );
+	VectorMA( vecEnd, -width, cross, tmp );
+	glTexCoord2f( 1.0f, fOffset );
+	glVertex3fv( tmp );
 
-	//////xW->glEnd();
-
-	GLfloat vertices[] = {tmp1[0], tmp1[1], tmp1[2], // bottom left corner
-						  tmp2[0], tmp2[1], tmp2[2], // top left corner
-						   tmp3[0], tmp3[1], tmp3[2], // top right corner
-						   tmp4[0], tmp4[1], tmp4[2]}; // bottom right corner
-	GLfloat uv[] = {1, 0, 0, // bottom left corner
-						 0,  0, 0, // top left corner
-						   0,  fOffset, 0, // top right corner
-						   1, fOffset, 0}; // bottom right corner
-
-//	//xW->glEnableClientState(GL_VERTEX_ARRAY);
-//	//xW->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-//	//xW->glTexCoordPointer(2, GL_FLOAT, 0, vertices);
-//	//xW->glVertexPointer(2, GL_FLOAT, 0, uv);
-//	//xW->glDrawArrays(GL_QUADS, 0, 4);
-
-//	QOpenGLBuffer vertexPositionBuffer(QOpenGLBuffer::VertexBuffer);
-//	vertexPositionBuffer.create();
-//	vertexPositionBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
-//	vertexPositionBuffer.bind();
-//	vertexPositionBuffer.allocate(vertices, 12 * sizeof(float));
-
-//	QOpenGLBuffer texCoordBuffer(QOpenGLBuffer::VertexBuffer);
-//	texCoordBuffer.create();
-//	texCoordBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
-//	texCoordBuffer.bind();
-//	texCoordBuffer.allocate(uv, 12 * sizeof(float));
-
-//	QOpenGLShaderProgram program;
-//	program.addShaderFromSourceCode(
-//		QOpenGLShader::Vertex,
-//		"#version 330\n"
-//		"in vec3 position;\n"
-//		"in vec3 coord;\n"
-//		"out vec3 fragCoord;\n"
-//		"void main() {\n"
-//		"    fragCoord = coord;\n"
-//		"    gl_Position = vec4(position, 1.0);\n"
-//		"}\n"
-//	);
-//	program.addShaderFromSourceCode(
-//		QOpenGLShader::Fragment,
-//		"#version 330\n"
-//		"in vec3 fragCoord;\n"
-//		"out vec4 color;\n"
-//		"void main() {\n"
-//		"    color = vec4(fragColor, 1.0);\n"
-//		"}\n"
-//	);
-//	program.link();
-//	program.bind();
-
-//	vertexPositionBuffer.bind();
-//	program.enableAttributeArray("position");
-//	program.setAttributeBuffer("position", GL_FLOAT, 0, 4);
-
-//	texCoordBuffer.bind();
-//	program.enableAttributeArray("coord");
-//	program.setAttributeBuffer("coord", GL_FLOAT, 0, 4);
-
-//	//xW->glDrawArrays(GL_QUADS, 0, 4);
+	glEnd();
 }
 
 /*
@@ -815,23 +809,23 @@ void CL_UpdateParticle( particle_t *p, float ft )
 	VectorSet( color, clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2] );
 
 	GL_SetRenderMode( kRenderTransTexture );
-//	////xW->glColor4ub( color[0], color[1], color[2], alpha );
+	xW->glColor4ub( color[0], color[1], color[2], alpha );
 
 	GL_Bind( GL_TEXTURE0, cls.particleImage );
 
 	// add the 4 corner vertices.
-//	////xW->glBegin( GL_QUADS );
+	xW->glBegin( GL_QUADS );
 
-//	////xW->glTexCoord2f( 0.0f, 1.0f );
-//	////xW->glVertex3f( p->org[0] - right[0] + up[0], p->org[1] - right[1] + up[1], p->org[2] - right[2] + up[2] );
-//	////xW->glTexCoord2f( 0.0f, 0.0f );
-//	////xW->glVertex3f( p->org[0] + right[0] + up[0], p->org[1] + right[1] + up[1], p->org[2] + right[2] + up[2] );
-//	////xW->glTexCoord2f( 1.0f, 0.0f );
-//	////xW->glVertex3f( p->org[0] + right[0] - up[0], p->org[1] + right[1] - up[1], p->org[2] + right[2] - up[2] );
-//	////xW->glTexCoord2f( 1.0f, 1.0f );
-//	////xW->glVertex3f( p->org[0] - right[0] - up[0], p->org[1] - right[1] - up[1], p->org[2] - right[2] - up[2] );
+	xW->glTexCoord2f( 0.0f, 1.0f );
+	xW->glVertex3f( p->org[0] - right[0] + up[0], p->org[1] - right[1] + up[1], p->org[2] - right[2] + up[2] );
+	xW->glTexCoord2f( 0.0f, 0.0f );
+	xW->glVertex3f( p->org[0] + right[0] + up[0], p->org[1] + right[1] + up[1], p->org[2] + right[2] + up[2] );
+	xW->glTexCoord2f( 1.0f, 0.0f );
+	xW->glVertex3f( p->org[0] + right[0] - up[0], p->org[1] + right[1] - up[1], p->org[2] + right[2] - up[2] );
+	xW->glTexCoord2f( 1.0f, 1.0f );
+	xW->glVertex3f( p->org[0] - right[0] - up[0], p->org[1] - right[1] - up[1], p->org[2] - right[2] - up[2] );
 
-//	////xW->glEnd();
+	xW->glEnd();
 
 	if( p->type != pt_clientcustom )
 	{
@@ -853,24 +847,24 @@ void CL_DrawTracer( vec3_t start, vec3_t delta, float width, rgb_t color, int al
 
 	GL_SetRenderMode( kRenderTransTexture );
 
-//	////xW->glColor4ub( color[0], color[1], color[2], alpha );
+	xW->glColor4ub( color[0], color[1], color[2], alpha );
 
 	GL_Bind( GL_TEXTURE0, cls.particleImage );
-//	////xW->glBegin( GL_QUADS );
+	xW->glBegin( GL_QUADS );
 
-//	////xW->glTexCoord2f( 0.0f, endV );
-//	////xW->glVertex3fv( verts[2] );
+	xW->glTexCoord2f( 0.0f, endV );
+	xW->glVertex3fv( verts[2] );
 
-//	////xW->glTexCoord2f( 1.0f, endV );
-//	////xW->glVertex3fv( verts[3] );
+	xW->glTexCoord2f( 1.0f, endV );
+	xW->glVertex3fv( verts[3] );
 
-//	////xW->glTexCoord2f( 1.0f, startV );
-//	////xW->glVertex3fv( verts[1] );
+	xW->glTexCoord2f( 1.0f, startV );
+	xW->glVertex3fv( verts[1] );
 
-//	////xW->glTexCoord2f( 0.0f, startV );
-//	////xW->glVertex3fv( verts[0] );
+	xW->glTexCoord2f( 0.0f, startV );
+	xW->glVertex3fv( verts[0] );
 
-//	////xW->glEnd();
+	xW->glEnd();
 }
 
 void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta,
@@ -951,7 +945,7 @@ void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3_t sour
 
 	SetBeamRenderMode( rendermode );
 	GL_Bind( GL_TEXTURE0, m_hSprite );
-//	////xW->glBegin( GL_TRIANGLE_STRIP );
+	xW->glBegin( GL_TRIANGLE_STRIP );
 
 	// specify all the segments.
 	for( i = 0; i < segments; i++ )
@@ -1041,15 +1035,15 @@ void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3_t sour
 			VectorMA( curSeg.pos, ( curSeg.width * 0.5f ), vAveNormal, vPoint1 );
 			VectorMA( curSeg.pos, (-curSeg.width * 0.5f ), vAveNormal, vPoint2 );
 
-//			//////xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
-//			////xW->glTexCoord2f( 0.0f, curSeg.texcoord );
-//			//xW->glNormal3fv( vAveNormal );
-//			////xW->glVertex3fv( vPoint1 );
+			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
+			xW->glTexCoord2f( 0.0f, curSeg.texcoord );
+			//xW->glNormal3fv( vAveNormal );
+			xW->glVertex3fv( vPoint1 );
 
-//			//////xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
-//			////xW->glTexCoord2f( 1.0f, curSeg.texcoord );
-//			//xW->glNormal3fv( vAveNormal );
-//			////xW->glVertex3fv( vPoint2 );
+			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
+			xW->glTexCoord2f( 1.0f, curSeg.texcoord );
+			//xW->glNormal3fv( vAveNormal );
+			xW->glVertex3fv( vPoint2 );
 		}
 
 		curSeg = nextSeg;
@@ -1062,22 +1056,22 @@ void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3_t sour
 			VectorMA( curSeg.pos, (-curSeg.width * 0.5f ), vLastNormal, vPoint2 );
 
 			// specify the points.
-//			//////xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
-//			////xW->glTexCoord2f( 0.0f, curSeg.texcoord );
-//			//xW->glNormal3fv( vLastNormal );
-//			////xW->glVertex3fv( vPoint1 );
+			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
+			xW->glTexCoord2f( 0.0f, curSeg.texcoord );
+			//xW->glNormal3fv( vLastNormal );
+			xW->glVertex3fv( vPoint1 );
 
-//			//////xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
-//			////xW->glTexCoord2f( 1.0f, curSeg.texcoord );
-//			//xW->glNormal3fv( vLastNormal );
-//			////xW->glVertex3fv( vPoint2 );
+			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
+			xW->glTexCoord2f( 1.0f, curSeg.texcoord );
+			//xW->glNormal3fv( vLastNormal );
+			xW->glVertex3fv( vPoint2 );
 		}
 
 		vLast += vStep; // Advance texture scroll (v axis only)
 		noiseIndex += noiseStep;
 	}
 
-//	////xW->glEnd();
+	xW->glEnd();
 }
 
 /*
@@ -1119,9 +1113,9 @@ void CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3_t sour
 	SetBeamRenderMode( rendermode );
 	GL_Bind( GL_TEXTURE0, m_hSprite );
 
-//	////xW->glBegin( GL_TRIANGLE_STRIP );
+	xW->glBegin( GL_TRIANGLE_STRIP );
 
-	// NOTE: We must force the degenerate trian//xW->gles to be on the edge
+	// NOTE: We must force the degenerate triangles to be on the edge
 	for( i = 0; i < segments; i++ )
 	{
 		float	s, c;
@@ -1129,23 +1123,23 @@ void CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3_t sour
 		fraction = i * div;
 		VectorCopy( source, point );
 
-//		//////xW->glColor4f( color[0], color[1], color[2], 1.0f );
-//		////xW->glTexCoord2f( 1.0f, vLast );
-//		////xW->glVertex3fv( point );
+		xW->glColor4f( color[0], color[1], color[2], 1.0f );
+		xW->glTexCoord2f( 1.0f, vLast );
+		xW->glVertex3fv( point );
 
 		SinCos( fraction * M_PI2, &s, &c );
 		point[0] = s * w + source[0];
 		point[1] = c * w + source[1];
 		point[2] = source[2];
 
-		//////xW->glColor4f( color[0], color[1], color[2], 1.0f );
-		////xW->glTexCoord2f( 0.0f, vLast );
-		////xW->glVertex3fv( point );
+		xW->glColor4f( color[0], color[1], color[2], 1.0f );
+		xW->glTexCoord2f( 0.0f, vLast );
+		xW->glVertex3fv( point );
 
 		vLast += vStep;	// Advance texture scroll (v axis only)
 	}
 
-//	////xW->glEnd();
+	xW->glEnd();
 }
 
 /*
@@ -1186,7 +1180,7 @@ void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const vec3_t 
 	SetBeamRenderMode( rendermode );
 	GL_Bind( GL_TEXTURE0, m_hSprite );
 
-//	////xW->glBegin( GL_TRIANGLE_STRIP );
+	xW->glBegin( GL_TRIANGLE_STRIP );
 
 	for( i = 0; i < segments; i++ )
 	{
@@ -1199,22 +1193,22 @@ void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const vec3_t 
 		point[1] = c * freq * delta[2] + source[1];
 		point[2] = source[2] + width;
 
-//		//////xW->glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
-//		////xW->glTexCoord2f( 1.0f, vLast );
-//		////xW->glVertex3fv( point );
+		xW->glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+		xW->glTexCoord2f( 1.0f, vLast );
+		xW->glVertex3fv( point );
 
 		point[0] = s * freq * (delta[2] + width) + source[0];
 		point[1] = c * freq * (delta[2] + width) + source[1];
 		point[2] = source[2] - width;
 
-		//////xW->glColor4f( color[0], color[1], color[2], 1.0f );
-		////xW->glTexCoord2f( 0.0f, vLast );
-		////xW->glVertex3fv( point );
+		xW->glColor4f( color[0], color[1], color[2], 1.0f );
+		xW->glTexCoord2f( 0.0f, vLast );
+		xW->glVertex3fv( point );
 
 		vLast += vStep;	// Advance texture scroll (v axis only)
 	}
 
-//	////xW->glEnd();
+	xW->glEnd();
 	GL_Cull( GL_FRONT );
 }
 
@@ -1299,7 +1293,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 	SetBeamRenderMode( rendermode );
 	GL_Bind( GL_TEXTURE0, m_hSprite );
 
-//	////xW->glBegin( GL_TRIANGLE_STRIP );
+	xW->glBegin( GL_TRIANGLE_STRIP );
 
 	for( i = 0; i < segments + 1; i++ )
 	{
@@ -1338,13 +1332,13 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 			VectorMA( point, -width, normal, last2 );
 
 			vLast += vStep;	// Advance texture scroll (v axis only)
-//			//////xW->glColor4f( color[0], color[1], color[2], 1.0f );
-//			////xW->glTexCoord2f( 1.0f, vLast );
-//			////xW->glVertex3fv( last2 );
+			xW->glColor4f( color[0], color[1], color[2], 1.0f );
+			xW->glTexCoord2f( 1.0f, vLast );
+			xW->glVertex3fv( last2 );
 
-//			//////xW->glColor4f( color[0], color[1], color[2], 1.0f );
-//			////xW->glTexCoord2f( 0.0f, vLast );
-//			////xW->glVertex3fv( last1 );
+			xW->glColor4f( color[0], color[1], color[2], 1.0f );
+			xW->glTexCoord2f( 0.0f, vLast );
+			xW->glVertex3fv( last1 );
 		}
 
 		VectorCopy( screen, screenLast );
@@ -1358,7 +1352,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 		}
 	}
 
-//	////xW->glEnd();
+	xW->glEnd();
 }
 
 /*
@@ -1469,17 +1463,17 @@ void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int rendermod
 	SetBeamRenderMode( rendermode );
 	GL_Bind( GL_TEXTURE0, m_hSprite );
 
-//	////xW->glBegin( GL_QUADS );
+	xW->glBegin( GL_QUADS );
 
 	while( pHead )
 	{
-//		////xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
-//		////xW->glTexCoord2f( 1.0f, 1.0f );
-//		////xW->glVertex3fv( last2 );
+		xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
+		xW->glTexCoord2f( 1.0f, 1.0f );
+		xW->glVertex3fv( last2 );
 
-//		////xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
-//		////xW->glTexCoord2f( 0.0f, 1.0f );
-//		////xW->glVertex3fv( last1 );
+		xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
+		xW->glTexCoord2f( 0.0f, 1.0f );
+		xW->glVertex3fv( last1 );
 
 		// Transform point into screen space
 		TriWorldToScreen( pHead->org, screen );
@@ -1514,20 +1508,20 @@ void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int rendermod
 			fraction = 0.0;
 		}
 
-//		////xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
-//		////xW->glTexCoord2f( 0.0f, 0.0f );
-//		////xW->glVertex3fv( last1 );
+		xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
+		xW->glTexCoord2f( 0.0f, 0.0f );
+		xW->glVertex3fv( last1 );
 
-//		////xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
-//		////xW->glTexCoord2f( 1.0f, 0.0f );
-//		////xW->glVertex3fv( last2 );
+		xW->glColor4ub( nColor[0], nColor[1], nColor[2], 255 );
+		xW->glTexCoord2f( 1.0f, 0.0f );
+		xW->glVertex3fv( last2 );
 
 		VectorCopy( screen, screenLast );
 
 		pHead = pHead->next;
 	}
 
-//	////xW->glEnd();
+	xW->glEnd();
 }
 void DrawGLPoly( glpoly_t *p, float xScale, float yScale )
 {
@@ -1574,18 +1568,18 @@ void DrawGLPoly( glpoly_t *p, float xScale, float yScale )
 	if( xScale != 0.0f && yScale != 0.0f )
 		hasScale = true;
 
-	////xW->glBegin( GL_POLYGON );
+	xW->glBegin( GL_POLYGON );
 
 	for( i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE )
 	{
-		//if( hasScale )
-			////xW->glTexCoord2f(( v[3] + sOffset ) * xScale, ( v[4] + tOffset ) * yScale );
-		//else ////xW->glTexCoord2f( v[3] + sOffset, v[4] + tOffset );
+		if( hasScale )
+			xW->glTexCoord2f(( v[3] + sOffset ) * xScale, ( v[4] + tOffset ) * yScale );
+		else xW->glTexCoord2f( v[3] + sOffset, v[4] + tOffset );
 
-		////xW->glVertex3fv( v );
+		xW->glVertex3fv( v );
 	}
 
-	////xW->glEnd();
+	xW->glEnd();
 
 	// special hack for non-lightmapped surfaces
 	if( p->flags & SURF_DRAWTILED )
@@ -1611,16 +1605,16 @@ void DrawGLPolyChain( glpoly_t *p, float soffset, float toffset )
 		float	*v;
 		int	i;
 
-//		////xW->glBegin( GL_POLYGON );
+		xW->glBegin( GL_POLYGON );
 
 		v = p->verts[0];
 		for( i = 0; i < p->numverts; i++, v += VERTEXSIZE )
 		{
-//			if( !dynamic ) ////xW->glTexCoord2f( v[5], v[6] );
-//			else ////xW->glTexCoord2f( v[5] - soffset, v[6] - toffset );
-//			////xW->glVertex3fv( v );
+			if( !dynamic ) xW->glTexCoord2f( v[5], v[6] );
+			else xW->glTexCoord2f( v[5] - soffset, v[6] - toffset );
+			xW->glVertex3fv( v );
 		}
-//		////xW->glEnd ();
+		xW->glEnd ();
 	}
 }
 
@@ -1658,17 +1652,17 @@ void R_BlendLightmaps( void )
 
 	if( !r_lightmap->integer )
 	{
-		//xW->glEnable( GL_BLEND );
+		xW->glEnable( GL_BLEND );
 
 		if( !glState.drawTrans )
 		{
 			// lightmapped solid surfaces
-			//xW->glDepthMask( GL_FALSE );
-			//xW->glDepthFunc( GL_EQUAL );
+			xW->glDepthMask( GL_FALSE );
+			xW->glDepthFunc( GL_EQUAL );
 		}
 
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_ZERO, GL_SRC_COLOR );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_ZERO, GL_SRC_COLOR );
 //		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	}
 
@@ -1769,16 +1763,16 @@ void R_BlendLightmaps( void )
 
 	if( !r_lightmap->integer )
 	{
-		//xW->glDisable( GL_BLEND );
+		xW->glDisable( GL_BLEND );
 
 		if( !glState.drawTrans )
 		{
 			// restore depth state
-			//xW->glDepthMask( GL_TRUE );
-			//xW->glDepthFunc( GL_LEQUAL );
+			xW->glDepthMask( GL_TRUE );
+			xW->glDepthFunc( GL_LEQUAL );
 		}
 
-		//xW->glDisable( GL_ALPHA_TEST );
+		xW->glDisable( GL_ALPHA_TEST );
 //		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 	}
 
@@ -1800,12 +1794,12 @@ void R_RenderFullbrights()
 		return;
 
 	if( RI.fogEnabled && !RI.refdef.onlyClientDraw )
-		//xW->glDisable( GL_FOG );
+		xW->glDisable( GL_FOG );
 
-	//xW->glEnable( GL_BLEND );
-	//xW->glDepthMask( GL_FALSE );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//xW->glBlendFunc( GL_ONE, GL_ONE );
+	xW->glEnable( GL_BLEND );
+	xW->glDepthMask( GL_FALSE );
+	xW->glDisable( GL_ALPHA_TEST );
+	xW->glBlendFunc( GL_ONE, GL_ONE );
 //	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 	for( i = 1; i < MAX_TEXTURES; i++ )
@@ -1824,16 +1818,16 @@ void R_RenderFullbrights()
 		fullbright_polys[i] = NULL;
 	}
 
-	//xW->glDisable( GL_BLEND );
-	//xW->glDepthMask( GL_TRUE );
-	//xW->glDisable( GL_ALPHA_TEST );
+	xW->glDisable( GL_BLEND );
+	xW->glDepthMask( GL_TRUE );
+	xW->glDisable( GL_ALPHA_TEST );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
 	draw_fullbrights = false;
 
 	// restore for here
-	//if( RI.fogEnabled && !RI.refdef.onlyClientDraw )
-		//xW->glEnable( GL_FOG );
+	if( RI.fogEnabled && !RI.refdef.onlyClientDraw )
+		xW->glEnable( GL_FOG );
 }
 
 /*
@@ -1853,12 +1847,12 @@ void R_RenderDetails()
 
 	GL_SetupFogColorForSurfaces();
 
-	//xW->glEnable( GL_BLEND );
-	//xW->glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+	xW->glEnable( GL_BLEND );
+	xW->glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 
 	if( RI.currententity->curstate.rendermode == kRenderTransAlpha )
-		//xW->glDepthFunc( GL_EQUAL );
+		xW->glDepthFunc( GL_EQUAL );
 
 	for( i = 1; i < MAX_TEXTURES; i++ )
 	{
@@ -1878,11 +1872,11 @@ void R_RenderDetails()
 		es->detailchain = NULL;
 	}
 
-	//xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_BLEND );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
 	if( RI.currententity->curstate.rendermode == kRenderTransAlpha )
-		//xW->glDepthFunc( GL_LEQUAL );
+		xW->glDepthFunc( GL_LEQUAL );
 
 	draw_details = false;
 
@@ -2030,8 +2024,8 @@ dynamic:
 
 			GL_Bind( GL_TEXTURE0, tr.lightmapTextures[fa->lightmaptexturenum] );
 
-			//xW->glTexSubImage2D( GL_TEXTURE_2D, 0, fa->light_s, fa->light_t, smax, tmax,
-				//GL_RGBA, GL_UNSIGNED_BYTE, temp );
+			xW->glTexSubImage2D( GL_TEXTURE_2D, 0, fa->light_s, fa->light_t, smax, tmax,
+				GL_RGBA, GL_UNSIGNED_BYTE, temp );
 
 			fa->lightmapchain = gl_lms.lightmap_surfaces[fa->lightmaptexturenum];
 			gl_lms.lightmap_surfaces[fa->lightmaptexturenum] = fa;
@@ -2095,12 +2089,12 @@ void R_DrawSpriteModel( cl_entity_t *e )
 
 	if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
 	{
-		//xW->glEnable( GL_ALPHA_TEST );
+		xW->glEnable( GL_ALPHA_TEST );
 		////xW->glAlphaFunc( GL_GREATER, 0.0f );
 	}
 
 	if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
-		//xW->glDisable( GL_DEPTH_TEST );
+		xW->glDisable( GL_DEPTH_TEST );
 
 	// select properly rendermode
 	switch( e->curstate.rendermode )
@@ -2108,24 +2102,24 @@ void R_DrawSpriteModel( cl_entity_t *e )
 	case kRenderTransAlpha:
 	case kRenderTransColor:
 	case kRenderTransTexture:
-		//xW->glEnable( GL_BLEND );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		xW->glEnable( GL_BLEND );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		break;
 	case kRenderGlow:
 	case kRenderTransAdd:
 	case kRenderWorldGlow:
-		//xW->glDisable( GL_FOG );
-		//xW->glEnable( GL_BLEND );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		xW->glDisable( GL_FOG );
+		xW->glEnable( GL_BLEND );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 		break;
 	case kRenderNormal:
 	default:
 		if( psprite->texFormat == SPR_INDEXALPHA )
 		{
-			//xW->glEnable( GL_BLEND );
-			//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			xW->glEnable( GL_BLEND );
+			xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		}
-		else //xW->glDisable( GL_BLEND );
+		else xW->glDisable( GL_BLEND );
 		break;
 	}
 
@@ -2148,8 +2142,8 @@ void R_DrawSpriteModel( cl_entity_t *e )
 		color2[1] = (float)lightColor.g * ( 1.0f / 255.0f );
 		color2[2] = (float)lightColor.b * ( 1.0f / 255.0f );
 
-		//if( glState.drawTrans )
-			//xW->glDepthMask( GL_TRUE );
+		if( glState.drawTrans )
+			xW->glDepthMask( GL_TRUE );
 
 		// NOTE: sprites with 'lightmap' looks ugly when alpha func is GL_GREATER 0.0
 		////xW->glAlphaFunc( GL_GEQUAL, 0.5f );
@@ -2209,7 +2203,7 @@ void R_DrawSpriteModel( cl_entity_t *e )
 	if( oldframe == frame )
 	{
 		// draw the single non-lerped frame
-		//////xW->glColor4f( color[0], color[1], color[2], flAlpha );
+		xW->glColor4f( color[0], color[1], color[2], flAlpha );
 		GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
 		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
 	}
@@ -2221,14 +2215,14 @@ void R_DrawSpriteModel( cl_entity_t *e )
 
 		if( ilerp != 0.0f )
 		{
-			//////xW->glColor4f( color[0], color[1], color[2], flAlpha * ilerp );
+			xW->glColor4f( color[0], color[1], color[2], flAlpha * ilerp );
 			GL_Bind( GL_TEXTURE0, oldframe->gl_texturenum );
 			R_DrawSpriteQuad( oldframe, origin, v_right, v_up, scale );
 		}
 
 		if( lerp != 0.0f )
 		{
-			//////xW->glColor4f( color[0], color[1], color[2], flAlpha * lerp );
+			xW->glColor4f( color[0], color[1], color[2], flAlpha * lerp );
 			GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
 			R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
 		}
@@ -2237,36 +2231,36 @@ void R_DrawSpriteModel( cl_entity_t *e )
 	// draw the sprite 'lightmap' :-)
 	if( R_SpriteHasLightmap( e, psprite->texFormat ))
 	{
-		//xW->glEnable( GL_BLEND );
-		//xW->glDepthFunc( GL_EQUAL );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_ZERO, GL_SRC_COLOR );
+		xW->glEnable( GL_BLEND );
+		xW->glDepthFunc( GL_EQUAL );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_ZERO, GL_SRC_COLOR );
 		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-		//////xW->glColor4f( color2[0], color2[1], color2[2], flAlpha );
+		xW->glColor4f( color2[0], color2[1], color2[2], flAlpha );
 		GL_Bind( GL_TEXTURE0, tr.whiteTexture );
 		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
 
-		//if( glState.drawTrans )
-			//xW->glDepthMask( GL_FALSE );
+		if( glState.drawTrans )
+			xW->glDepthMask( GL_FALSE );
 	}
 
 	if( psprite->facecull == SPR_CULL_NONE )
 		GL_Cull( GL_FRONT );
 
-	//if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
-		//xW->glEnable( GL_DEPTH_TEST );
+	if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
+		xW->glEnable( GL_DEPTH_TEST );
 
-	//if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
-		//xW->glDisable( GL_ALPHA_TEST );
+	if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
+		xW->glDisable( GL_ALPHA_TEST );
 
-	//xW->glDisable( GL_BLEND );
-	//xW->glDepthFunc( GL_LEQUAL );
+	xW->glDisable( GL_BLEND );
+	xW->glDepthFunc( GL_LEQUAL );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 
-	//if( RI.fogCustom || ( RI.fogEnabled && !glState.drawTrans ))
-		//xW->glEnable( GL_FOG );
+	if( RI.fogCustom || ( RI.fogEnabled && !glState.drawTrans ))
+		xW->glEnable( GL_FOG );
 }
 
 void R_ShowTextures()
@@ -2289,7 +2283,7 @@ void R_ShowTextures()
 		showHelp = false;
 	}
 
-	//xW->glClear( GL_COLOR_BUFFER_BIT );
+	xW->glClear( GL_COLOR_BUFFER_BIT );
 	////xW->glFinish();
 
 	base_w = 8;
@@ -2310,7 +2304,7 @@ rebuild_page:
 	{
 		image = R_GetTexture( i );
 		if( j == start ) break; // found start
-		//if( //xW->glIsTexture( image->texnum )) j++;
+		if( xW->glIsTexture( image->texid )) j++;
 	}
 
 	if( i == MAX_TEXTURES && gl_showtextures->integer != 1 )
@@ -2325,37 +2319,37 @@ rebuild_page:
 		if( j == end ) break; // page is full
 
 		image = R_GetTexture( i );
-		//if( !//xW->glIsTexture( image->texnum ))
+		if( !xW->glIsTexture( image->texid ))
 			continue;
 
 		x = k % base_w * w;
 		y = k / base_w * h;
 
-		//////xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-		GL_Bind( GL_TEXTURE0, i ); // NOTE: don't use image->texnum here, because skybox has a 'wrong' indexes
+		xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+		GL_Bind( GL_TEXTURE0, image->texid ); // NOTE: don't use image->texnum here, because skybox has a 'wrong' indexes
 
 		if(( image->flags & TF_DEPTHMAP ) && !( image->flags & TF_NOCOMPARE ))
-			//xW->glTexParameteri( image->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+			xW->glTexParameteri( image->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
 
-		////xW->glBegin( GL_QUADS );
-		////xW->glTexCoord2f( 0, 0 );
-		////xW->glVertex2f( x, y );
-		//if( image->flags & TF_TEXTURE_RECTANGLE )
-			////xW->glTexCoord2f( image->width, 0 );
-		//else ////xW->glTexCoord2f( 1, 0 );
-		////xW->glVertex2f( x + w, y );
-		//if( image->flags & TF_TEXTURE_RECTANGLE )
-			////xW->glTexCoord2f( image->width, image->height );
-		//else ////xW->glTexCoord2f( 1, 1 );
-		////xW->glVertex2f( x + w, y + h );
-		//if( image->flags & TF_TEXTURE_RECTANGLE )
-			////xW->glTexCoord2f( 0, image->height );
-		//else ////xW->glTexCoord2f( 0, 1 );
-		////xW->glVertex2f( x, y + h );
-		////xW->glEnd();
+		xW->glBegin( GL_QUADS );
+		xW->glTexCoord2f( 0, 0 );
+		xW->glVertex2f( x, y );
+		if( image->flags & TF_TEXTURE_RECTANGLE )
+			xW->glTexCoord2f( image->width, 0 );
+		else xW->glTexCoord2f( 1, 0 );
+		xW->glVertex2f( x + w, y );
+		if( image->flags & TF_TEXTURE_RECTANGLE )
+			xW->glTexCoord2f( image->width, image->height );
+		else xW->glTexCoord2f( 1, 1 );
+		xW->glVertex2f( x + w, y + h );
+		if( image->flags & TF_TEXTURE_RECTANGLE )
+			xW->glTexCoord2f( 0, image->height );
+		else xW->glTexCoord2f( 0, 1 );
+		xW->glVertex2f( x, y + h );
+		xW->glEnd();
 
-		//if(( image->flags & TF_DEPTHMAP ) && !( image->flags & TF_NOCOMPARE ))
-			//xW->glTexParameteri( image->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB );
+		if(( image->flags & TF_DEPTHMAP ) && !( image->flags & TF_NOCOMPARE ))
+			xW->glTexParameteri( image->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB );
 
 		FS_FileBase( image->name, shortname );
 		if( Q_strlen( shortname ) > 18 )
@@ -2390,7 +2384,7 @@ int TriSpriteTexture( model_t *pSpriteModel, int frame )
 	psprite = (msprite_t	*)pSpriteModel->cache.data;
 	if( psprite->texFormat == SPR_ALPHTEST )
 	{
-		//xW->glEnable( GL_ALPHA_TEST );
+		xW->glEnable( GL_ALPHA_TEST );
 		////xW->glAlphaFunc( GL_GREATER, 0.0f );
 	}
 
@@ -2410,15 +2404,15 @@ void DrawSingleDecal( decal_t *pDecal, msurface_t *fa )
 
 	GL_Bind( GL_TEXTURE0, pDecal->texture );
 
-	////xW->glBegin( GL_POLYGON );
+	xW->glBegin( GL_POLYGON );
 
 	for( i = 0; i < numVerts; i++, v += VERTEXSIZE )
 	{
-		////xW->glTexCoord2f( v[3], v[4] );
-		////xW->glVertex3fv( v );
+		xW->glTexCoord2f( v[3], v[4] );
+		xW->glVertex3fv( v );
 	}
 
-	////xW->glEnd();
+	xW->glEnd();
 }
 
 void DrawSurfaceDecals( msurface_t *fa )
@@ -2433,21 +2427,21 @@ void DrawSurfaceDecals( msurface_t *fa )
 
 	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
 	{
-		//xW->glDepthMask( GL_FALSE );
-		//xW->glEnable( GL_BLEND );
+		xW->glDepthMask( GL_FALSE );
+		xW->glEnable( GL_BLEND );
 
-		//if( e->curstate.rendermode == kRenderTransAlpha )
-			//xW->glDisable( GL_ALPHA_TEST );
+		if( e->curstate.rendermode == kRenderTransAlpha )
+			xW->glDisable( GL_ALPHA_TEST );
 	}
 
 	if( e->curstate.rendermode == kRenderTransColor )
-		//xW->glEnable( GL_TEXTURE_2D );
+		xW->glEnable( GL_TEXTURE_2D );
 
 	if( e->curstate.rendermode == kRenderTransTexture || e->curstate.rendermode == kRenderTransAdd )
 		GL_Cull( GL_NONE );
 
-	//xW->glEnable( GL_POLYGON_OFFSET_FILL );
-	//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	xW->glEnable( GL_POLYGON_OFFSET_FILL );
+	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	if( fa->flags & SURF_TRANSPARENT && glState.stencilEnabled )
 	{
@@ -2461,40 +2455,40 @@ void DrawSurfaceDecals( msurface_t *fa )
 				int i, numVerts;
 				o = R_DecalSetupVerts( p, fa, p->texture, &numVerts );
 
-				//xW->glEnable( GL_STENCIL_TEST );
-				//xW->glStencilFunc( GL_ALWAYS, 1, 0xFFFFFFFF );
-				//xW->glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
+				xW->glEnable( GL_STENCIL_TEST );
+				xW->glStencilFunc( GL_ALWAYS, 1, 0xFFFFFFFF );
+				xW->glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
 
-				//xW->glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
-				////xW->glBegin( GL_POLYGON );
+				xW->glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+				xW->glBegin( GL_POLYGON );
 
 				for( i = 0, v = o; i < numVerts; i++, v += VERTEXSIZE )
 				{
 					v[5] = ( DotProduct( v, tex->vecs[0] ) + tex->vecs[0][3] ) / tex->texture->width;
 					v[6] = ( DotProduct( v, tex->vecs[1] ) + tex->vecs[1][3] ) / tex->texture->height;
 
-					////xW->glTexCoord2f( v[5], v[6] );
-					////xW->glVertex3fv( v );
+					xW->glTexCoord2f( v[5], v[6] );
+					xW->glVertex3fv( v );
 				}
 
-				////xW->glEnd();
-				//xW->glStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
+				xW->glEnd();
+				xW->glStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
 
-				//xW->glEnable( GL_ALPHA_TEST );
-				////xW->glBegin( GL_POLYGON );
+				xW->glEnable( GL_ALPHA_TEST );
+				xW->glBegin( GL_POLYGON );
 
 				for( i = 0, v = o; i < numVerts; i++, v += VERTEXSIZE )
 				{
-					////xW->glTexCoord2f( v[5], v[6] );
-					////xW->glVertex3fv( v );
+					xW->glTexCoord2f( v[5], v[6] );
+					xW->glVertex3fv( v );
 				}
 
-				////xW->glEnd();
-				//xW->glDisable( GL_ALPHA_TEST );
+				xW->glEnd();
+				xW->glDisable( GL_ALPHA_TEST );
 
-				//xW->glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-				//xW->glStencilFunc( GL_EQUAL, 0, 0xFFFFFFFF );
-				//xW->glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+				xW->glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+				xW->glStencilFunc( GL_EQUAL, 0, 0xFFFFFFFF );
+				xW->glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 			}
 		}
 	}
@@ -2512,42 +2506,42 @@ void DrawSurfaceDecals( msurface_t *fa )
 				//if( glt->fogParams[3] > DECAL_TRANSPARENT_THRESHOLD )
 					//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 				//else //////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-				//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			}
 			else
 			{
 				// color decal like detail texture. Base color is 127 127 127
 				//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-				//xW->glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
-							  }
+				xW->glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+			}
 
 			DrawSingleDecal( p, fa );
 		}
 	}
 
-	//if( fa->flags & SURF_TRANSPARENT && glState.stencilEnabled )
-		//xW->glDisable( GL_STENCIL_TEST );
+	if( fa->flags & SURF_TRANSPARENT && glState.stencilEnabled )
+		xW->glDisable( GL_STENCIL_TEST );
 
 	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
 	{
-		//xW->glDepthMask( GL_TRUE );
-		//xW->glDisable( GL_BLEND );
+		xW->glDepthMask( GL_TRUE );
+		xW->glDisable( GL_BLEND );
 
-		//if( e->curstate.rendermode == kRenderTransAlpha )
-			//xW->glEnable( GL_ALPHA_TEST );
+		if( e->curstate.rendermode == kRenderTransAlpha )
+			xW->glEnable( GL_ALPHA_TEST );
 	}
 
-	//xW->glDisable( GL_POLYGON_OFFSET_FILL );
+	xW->glDisable( GL_POLYGON_OFFSET_FILL );
 
 	if( e->curstate.rendermode == kRenderTransTexture || e->curstate.rendermode == kRenderTransAdd )
 		GL_Cull( GL_FRONT );
 
-	//if( e->curstate.rendermode == kRenderTransColor )
-		//xW->glDisable( GL_TEXTURE_2D );
+	if( e->curstate.rendermode == kRenderTransColor )
+		xW->glDisable( GL_TEXTURE_2D );
 
 	// restore blendfunc here
-	//if( e->curstate.rendermode == kRenderTransAdd || e->curstate.rendermode == kRenderGlow )
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+	if( e->curstate.rendermode == kRenderTransAdd || e->curstate.rendermode == kRenderGlow )
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 }
 
 void R_StudioDrawPoints(void)
@@ -2636,9 +2630,9 @@ void R_StudioDrawPoints(void)
 		s = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].width;
 		t = 1.0f / (float)ptexture[pskinref[pmesh->skinref]].height;
 
-		//if( g_iRenderMode != kRenderTransAdd )
-			//xW->glDepthMask( GL_TRUE );
-		//else //xW->glDepthMask( GL_FALSE );
+		if( g_iRenderMode != kRenderTransAdd )
+			xW->glDepthMask( GL_TRUE );
+		else xW->glDepthMask( GL_FALSE );
 
 		// check bounds
 		if( ptexture[pskinref[pmesh->skinref]].index < 0 || ptexture[pskinref[pmesh->skinref]].index > MAX_TEXTURES )
@@ -2648,27 +2642,27 @@ void R_StudioDrawPoints(void)
 		{
 			color24	*clr;
 			clr = &RI.currententity->curstate.rendercolor;
-			////xW->glColor4ub( clr->r, clr->g, clr->b, 255 );
+			xW->glColor4ub( clr->r, clr->g, clr->b, 255 );
 			alpha = 1.0f;
 		}
 		else if( g_nFaceFlags & STUDIO_NF_TRANSPARENT && R_StudioOpaque( RI.currententity ))
 		{
 			GL_SetRenderMode( kRenderTransAlpha );
-			////xW->glAlphaFunc( GL_GREATER, 0.0f );
+			//xW->glAlphaFunc( GL_GREATER, 0.0f );
 			alpha = 1.0f;
 		}
 		else if( g_nFaceFlags & STUDIO_NF_ADDITIVE )
 		{
 			GL_SetRenderMode( kRenderTransAdd );
 			alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
-			//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-			//xW->glDepthMask( GL_FALSE );
+			xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+			xW->glDepthMask( GL_FALSE );
 		}
 		else if( g_nFaceFlags & STUDIO_NF_ALPHA )
 		{
 			GL_SetRenderMode( kRenderTransTexture );
 			alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
-			//xW->glDepthMask( GL_FALSE );
+			xW->glDepthMask( GL_FALSE );
 		}
 		else
 		{
@@ -2694,13 +2688,13 @@ void R_StudioDrawPoints(void)
 
 			if( i < 0 )
 			{
-				////xW->glBegin( GL_TRIANGLE_FAN );
+				xW->glBegin( GL_TRIANGLE_FAN );
 				tri_strip = false;
 				i = -i;
 			}
 			else
 			{
-				////xW->glBegin( GL_TRIANGLE_STRIP );
+				xW->glBegin( GL_TRIANGLE_STRIP );
 				tri_strip = true;
 			}
 
@@ -2739,30 +2733,30 @@ void R_StudioDrawPoints(void)
 					g_xarrayelems[g_nNumArrayElems++] = g_nNumArrayVerts;
 				}
 
-				//if( g_nFaceFlags & STUDIO_NF_CHROME || ( g_nForceFaceFlags & STUDIO_NF_CHROME ))
-					////xW->glTexCoord2f( g_chrome[ptricmds[1]][0] * s, g_chrome[ptricmds[1]][1] * t );
-				//else ////xW->glTexCoord2f( ptricmds[2] * s, ptricmds[3] * t );
+				if( g_nFaceFlags & STUDIO_NF_CHROME || ( g_nForceFaceFlags & STUDIO_NF_CHROME ))
+					xW->glTexCoord2f( g_chrome[ptricmds[1]][0] * s, g_chrome[ptricmds[1]][1] * t );
+				else xW->glTexCoord2f( ptricmds[2] * s, ptricmds[3] * t );
 
 				if(!( g_nForceFaceFlags & STUDIO_NF_CHROME ))
 										{
 					if( g_iRenderMode == kRenderTransAdd )
 					{
-						//////xW->glColor4f( 1.0f, 1.0f, 1.0f, alpha );
+						xW->glColor4f( 1.0f, 1.0f, 1.0f, alpha );
 					}
 					else if( g_iRenderMode == kRenderTransColor )
 					{
 						color24	*clr;
 						clr = &RI.currententity->curstate.rendercolor;
-						////xW->glColor4ub( clr->r, clr->g, clr->b, (byte)(alpha * 255) );
+						xW->glColor4ub( clr->r, clr->g, clr->b, (byte)(alpha * 255) );
 					}
 					else if( g_nFaceFlags & STUDIO_NF_FULLBRIGHT )
 					{
-						//////xW->glColor4f( 1.0f, 1.0f, 1.0f, alpha );
+						xW->glColor4f( 1.0f, 1.0f, 1.0f, alpha );
 					}
 					else
 					{
 						lv = (float *)g_lightvalues[ptricmds[1]];
-						//////xW->glColor4f( lv[0], lv[1], lv[2], alpha );
+						xW->glColor4f( lv[0], lv[1], lv[2], alpha );
 					}
 				}
 
@@ -2773,23 +2767,23 @@ void R_StudioDrawPoints(void)
 					vec3_t	scaled_vertex;
 					nv = (float *)g_xformnorms[ptricmds[1]];
 					VectorMA( av, scale, nv, scaled_vertex );
-					////xW->glVertex3fv( scaled_vertex );
+					xW->glVertex3fv( scaled_vertex );
 				}
 				else
 				{
-					////xW->glVertex3f( av[0], av[1], av[2] );
+					xW->glVertex3f( av[0], av[1], av[2] );
 					ASSERT( g_nNumArrayVerts < MAXARRAYVERTS );
 					VectorCopy( av, g_xarrayverts[g_nNumArrayVerts] ); // store off vertex
 					g_nNumArrayVerts++;
 				}
 			}
-			////xW->glEnd();
+			xW->glEnd();
 		}
 	}
 
 	// restore depthmask for next call StudioDrawPoints
-	//if( g_iRenderMode != kRenderTransAdd )
-		//xW->glDepthMask( GL_TRUE );
+	if( g_iRenderMode != kRenderTransAdd )
+		xW->glDepthMask( GL_TRUE );
 }
 
 void R_StudioSetupSkin( mstudiotexture_t *ptexture, int index )
@@ -2829,12 +2823,12 @@ void R_DrawWaterSurfaces()
 	// go back to the world matrix
 	R_LoadIdentity();
 
-	//xW->glEnable( GL_BLEND );
-	//xW->glDepthMask( GL_FALSE );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	xW->glEnable( GL_BLEND );
+	xW->glDepthMask( GL_FALSE );
+	xW->glDisable( GL_ALPHA_TEST );
+	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	//////xW->glColor4f( 1.0f, 1.0f, 1.0f, cl.refdef.movevars->wateralpha );
+	xW->glColor4f( 1.0f, 1.0f, 1.0f, cl.refdef.movevars->wateralpha );
 
 	for( i = 0; i < cl.worldmodel->numtextures; i++ )
 	{
@@ -2856,11 +2850,11 @@ void R_DrawWaterSurfaces()
 		t->texturechain = NULL;
 	}
 
-	//xW->glDisable( GL_BLEND );
-	//xW->glDepthMask( GL_TRUE );
-	//xW->glDisable( GL_ALPHA_TEST );
+	xW->glDisable( GL_BLEND );
+	xW->glDepthMask( GL_TRUE );
+	xW->glDisable( GL_ALPHA_TEST );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 
 void LM_UploadBlock( qboolean dynamic )
@@ -2881,7 +2875,7 @@ void LM_UploadBlock( qboolean dynamic )
 			GL_Bind( GL_TEXTURE0, tr.dlightTexture2 );
 		else GL_Bind( GL_TEXTURE0, tr.dlightTexture );
 
-		//xW->glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, BLOCK_SIZE, height, GL_RGBA, GL_UNSIGNED_BYTE, gl_lms.lightmap_buffer );
+		xW->glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, BLOCK_SIZE, height, GL_RGBA, GL_UNSIGNED_BYTE, gl_lms.lightmap_buffer );
 	}
 	else
 	{
@@ -2928,9 +2922,9 @@ void R_DrawSkyBox()
 
 	// don't fogging skybox (this fix old Half-Life bug)
 	if( !RI.fogCustom )
-		//xW->glDisable( GL_FOG );
-	//xW->glDisable( GL_BLEND );
-	//xW->glDisable( GL_ALPHA_TEST );
+		xW->glDisable( GL_FOG );
+	xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_ALPHA_TEST );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
 	if( clgame.movevars.skyangle && !VectorIsNull( (float *)&clgame.movevars.skydir_x ))
@@ -2950,12 +2944,12 @@ void R_DrawSkyBox()
 
 		GL_Bind( GL_TEXTURE0, tr.skyboxTextures[r_skyTexOrder[i]] );
 
-		////xW->glBegin( GL_QUADS );
+		xW->glBegin( GL_QUADS );
 		MakeSkyVec( RI.skyMins[0][i], RI.skyMins[1][i], i );
 		MakeSkyVec( RI.skyMins[0][i], RI.skyMaxs[1][i], i );
 		MakeSkyVec( RI.skyMaxs[0][i], RI.skyMaxs[1][i], i );
 		MakeSkyVec( RI.skyMaxs[0][i], RI.skyMins[1][i], i );
-		////xW->glEnd();
+		xW->glEnd();
 	}
 
 	R_LoadIdentity();
@@ -2968,7 +2962,8 @@ void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
 	float	s, t, os, ot;
 	int	i;
 
-	if( noCull ) //xW->glDisable( GL_CULL_FACE );
+	if( noCull )
+		xW->glDisable( GL_CULL_FACE );
 
 	// set the current waveheight
 	waveHeight = RI.currentWaveHeight;
@@ -2978,7 +2973,7 @@ void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
 
 	for( p = polys; p; p = p->next )
 	{
-		////xW->glBegin( GL_POLYGON );
+		xW->glBegin( GL_POLYGON );
 
 		for( i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE )
 		{
@@ -3001,14 +2996,15 @@ void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
 
 			if( glState.activeTMU != 0 )
 				GL_MultiTexCoord2f( glState.activeTMU, s, t );
-			//else ////xW->glTexCoord2f( s, t );
-			////xW->glVertex3f( v[0], v[1], nv );
+			else xW->glTexCoord2f( s, t );
+			xW->glVertex3f( v[0], v[1], nv );
 		}
-		////xW->glEnd();
+		xW->glEnd();
 	}
 
 	// restore culling
-	if( noCull ) //xW->glEnable( GL_CULL_FACE );
+	if( noCull )
+		xW->glEnable( GL_CULL_FACE );
 
 	GL_SetupFogColorForSurfaces();
 }
@@ -3024,7 +3020,7 @@ void EmitSkyPolys( msurface_t *fa )
 
 	for( p = fa->polys; p; p = p->next )
 	{
-		////xW->glBegin( GL_POLYGON );
+		xW->glBegin( GL_POLYGON );
 
 		for( i = 0, v = p->verts[0]; i < p->numverts; i++, v += VERTEXSIZE )
 		{
@@ -3040,10 +3036,10 @@ void EmitSkyPolys( msurface_t *fa )
 			s = ( speedscale + dir[0] ) * (1.0f / 128.0f);
 			t = ( speedscale + dir[1] ) * (1.0f / 128.0f);
 
-			////xW->glTexCoord2f( s, t );
-			////xW->glVertex3fv( v );
+			xW->glTexCoord2f( s, t );
+			xW->glVertex3fv( v );
 		}
-		////xW->glEnd ();
+		xW->glEnd ();
 	}
 }
 
@@ -3069,7 +3065,7 @@ void R_DrawSkyChain( msurface_t *s )
 	for( fa = s; fa; fa = fa->texturechain )
 		EmitSkyPolys( fa );
 
-	//xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_BLEND );
 }
 
 void EmitSkyLayers( msurface_t *fa )
@@ -3090,32 +3086,32 @@ void EmitSkyLayers( msurface_t *fa )
 
 	EmitSkyPolys( fa );
 
-	//xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_BLEND );
 }
 
 void VGUI_EnableTexture( qboolean enable )
 {
-	//if( enable ) //xW->glEnable( GL_TEXTURE_2D );
-	//else //xW->glDisable( GL_TEXTURE_2D );
+	if( enable ) xW->glEnable( GL_TEXTURE_2D );
+	else xW->glDisable( GL_TEXTURE_2D );
 }
 
 void VGUI_DrawQuad( const vpoint_t *ul, const vpoint_t *lr )
 {
 	ASSERT( ul != NULL && lr != NULL );
 
-	////xW->glBegin( GL_QUADS );
-		////xW->glTexCoord2f( ul->coord[0], ul->coord[1] );
-		////xW->glVertex2f( ul->point[0], ul->point[1] );
+	xW->glBegin( GL_QUADS );
+		xW->glTexCoord2f( ul->coord[0], ul->coord[1] );
+		xW->glVertex2f( ul->point[0], ul->point[1] );
 
-		////xW->glTexCoord2f( lr->coord[0], ul->coord[1] );
-		////xW->glVertex2f( lr->point[0], ul->point[1] );
+		xW->glTexCoord2f( lr->coord[0], ul->coord[1] );
+		xW->glVertex2f( lr->point[0], ul->point[1] );
 
-		////xW->glTexCoord2f( lr->coord[0], lr->coord[1] );
-		////xW->glVertex2f( lr->point[0], lr->point[1] );
+		xW->glTexCoord2f( lr->coord[0], lr->coord[1] );
+		xW->glVertex2f( lr->point[0], lr->point[1] );
 
-		////xW->glTexCoord2f( ul->coord[0], lr->coord[1] );
-		////xW->glVertex2f( ul->point[0], lr->point[1] );
-	////xW->glEnd();
+		xW->glTexCoord2f( ul->coord[0], lr->coord[1] );
+		xW->glVertex2f( ul->point[0], lr->point[1] );
+	xW->glEnd();
 }
 
 
@@ -3127,36 +3123,36 @@ void VGUI_UploadTextureBlock( int id, int drawX, int drawY, const byte *rgba, in
 		return;
 	}
 
-	//xW->glTexSubImage2D( GL_TEXTURE_2D, 0, drawX, drawY, blockWidth, blockHeight, GL_RGBA, GL_UNSIGNED_BYTE, rgba );
+	xW->glTexSubImage2D( GL_TEXTURE_2D, 0, drawX, drawY, blockWidth, blockHeight, GL_RGBA, GL_UNSIGNED_BYTE, rgba );
 	g_iBoundTexture = id;
 }
 
 void VGUI_SetupDrawingRect( int *pColor )
 {
-	//xW->glEnable( GL_BLEND );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	////xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
+	xW->glEnable( GL_BLEND );
+	xW->glDisable( GL_ALPHA_TEST );
+	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
 void VGUI_SetupDrawingText( int *pColor )
 {
-	//xW->glEnable( GL_BLEND );
-	//xW->glEnable( GL_ALPHA_TEST );
-	////xW->glAlphaFunc( GL_GREATER, 0.0f );
-	//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	xW->glEnable( GL_BLEND );
+	xW->glEnable( GL_ALPHA_TEST );
+	//xW->glAlphaFunc( GL_GREATER, 0.0f );
+	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	////xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
+	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
 void VGUI_SetupDrawingImage( int *pColor )
 {
-	//xW->glEnable( GL_BLEND );
-	//xW->glEnable( GL_ALPHA_TEST );
-	////xW->glAlphaFunc( GL_GREATER, 0.0f );
-	//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	xW->glEnable( GL_BLEND );
+	xW->glEnable( GL_ALPHA_TEST );
+	//xW->glAlphaFunc( GL_GREATER, 0.0f );
+	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-	////xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
+	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
 void VGUI_BindTexture( int id )
@@ -3178,12 +3174,13 @@ void SetBeamRenderMode( int rendermode )
 {
 	if( rendermode == kRenderTransAdd )
 	{
-		//xW->glEnable( GL_BLEND );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		xW->glEnable( GL_BLEND );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 	}
-	//else //xW->glDisable( GL_BLEND );	// solid mode
+	else
+		xW->glDisable( GL_BLEND );	// solid mode
 
-	//xW->glDisable( GL_ALPHA_TEST );
+	xW->glDisable( GL_ALPHA_TEST );
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 }
 
@@ -3193,24 +3190,24 @@ void R_DrawSpriteQuad( mspriteframe_t *frame, vec3_t org, vec3_t v_right, vec3_t
 
 	r_stats.c_sprite_polys++;
 
-	////xW->glBegin( GL_QUADS );
-		////xW->glTexCoord2f( 0.0f, 1.0f );
+	xW->glBegin( GL_QUADS );
+		xW->glTexCoord2f( 0.0f, 1.0f );
 		VectorMA( org, frame->down * scale, v_up, point );
 		VectorMA( point, frame->left * scale, v_right, point );
-		////xW->glVertex3fv( point );
-		////xW->glTexCoord2f( 0.0f, 0.0f );
+		xW->glVertex3fv( point );
+		xW->glTexCoord2f( 0.0f, 0.0f );
 		VectorMA( org, frame->up * scale, v_up, point );
 		VectorMA( point, frame->left * scale, v_right, point );
-		////xW->glVertex3fv( point );
-		////xW->glTexCoord2f( 1.0f, 0.0f );
+		xW->glVertex3fv( point );
+		xW->glTexCoord2f( 1.0f, 0.0f );
 		VectorMA( org, frame->up * scale, v_up, point );
 		VectorMA( point, frame->right * scale, v_right, point );
-		////xW->glVertex3fv( point );
-				////xW->glTexCoord2f( 1.0f, 1.0f );
+		xW->glVertex3fv( point );
+		xW->glTexCoord2f( 1.0f, 1.0f );
 		VectorMA( org, frame->down * scale, v_up, point );
 		VectorMA( point, frame->right * scale, v_right, point );
-		////xW->glVertex3fv( point );
-	////xW->glEnd();
+		xW->glVertex3fv( point );
+	xW->glEnd();
 }
 
 void MakeSkyVec( float s, float t, int axis )
@@ -3246,15 +3243,9 @@ void MakeSkyVec( float s, float t, int axis )
 
 	t = 1.0f - t;
 
-	////xW->glTexCoord2f( s, t );
-	////xW->glVertex3fv( v );
+	xW->glTexCoord2f( s, t );
+	xW->glVertex3fv( v );
 }
-
-
-
-
-
-
 
 
 void SPR_DrawGeneric( int frame, float x, float y, float width, float height, const wrect_t *prc )
@@ -3306,7 +3297,7 @@ void SPR_DrawGeneric( int frame, float x, float y, float width, float height, co
 	// scale for screen sizes
 	SPR_AdjustSize( &x, &y, &width, &height );
 	texnum = R_GetSpriteTexture( clgame.ds.pSprite, frame );
-	////xW->glColor4ubv( clgame.ds.spriteColor );
+	xW->glColor4ubv( clgame.ds.spriteColor );
 	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, texnum );
 }
 
@@ -3343,13 +3334,13 @@ void CL_DrawScreenFade( void )
 		iFadeAlpha = bound( 0, iFadeAlpha, sf->fadealpha );
 	}
 
-	////xW->glColor4ub( sf->fader, sf->fadeg, sf->fadeb, iFadeAlpha );
+	xW->glColor4ub( sf->fader, sf->fadeg, sf->fadeb, iFadeAlpha );
 
 	if( sf->fadeFlags & FFADE_MODULATE )
 		GL_SetRenderMode( kRenderTransAdd );
 	else GL_SetRenderMode( kRenderTransTexture );
 	R_DrawStretchPic( 0.f, 0.f, (float)scr_width->integer, (float)scr_height->integer, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 void CL_DrawLoading( float percent )
 {
@@ -3370,7 +3361,7 @@ void CL_DrawLoading( float percent )
 
 	if( cl_allow_levelshots->integer )
 		  {
-		////xW->glColor4ub( 128, 128, 128, 255 );
+		xW->glColor4ub( 128, 128, 128, 255 );
 		GL_SetRenderMode( kRenderTransTexture );
 		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
 
@@ -3379,14 +3370,14 @@ void CL_DrawLoading( float percent )
 		s2 = (float)right / width;
 		width = right;
 
-		////xW->glColor4ub( 208, 152, 0, 255 );
+		xW->glColor4ub( 208, 152, 0, 255 );
 		GL_SetRenderMode( kRenderTransTexture );
 		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, s2, 1.f, cls.loadingBar );
-		////xW->glColor4ub( 255, 255, 255, 255 );
+		xW->glColor4ub( 255, 255, 255, 255 );
 	}
 	else
 	{
-		////xW->glColor4ub( 255, 255, 255, 255 );
+		xW->glColor4ub( 255, 255, 255, 255 );
 		GL_SetRenderMode( kRenderTransTexture );
 		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
 	}
@@ -3408,7 +3399,7 @@ void CL_DrawPause( void )
 	width = (int)(width*xscale);
 	height = (int)(height*yscale);
 
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 	GL_SetRenderMode( kRenderTransTexture );
 	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.pauseIcon );
 }
@@ -3421,9 +3412,9 @@ void pfnSPR_Set( VHSPRITE hPic, int r, int g, int b )
 	clgame.ds.spriteColor[3] = 255;
 
 	// set default state
-	//xW->glDisable( GL_BLEND );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_ALPHA_TEST );
+	////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 }
 
 /*
@@ -3434,7 +3425,7 @@ pfnSPR_Draw
 */
 void pfnSPR_Draw( int frame, int x, int y, const wrect_t *prc )
 {
-	//xW->glEnable( GL_ALPHA_TEST );
+	xW->glEnable( GL_ALPHA_TEST );
 	SPR_DrawGeneric( frame, (float)x, (float)y, -1.f, -1.f, prc );
 }
 void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int b, int a )
@@ -3443,18 +3434,18 @@ void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int b, int 
 	g = bound( 0, g, 255 );
 	b = bound( 0, b, 255 );
 	a = bound( 0, a, 255 );
-	////xW->glColor4ub( r, g, b, a );
+	xW->glColor4ub( r, g, b, a );
 
 	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
 
 	GL_SetRenderMode( kRenderTransAdd );
 	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 void pfnSPR_DrawGeneric( int frame, int x, int y, const wrect_t *prc, int blendsrc, int blenddst, int width, int height )
 {
-	//xW->glEnable( GL_BLEND );
-	//xW->glBlendFunc( blendsrc, blenddst ); // g-cont. are params is valid?
+	xW->glEnable( GL_BLEND );
+	xW->glBlendFunc( blendsrc, blenddst ); // g-cont. are params is valid?
 	SPR_DrawGeneric( frame, (float)x, (float)y, (float)width, (float)height, prc );
 }
 void pfnFillRGBABlend( int x, int y, int width, int height, int r, int g, int b, int a )
@@ -3463,42 +3454,43 @@ void pfnFillRGBABlend( int x, int y, int width, int height, int r, int g, int b,
 	g = bound( 0, g, 255 );
 	b = bound( 0, b, 255 );
 	a = bound( 0, a, 255 );
-	////xW->glColor4ub( r, g, b, a );
+	xW->glColor4ub( r, g, b, a );
 
 	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
 
-	//xW->glEnable( GL_BLEND );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//xW->glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_ONE );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glEnable( GL_BLEND );
+	xW->glDisable( GL_ALPHA_TEST );
+	xW->glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_ONE );
+	////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 void TriRenderMode( int mode )
 {
 	switch( mode )
 	{
 	case kRenderNormal:
-	default:	//xW->glDisable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	default:
+		xW->glDisable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
+		////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderTransColor:
 	case kRenderTransAlpha:
 	case kRenderTransTexture:
 		// NOTE: TriAPI doesn't have 'solid' mode
-		//xW->glEnable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glEnable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderGlow:
 	case kRenderTransAdd:
-		//xW->glEnable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glEnable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	}
 }
@@ -3540,7 +3532,7 @@ void TriBegin( int mode )
 		break;
 	}
 
-	////xW->glBegin( mode );
+	xW->glBegin( mode );
 }
 
 /*
@@ -3552,8 +3544,8 @@ draw triangle sequence
 */
 void TriEnd( void )
 {
-	////xW->glEnd();
-	//xW->glDisable( GL_ALPHA_TEST );
+	xW->glEnd();
+	xW->glDisable( GL_ALPHA_TEST );
 }
 
 /*
@@ -3568,7 +3560,7 @@ void TriColor4f( float r, float g, float b, float a )
 	clgame.ds.triColor[1] = (byte)bound( 0, (g * 255.0f), 255 );
 	clgame.ds.triColor[2] = (byte)bound( 0, (b * 255.0f), 255 );
 	clgame.ds.triColor[3] = (byte)bound( 0, (a * 255.0f), 255 );
-	////xW->glColor4ub( clgame.ds.triColor[0], clgame.ds.triColor[1], clgame.ds.triColor[2], clgame.ds.triColor[3] );
+	xW->glColor4ub( clgame.ds.triColor[0], clgame.ds.triColor[1], clgame.ds.triColor[2], clgame.ds.triColor[3] );
 }
 
 /*
@@ -3583,7 +3575,7 @@ void TriColor4ub( byte r, byte g, byte b, byte a )
 	clgame.ds.triColor[1] = g;
 	clgame.ds.triColor[2] = b;
 	clgame.ds.triColor[3] = a;
-	////xW->glColor4ub( r, g, b, a );
+	xW->glColor4ub( r, g, b, a );
 }
 
 /*
@@ -3594,7 +3586,7 @@ TriTexCoord2f
 */
 void TriTexCoord2f( float u, float v )
 {
-	////xW->glTexCoord2f( u, v );
+	xW->glTexCoord2f( u, v );
 }
 
 /*
@@ -3605,7 +3597,7 @@ TriVertex3fv
 */
 void TriVertex3fv( const float *v )
 {
-	////xW->glVertex3fv( v );
+	xW->glVertex3fv( v );
 }
 
 /*
@@ -3616,7 +3608,7 @@ TriVertex3f
 */
 void TriVertex3f( float x, float y, float z )
 {
-	////xW->glVertex3f( x, y, z );
+	xW->glVertex3f( x, y, z );
 }
 
 /*
@@ -3634,7 +3626,7 @@ void TriBrightness( float brightness )
 	rgba[1] = (byte)(clgame.ds.triColor[1] * brightness);
 	rgba[2] = (byte)(clgame.ds.triColor[2] * brightness);
 
-	////xW->glColor3ub( rgba[0], rgba[1], rgba[2] );
+	xW->glColor3ub( rgba[0], rgba[1], rgba[2] );
 }
 void TriFog( float flFogColor[3], float flStart, float flEnd, int bOn )
 {
@@ -3643,7 +3635,7 @@ void TriFog( float flFogColor[3], float flStart, float flEnd, int bOn )
 
 	if( !bOn )
 	{
-		//xW->glDisable( GL_FOG );
+		xW->glDisable( GL_FOG );
 		RI.fogCustom = false;
 		return;
 	}
@@ -3658,16 +3650,16 @@ void TriFog( float flFogColor[3], float flStart, float flEnd, int bOn )
 
 	if( VectorIsNull( RI.fogColor ))
 	{
-		//xW->glDisable( GL_FOG );
+		xW->glDisable( GL_FOG );
 		return;
 	}
 
-	//xW->glEnable( GL_FOG );
+	xW->glEnable( GL_FOG );
 	////xW->glFogi( GL_FOG_MODE, GL_LINEAR );
 	////xW->glFogf( GL_FOG_START, RI.fogStart );
 	////xW->glFogf( GL_FOG_END, RI.fogEnd );
 	////xW->glFogfv( GL_FOG_COLOR, RI.fogColor );
-	//xW->glHint( GL_FOG_HINT, GL_NICEST );
+	xW->glHint( GL_FOG_HINT, GL_NICEST );
 }
 
 /*
@@ -3679,13 +3671,13 @@ very strange export
 */
 void TriGetMatrix( const int pname, float *matrix )
 {
-	//xW->glGetFloatv( pname, matrix );
+	xW->glGetFloatv( pname, matrix );
 }
 void TriColor4fRendermode( float r, float g, float b, float a, int rendermode )
 {
-	//if( rendermode == kRenderTransAlpha )
-		//////xW->glColor4f( r, g, b, a );
-	//else //////xW->glColor4f( r * a, g * a, b * a, 1.0f );
+	if( rendermode == kRenderTransAlpha )
+		xW->glColor4f( r, g, b, a );
+	else xW->glColor4f( r * a, g * a, b * a, 1.0f );
 }
 void PIC_DrawGeneric( float x, float y, float width, float height, const wrect_t *prc )
 {
@@ -3727,7 +3719,7 @@ void PIC_DrawGeneric( float x, float y, float width, float height, const wrect_t
 
 	PicAdjustSize( &x, &y, &width, &height );
 	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, menu.ds.gl_texturenum );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 void pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a )
 {
@@ -3736,7 +3728,7 @@ void pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a )
 	g = bound( 0, g, 255 );
 	b = bound( 0, b, 255 );
 	a = bound( 0, a, 255 );
-	////xW->glColor4ub( r, g, b, a );
+	xW->glColor4ub( r, g, b, a );
 }
 void pfnFillRGBA_menu( int x, int y, int width, int height, int r, int g, int b, int a )
 {
@@ -3744,10 +3736,10 @@ void pfnFillRGBA_menu( int x, int y, int width, int height, int r, int g, int b,
 	g = bound( 0, g, 255 );
 	b = bound( 0, b, 255 );
 	a = bound( 0, a, 255 );
-	////xW->glColor4ub( r, g, b, a );
+	xW->glColor4ub( r, g, b, a );
 	GL_SetRenderMode( kRenderTransTexture );
 	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 void pfnDrawCharacterQ( int ix, int iy, int iwidth, int iheight, int ch, int ulRGBA, HIMAGE hFont )
 {
@@ -3767,7 +3759,7 @@ void pfnDrawCharacterQ( int ix, int iy, int iwidth, int iheight, int ch, int ulR
 	color[0] = (ulRGBA & 0xFF0000) >> 16;
 	color[1] = (ulRGBA & 0xFF00) >> 8;
 	color[2] = (ulRGBA & 0xFF) >> 0;
-	////xW->glColor4ubv( color );
+	xW->glColor4ubv( color );
 
 	col = (ch & 15) * 0.0625f + (0.5f / 256.0f);
 	row = (ch >> 4) * 0.0625f + (0.5f / 256.0f);
@@ -3784,11 +3776,11 @@ void pfnDrawCharacterQ( int ix, int iy, int iwidth, int iheight, int ch, int ulR
 
 	GL_SetRenderMode( kRenderTransTexture );
 	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, hFont );
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 void GL_LoadTexMatrix( const matrix4x4 m )
 {
-	////xW->glMatrixMode( GL_TEXTURE );
+	xW->glMatrixMode( GL_TEXTURE );
 	GL_LoadMatrix( m );
 	glState.texIdentityMatrix[glState.activeTMU] = false;
 }
@@ -3801,8 +3793,8 @@ GL_LoadTexMatrixExt
 void GL_LoadTexMatrixExt( const float *glmatrix )
 {
 	ASSERT( glmatrix != NULL );
-	////xW->glMatrixMode( GL_TEXTURE );
-	////xW->glLoadMatrixf( glmatrix );
+	xW->glMatrixMode( GL_TEXTURE );
+	xW->glLoadMatrixf( glmatrix );
 	glState.texIdentityMatrix[glState.activeTMU] = false;
 }
 
@@ -3816,7 +3808,7 @@ void GL_LoadMatrix( const matrix4x4 source )
 	GLfloat	dest[16];
 
 	Matrix4x4_ToArrayFloatGL( source, dest );
-	////xW->glLoadMatrixf( dest );
+	xW->glLoadMatrixf( dest );
 }
 
 /*
@@ -3829,8 +3821,8 @@ void GL_LoadIdentityTexMatrix( void )
 	if( glState.texIdentityMatrix[glState.activeTMU] )
 		return;
 
-	////xW->glMatrixMode( GL_TEXTURE );
-	////xW->glLoadIdentity();
+	xW->glMatrixMode( GL_TEXTURE );
+	xW->glLoadIdentity();
 	glState.texIdentityMatrix[glState.activeTMU] = true;
 }
 
@@ -3843,7 +3835,7 @@ void GL_CleanUpTextureUnits( int last )
 		// disable upper units
 		if( glState.currentTextureTargets[i] != GL_NONE )
 		{
-			//xW->glDisable( glState.currentTextureTargets[i] );
+			xW->glDisable( glState.currentTextureTargets[i] );
 			glState.currentTextureTargets[i] = GL_NONE;
 			glState.currentTextures[i] = -1; // unbind texture
 		}
@@ -3889,11 +3881,11 @@ void GL_TextureTarget( uint target )
 
 	if( glState.currentTextureTargets[glState.activeTMU] != target )
 	{
-		//if( glState.currentTextureTargets[glState.activeTMU] != GL_NONE )
-			//xW->glDisable( glState.currentTextureTargets[glState.activeTMU] );
+		if( glState.currentTextureTargets[glState.activeTMU] != GL_NONE )
+			xW->glDisable( glState.currentTextureTargets[glState.activeTMU] );
 		glState.currentTextureTargets[glState.activeTMU] = target;
-		//if( target != GL_NONE )
-			//xW->glEnable( glState.currentTextureTargets[glState.activeTMU] );
+		if( target != GL_NONE )
+			xW->glEnable( glState.currentTextureTargets[glState.activeTMU] );
 	}
 }
 
@@ -3932,16 +3924,16 @@ void GL_TexGen( GLenum coord, GLenum mode )
 	{
 		if( !( glState.genSTEnabled[tmu] & bit ))
 		{
-			//xW->glEnable( gen );
+			xW->glEnable( gen );
 			glState.genSTEnabled[tmu] |= bit;
 		}
-		////xW->glTexGeni( coord, GL_TEXTURE_GEN_MODE, mode );
+		//xW->glTexGeni( coord, GL_TEXTURE_GEN_MODE, mode );
 	}
 	else
 	{
 		if( glState.genSTEnabled[tmu] & bit )
 		{
-			//xW->glDisable( gen );
+			xW->glDisable( gen );
 			glState.genSTEnabled[tmu] &= ~bit;
 		}
 	}
@@ -3965,11 +3957,11 @@ void GL_SetTexCoordArrayMode( GLenum mode )
 
 	if( cmode != bit )
 	{
-		/*if( cmode == 1 ) ////xW->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-		else */if( cmode == 2 ) //xW->glDisable( GL_TEXTURE_CUBE_MAP_ARB );
+		/*if( cmode == 1 ) xW->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		else *///if( cmode == 2 ) xW->glDisable( GL_TEXTURE_CUBE_MAP_ARB );
 
 		/*if( bit == 1 ) //xW->glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-		else */if( bit == 2 ) //xW->glEnable( GL_TEXTURE_CUBE_MAP_ARB );
+		else *///if( bit == 2 ) xW->glEnable( GL_TEXTURE_CUBE_MAP_ARB );
 
 		glState.texCoordArrayMode[tmu] = bit;
 	}
@@ -3992,7 +3984,7 @@ qboolean VID_ScreenShot( const char *filename, int shot_type )
 	r_shot->buffer = (byte*)Mem_Alloc( r_temppool, r_shot->size );
 
 	// get screen frame
-	//xW->glReadPixels( 0, 0, r_shot->width, r_shot->height, GL_RGB, GL_UNSIGNED_BYTE, r_shot->buffer );
+	xW->glReadPixels( 0, 0, r_shot->width, r_shot->height, GL_RGB, GL_UNSIGNED_BYTE, r_shot->buffer );
 
 	switch( shot_type )
 	{
@@ -4093,7 +4085,7 @@ qboolean VID_CubemapShot( const char *base, uint size, const float *vieworg, qbo
 			flags = r_envMapInfo[i].flags;
 					}
 
-		//xW->glReadPixels( 0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, temp );
+		xW->glReadPixels( 0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, temp );
 		r_side->flags = IMAGE_HAS_COLOR;
 		r_side->width = r_side->height = size;
 		r_side->type = PF_RGB_24;
@@ -4178,7 +4170,7 @@ void CL_DrawBeam( BEAM *pbeam )
 	VectorScale( color, ( pbeam->brightness / 255.0f ), color );
 	VectorScale( color, ( 1.0f / 255.0f ), color );
 
-	////xW->glShadeModel( GL_SMOOTH );
+	//xW->glShadeModel( GL_SMOOTH );
 
 	switch( pbeam->type )
 	{
@@ -4224,9 +4216,9 @@ void GL_GenerateMipmaps( byte *buffer, rgbdata_t *pic, gltexture_t *tex, GLenum 
 
 	if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
 	{
-		//xW->glHint( GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST );
-		//xW->glTexParameteri( glTarget, GL_GENERATE_MIPMAP_SGIS, GL_TRUE );
-		//xW->glGetError(); // clear error queue on mips generate
+		xW->glHint( GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST );
+		xW->glTexParameteri( glTarget, GL_GENERATE_MIPMAP_SGIS, GL_TRUE );
+		xW->glGetError(); // clear error queue on mips generate
 		return;
 	}
 
@@ -4248,10 +4240,17 @@ void GL_GenerateMipmaps( byte *buffer, rgbdata_t *pic, gltexture_t *tex, GLenum 
 		h = (h+1)>>1;
 		mipLevel++;
 
-		//if( subImage ) //xW->glTexSubImage2D( tex->target + side, mipLevel, 0, 0, w, h, inFormat, dataType, buffer );
-		//else //xW->glTexImage2D( tex->target + side, mipLevel, tex->format, w, h, 0, inFormat, dataType, buffer );
-		//if( //xW->glGetError( )) break; // can't create mip levels
+		if( subImage ) xW->glTexSubImage2D( tex->target + side, mipLevel, 0, 0, w, h, inFormat, dataType, buffer );
+		else xW->glTexImage2D( tex->target + side, mipLevel, tex->format, w, h, 0, inFormat, dataType, buffer );
+		if( xW->glGetError( )) break; // can't create mip levels
 	}
+}
+
+GLuint makeTexture()
+{
+	GLuint n;
+	xW->glGenTextures(1, &n);
+	return n;
 }
 
 void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImage, imgfilter_t *filter )
@@ -4337,45 +4336,7 @@ void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImage, imgf
 		dataType = GL_FLOAT;
 	}
 
-	if( pic->flags & IMAGE_CUBEMAP )
-	{
-		if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
-		{
-			numSides = 6;
-			tex->target = glTarget = GL_TEXTURE_CUBE_MAP_ARB;
-			tex->flags = (texFlags_t)(tex->flags | TF_CUBEMAP);
-
-			if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ))
-			{
-				// don't use border for cubemaps
-				tex->flags = (texFlags_t)(tex->flags & (~(TF_BORDER|TF_ALPHA_BORDER)));
-				tex->flags = (texFlags_t)(tex->flags & TF_CLAMP);
-			}
-		}
-		else
-		{
-			MsgDev( D_WARN, "GL_UploadTexture: cubemaps isn't supported, %s ignored\n", tex->name );
-			tex->flags = (texFlags_t)(tex->flags & (~TF_CUBEMAP));
-		}
-	}
-	else if( tex->flags & TF_TEXTURE_1D )
-	{
-		// determine target
-		tex->target = glTarget = GL_TEXTURE_1D;
-	}
-	else if( tex->flags & TF_TEXTURE_RECTANGLE )
-	{
-		if( glConfig.max_2d_rectangle_size )
-			tex->target = glTarget = glConfig.texRectangle;
-		// or leave as GL_TEXTURE_2D
-	}
-	else if( tex->flags & TF_TEXTURE_3D )
-	{
-		// determine target
-		tex->target = glTarget = GL_TEXTURE_3D;
-	}
-
-	xW->glBindTexture( tex->target, tex->texnum );
+	xW->glBindTexture(GL_TEXTURE_2D, tex->texid);
 
 	buf = pic->buffer;
 	bufend = pic->buffer + pic->size;
@@ -4387,8 +4348,8 @@ void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImage, imgf
 	// determine some texTypes
 	if( tex->flags & TF_NOPICMIP )
 		tex->texType = TEX_NOMIP;
-	else if( tex->flags & TF_CUBEMAP )
-		tex->texType = TEX_CUBEMAP;
+//	else if( tex->flags & TF_CUBEMAP )
+//		tex->texType = TEX_CUBEMAP;
 	else if(( tex->flags & TF_DECAL ) == TF_DECAL )
 		tex->texType = TEX_DECAL;
 
@@ -4399,53 +4360,26 @@ void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImage, imgf
 			Host_Error( "GL_UploadTexture: %s image buffer overflow\n", tex->name );
 
 		// copy or resample the texture
-		if(( tex->width == tex->srcWidth && tex->height == tex->srcHeight ) || ( tex->flags & ( TF_TEXTURE_1D|TF_TEXTURE_3D )))
-		{
+		if(( tex->width == tex->srcWidth && tex->height == tex->srcHeight )/* || ( tex->flags & ( TF_TEXTURE_1D|TF_TEXTURE_3D ))*/)
 			data = buf;
-		}
 		else
-		{
 			data = GL_ResampleTexture( buf, tex->srcWidth, tex->srcHeight, tex->width, tex->height, ( tex->flags & TF_NORMALMAP ));
-		}
 
-		if( !glConfig.deviceSupportsGamma )
-		{
-			if(!( tex->flags & TF_NOMIPMAP ) && !( tex->flags & TF_SKYSIDE ) && !( tex->flags & TF_TEXTURE_3D ))
-				data = GL_ApplyGamma( data, tex->width * tex->height, ( tex->flags & TF_NORMALMAP ));
-		}
+		if(!( tex->flags & TF_NOMIPMAP ) && !( tex->flags & TF_SKYSIDE ) && !( tex->flags & TF_TEXTURE_3D ))
+			data = GL_ApplyGamma( data, tex->width * tex->height, ( tex->flags & TF_NORMALMAP ));
 
-		if( glTarget == GL_TEXTURE_1D )
-		{
-			//if( subImage ) ////xW->glTexSubImage1D( tex->target, 0, 0, tex->width, inFormat, dataType, data );
-			//else //
-			//xW->glTexImage1D( tex->target, 0, outFormat, tex->width, 0, inFormat, dataType, data );
-		}
-		else if( glTarget == GL_TEXTURE_CUBE_MAP_ARB )
-		{
-			if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & TF_NORMALMAP ))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-//			if( subImage ) xW->glTexSubImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
-//			else
-//			xW->glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + i, 0, outFormat, tex->width, tex->height, 0, inFormat, dataType, data );
-			if( !GL_Support( GL_SGIS_MIPMAPS_EXT ) || ( tex->flags & TF_NORMALMAP ))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-		}
-//		else if( glTarget == GL_TEXTURE_3D )
-//		{
-//			if( subImage ) //xW->glTexSubImage3D( tex->target, 0, 0, 0, 0, tex->width, tex->height, pic->depth, inFormat, dataType, data );
-//			else //xW->glTexImage3D( tex->target, 0, outFormat, tex->width, tex->height, pic->depth, 0, inFormat, dataType, data );
-//		}
+//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		if( subImage )
+			xW->glTexSubImage2D( tex->target, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
 		else
-		{
-			if( GL_Support( GL_SGIS_MIPMAPS_EXT ) && !( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-//			if( subImage )
-//				xW->glTexSubImage2D( tex->target, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
-//			else
-//				xW->glTexImage2D( tex->target, 0, outFormat, tex->width, tex->height, 0, inFormat, dataType, data );
-			if( !GL_Support( GL_SGIS_MIPMAPS_EXT ) || ( tex->flags & ( TF_NORMALMAP|TF_ALPHACONTRAST )))
-				GL_GenerateMipmaps( data, pic, tex, glTarget, inFormat, i, subImage );
-		}
+			xW->glTexImage2D( tex->target, 0, outFormat, tex->width, tex->height, 0, inFormat, dataType, data );
+
+		xW->glGenerateMipmap(GL_TEXTURE_2D);
+		xW->glEnable(GL_TEXTURE_2D);
 
 		if( numSides > 1 && buf != NULL )
 			buf += offset;
@@ -4472,10 +4406,10 @@ void R_ShutdownImages( void )
 			continue;
 
 		GL_SelectTexture( i );
-		//xW->glBindTexture( GL_TEXTURE_2D, 0 );
+		xW->glBindTexture( GL_TEXTURE_2D, 0 );
 
 		//if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
-			//xW->glBindTexture( GL_TEXTURE_CUBE_MAP_ARB, 0 );
+			xW->glBindTexture( GL_TEXTURE_CUBE_MAP_ARB, 0 );
 	}
 
 	for( i = 0, image = r_textures; i < r_numTextures; i++, image++ )
@@ -4539,16 +4473,16 @@ Restore identity texmatrix
 void R_EndDrawMirror( void )
 {
 	GL_CleanUpTextureUnits( 0 );
-	////xW->glMatrixMode( GL_MODELVIEW );
+	xW->glMatrixMode( GL_MODELVIEW );
 }
 
 void R_Clear( int bitMask )
 {
 	int	bits;
 
-	//if( gl_overview->integer )
-	//	//xW->glClearColor( 0.0f, 1.0f, 0.0f, 1.0f ); // green background (Valve rules)
-	//else //xW->glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
+	if( gl_overview->integer )
+		xW->glClearColor( 0.0f, 1.0f, 0.0f, 1.0f ); // green background (Valve rules)
+	else xW->glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
 
 	bits = GL_DEPTH_BUFFER_BIT;
 
@@ -4559,7 +4493,7 @@ void R_Clear( int bitMask )
 
 	bits &= bitMask;
 
-	//xW->glClear( bits );
+	xW->glClear( bits );
 
 	// change ordering for overview
 	if( RI.drawOrtho )
@@ -4573,8 +4507,8 @@ void R_Clear( int bitMask )
 		gldepthmax = 1.0f;
 	}
 
-	//xW->glDepthFunc( GL_LEQUAL );
-	////xW->glDepthRange( gldepthmin, gldepthmax );
+	xW->glDepthFunc( GL_LEQUAL );
+	//xW->glDepthRange( gldepthmin, gldepthmax );
 }
 
 void R_LoadIdentity( void )
@@ -4584,7 +4518,7 @@ void R_LoadIdentity( void )
 	Matrix4x4_LoadIdentity( RI.objectMatrix );
 	Matrix4x4_Copy( RI.modelviewMatrix, RI.worldviewMatrix );
 
-	////xW->glMatrixMode( GL_MODELVIEW );
+	xW->glMatrixMode( GL_MODELVIEW );
 	GL_LoadMatrix( RI.modelviewMatrix );
 	tr.modelviewIdentity = true;
 }
@@ -4610,7 +4544,7 @@ void R_RotateForEntity( cl_entity_t *e )
 	Matrix4x4_CreateFromEntity( RI.objectMatrix, e->angles, e->origin, scale );
 	Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, RI.objectMatrix );
 
-	////xW->glMatrixMode( GL_MODELVIEW );
+	xW->glMatrixMode( GL_MODELVIEW );
 	GL_LoadMatrix( RI.modelviewMatrix );
 	tr.modelviewIdentity = false;
 }
@@ -4636,7 +4570,7 @@ void R_TranslateForEntity( cl_entity_t *e )
 	Matrix4x4_CreateFromEntity( RI.objectMatrix, vec3_origin, e->origin, scale );
 	Matrix4x4_ConcatTransforms( RI.modelviewMatrix, RI.worldviewMatrix, RI.objectMatrix );
 
-	////xW->glMatrixMode( GL_MODELVIEW );
+	xW->glMatrixMode( GL_MODELVIEW );
 	GL_LoadMatrix( RI.modelviewMatrix );
 	tr.modelviewIdentity = false;
 }
@@ -4667,18 +4601,18 @@ void R_SetupGL( void )
 		y = (int)floorf( glState.height - RI.viewport[1] * glState.height / glState.height );
 		y2 = (int)ceilf( glState.height - ( RI.viewport[1] + RI.viewport[3] ) * glState.height / glState.height );
 
-		//xW->glViewport( x, y2, x2 - x, y - y2 );
+		xW->glViewport( x, y2, x2 - x, y - y2 );
 	}
 	else
 	{
 		// envpass, mirrorpass
-		//xW->glViewport( RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3] );
+		xW->glViewport( RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3] );
 	}
 
-	////xW->glMatrixMode( GL_PROJECTION );
+	xW->glMatrixMode( GL_PROJECTION );
 	GL_LoadMatrix( RI.projectionMatrix );
 
-	////xW->glMatrixMode( GL_MODELVIEW );
+	xW->glMatrixMode( GL_MODELVIEW );
 	GL_LoadMatrix( RI.worldviewMatrix );
 
 	if( RI.params & RP_CLIPPLANE )
@@ -4691,7 +4625,7 @@ void R_SetupGL( void )
 		clip[2] = p->normal[2];
 		clip[3] = -p->dist;
 
-		////xW->glClipPlane( GL_CLIP_PLANE0, clip );
+		//xW->glClipPlane( GL_CLIP_PLANE0, clip );
 		//xW->glEnable( GL_CLIP_PLANE0 );
 	}
 
@@ -4700,9 +4634,9 @@ void R_SetupGL( void )
 
 	GL_Cull( GL_FRONT );
 
-	//xW->glDisable( GL_BLEND );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//////xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_ALPHA_TEST );
+	xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 }
 
 /*
@@ -4783,12 +4717,12 @@ void R_DrawEntitiesOnList( void )
 
 	// NOTE: some mods with custom renderer may generate glErrors
 	// so we clear it here
-	//while( //xW->glGetError() != GL_NO_ERROR );
+	while( xW->glGetError() != GL_NO_ERROR );
 
 	// don't fogging translucent surfaces
-	//if( !RI.fogCustom )
-		//xW->glDisable( GL_FOG );
-	//xW->glDepthMask( GL_FALSE );
+	if( !RI.fogCustom )
+		xW->glDisable( GL_FOG );
+	xW->glDepthMask( GL_FALSE );
 	glState.drawTrans = true;
 
 	// then draw translucent entities
@@ -4830,11 +4764,11 @@ void R_DrawEntitiesOnList( void )
 
 	// NOTE: some mods with custom renderer may generate glErrors
 	// so we clear it here
-	//while( //xW->glGetError() != GL_NO_ERROR );
+	while( xW->glGetError() != GL_NO_ERROR );
 
 	glState.drawTrans = false;
-	//xW->glDepthMask( GL_TRUE );
-	//xW->glDisable( GL_BLEND );	// Trinity Render issues
+	xW->glDepthMask( GL_TRUE );
+	xW->glDisable( GL_BLEND );	// Trinity Render issues
 
 	R_DrawViewModel();
 
@@ -4845,29 +4779,29 @@ void R_BeginFrame( qboolean clearScene )
 {
 	if(( gl_clear->integer || gl_overview->integer ) && clearScene && cls.state != ca_cinematic )
 	{
-		//xW->glClear( GL_COLOR_BUFFER_BIT );
+		xW->glClear( GL_COLOR_BUFFER_BIT );
 	}
 
 	// update gamma
 	if( vid_gamma->modified )
 	{
-		if( glConfig.deviceSupportsGamma )
-		{
-			SCR_RebuildGammaTable();
-			//GL_UpdateGammaRamp();
-			vid_gamma->modified = false;
-		}
-		else
-		{
+//		if( glConfig.deviceSupportsGamma )
+//		{
+//			SCR_RebuildGammaTable();
+//			//GL_UpdateGammaRamp();
+//			vid_gamma->modified = false;
+//		}
+//		else
+//		{
 			BuildGammaTable( vid_gamma->value, vid_texgamma->value );
 			GL_RebuildLightmaps();
-		}
+		//}
 	}
 
 	R_Set2DMode( true );
 
 	// draw buffer stuff
-	////xW->glDrawBuffer( GL_BACK );
+	//xW->glDrawBuffer( GL_BACK );
 
 	// texturemode stuff
 	// update texture parameters
@@ -4949,7 +4883,7 @@ void R_DrawTextureChains( void )
 	texture_t		*t;
 
 	// make sure what color is reset
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 	R_LoadIdentity();	// set identity matrix
 
 	GL_SetupFogColorForSurfaces();
@@ -5061,29 +4995,29 @@ void R_DrawBrushModel( cl_entity_t *e )
 	GL_SetupFogColorForSurfaces ();
 
 	if( e->curstate.rendermode == kRenderTransTexture && r_lighting_extended->value >= 2.0f )
-		//xW->glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
+		xW->glBlendFunc( GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA );
 
 	// setup the color and alpha
 	switch( e->curstate.rendermode )
 	{
 	case kRenderTransAdd:
 		if( RI.fogCustom )
-			//xW->glDisable( GL_FOG );
+			xW->glDisable( GL_FOG );
 	case kRenderTransTexture:
 		need_sort = true;
 	case kRenderGlow:
-		////xW->glColor4ub( 255, 255, 255, e->curstate.renderamt );
+		xW->glColor4ub( 255, 255, 255, e->curstate.renderamt );
 		break;
 	case kRenderTransColor:
-		//xW->glDisable( GL_TEXTURE_2D );
-		////xW->glColor4ub( e->curstate.rendercolor.r, e->curstate.rendercolor.g,
-			//e->curstate.rendercolor.b, e->curstate.renderamt );
+		xW->glDisable( GL_TEXTURE_2D );
+		xW->glColor4ub( e->curstate.rendercolor.r, e->curstate.rendercolor.g,
+			e->curstate.rendercolor.b, e->curstate.renderamt );
 		break;
 	case kRenderTransAlpha:
 		// NOTE: brushes can't change renderamt for 'Solid' mode
 		////xW->glAlphaFunc( GL_GEQUAL, 0.5f );
 	default:
-		////xW->glColor4ub( 255, 255, 255, 255 );
+		xW->glColor4ub( 255, 255, 255, 255 );
 		break;
 	}
 
@@ -5115,8 +5049,8 @@ void R_DrawBrushModel( cl_entity_t *e )
 	for( i = 0; i < num_sorted; i++ )
 		R_RenderBrushPoly( world.draw_surfaces[i] );
 
-	//if( e->curstate.rendermode == kRenderTransColor )
-		//xW->glEnable( GL_TEXTURE_2D );
+	if( e->curstate.rendermode == kRenderTransColor )
+		xW->glEnable( GL_TEXTURE_2D );
 
 	GL_ResetFogColor();
 	R_BlendLightmaps();
@@ -5126,8 +5060,8 @@ void R_DrawBrushModel( cl_entity_t *e )
 	// restore fog here
 	if( e->curstate.rendermode == kRenderTransAdd )
 	{
-		//if( RI.fogCustom )
-			//xW->glEnable( GL_FOG );
+		if( RI.fogCustom )
+			xW->glEnable( GL_FOG );
 	}
 
 	R_LoadIdentity();	// restore worldmatrix
@@ -5143,10 +5077,10 @@ void R_DrawTriangleOutlines( void )
 	if( !gl_wireframe->integer )
 		return;
 
-	//xW->glDisable( GL_TEXTURE_2D );
-	//xW->glDisable( GL_DEPTH_TEST );
-	//////xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	////xW->glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	xW->glDisable( GL_TEXTURE_2D );
+	xW->glDisable( GL_DEPTH_TEST );
+	xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	//xW->glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 	// render static surfaces first
 	for( i = 0; i < MAX_LIGHTMAPS; i++ )
@@ -5156,11 +5090,11 @@ void R_DrawTriangleOutlines( void )
 			p = surf->polys;
 			for( ; p != NULL; p = p->chain )
 			{
-				////xW->glBegin( GL_POLYGON );
+				xW->glBegin( GL_POLYGON );
 				v = p->verts[0];
-				//for( j = 0; j < p->numverts; j++, v += VERTEXSIZE )
-					////xW->glVertex3fv( v );
-				////xW->glEnd ();
+				for( j = 0; j < p->numverts; j++, v += VERTEXSIZE )
+					xW->glVertex3fv( v );
+				xW->glEnd ();
 			}
 		}
 	}
@@ -5172,17 +5106,17 @@ void R_DrawTriangleOutlines( void )
 
 		for( ; p != NULL; p = p->chain )
 		{
-			////xW->glBegin( GL_POLYGON );
+			xW->glBegin( GL_POLYGON );
 			v = p->verts[0];
-			//for( j = 0; j < p->numverts; j++, v += VERTEXSIZE )
-				////xW->glVertex3fv( v );
-			////xW->glEnd ();
+			for( j = 0; j < p->numverts; j++, v += VERTEXSIZE )
+				xW->glVertex3fv( v );
+			xW->glEnd ();
 		}
 	}
 
-	////xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-	//xW->glEnable( GL_DEPTH_TEST );
-	//xW->glEnable( GL_TEXTURE_2D );
+	//xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	xW->glEnable( GL_DEPTH_TEST );
+	xW->glEnable( GL_TEXTURE_2D );
 }
 
 void R_StudioRenderShadow( int iSprite, float *p1, float *p2, float *p3, float *p4 )
@@ -5192,25 +5126,25 @@ void R_StudioRenderShadow( int iSprite, float *p1, float *p2, float *p3, float *
 
 	if( TriSpriteTexture( Mod_Handle( iSprite ), 0 ))
 	{
-		//xW->glEnable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		xW->glEnable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		//////xW->glColor4f( 0.0f, 0.0f, 0.0f, 1.0f ); // render only alpha
+		xW->glColor4f( 0.0f, 0.0f, 0.0f, 1.0f ); // render only alpha
 
-		////xW->glBegin( GL_QUADS );
-			////xW->glTexCoord2f( 0.0f, 0.0f );
-			////xW->glVertex3fv( p1 );
-			////xW->glTexCoord2f( 0.0f, 1.0f );
-			////xW->glVertex3fv( p2 );
-			////xW->glTexCoord2f( 1.0f, 1.0f );
-			////xW->glVertex3fv( p3 );
-			////xW->glTexCoord2f( 1.0f, 0.0f );
-			////xW->glVertex3fv( p4 );
-		////xW->glEnd();
+		xW->glBegin( GL_QUADS );
+			xW->glTexCoord2f( 0.0f, 0.0f );
+			xW->glVertex3fv( p1 );
+			xW->glTexCoord2f( 0.0f, 1.0f );
+			xW->glVertex3fv( p2 );
+			xW->glTexCoord2f( 1.0f, 1.0f );
+			xW->glVertex3fv( p3 );
+			xW->glTexCoord2f( 1.0f, 0.0f );
+			xW->glVertex3fv( p4 );
+		xW->glEnd();
 
-		//xW->glDisable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
+		xW->glDisable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
 	}
 }
 
@@ -5223,7 +5157,7 @@ void R_StudioDrawHulls( void )
 		alpha = 0.5f;
 	else alpha = 1.0f;
 
-	//xW->glDisable( GL_TEXTURE_2D );
+	xW->glDisable( GL_TEXTURE_2D );
 
 	for( i = 0; i < m_pStudioHeader->numhitboxes; i++ )
 	{
@@ -5277,29 +5211,29 @@ void R_StudioDrawHulls( void )
 		j = (pbboxes[i].group % 8);
 
 		// set properly color for hull
-		//////xW->glColor4f( hullcolor[j][0], hullcolor[j][1], hullcolor[j][2], alpha );
+		xW->glColor4f( hullcolor[j][0], hullcolor[j][1], hullcolor[j][2], alpha );
 
-		////xW->glBegin( GL_QUAD_STRIP );
-		//for( j = 0; j < 10; j++ )
-			////xW->glVertex3fv( v2[j & 7] );
-		////xW->glEnd( );
+		xW->glBegin( GL_QUAD_STRIP );
+		for( j = 0; j < 10; j++ )
+			xW->glVertex3fv( v2[j & 7] );
+		xW->glEnd( );
 
-		////xW->glBegin( GL_QUAD_STRIP );
-		////xW->glVertex3fv( v2[6] );
-		////xW->glVertex3fv( v2[0] );
-		////xW->glVertex3fv( v2[4] );
-		////xW->glVertex3fv( v2[2] );
-		////xW->glEnd( );
+		xW->glBegin( GL_QUAD_STRIP );
+		xW->glVertex3fv( v2[6] );
+		xW->glVertex3fv( v2[0] );
+		xW->glVertex3fv( v2[4] );
+		xW->glVertex3fv( v2[2] );
+		xW->glEnd( );
 
-		////xW->glBegin( GL_QUAD_STRIP );
-		////xW->glVertex3fv( v2[1] );
-		////xW->glVertex3fv( v2[7] );
-		////xW->glVertex3fv( v2[3] );
-		////xW->glVertex3fv( v2[5] );
-		////xW->glEnd( );
+		xW->glBegin( GL_QUAD_STRIP );
+		xW->glVertex3fv( v2[1] );
+		xW->glVertex3fv( v2[7] );
+		xW->glVertex3fv( v2[3] );
+		xW->glVertex3fv( v2[5] );
+		xW->glEnd( );
 	}
 
-	//xW->glEnable( GL_TEXTURE_2D );
+	xW->glEnable( GL_TEXTURE_2D );
 }
 
 /*
@@ -5320,31 +5254,31 @@ void R_StudioDrawAbsBBox( void )
 	if( !R_StudioComputeBBox( RI.currententity, bbox ))
 		return;
 
-	//xW->glDisable( GL_TEXTURE_2D );
-	//xW->glDisable( GL_DEPTH_TEST );
+	xW->glDisable( GL_TEXTURE_2D );
+	xW->glDisable( GL_DEPTH_TEST );
 
-	//////xW->glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	// red bboxes for studiomodels
-	////xW->glBegin( GL_LINES );
+	xW->glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );	// red bboxes for studiomodels
+	xW->glBegin( GL_LINES );
 
 	for( i = 0; i < 2; i += 1 )
 	{
-		////xW->glVertex3fv( bbox[i+0] );
-		////xW->glVertex3fv( bbox[i+2] );
-		////xW->glVertex3fv( bbox[i+4] );
-		////xW->glVertex3fv( bbox[i+6] );
-		////xW->glVertex3fv( bbox[i+0] );
-		////xW->glVertex3fv( bbox[i+4] );
-		////xW->glVertex3fv( bbox[i+2] );
-		////xW->glVertex3fv( bbox[i+6] );
-		////xW->glVertex3fv( bbox[i*2+0] );
-		////xW->glVertex3fv( bbox[i*2+1] );
-		////xW->glVertex3fv( bbox[i*2+4] );
-		////xW->glVertex3fv( bbox[i*2+5] );
+		xW->glVertex3fv( bbox[i+0] );
+		xW->glVertex3fv( bbox[i+2] );
+		xW->glVertex3fv( bbox[i+4] );
+		xW->glVertex3fv( bbox[i+6] );
+		xW->glVertex3fv( bbox[i+0] );
+		xW->glVertex3fv( bbox[i+4] );
+		xW->glVertex3fv( bbox[i+2] );
+		xW->glVertex3fv( bbox[i+6] );
+		xW->glVertex3fv( bbox[i*2+0] );
+		xW->glVertex3fv( bbox[i*2+1] );
+		xW->glVertex3fv( bbox[i*2+4] );
+		xW->glVertex3fv( bbox[i*2+5] );
 	}
 
-	////xW->glEnd();
-	//xW->glEnable( GL_TEXTURE_2D );
-	//xW->glEnable( GL_DEPTH_TEST );
+	xW->glEnd();
+	xW->glEnable( GL_TEXTURE_2D );
+	xW->glEnable( GL_DEPTH_TEST );
 }
 
 /*
@@ -5359,56 +5293,56 @@ void R_StudioDrawBones( void )
 	vec3_t		point;
 	int		i;
 
-	//xW->glDisable( GL_TEXTURE_2D );
+	xW->glDisable( GL_TEXTURE_2D );
 
 	for( i = 0; i < m_pStudioHeader->numbones; i++ )
 	{
 		if( pbones[i].parent >= 0 )
 		{
-			////xW->glPointSize( 3.0f );
-			////xW->glColor3f( 1, 0.7f, 0 );
-			////xW->glBegin( GL_LINES );
+			//xW->glPointSize( 3.0f );
+			xW->glColor3f( 1, 0.7f, 0 );
+			xW->glBegin( GL_LINES );
 
 			Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
-			////xW->glVertex3fv( point );
+			xW->glVertex3fv( point );
 			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			////xW->glVertex3fv( point );
+			xW->glVertex3fv( point );
 
-			////xW->glEnd();
+			xW->glEnd();
 
-			////xW->glColor3f( 0, 0, 0.8f );
-			////xW->glBegin( GL_POINTS );
+			xW->glColor4f( 0, 0, 0.8f, 1.f );
+			xW->glBegin( GL_POINTS );
 			if( pbones[pbones[i].parent].parent != -1 )
 			{
 				Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
-				////xW->glVertex3fv( point );
+				xW->glVertex3fv( point );
 			}
 			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			////xW->glVertex3fv( point );
-			////xW->glEnd();
+			xW->glVertex3fv( point );
+			xW->glEnd();
 		}
 		else
 		{
 			// draw parent bone node
-			////xW->glPointSize( 5.0f );
-			////xW->glColor3f( 0.8f, 0, 0 );
-			////xW->glBegin( GL_POINTS );
+			//xW->glPointSize( 5.0f );
+			xW->glColor4f( 0.8f, 0, 0, 1.f );
+			xW->glBegin( GL_POINTS );
 			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			////xW->glVertex3fv( point );
-			////xW->glEnd();
+			xW->glVertex3fv( point );
+			xW->glEnd();
 		}
 	}
 
 	////xW->glPointSize( 1.0f );
-	//xW->glEnable( GL_TEXTURE_2D );
+	xW->glEnable( GL_TEXTURE_2D );
 }
 
 void R_StudioDrawAttachments( void )
 {
 	int	i;
 
-	//xW->glDisable( GL_TEXTURE_2D );
-	//xW->glDisable( GL_DEPTH_TEST );
+	xW->glDisable( GL_TEXTURE_2D );
+	xW->glDisable( GL_DEPTH_TEST );
 
 	for( i = 0; i < m_pStudioHeader->numattachments; i++ )
 	{
@@ -5421,42 +5355,42 @@ void R_StudioDrawAttachments( void )
 		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[1], v[2] );
 		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[2], v[3] );
 
-		////xW->glBegin( GL_LINES );
-		////xW->glColor3f( 1, 0, 0 );
-		////xW->glVertex3fv( v[0] );
-		////xW->glColor3f( 1, 1, 1 );
-		////xW->glVertex3fv (v[1] );
-		////xW->glColor3f( 1, 0, 0 );
-		////xW->glVertex3fv (v[0] );
-		////xW->glColor3f( 1, 1, 1 );
-		////xW->glVertex3fv (v[2] );
-		////xW->glColor3f( 1, 0, 0 );
-		////xW->glVertex3fv (v[0] );
-		////xW->glColor3f( 1, 1, 1 );
-		////xW->glVertex3fv( v[3] );
-		////xW->glEnd();
+		xW->glBegin( GL_LINES );
+		xW->glColor3f( 1, 0, 0 );
+		xW->glVertex3fv( v[0] );
+		xW->glColor3f( 1, 1, 1 );
+		xW->glVertex3fv (v[1] );
+		xW->glColor3f( 1, 0, 0 );
+		xW->glVertex3fv (v[0] );
+		xW->glColor3f( 1, 1, 1 );
+		xW->glVertex3fv (v[2] );
+		xW->glColor3f( 1, 0, 0 );
+		xW->glVertex3fv (v[0] );
+		xW->glColor3f( 1, 1, 1 );
+		xW->glVertex3fv( v[3] );
+		xW->glEnd();
 
-		////xW->glPointSize( 5.0f );
-		////xW->glColor3f( 0, 1, 0 );
-		////xW->glBegin( GL_POINTS );
-		////xW->glVertex3fv( v[0] );
-		////xW->glEnd();
-		////xW->glPointSize( 1.0f );
+		//xW->glPointSize( 5.0f );
+		xW->glColor3f( 0, 1, 0 );
+		xW->glBegin( GL_POINTS );
+		xW->glVertex3fv( v[0] );
+		xW->glEnd();
+		//xW->glPointSize( 1.0f );
 	}
 
-	//xW->glEnable( GL_TEXTURE_2D );
-	//xW->glEnable( GL_DEPTH_TEST );
+	xW->glEnable( GL_TEXTURE_2D );
+	xW->glEnable( GL_DEPTH_TEST );
 }
 
 void R_StudioSetupRenderer( int rendermode )
 {
 	g_iRenderMode = bound( 0, rendermode, kRenderTransAdd );
-	////xW->glShadeModel( GL_SMOOTH );	// enable gouraud shading
+	//xW->glShadeModel( GL_SMOOTH );	// enable gouraud shading
 	if( clgame.ds.cullMode != GL_NONE ) GL_Cull( GL_FRONT );
 
 	// enable depthmask on studiomodels
 	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
-		//xW->glDepthMask( GL_TRUE );
+		xW->glDepthMask( GL_TRUE );
 
 	////xW->glAlphaFunc( GL_GREATER, 0.0f );
 
@@ -5476,9 +5410,9 @@ void R_StudioRestoreRenderer( void )
 	////xW->glShadeModel( GL_FLAT );
 
 	// restore depthmask state for sprites etc
-	//if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
-		//xW->glDepthMask( GL_FALSE );
-	//else //xW->glDepthMask( GL_TRUE );
+	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
+		xW->glDepthMask( GL_FALSE );
+	else xW->glDepthMask( GL_TRUE );
 
 	if( g_iBackFaceCull )
 		GL_FrontFace( false );
@@ -5494,18 +5428,18 @@ void R_StudioDrawPlanarShadow( void )
 
 	R_StudioDeformShadow ();
 
-	//if( glState.stencilEnabled )
-		//xW->glEnable( GL_STENCIL_TEST );
+	if( glState.stencilEnabled )
+		xW->glEnable( GL_STENCIL_TEST );
 
-	////xW->glEnableClientState( GL_VERTEX_ARRAY );
+	//xW->glEnableClientState( GL_VERTEX_ARRAY );
 	////xW->glVertexPointer( 3, GL_FLOAT, 12, g_xarrayverts );
 
 	/*if( GL_Support( GL_DRAW_RANGEELEMENTS_EXT ))
 		//xW->glDrawRangeElementsEXT( GL_TRIANGLES, 0, g_nNumArrayVerts, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
 	else *///xW->glDrawElements( GL_TRIANGLES, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
 
-	//if( glState.stencilEnabled )
-		//xW->glDisable( GL_STENCIL_TEST );
+	if( glState.stencilEnabled )
+		xW->glDisable( GL_STENCIL_TEST );
 
 	////xW->glDisableClientState( GL_VERTEX_ARRAY );
 }
@@ -5536,26 +5470,26 @@ void GL_StudioDrawShadow( void )
 			if( rendermode == kRenderNormal && RI.currententity != &clgame.viewent )
 			{
 				shadow_alpha = 1.0f - r_shadowalpha.value * 0.5f;
-				//xW->glDisable( GL_TEXTURE_2D );
-				//xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-				//xW->glEnable( GL_BLEND );
+				xW->glDisable( GL_TEXTURE_2D );
+				xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				xW->glEnable( GL_BLEND );
 				////xW->glShadeModel( GL_FLAT );
 				shadow_alpha2 = 1.0f - shadow_alpha;
 
-				//////xW->glColor4f( 0.0f, 0.0f, 0.0f, shadow_alpha2 );
+				xW->glColor4f( 0.0f, 0.0f, 0.0f, shadow_alpha2 );
 
 				depthmode = GL_LESS;
-				//xW->glDepthFunc( depthmode );
+				xW->glDepthFunc( depthmode );
 
 				R_StudioDrawPlanarShadow();
 
 				depthmode2 = GL_LEQUAL;
-				//xW->glDepthFunc( depthmode2 );
+				xW->glDepthFunc( depthmode2 );
 
-				//xW->glEnable( GL_TEXTURE_2D );
-				//xW->glDisable( GL_BLEND );
+				xW->glEnable( GL_TEXTURE_2D );
+				xW->glDisable( GL_BLEND );
 
-				//////xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+				xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				////xW->glShadeModel( GL_SMOOTH );
 			}
 		}
@@ -5609,26 +5543,26 @@ void GL_SetDefaults( void )
 
 	////xW->glFinish();
 
-	////xW->glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
+	xW->glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
 
-	//xW->glDisable( GL_DEPTH_TEST );
-	//xW->glDisable( GL_CULL_FACE );
-	//xW->glDisable( GL_SCISSOR_TEST );
-	//xW->glDepthFunc( GL_LEQUAL );
-	//xW->glDepthMask( GL_FALSE );
+	xW->glDisable( GL_DEPTH_TEST );
+	xW->glDisable( GL_CULL_FACE );
+	xW->glDisable( GL_SCISSOR_TEST );
+	xW->glDepthFunc( GL_LEQUAL );
+	xW->glDepthMask( GL_FALSE );
 
-	//////xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+	xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 
 	if( glState.stencilEnabled )
 	{
-		//xW->glDisable( GL_STENCIL_TEST );
-		//xW->glStencilMask( ( GLuint ) ~0 );
-		//xW->glStencilFunc( GL_EQUAL, 0, ~0 );
-		//xW->glStencilOp( GL_KEEP, GL_INCR, GL_INCR );
+		xW->glDisable( GL_STENCIL_TEST );
+		xW->glStencilMask( ( GLuint ) ~0 );
+		xW->glStencilFunc( GL_EQUAL, 0, ~0 );
+		xW->glStencilOp( GL_KEEP, GL_INCR, GL_INCR );
 	}
 
-	////xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-	//xW->glPolygonOffset( -1.0f, -2.0f );
+	//xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	xW->glPolygonOffset( -1.0f, -2.0f );
 
 	// properly disable multitexturing at startup
 	for( i = (MAX_TEXTURE_UNITS - 1); i > 0; i-- )
@@ -5638,31 +5572,31 @@ void GL_SetDefaults( void )
 
 		GL_SelectTexture( i );
 		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-		//xW->glDisable( GL_BLEND );
-		//xW->glDisable( GL_TEXTURE_2D );
+		xW->glDisable( GL_BLEND );
+		xW->glDisable( GL_TEXTURE_2D );
 	}
 
 	GL_SelectTexture( 0 );
-	//xW->glDisable( GL_BLEND );
-	//xW->glDisable( GL_ALPHA_TEST );
-	//xW->glDisable( GL_POLYGON_OFFSET_FILL );
+	xW->glDisable( GL_BLEND );
+	xW->glDisable( GL_ALPHA_TEST );
+	xW->glDisable( GL_POLYGON_OFFSET_FILL );
 	////xW->glAlphaFunc( GL_GREATER, 0.0f );
-	//xW->glEnable( GL_TEXTURE_2D );
+	xW->glEnable( GL_TEXTURE_2D );
 	////xW->glShadeModel( GL_FLAT );
 
-	////xW->glPointSize( 1.2f );
-	//xW->glLineWidth( 1.2f );
+	//xW->glPointSize( 1.2f );
+	xW->glLineWidth( 1.2f );
 
 	GL_Cull( 0 );
 	GL_FrontFace( 0 );
 
 	R_SetTextureParameters();
 
-	//xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-	//xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+	xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	//xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-	//xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+	xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 }
 
 void GL_InitExtensions( void )
@@ -5671,10 +5605,10 @@ void GL_InitExtensions( void )
 	//GL_CheckExtension( "OpenGL 1.1.0", opengl_110funcs, NULL, GL_OPENGL_110 );
 
 	// get our various GL strings
-	glConfig.vendor_string = (const char*)"lol";//xW->glGetString( GL_VENDOR );
-	glConfig.renderer_string = (const char*)"lol";//xW->glGetString( GL_RENDERER );
-	glConfig.version_string = (const char*)"lol";//xW->glGetString( GL_VERSION );
-	glConfig.extensions_string = (const char*)"lol";//xW->glGetString( GL_EXTENSIONS );
+	glConfig.vendor_string = (const char*)xW->glGetString( GL_VENDOR );
+	glConfig.renderer_string = (const char*)xW->glGetString( GL_RENDERER );
+	glConfig.version_string = (const char*)xW->glGetString( GL_VERSION );
+	glConfig.extensions_string = (const char*)xW->glGetString( GL_EXTENSIONS );
 	MsgDev( D_INFO, "Video: %s\n", glConfig.renderer_string );
 
 	// initalize until base opengl functions loaded
@@ -5714,7 +5648,7 @@ void GL_InitExtensions( void )
 
 	//if( GL_Support( GL_TEXTURE_3D_EXT ))
 	//{
-		//xW->glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &glConfig.max_3d_texture_size );
+		xW->glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &glConfig.max_3d_texture_size );
 
 		if( glConfig.max_3d_texture_size < 32 )
 		{
@@ -5729,7 +5663,7 @@ void GL_InitExtensions( void )
 	//GL_CheckExtension( "GL_ARB_texture_cube_map", NULL, "gl_texture_cubemap", GL_TEXTURECUBEMAP_EXT );
 
 	//if( GL_Support( GL_TEXTURECUBEMAP_EXT ))
-		//xW->glGetIntegerv( GL_MAX_CUBE_MAP_TEXTURE_SIZE_ARB, &glConfig.max_cubemap_size );
+		xW->glGetIntegerv( GL_MAX_CUBE_MAP_TEXTURE_SIZE_ARB, &glConfig.max_cubemap_size );
 
 	// point particles extension
 	//GL_CheckExtension( "GL_EXT_point_parameters", pointparametersfunc, NULL, GL_EXT_POINTPARAMETERS );
@@ -5750,11 +5684,11 @@ void GL_InitExtensions( void )
 	//GL_CheckExtension( "GL_EXT_texture_filter_anisotropic", NULL, "gl_ext_anisotropic_filter", GL_ANISOTROPY_EXT );
 
 	//if( GL_Support( GL_ANISOTROPY_EXT ))
-		//xW->glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &glConfig.max_texture_anisotropy );
+		xW->glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &glConfig.max_texture_anisotropy );
 
 	//GL_CheckExtension( "GL_EXT_texture_lod_bias", NULL, "gl_ext_texture_lodbias", GL_TEXTURE_LODBIAS );
 	//if( GL_Support( GL_TEXTURE_LODBIAS ))
-		//xW->glGetFloatv( GL_MAX_TEXTURE_LOD_BIAS_EXT, &glConfig.max_texture_lodbias );
+		xW->glGetFloatv( GL_MAX_TEXTURE_LOD_BIAS_EXT, &glConfig.max_texture_lodbias );
 
 //	GL_CheckExtension( "GL_ARB_texture_border_clamp", NULL, "gl_ext_texborder_clamp", GL_CLAMP_TEXBORDER_EXT );
 
@@ -5790,8 +5724,8 @@ void GL_InitExtensions( void )
 
 	//if( GL_Support( GL_SHADER_GLSL100_EXT ))
 	//{
-		//xW->glGetIntegerv( GL_MAX_TEXTURE_COORDS_ARB, &glConfig.max_texture_coords );
-		//xW->glGetIntegerv( GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &glConfig.max_teximage_units );
+		xW->glGetIntegerv( GL_MAX_TEXTURE_COORDS_ARB, &glConfig.max_texture_coords );
+		xW->glGetIntegerv( GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &glConfig.max_teximage_units );
 	//}
 //	else
 //	{
@@ -5813,7 +5747,7 @@ void GL_InitExtensions( void )
 	else */glConfig.texRectangle = glConfig.max_2d_rectangle_size = 0; // no rectangle
 
 	glConfig.max_2d_texture_size = 0;
-	//xW->glGetIntegerv( GL_MAX_TEXTURE_SIZE, &glConfig.max_2d_texture_size );
+	xW->glGetIntegerv( GL_MAX_TEXTURE_SIZE, &glConfig.max_2d_texture_size );
 	if( glConfig.max_2d_texture_size <= 0 ) glConfig.max_2d_texture_size = 256;
 
 	Cvar_Get( "gl_max_texture_size", "0", CVAR_INIT, "opengl texture max dims" );
@@ -5842,7 +5776,7 @@ void GL_CheckForErrors_( const char *filename, const int fileline )
 	if( !gl_check_errors->integer )
 		return;
 
-	//if(( err = //xW->glGetError( )) == GL_NO_ERROR )
+	if(( err = xW->glGetError( )) == GL_NO_ERROR )
 		return;
 
 	switch( err )
@@ -5891,7 +5825,7 @@ int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
 
 	rc = &con.curFont->fontRc[number];
 
-	////xW->glColor4ubv( color );
+	xW->glColor4ubv( color );
 	R_GetTextureParms( &width, &height, con.curFont->hFontTexture );
 
 	// calc rectangle
@@ -5904,7 +5838,7 @@ int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
 
 	TextAdjustSize( &x, &y, &width, &height );
 	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, s1, t1, s2, t2, con.curFont->hFontTexture );
-	////xW->glColor4ub( 255, 255, 255, 255 ); // don't forget reset color
+	xW->glColor4ub( 255, 255, 255, 255 ); // don't forget reset color
 
 	return con.curFont->charWidths[number];
 }
@@ -5965,9 +5899,9 @@ void Field_DrawInputLine( int x, int y, field_t *edit )
 	if( host.key_overstrike && cursorChar )
 	{
 		// overstrike cursor
-		//xW->glEnable( GL_BLEND );
-		//xW->glDisable( GL_ALPHA_TEST );
-		//xW->glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA );
+		xW->glEnable( GL_BLEND );
+		xW->glDisable( GL_ALPHA_TEST );
+		xW->glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA );
 		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		Con_DrawGenericChar( x + curPos, y, cursorChar, colorDefault );
 	}
@@ -5986,7 +5920,7 @@ void Con_DrawNotify( void )
 	if( host.developer && ( !Cvar_VariableInteger( "cl_background" ) && !Cvar_VariableInteger( "sv_background" )))
 	{
 		currentColor = 7;
-		////xW->glColor4ubv( g_color_table[currentColor] );
+		xW->glColor4ubv( g_color_table[currentColor] );
 
 		for( i = con.current - CON_TIMES + 1; i <= con.current; i++ )
 		{
@@ -6017,7 +5951,7 @@ void Con_DrawNotify( void )
 		int	len;
 
 		currentColor = 7;
-		////xW->glColor4ubv( g_color_table[currentColor] );
+		xW->glColor4ubv( g_color_table[currentColor] );
 
 		start = con.curFont->charWidths[' ']; // offset one space at left screen side
 
@@ -6033,7 +5967,7 @@ void Con_DrawNotify( void )
 		Field_DrawInputLine( start + len, v, &con.chat );
 	}
 
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 
 /*
@@ -6106,7 +6040,7 @@ void Con_DrawSolidConsole( float frac )
 	if( con.x == 0 ) row--;
 
 	currentColor = 7;
-	////xW->glColor4ubv( g_color_table[currentColor] );
+	xW->glColor4ubv( g_color_table[currentColor] );
 
 	for( i = 0; i < rows; i++, y -= con.curFont->charHeight, row-- )
 	{
@@ -6130,7 +6064,7 @@ void Con_DrawSolidConsole( float frac )
 
 	// draw the input prompt, user text, and cursor if desired
 	Con_DrawInput();
-	////xW->glColor4ub( 255, 255, 255, 255 );
+	xW->glColor4ub( 255, 255, 255, 255 );
 }
 
 

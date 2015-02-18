@@ -71,6 +71,7 @@ typedef struct gltexture_s
 
 	GLuint		target;		// glTarget
 	GLuint		texnum;		// gl texture binding
+	GLuint		texid;		// gl texture binding
 	GLint		format;		// uploaded format
 	texFlags_t	flags;
 

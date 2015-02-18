@@ -589,6 +589,7 @@ extern cvar_t			r_shadowalpha;
 // in this module!
 void initWindow(int width, int height, int fullscreen);
 void killWindow();
+GLuint makeTexture();
 int GL_MaxTextureUnits();
 void GL_SelectTexture( GLint tmu );
 void GL_Bind( GLint tmu, GLenum texnum );

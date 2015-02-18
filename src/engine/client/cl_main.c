@@ -1777,7 +1777,7 @@ void Host_ClientFrame( double frametime )
 	CL_PredictMovement();
 
 	// update the screen
-	SCR_UpdateScreen ();
+	//SCR_UpdateScreen ();
 
 	// update audio
 	S_RenderFrame( &cl.refdef );

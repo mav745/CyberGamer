@@ -1297,6 +1297,10 @@ int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, i
 		if( !Q_strcmp( name, "#lab1_map1.mip" ) || !Q_strcmp( name, "#lab1_map2.mip" ))
 			flags |= TF_NEAREST;
 
+//		if( !Q_strcmp( name, "gfx/shell/min_f" ))
+//			flags |= TF_NEAREST;
+
+
 		pic = FS_LoadImage( name, buf, size );
 		if( !pic ) return 0; // couldn't loading image
 	}
@@ -1326,6 +1330,10 @@ int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, i
 	if( flags & TF_SKYSIDE )
 		tex->texnum = tr.skyboxbasenum++;
 	else tex->texnum = i; // texnum is used for fast acess into r_textures array too
+
+	tex->texid = makeTexture();
+	//i = tex->texnum;
+
 
 	GL_UploadTexture( pic, tex, false, filter );
 	GL_TexFilter( tex, false ); // update texture filter, wrap etc
@@ -1405,6 +1413,7 @@ int GL_LoadTextureInternal( const char *name, rgbdata_t *pic, texFlags_t flags, 
 		hash = Com_HashKey( name, TEXTURES_HASH_SIZE );
 		Q_strncpy( tex->name, name, sizeof( tex->name ));
 		tex->texnum = i;	// texnum is used for fast acess into r_textures array too
+		tex->texid = makeTexture();
 		tex->flags = flags;
 	}
 	else
