@@ -590,6 +590,7 @@ extern cvar_t			r_shadowalpha;
 void initWindow(int width, int height, int fullscreen);
 void killWindow();
 GLuint makeTexture();
+void updateWindow();
 int GL_MaxTextureUnits();
 void GL_SelectTexture( GLint tmu );
 void GL_Bind( GLint tmu, GLenum texnum );

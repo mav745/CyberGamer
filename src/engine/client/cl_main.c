@@ -1778,6 +1778,7 @@ void Host_ClientFrame( double frametime )
 
 	// update the screen
 	//SCR_UpdateScreen ();
+	updateWindow();
 
 	// update audio
 	S_RenderFrame( &cl.refdef );

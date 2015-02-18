@@ -31,6 +31,11 @@ void killWindow()
 	xW = nullptr;
 }
 
+void updateWindow()
+{
+	xW->update();
+}
+
 void GL_SelectTexture( GLint tmu )
 {
 	// don't allow negative texture units
@@ -6066,9 +6071,5 @@ void Con_DrawSolidConsole( float frac )
 	Con_DrawInput();
 	xW->glColor4ub( 255, 255, 255, 255 );
 }
-
-
-
-
 
 

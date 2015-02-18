@@ -20,7 +20,7 @@ Window::Window(QWidget *parent)
 	modelview.setToIdentity();
 	texmat.setToIdentity();
 
-	theTimer.start(5, Qt::PreciseTimer, this);
+	//theTimer.start(5, Qt::PreciseTimer, this);
 
 	QLabel *lawl = new QLabel(this);
 	lawl->setStyleSheet("QLabel { font: bold 25px; color: #eebb34; }");
