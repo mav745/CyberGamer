@@ -18,6 +18,7 @@ extern "C" {
 #include "shake.h"
 #include "triangleapi.h"
 #include "r_studioint.h"
+#include "keydefs.h"
 
 #define TEXTURES_HASH_SIZE	64
 
@@ -489,6 +490,10 @@ void GL_SetExtension( int r_ext, int enable );
 int Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qboolean forceColor, int hideChar );
 void Con_DrawInput( void );
 int Con_StringLength( const char *string );
+void IN_ActivateMouse( qboolean force );
+void IN_MouseEvent( int mstate );
+int Host_MapKey( int key );
+void IN_ActivateCursor( void );
 
 typedef struct envmap_s
 {
@@ -589,8 +594,12 @@ extern cvar_t			r_shadowalpha;
 // in this module!
 void initWindow(int width, int height, int fullscreen);
 void killWindow();
-GLuint makeTexture();
 void updateWindow();
+void raiseWindow();
+int mouseInWindow();
+//void* getWindowHandle();
+
+GLuint makeTexture();
 int GL_MaxTextureUnits();
 void GL_SelectTexture( GLint tmu );
 void GL_Bind( GLint tmu, GLenum texnum );

@@ -16,6 +16,7 @@ GNU General Public License for more details.
 #include "game.hpp"
 
 #include <windows.h>
+#include <QDebug>
 
 #define GAME_PATH	"valve"	// default dir to start from
 
@@ -97,7 +98,7 @@ Game::Game()
 {
 	Sys_LoadEngine();
 	Host_Main( GAME_PATH, FALSE, ( Host_Shutdown != NULL ) ? Sys_ChangeGame : NULL );
-	theTimer.start(1, Qt::PreciseTimer, this);
+	theTimer.start(5, Qt::PreciseTimer, this);
 }
 
 

@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -8,7 +8,7 @@
 #ifndef VGUI_KEYCODE_H
 #define VGUI_KEYCODE_H
 
-#include<VGUI.h>
+#include <VGUI.h>
 
 namespace vgui
 {
@@ -119,7 +119,10 @@ enum VGUIAPI KeyCode
 	KEY_F12,
 	KEY_LAST,
 };
+
+
 }
+vgui::KeyCode VGUI_MapKey( int keyCode );
 
 
 #endif

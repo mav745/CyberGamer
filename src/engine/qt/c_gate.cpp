@@ -21,6 +21,7 @@ void initWindow(int width, int height, int fullscreen)
 
 	xW->resize(width, height);
 	fullscreen? xW->showFullScreen(): xW->show();
+	host.hWnd = reinterpret_cast<HWND>(xW->winId());
 
 }
 
@@ -4745,7 +4746,7 @@ void R_DrawEntitiesOnList( void )
 		switch( RI.currentmodel->type )
 		{
 		case mod_brush:
-			R_DrawBrushModel( RI.currententity );
+			//R_DrawBrushModel( RI.currententity );
 			break;
 		case mod_studio:
 			R_DrawStudioModel( RI.currententity );
@@ -6073,3 +6074,21 @@ void Con_DrawSolidConsole( float frac )
 }
 
 
+
+
+void raiseWindow()
+{
+	xW->raise();
+}
+
+
+//void *getWindowHandle()
+//{
+//	return xW->winId();
+//}
+
+
+int mouseInWindow()
+{
+	return xW->underMouse();
+}

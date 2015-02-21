@@ -1329,9 +1329,9 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 			Msg( "Command packet from remote host. Ignored.\n" );
 			return;
 		}
-
-		ShowWindow( host.hWnd, SW_RESTORE );
-		SetForegroundWindow ( host.hWnd );
+		raiseWindow();
+		//ShowWindow( host.hWnd, SW_RESTORE );
+		//SetForegroundWindow ( host.hWnd );
 		args = BF_ReadString( msg );
 		Cbuf_AddText( args );
 		Cbuf_AddText( "\n" );

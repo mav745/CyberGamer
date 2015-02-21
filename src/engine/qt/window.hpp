@@ -8,6 +8,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 
+#include "VGUI_KeyCode.h"
+
 class Window : public QOpenGLWidget, public QOpenGLFunctions
 {
 	Q_OBJECT
@@ -39,6 +41,7 @@ protected:
 private:
 	QBasicTimer theTimer;
 	void timerEvent(QTimerEvent *te); // window frame
+	bool eventFilter(QObject *target, QEvent *event);
 
 	QOpenGLShaderProgram program;
 	QMatrix4x4 projection;

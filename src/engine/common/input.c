@@ -13,7 +13,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "common.h"
+#include "qt/c_gate.h"
+
 #include "input.h"
 #include "client.h"
 #include "vgui_draw.h"
@@ -69,7 +70,7 @@ Host_MapKey
 Map from windows to engine keynums
 =======
 */
-static int Host_MapKey( int key )
+int Host_MapKey( int key )
 {
 	int	result, modified;
 	qboolean	is_extended = false;
@@ -135,24 +136,25 @@ static qboolean IN_CursorInRect( void )
 		return false;
 
 	// find mouse movement
-	GetCursorPos( &curpos );
+	return mouseInWindow();
+//	GetCursorPos( &curpos );
 
-	if( curpos.x < real_rect.left + WND_BORDER )
-		return false;
-	if( curpos.x > real_rect.right - WND_BORDER * 3 )
-		return false;
-	if( curpos.y < real_rect.top + WND_HEADSIZE + WND_BORDER )
-		return false;
-	if( curpos.y > real_rect.bottom - WND_BORDER * 3 )
-		return false;
-	return true;
+//	if( curpos.x < real_rect.left + WND_BORDER )
+//		return false;
+//	if( curpos.x > real_rect.right - WND_BORDER * 3 )
+//		return false;
+//	if( curpos.y < real_rect.top + WND_HEADSIZE + WND_BORDER )
+//		return false;
+//	if( curpos.y > real_rect.bottom - WND_BORDER * 3 )
+//		return false;
+//	return true;
 }
 
-static void IN_ActivateCursor( void )
+void IN_ActivateCursor( void )
 {
 	if( cls.key_dest == key_menu )
 	{
-		SetCursor( in_mousecursor );
+		//SetCursor( in_mousecursor );
 	}
 }
 
@@ -414,6 +416,7 @@ void Host_InputFrame( void )
 
 	if( host.state != HOST_FRAME )
 	{
+		//printf("state %i\n", host.state);
 		IN_DeactivateMouse();
 		return;
 	}
@@ -428,7 +431,7 @@ void Host_InputFrame( void )
 	}
 
 	IN_ActivateMouse( false );
-	IN_MouseMove();
+	//IN_MouseMove();
 }
 
 /*
