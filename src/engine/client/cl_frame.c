@@ -593,6 +593,7 @@ void CL_DeltaEntity( sizebuf_t *msg, frame_t *frame, int newnum, entity_state_t 
 
 	// set right current state
 	ent->curstate = *state;
+	//ent->curstate.animtime = (float)cl.time;
 }
 
 /*
@@ -730,6 +731,8 @@ void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta )
 		{
 			// one or more entities from the old packet are unchanged
 			CL_DeltaEntity( msg, newframe, oldnum, oldent, true );
+			
+			
 
 			oldindex++;
 
@@ -817,6 +820,9 @@ void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta )
 		
 //		sprintf(txt,"entidx %i\n",i+1);
 //		Sys_Print(txt);
+		
+		//ent->curstate.animtime = (float)cl.time;
+		//MsgDev(D_INFO,"animtime %f, time %f\n",ent->curstate.animtime,cl.time);
 		
 		clgame.dllFuncs.pfnProcessPlayerState( &newframe->playerstate[i], &ent->curstate );
 		newframe->playerstate[i].number = ent->index;

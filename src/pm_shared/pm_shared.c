@@ -2041,8 +2041,8 @@ void PM_Duck( void )
 					// Calc parametric time
 					//pmove->Con_Printf("time %.2f\n",time);
 					duckFraction = PM_SplineFraction( time, (1.0f/TIME_TO_DUCK) );
-
-					pmove->view_ofs[2] = ((VEC_DUCK_VIEW - fMore ) * duckFraction) + (VEC_VIEW * (1-duckFraction));
+					//pmove->Con_Printf("duckFraction %f\n",duckFraction);
+					pmove->view_ofs[2] = ((VEC_DUCK_VIEW - fMore ) * duckFraction) + (VEC_VIEW * (1.f-duckFraction));
 
 				}
 			}

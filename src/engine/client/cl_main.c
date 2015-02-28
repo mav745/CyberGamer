@@ -190,10 +190,10 @@ static float CL_LerpPoint( void )
 	float	f, frac;
 
 	f = (float)(cl.mtime[0] - cl.mtime[1]);
-
+	
 	if( !f || SV_Active( ))
 	{
-		//cl.time = cl.mtime[0];
+//		cl.time = cl.mtime[0];
 		return 1.0f;
 	}
 
@@ -1739,8 +1739,8 @@ void Host_ClientFrame( double frametime )
 
 	// decide the simulation time
 	cl.oldtime = cl.time;
-	//cl.time += host.frametime;
-	cl.time = host.realtime;
+	cl.time += host.frametime;
+	//cl.time = host.realtime;
 
 	if( menu.hInstance )
 	{

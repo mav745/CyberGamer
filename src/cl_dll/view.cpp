@@ -704,31 +704,34 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 		
 		
 		
-		//MAV: старый код сглаживает только подъём вверх.
-		//Лифты на сервах умеют дергаться вниз тоже
 		
-//		oldz += steptime * 150;
-//		if (oldz > pparams->simorg[2])
-//			oldz = pparams->simorg[2];
-//		if (pparams->simorg[2] - oldz > 18)
-//			oldz = pparams->simorg[2]-18;
+		
+		oldz += steptime * 150;
+		if (oldz > pparams->simorg[2])
+			oldz = pparams->simorg[2];
+		if (pparams->simorg[2] - oldz > 18)
+			oldz = pparams->simorg[2]-18;
 
-		float height_dif = pparams->simorg[2] - oldz, 
-				stepadd = steptime * 150;
+//MAV: старый код сглаживает только подъём вверх.
+//Лифты на сервах умеют дергаться вниз тоже
+//UPD: конфликт с приседанием
 
-		if (height_dif >  18.f) //слишком отстал снизу
-			oldz = pparams->simorg[2]-18.f;
-		else if (height_dif < -18.f) //слишком отстал сверху
-			oldz = pparams->simorg[2]+18.f;
-		else //успевает плавно догнать
-		{
-			if (height_dif < -stepadd)
-				oldz -= stepadd;
-			else if (height_dif > stepadd)
-				oldz += stepadd;
-			else
-				oldz = pparams->simorg[2];
-		}
+//		float height_dif = pparams->simorg[2] - oldz, 
+//				stepadd = steptime * 150;
+
+//		if (height_dif >  18.f) //слишком отстал снизу
+//			oldz = pparams->simorg[2]-18.f;
+//		else if (height_dif < -18.f) //слишком отстал сверху
+//			oldz = pparams->simorg[2]+18.f;
+//		else //успевает плавно догнать
+//		{
+//			if (height_dif < -stepadd)
+//				oldz -= stepadd;
+//			else if (height_dif > stepadd)
+//				oldz += stepadd;
+//			else
+//				oldz = pparams->simorg[2];
+//		}
 		pparams->vieworg[2] += oldz - pparams->simorg[2];
 		view->origin[2] += oldz - pparams->simorg[2];
 	}

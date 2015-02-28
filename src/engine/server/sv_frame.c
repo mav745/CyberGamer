@@ -617,6 +617,8 @@ void SV_SendClientDatagram( sv_client_t *cl )
 
 	BF_Init( &msg, "Datagram", msg_buf, sizeof( msg_buf ));
 
+	//MsgDev(D_INFO,"sv.time %f\n",sv.time);
+	
 	// always send servertime at new frame
 	BF_WriteByte( &msg, svc_time );
 	BF_WriteFloat( &msg, (float)sv.time );

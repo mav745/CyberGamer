@@ -520,6 +520,7 @@ void SV_RunGameFrame( void )
 
 	SV_Physics();
 
+	MsgDev(D_INFO,"sv.time %f, frametime %f\n",sv.time,host.frametime);
 	sv.time += host.frametime;
 }
 

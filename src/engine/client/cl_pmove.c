@@ -699,7 +699,7 @@ void CL_SetSolidEntities( void )
 
 void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state, usercmd_t *ucmd )
 {
-	char txt[64];
+//	char txt[64];
 	
 	pmove->player_index = cl.playernum;
 	pmove->multiplayer = (cl.maxclients > 1) ? true : false;
@@ -810,7 +810,7 @@ void CL_PredictMovement( void )
 	cl_entity_t	*player, *viewent;
 	clientdata_t	*cd;
 	//int predictcount = cl.predictcount;
-	//char txt[64];
+	char txt[64];
 
 	if( cls.state != ca_active ) return;
 
@@ -938,7 +938,9 @@ void CL_PredictMovement( void )
 	}
 //	Sys_Print("\n");
 
-		
+	
+//	sprintf(txt,"duck %f\n",clgame.pmove->view_ofs[2]);
+//	Sys_Print(txt);
 	
 	//clgame.pmove->runfuncs = true;
 	
