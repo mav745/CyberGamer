@@ -699,7 +699,7 @@ void CL_ParseClientData( sizebuf_t *msg )
 	int		idx;
 
 //	int wpns[32];
-	char txt[256];
+//	char txt[256];
 
 	// this is the frame update that this message corresponds to
 	i = cls.netchan.incoming_sequence;
@@ -1505,6 +1505,7 @@ void CL_ParseServerMessage( sizebuf_t *msg )
 		case svc_time:
 			// shuffle timestamps
 			cl.mtime[1] = cl.mtime[0];
+			cl.time = //MAV: синхронизация клиентского времени с серверным
 			cl.mtime[0] = BF_ReadFloat( msg );
 			break;
 		case svc_print:
