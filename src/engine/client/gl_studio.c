@@ -348,7 +348,7 @@ pfnGetEngineTimes
 static void pfnGetEngineTimes( int *framecount, double *current, double *old )
 {
 	if( framecount ) *framecount = tr.framecount;
-	if( current ) *current = host.realtime;//cl.time;
+	if( current ) *current = cl.time;
 	if( old ) *old = cl.oldtime;
 }
 
