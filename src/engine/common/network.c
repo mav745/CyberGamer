@@ -246,7 +246,7 @@ static qboolean NET_StringToSockaddr( const char *s, struct sockaddr *sadr )
 	char		*colon;
 	char		copy[MAX_SYSPATH];
 	int		val;
-	
+
 	Q_memset( sadr, 0, sizeof( *sadr ));
 
 	if((Q_strlen( s ) >= 23 ) && ( s[8] == ':' ) && ( s[21] == ':' )) // check for an IPX address
@@ -279,10 +279,10 @@ static qboolean NET_StringToSockaddr( const char *s, struct sockaddr *sadr )
 			if( *colon == ':' )
 			{
 				*colon = 0;
-				((struct sockaddr_in *)sadr)->sin_port = pHtons((short)Q_atoi( colon + 1 ));	
+				((struct sockaddr_in *)sadr)->sin_port = pHtons((short)Q_atoi( colon + 1 ));
 			}
 		}
-		
+
 		if( copy[0] >= '0' && copy[0] <= '9' )
 		{
 			*(int *)&((struct sockaddr_in *)sadr)->sin_addr = pInet_Addr( copy );
@@ -439,17 +439,22 @@ static qboolean NET_GetLoopPacket( netsrc_t sock, netadr_t *from, byte *data, si
 
 	return true;
 }
-
+#include <stdio.h>
+void mylog(char *txt) {
+	FILE *ofp = fopen("./net-log.txt", "a");
+	fprintf(ofp, "%s\n", txt);
+	fclose(ofp);
+}
 static void NET_SendLoopPacket( netsrc_t sock, size_t length, const void *data, netadr_t to )
 {
 	int		i;
 	loopback_t	*loop;
-
+char buf[256];
 	loop = &loopbacks[sock^1];
 
 	i = loop->send & MASK_LOOPBACK;
 	loop->send++;
-
+	sprintf(buf, "\nNET_SendLoopPacket length: %u", length); mylog(buf);
 	Q_memcpy( loop->msgs[i].data, data, length );
 	loop->msgs[i].datalen = length;
 }
@@ -592,7 +597,7 @@ static int NET_IPSocket( const char *netInterface, int port )
 	dword		_true = 1;
 
 	MsgDev( D_NOTE, "NET_UDPSocket( %s, %i )\n", netInterface, port );
-	
+
 	if(( net_socket = pSocket( PF_INET, SOCK_DGRAM, IPPROTO_UDP )) == SOCKET_ERROR )
 	{
 		err = pWSAGetLastError();
@@ -828,7 +833,7 @@ void NET_Config( qboolean multiplayer )
 	old_config = multiplayer;
 
 	if( !multiplayer )
-	{	
+	{
 		int	i;
 
 		// shut down any existing sockets
@@ -848,7 +853,7 @@ void NET_Config( qboolean multiplayer )
 		}
 	}
 	else
-	{	
+	{
 		// open sockets
 		if( !noip ) NET_OpenIP();
 		if( !noipx ) NET_OpenIPX();

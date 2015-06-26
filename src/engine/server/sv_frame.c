@@ -416,7 +416,7 @@ void SV_EmitPings( sizebuf_t *msg )
 			continue;
 
 		SV_GetPlayerStats( cl, &ping, &packet_loss );
-		
+
 		// there are 25 bits for each client
 		BF_WriteOneBit( msg, 1 );
 		BF_WriteUBitLong( msg, i, MAX_CLIENT_BITS );
@@ -509,7 +509,7 @@ void SV_WriteClientdataToMessage( sv_client_t *cl, sizebuf_t *msg )
 	if( cl->local_weapons && svgame.dllFuncs.pfnGetWeaponData( clent, frame->weapondata ))
 	{
 		Q_memset( &nullwd, 0, sizeof( nullwd ));
- 
+
 		for( i = 0; i < 32; i++ )
 		{
 			if( cl->delta_sequence == -1 ) from_wd = &nullwd;
@@ -611,6 +611,9 @@ void SV_SendClientDatagram( sv_client_t *cl )
 {
 	byte    	msg_buf[NET_MAX_PAYLOAD];
 	sizebuf_t	msg;
+	int nbw;// = BF_GetNumBitsWritten( &msg );
+	byte *gotData;// = BF_GetData( &msg );
+
 
 	svs.currentPlayer = cl;
 	svs.currentPlayerNum = (cl - svs.clients);
@@ -637,8 +640,13 @@ void SV_SendClientDatagram( sv_client_t *cl )
 		BF_Clear( &msg );
 	}
 
+
 	// send the datagram
-	Netchan_TransmitBits( &cl->netchan, BF_GetNumBitsWritten( &msg ), BF_GetData( &msg ));
+	nbw = BF_GetNumBitsWritten( &msg );
+	gotData = BF_GetData( &msg );
+	printf("nbw: %i\n", nbw);
+	Netchan_TransmitBits( &cl->netchan, nbw, gotData);
+/*	//Netchan_TransmitBits( &cl->netchan, BF_GetNumBitsWritten( &msg ), BF_GetData( &msg ));*/
 }
 
 /*
