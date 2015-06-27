@@ -20,11 +20,14 @@
 #include "pmtrace.h"
 #include "pm_shared.h"
 
+#include "view.h"
+
 #define DLLEXPORT __declspec( dllexport )
 
 void Game_AddObjects( void );
 
-extern vec3_t v_origin;
+
+//extern vec3_t v_origin;
 
 int g_iAlive = 1;
 

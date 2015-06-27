@@ -151,9 +151,6 @@ SOURCES += \
 	../game_shared/vgui_slider2.cpp \
 	../game_shared/voice_banmgr.cpp \
 	../game_shared/voice_status.cpp \
-	../pm_shared/pm_debug.c \
-	../pm_shared/pm_math.c \
-	../pm_shared/pm_shared.c \
 	../game_shared/vgui_checkbutton2.cpp \
 	../game_shared/vgui_grid.cpp \
 	../game_shared/vgui_helpers.cpp \
@@ -163,4 +160,7 @@ SOURCES += \
 	../dlls/crowbar.cpp \
 	../dlls/egon.cpp \
 	../dlls/gauss.cpp \
-	../dlls/handgrenade.cpp
+	../dlls/handgrenade.cpp \
+    ../pm_shared/pm_debug.cpp \
+    ../pm_shared/pm_math.cpp \
+    ../pm_shared/pm_shared.cpp

@@ -5,4 +5,7 @@ SUBDIRS += \
 	cl_dll \
 	mainui \
 	engine \
-	game
+	game \
+	game2
+
+game2.depends = engine

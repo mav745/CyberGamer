@@ -733,14 +733,14 @@ typedef int		string_t;
 typedef unsigned char	byte;
 typedef unsigned short	word;
 
-#undef true
-#undef false
+//#undef true
+//#undef false
 
-#ifndef __cplusplus
-typedef enum { false, true }	qboolean;
-#else
+//#ifndef __cplusplus
+//typedef enum { false, true }	qboolean;
+//#else
 typedef int qboolean;
-#endif
+//#endif
 
 typedef struct
 {
@@ -776,5 +776,8 @@ typedef struct
 	edict_t	*ent;		// entity the surface is on
 	int	hitgroup;		// 0 == generic, non zero is specific body part
 } trace_t;
+
+void	NormalizeAngles( float * angles );
+float	Distance(const float * v1, const float * v2);
 
 #endif//CONST_H

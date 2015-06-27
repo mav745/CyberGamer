@@ -756,7 +756,7 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 // Xash3D physics interface
 //
 
-typedef void (__cdecl *LINK_ENTITY_FN)( entvars_t *pev );
+typedef void (/*__cdecl*/ *LINK_ENTITY_FN)( entvars_t *pev );
 
 //
 // attempt to create custom entity when default method is failed

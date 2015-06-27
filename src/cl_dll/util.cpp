@@ -109,6 +109,23 @@ void VectorScale (const float *in, float scale, float *out)
 	out[2] = in[2]*scale;
 }
 
+void NormalizeAngles( float *angles )
+{
+	int i;
+	// Normalize angles
+	for ( i = 0; i < 3; i++ )
+	{
+		if ( angles[i] > 180.0f )
+		{
+			angles[i] -= 360.0f;
+		}
+		else if ( angles[i] < -180.0f )
+		{
+			angles[i] += 360.0f;
+		}
+	}
+}
+
 void VectorMA (const float *veca, float scale, const float *vecb, float *vecc)
 {
 	vecc[0] = veca[0] + scale*vecb[0];

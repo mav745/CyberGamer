@@ -7,6 +7,8 @@
 
 // view/refresh setup functions
 
+#include "view.h"
+
 #include "hud.h"
 #include "cl_util.h"
 #include "cvardef.h"
@@ -17,6 +19,7 @@
 #include "cl_entity.h"
 #include "ref_params.h"
 #include "in_defs.h" // PITCH YAW ROLL
+
 #include "pm_movevars.h"
 #include "pm_shared.h"
 #include "pm_defs.h"
@@ -27,18 +30,20 @@
 #include "hltv.h"
 
 // Spectator Mode
-extern "C"
-{
+//extern "C"
+//{
 	float	vecNewViewAngles[3];
 	int		iHasNewViewAngles;
 	float	vecNewViewOrigin[3];
 	int		iHasNewViewOrigin;
 	int		iIsSpectator;
-}
+//}
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
 #endif
+
+int		PM_GetPhysEntInfo( int ent );
 
 extern "C"
 {
@@ -49,14 +54,14 @@ extern "C"
 
 	void PM_ParticleLine( float *start, float *end, int pcolor, float life, float vert);
 	int		PM_GetVisEntInfo( int ent );
-	int		PM_GetPhysEntInfo( int ent );
+
 	void	InterpolateAngles(  float * start, float * end, float * output, float frac );
-	void	NormalizeAngles( float * angles );
-	float	Distance(const float * v1, const float * v2);
+	//extern "C" void	NormalizeAngles( float * angles );
+	//extern float	Distance(const float * v1, const float * v2);
 	float	AngleBetweenVectors(  const float * v1,  const float * v2 );
 
-	float	vJumpOrigin[3];
-	float	vJumpAngles[3];
+//	float	vJumpOrigin[3];
+//	float	vJumpAngles[3];
 }
 
 void V_DropPunchAngle ( float frametime, float *ev_punchangle );
@@ -204,7 +209,7 @@ float V_CalcBob ( struct ref_params_s *pparams )
 
 	bob = sqrt( vel[0] * vel[0] + vel[1] * vel[1] ) * cl_bob->value;
 	//gEngfuncs.Con_Printf("bob %.4f\n",bob);
-	
+
 	bob = bob * 0.3f + bob * 0.7f * sinf(cycle);
 	bob = min( bob, 4 );
 	bob = max( bob, -7 );
@@ -692,7 +697,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 #if 1
 	if ( !pparams->smoothing && pparams->onground )//&& pparams->simorg[2] - oldz > 0)
 	{
-		
+
 		float steptime;
 
 		steptime = pparams->time - lasttime;
@@ -701,37 +706,34 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 			steptime = 0;
 
 		//
-		
-		
-		
-		
-		
-		oldz += steptime * 150;
-		if (oldz > pparams->simorg[2])
-			oldz = pparams->simorg[2];
-		if (pparams->simorg[2] - oldz > 18)
-			oldz = pparams->simorg[2]-18;
 
-//MAV: старый код сглаживает только подъём вверх.
-//Лифты на сервах умеют дергаться вниз тоже
-//UPD: конфликт с приседанием
 
-//		float height_dif = pparams->simorg[2] - oldz, 
-//				stepadd = steptime * 150;
 
-//		if (height_dif >  18.f) //слишком отстал снизу
-//			oldz = pparams->simorg[2]-18.f;
-//		else if (height_dif < -18.f) //слишком отстал сверху
-//			oldz = pparams->simorg[2]+18.f;
-//		else //успевает плавно догнать
-//		{
-//			if (height_dif < -stepadd)
-//				oldz -= stepadd;
-//			else if (height_dif > stepadd)
-//				oldz += stepadd;
-//			else
-//				oldz = pparams->simorg[2];
-//		}
+		//MAV: старый код сглаживает только подъём вверх.
+		//Лифты на сервах умеют дергаться вниз тоже
+
+//		oldz += steptime * 150;
+//		if (oldz > pparams->simorg[2])
+//			oldz = pparams->simorg[2];
+//		if (pparams->simorg[2] - oldz > 18)
+//			oldz = pparams->simorg[2]-18;
+
+		float height_dif = pparams->simorg[2] - oldz,
+				stepadd = steptime * 150;
+
+		if (height_dif >  18.f) //слишком отстал снизу
+			oldz = pparams->simorg[2]-18.f;
+		else if (height_dif < -18.f) //слишком отстал сверху
+			oldz = pparams->simorg[2]+18.f;
+		else //успевает плавно догнать
+		{
+			if (height_dif < -stepadd)
+				oldz -= stepadd;
+			else if (height_dif > stepadd)
+				oldz += stepadd;
+			else
+				oldz = pparams->simorg[2];
+		}
 		pparams->vieworg[2] += oldz - pparams->simorg[2];
 		view->origin[2] += oldz - pparams->simorg[2];
 	}

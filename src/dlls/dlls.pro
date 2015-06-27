@@ -147,9 +147,9 @@ SOURCES += \
 	plane.cpp \
 	plats.cpp \
 	player.cpp \
-	../pm_shared/pm_debug.c \
-	../pm_shared/pm_math.c \
-	../pm_shared/pm_shared.c \
+	../pm_shared/pm_debug.cpp \
+	../pm_shared/pm_math.cpp \
+	../pm_shared/pm_shared.cpp \
 	python.cpp \
 	rat.cpp \
 	roach.cpp \

@@ -26,25 +26,27 @@
 #include "studio_util.h"
 #include "screenfade.h"
 
+#include "view.h"
+
 
 //#pragma warning(disable: 4244)
 
-extern "C" int		iJumpSpectator;
-extern "C" float	vJumpOrigin[3];
-extern "C" float	vJumpAngles[3];
+///*extern "C" */int		iJumpSpectator;
+///*extern "C" */float	vJumpOrigin[3];
+///*extern "C" */float	vJumpAngles[3];
 
 
-extern void V_GetInEyePos(int entity, float * origin, float * angles );
-extern void V_ResetChaseCam();
-extern void V_GetChasePos(int target, float * cl_angles, float * origin, float * angles);
-extern void VectorAngles( const float *forward, float *angles );
-extern "C" void NormalizeAngles( float *angles );
-extern float * GetClientColor( int clientIndex );
+//extern void V_GetInEyePos(int entity, float * origin, float * angles );
+//extern void V_ResetChaseCam();
+//extern void V_GetChasePos(int target, float * cl_angles, float * origin, float * angles);
+//extern void VectorAngles( const float *forward, float *angles );
+//extern void NormalizeAngles( float *angles );
+//extern float * GetClientColor( int clientIndex );
 
-extern vec3_t v_origin;		// last view origin
-extern vec3_t v_angles;		// last view angle
-extern vec3_t v_cl_angles;	// last client/mouse angle
-extern vec3_t v_sim_org;	// last sim origin
+//extern vec3_t v_origin;		// last view origin
+//extern vec3_t v_angles;		// last view angle
+//extern vec3_t v_cl_angles;	// last client/mouse angle
+//extern vec3_t v_sim_org;	// last sim origin
 
 void SpectatorMode(void)
 {

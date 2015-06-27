@@ -1,6 +1,6 @@
 //========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //=============================================================================
@@ -23,7 +23,7 @@ extern "C"
 {
 	void DLLEXPORT HUD_DrawNormalTriangles( void );
 	void DLLEXPORT HUD_DrawTransparentTriangles( void );
-};
+}
 
 //#define TEST_IT
 #if defined( TEST_IT )
@@ -61,7 +61,7 @@ void Draw_Triangles( void )
 	{
 		return;
 	}
-	
+
 	// Create a triangle, sigh
 	gEngfuncs.pTriAPI->RenderMode( kRenderNormal );
 	gEngfuncs.pTriAPI->CullFace( TRI_NONE );
@@ -102,7 +102,7 @@ void DLLEXPORT HUD_DrawNormalTriangles( void )
 {
 
 	gHUD.m_Spectator.DrawOverview();
-	
+
 #if defined( TEST_IT )
 //	Draw_Triangles();
 #endif

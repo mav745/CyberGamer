@@ -142,6 +142,7 @@ void VectorMA (const float *veca, float scale, const float *vecb, float *vecc);
 void VectorScale (const float *in, float scale, float *out);
 float VectorNormalize (float *v);
 void VectorInverse ( float *v );
+void NormalizeAngles( float *angles );
 
 extern vec3_t vec3_origin;
 

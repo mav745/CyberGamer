@@ -1766,7 +1766,7 @@ void CSaveRestoreBuffer :: BufferRewind( int size )
 }
 
 #ifndef _WIN32
-extern "C" {
+//extern "C" {
 unsigned _rotr ( unsigned val, int shift)
 {
 		register unsigned lobit;        /* non-zero means lo bit set */
@@ -1784,7 +1784,7 @@ unsigned _rotr ( unsigned val, int shift)
 
 		return num;
 }
-}
+//}
 #endif
 
 unsigned int CSaveRestoreBuffer :: HashString( const char *pszToken )

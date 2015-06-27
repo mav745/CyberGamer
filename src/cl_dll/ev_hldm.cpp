@@ -39,7 +39,7 @@ extern engine_studio_api_t IEngineStudio;
 
 static int tracerCount[ 32 ];
 
-extern "C" char PM_FindTextureType( char *name );
+/*extern "C"*/ char PM_FindTextureType( char *name );
 
 void V_PunchAxis( int axis, float punch );
 void VectorAngles( const float *forward, float *angles );
@@ -1453,11 +1453,11 @@ void EV_EgonFire( event_args_t *args )
 			float g = 50.0f;
 			float b = 125.0f;
 
-//			if ( IEngineStudio.IsHardware() )
-//			{
-//				r /= 100.0f;
-//				g /= 100.0f;
-//			}
+			if ( IEngineStudio.IsHardware() )
+			{
+				r /= 100.0f;
+				g /= 100.0f;
+			}
 
 
 			pBeam = gEngfuncs.pEfxAPI->R_BeamEntPoint ( idx | 0x1000, tr.endpos, iBeamModelIndex, 99999, 3.5, 0.2, 0.7, 55, 0, 0, r, g, b );

@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 *   Use, distribution, and modification of this source code and/or resulting
@@ -28,7 +28,7 @@ float g_demozoom;
 
 // FIXME:  There should be buffer helper functions to avoid all of the *(int *)& crap.
 
-extern "C" 
+extern "C"
 {
 	void DLLEXPORT Demo_ReadBuffer( int size, unsigned char *buffer );
 }
@@ -72,7 +72,7 @@ void DLLEXPORT Demo_ReadBuffer( int size, unsigned char *buffer )
 	case TYPE_SNIPERDOT:
 		g_demosniper = *(int * )&buffer[ i ];
 		i += sizeof( int );
-		
+
 		if ( g_demosniper )
 		{
 			g_demosniperdamage = *( int * )&buffer[ i ];

@@ -23,9 +23,9 @@
 
 void EntvarsKeyvalue( entvars_t *pev, KeyValueData *pkvd );
 
-extern "C" void PM_Move ( struct playermove_s *ppmove, int server );
-extern "C" void PM_Init ( struct playermove_s *ppmove  );
-extern "C" char PM_FindTextureType( char *name );
+/*extern "C"*/ void PM_Move ( struct playermove_s *ppmove, int server );
+/*extern "C"*/ void PM_Init ( struct playermove_s *ppmove  );
+/*extern "C"*/ char PM_FindTextureType( char *name );
 
 extern Vector VecBModelOrigin( entvars_t* pevBModel );
 extern DLL_GLOBAL Vector		g_vecAttackDir;
@@ -97,9 +97,9 @@ static DLL_FUNCTIONS gFunctionTable =
 
 static void SetObjectCollisionBox( entvars_t *pev );
 
-#ifndef _WIN32
-extern "C" {
-#endif
+//#ifndef _WIN32
+//extern "C" {
+//#endif
 int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion )
 {
 	if ( !pFunctionTable || interfaceVersion != INTERFACE_VERSION )
@@ -124,9 +124,9 @@ int GetEntityAPI2( DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion )
 	return TRUE;
 }
 
-#ifndef _WIN32
-}
-#endif
+//#ifndef _WIN32
+//}
+//#endif
 
 
 int DispatchSpawn( edict_t *pent )

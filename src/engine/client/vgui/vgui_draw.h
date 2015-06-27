@@ -16,9 +16,9 @@ GNU General Public License for more details.
 #ifndef VGUI_DRAW_H
 #define VGUI_DRAW_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 #define VGUI_MAX_TEXTURES	2048	// a half of total textures count
 
@@ -52,11 +52,11 @@ void VGUI_GetTextureSizes( int *width, int *height );
 int VGUI_GenerateTexture( void );
 void *VGui_GetPanel( void );
 
-#ifdef __cplusplus
+//#ifdef __cplusplus
 void EnableScissor( qboolean enable );
 void SetScissorRect( int left, int top, int right, int bottom );
 qboolean ClipRect( const vpoint_t &inUL, const vpoint_t &inLR, vpoint_t *pOutUL, vpoint_t *pOutLR );
-#endif
+//#endif
 
 //
 // gl_vidnt.c
@@ -73,7 +73,7 @@ void VGui_Paint( void );
 void VGui_RunFrame( void );
 void VGui_ViewportPaintBackground( int extents[4] );
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
 #endif//VGUI_DRAW_H

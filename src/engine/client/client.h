@@ -84,7 +84,7 @@ typedef struct
 						// render a frame yet
 	int		parsecount;		// server message counter
 	int		parsecountmod;		// modulo with network window
-									
+
 	qboolean		video_prepped;		// false if on new level or new ref dll
 	qboolean		audio_prepped;		// false if on new level or new snd dll
 	qboolean		force_refdef;		// vid has changed, so we can't use a paused refdef
@@ -192,7 +192,7 @@ typedef struct
 	char		name[32];
 	int		number;	// svc_ number
 	int		size;	// if size == -1, size come from first byte after svcnum
-	pfnUserMsgHook	func;	// user-defined function	
+	pfnUserMsgHook	func;	// user-defined function
 } cl_user_message_t;
 
 typedef void (*pfnEventHook)( event_args_t *args );
@@ -393,7 +393,7 @@ typedef struct
 	keydest_t		key_dest;
 
 	byte		*mempool;			// client premamnent pool: edicts etc
-	
+
 	int		framecount;
 	int		quakePort;		// a 16 bit value that allows quake servers
 						// to work around address translating routers
@@ -413,7 +413,7 @@ typedef struct
 	float		packet_loss;
 	double		packet_loss_recalc_time;
 
-	float		nextcmdtime;		// when can we send the next command packet?                
+	float		nextcmdtime;		// when can we send the next command packet?
 	int		lastoutgoingcommand;	// sequence number of last outgoing command
 
 	// internal images
@@ -462,18 +462,18 @@ typedef struct
 	file_t		*demoheader;		// contain demo startup info in case we record a demo on this level
 } client_static_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 extern client_t		cl;
 extern client_static_t	cls;
 extern clgame_static_t	clgame;
 extern menu_static_t	menu;
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
 
 //
 // cvars
@@ -613,7 +613,7 @@ _inline cl_entity_t *CL_EDICT_NUM( int n )
 		return clgame.entities + n;
 
 	Host_Error( "CL_EDICT_NUM: bad number %i\n", n );
-	return NULL;	
+	return NULL;
 }
 
 //

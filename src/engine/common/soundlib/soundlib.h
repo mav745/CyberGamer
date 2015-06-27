@@ -57,7 +57,7 @@ typedef struct sndlib_s
 	int		cmd_flags;
 } sndlib_t;
 
-typedef struct stream_s
+struct stream_s
 {
 	const streamfmt_t	*format;	// streamformat to operate
 
@@ -89,22 +89,22 @@ typedef struct stream_s
 
 typedef struct
 {
-	int	riff_id;		// 'RIFF' 
+	int	riff_id;		// 'RIFF'
 	long	rLen;
-	int	wave_id;		// 'WAVE' 
-	int	fmt_id;		// 'fmt ' 
-	long	pcm_header_len;	// varies... 
+	int	wave_id;		// 'WAVE'
+	int	fmt_id;		// 'fmt '
+	long	pcm_header_len;	// varies...
 	short	wFormatTag;
-	short	nChannels;	// 1,2 for stereo data is (l,r) pairs 
+	short	nChannels;	// 1,2 for stereo data is (l,r) pairs
 	long	nSamplesPerSec;
 	long	nAvgBytesPerSec;
-	short	nBlockAlign;      
+	short	nBlockAlign;
 	short	nBitsPerSample;
 } wavehdr_t;
 
 typedef struct
 {
-	int	data_id;		// 'data' or 'fact' 
+	int	data_id;		// 'data' or 'fact'
 	long	dLen;
 } chunkhdr_t;
 

@@ -615,7 +615,7 @@ int CALLBACK ServerListCompareFunc( CHudServers::server_t *p1, CHudServers::serv
 }
 
 static char g_fieldname[ 256 ];
-int __cdecl FnServerCompare(const void *elem1, const void *elem2 )
+int /*__cdecl*/ FnServerCompare(const void *elem1, const void *elem2 )
 {
 	CHudServers::server_t *list1, *list2;
 

@@ -22,9 +22,9 @@
 #ifndef CDLL_INT_H
 #define CDLL_INT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 #include "const.h"
 
@@ -301,8 +301,8 @@ typedef struct cl_enginefuncs_s
 
 #define CLDLL_INTERFACE_VERSION	7
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
 
 #endif//CDLL_INT_H
