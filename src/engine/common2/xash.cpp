@@ -28,6 +28,8 @@ GNU General Public License for more details.
 #include "fs.hpp"
 
 #include <QApplication>
+#include <QClipboard>
+#include <QDesktopServices>
 
 // these cvars will be duplicated on each client across network
 int CHost::serverState()
@@ -77,16 +79,16 @@ void CHost::printEngineFeatures()
 //		MsgDev(D_AICONSOLE, "^3EXT:^7 Compensate quake bug enabled\n");
 }
 
-bool CHost::newGame(const char *mapName, bool loadGame)
+bool CHost::newGame(const  QString &mapName, bool loadGame)
 {
 	return false;
 	//return SV_NewGame(mapName, loadGame);
 }
 
-void CHost::endGame(const char *message, ...)
+void CHost::endGame(const  QString &message, ...)
 {
-//	va_list		argptr;
-//	static char	string[MAX_SYSPATH];
+//	va_list argptr;
+//	static char string[MAX_SYSPATH];
 
 //	va_start(argptr, message);
 //	Q_vsprintf(string, message, argptr);
@@ -126,7 +128,7 @@ void CHost::setServerState(int state)
 //	Cvar_FullSet("CHost::serverstate", va("%i", state), CVAR_INIT);
 }
 
-void CHost::newInstance(const char *name, const char *finalmsg)
+void CHost::newInstance(const QString &name, const  QString &finalmsg)
 {
 //	if(!pChangeGame) return;
 
@@ -135,104 +137,6 @@ void CHost::newInstance(const char *name, const char *finalmsg)
 //	pChangeGame(name); // call from hl.exe
 }
 
-// Change game modification
-void CHost::changeGame_f()
-{
-	int	i;
-
-//	if(Cmd_Argc() != 2)
-//	{
-//		Msg("Usage: game <directory>\n");
-//		return;
-//	}
-
-//	// validate gamedir
-//	for(i = 0; i < SI.numgames; i++)
-//	{
-//		if(!Q_stricmp(SI.games[i]->gamefolder, Cmd_Argv(1)))
-//			break;
-//	}
-
-//	if(i == SI.numgames)
-//	{
-//		Msg("%s not exist\n", Cmd_Argv(1));
-//	}
-//	else if(!Q_stricmp(GI->gamefolder, Cmd_Argv(1)))
-//	{
-//		Msg("%s already active\n", Cmd_Argv(1));
-//	}
-//	else
-//	{
-//		const char *arg1 = va("%s%s", (host.type == HOST_NORMAL) ? "" : "#", Cmd_Argv(1));
-//		const char *arg2 = va("change game to '%s'", SI.games[i]->title);
-
-//		CHost::newInstance(arg1, arg2);
-//	}
-}
-
-void CHost::exec_f()
-{
-//	string	cfgpath;
-//	char	*f, *txt;
-//	size_t	len;
-
-//	if(Cmd_Argc() != 2)
-//	{
-//		Msg("Usage: exec <filename>\n");
-//		return;
-//	}
-
-//	// HACKHACK: don't execute listenserver.cfg in singleplayer
-//	if(!Q_stricmp(Cvar_VariableString("lservercfgfile"),  Cmd_Argv(1)))
-//	{
-//		if(Cvar_VariableValue("maxplayers") == 1.0f)
-//			return;
-//	}
-
-//	Q_strncpy(cfgpath, Cmd_Argv(1), sizeof(cfgpath));
-//	FS_DefaultExtension(cfgpath, ".cfg"); // append as default
-
-//	f = reinterpret_cast<char*>(FS_LoadFile(cfgpath, reinterpret_cast<fs_offset_t*>(&len), false));
-//	if(!f)
-//	{
-//		MsgDev(D_NOTE, "couldn't exec %s\n", Cmd_Argv(1));
-//		return;
-//	}
-
-//	// adds \n\0 at end of the file
-//	txt = reinterpret_cast<char*>(Z_Malloc(len + 2));
-//	Q_memcpy(txt, f, len);
-//	Q_strncat(txt, "\n", len + 2);
-//	Mem_Free(f);
-
-//	MsgDev(D_INFO, "execing %s\n", Cmd_Argv(1));
-//	Cbuf_InsertText(txt);
-//	Mem_Free(txt);
-}
-
-void CHost::memStats_f()
-{
-//	switch(Cmd_Argc())
-//	{
-//	case 1:
-//		Mem_PrintList(1<<30);
-//		Mem_PrintStats();
-//		break;
-//	case 2:
-//		Mem_PrintList(Q_atoi(Cmd_Argv(1)) * 1024);
-//		Mem_PrintStats();
-//		break;
-//	default:
-//		Msg("Usage: memlist <all>\n");
-//		break;
-//	}
-}
-
-void CHost::minimize_f()
-{
-//	if(host.hWnd)
-//		ShowWindow(host.hWnd, SW_MINIMIZE);
-}
 
 bool CHost::isLocalGame()
 {
@@ -241,10 +145,10 @@ bool CHost::isLocalGame()
 	return false;
 }
 
-bool CHost::registerDecal(const char *name)
+bool CHost::registerDecal(const  QString &name)
 {
-//	char	shortname[CS_SIZE];
-//	int	i;
+//	char shortname[CS_SIZE];
+//	int i;
 
 //	if(!name || !name[0])
 //		return 0;
@@ -272,8 +176,8 @@ bool CHost::registerDecal(const char *name)
 
 void CHost::initDecals()
 {
-//	search_t	*t;
-//	int	i;
+//	search_t *t;
+//	int i;
 
 //	Q_memset(host.draw_decals, 0, sizeof(host.draw_decals));
 //	num_decals = 0;
@@ -294,10 +198,10 @@ void CHost::initDecals()
 // Write ambient sounds into demo
 void CHost::restartAmbientSounds()
 {
-//	soundlist_t	soundInfo[64];
-//	string		curtrack, looptrack;
-//	int		i, nSounds;
-//	fs_offset_t	position;
+//	soundlist_t soundInfo[64];
+//	string curtrack, looptrack;
+//	int i, nSounds;
+//	fs_offset_t position;
 
 //	if(!SV_Active())
 //	{
@@ -327,11 +231,11 @@ void CHost::restartAmbientSounds()
 // Write all the decals into demo
 void CHost::restartDecals()
 {
-//	decallist_t	*entry;
-//	int		decalIndex;
-//	int		modelIndex;
-//	sizebuf_t		*msg;
-//	int		i;
+//	decallist_t *entry;
+//	int decalIndex;
+//	int modelIndex;
+//	sizebuf_t *msg;
+//	int i;
 
 //	if(!SV_Active())
 //	{
@@ -381,7 +285,7 @@ void CHost::restartDecals()
 // Add them exactly as if they had been typed at the console
 void CHost::getConsoleCommands()
 {
-//	char	*cmd;
+//	 QString &cmd;
 
 //	if(host.type == HOST_DEDICATED)
 //	{
@@ -393,8 +297,8 @@ void CHost::getConsoleCommands()
 // Returns false if the time is too short to run a frame
 bool CHost::filterTime(float time)
 {
-//	static double	oldtime;
-//	float		fps;
+//	static double oldtime;
+//	float fps;
 
 //	host.realtime += time;
 
@@ -403,7 +307,7 @@ bool CHost::filterTime(float time)
 
 //	if(fps != 0)
 //	{
-//		float	minframetime;
+//		float minframetime;
 
 //		// limit fps to withing tolerable range
 //		fps = bound(MIN_FPS, fps, MAX_FPS);
@@ -457,7 +361,7 @@ void CHost::frame(float time)
 // Called every frame, even if not generating commands
 void CHost::inputFrame()
 {
-//	qboolean	shutdownMouse = false;
+//	qboolean shutdownMouse = false;
 
 //	rand (); // keep the random time dependent
 
@@ -616,7 +520,7 @@ All console printing must go through this in order to be logged to disk
 If no console is visible, the text will appear at the top of the game window
 ================
 */
-void CHost::print(const char *txt)
+void CHost::print(const  QString &txt)
 {
 //	if(host.rd.target)
 //	{
@@ -634,12 +538,12 @@ void CHost::print(const char *txt)
 //	Con_Print(txt); // echo to client console
 }
 
-void CHost::error(const char *error, ...)
+void CHost::error(const  QString &error, ...)
 {
-//	static char	hosterror1[MAX_SYSPATH];
-//	static char	hosterror2[MAX_SYSPATH];
-//	static qboolean	recursive = false;
-//	va_list		argptr;
+//	static char hosterror1[MAX_SYSPATH];
+//	static char hosterror2[MAX_SYSPATH];
+//	static qboolean recursive = false;
+//	va_list argptr;
 
 //	if(host.mouse_visible && !CL_IsInMenu())
 //	{
@@ -705,32 +609,8 @@ void CHost::error(const char *error, ...)
 //	CHost::abortCurrentFrame();
 }
 
-void CHost::error_f()
-{
-//	const char *error = Cmd_Argv(1);
 
-//	if(!*error) error = "Invoked host error";
-//	CHost::error("%s\n", error);
-}
 
-//void Sys_Error_f()
-//{
-////	const char *error = Cmd_Argv(1);
-
-////	if(!*error) error = "Invoked sys error";
-////	Sys_Error("%s\n", error);
-//}
-
-//void Net_Error_f()
-//{
-////	Q_strncpy(host.finalmsg, Cmd_Argv(1), sizeof(host.finalmsg));
-////	SV_ForceError();
-//}
-
-void CHost::crash_f()
-{
-	*(int *)0 = 0xffffffff;
-}
 
 void CHost::initCommon(const QString &progname, bool bChangeGame)
 {
@@ -767,19 +647,19 @@ void CHost::initCommon(const QString &progname, bool bChangeGame)
 		else host.developer++; // -dev == 1, -dev -console == 2
 	}
 
-	host.type = HT_Normal; // predict state
+	host.type = HOST_NORMAL; // predict state
 	host.con_showalways = true;
 
 	if(progname.startsWith("#"))
 	{
-		host.type = HT_Dedicated;
+		host.type = HOST_DEDICATED;
 		SI.ModuleName = progname.right(progname.size()-1);
 	}
 	else
 		SI.ModuleName = progname;
 
 
-	if(host.type == HT_Dedicated)
+	if(host.type == HOST_DEDICATED)
 	{
 		if(host.developer < 3)
 			host.developer = 3; // otherwise we see empty console
@@ -799,9 +679,9 @@ void CHost::initCommon(const QString &progname, bool bChangeGame)
 	cmd = new CCmd();
 	cvar = new CCvar();
 
-	cvar->get("developer", QString::number(host.developer), CF_Init, "current developer level");
-	cmd->addCommand("exec", &CHost::exec_f, "execute a script file");
-	cmd->addCommand("memlist", &CHost::memStats_f, "prints memory pool information");
+	cvar->get("developer", QString::number(host.developer), CVAR_INIT, "current developer level");
+	cmd->addCommand("exec", CHost::CExecCmd(), "execute a script file");
+	cmd->addCommand("memlist", CHost::CMemStatsCmd(), "prints memory pool information");
 
 	console = new CConsole();
 
@@ -836,7 +716,7 @@ void CHost::freeCommon()
 //	Mem_FreePool(&host.mempool);
 }
 
-void CHost::changeGame( const char *progname )
+void CHost::changeGame(const QString &progname )
 {
 //	if( !progname || !progname[0] )
 //		Sys_Error( "Sys_ChangeGame: NULL gamedir" );
@@ -845,7 +725,7 @@ void CHost::changeGame( const char *progname )
 //	main( progname, TRUE );
 }
 
-int CHost::main(const char *progname, int bChangeGame)
+int CHost::main(const QString &progname, int bChangeGame)
 {
 	error_on_exit = false;
 	initCommon(progname, bChangeGame);
@@ -853,35 +733,40 @@ int CHost::main(const char *progname, int bChangeGame)
 	// init commands and vars
 	if(host.developer >= 3)
 	{
-//		Cmd_AddCommand ("sys_error", &CHost::sys_Error_f, "just throw a fatal error to test shutdown procedures");
-//		Cmd_AddCommand ("CHost::error", &CHost::error_f, "just throw a host error to test shutdown procedures");
-//		Cmd_AddCommand ("crash", &CHost::crash_f, "a way to force a bus error for development reasons");
-//		Cmd_AddCommand ("net_error", &CHost::net_Error_f, "send network bad message from random place");
+		cmd->addCommand ("sys_error" , CHost::CErrorCmd()   ,
+						 "just throw a fatal error to test shutdown procedures");
+		cmd->addCommand ("host_error", CHost::CErrorCmd()   ,
+						 "just throw a host error to test shutdown procedures");
+		cmd->addCommand ("net_error" , CHost::CNetErrorCmd(),
+						 "send network bad message from random place");
+		cmd->addCommand ("crash"     , CHost::CCrashCmd()   ,
+						 "a way to force a bus error for development reasons");
 	}
 
-//	host_cheats = Cvar_Get("sv_cheats", "0", CVAR_LATCH, "allow cheat variables to enable");
-//	host_maxfps = Cvar_Get("fps_max", "72", CVAR_ARCHIVE, "host fps upper limit");
-//	host_framerate = Cvar_Get("host_framerate", "0", 0, "locks frame timing to this value in seconds");
-//	host_serverstate = Cvar_Get("host_serverstate", "0", CVAR_INIT, "displays current server state");
-//	host_gameloaded = Cvar_Get("host_gameloaded", "0", CVAR_INIT, "inidcates a loaded game.dll");
-//	host_clientloaded = Cvar_Get("host_clientloaded", "0", CVAR_INIT, "inidcates a loaded client.dll");
-//	host_limitlocal = Cvar_Get("host_limitlocal", "0", 0, "apply cl_cmdrate and rate to loopback connection");
-//	con_gamemaps = Cvar_Get("con_mapfilter", "1", CVAR_ARCHIVE, "when true show only maps in game folder");
-//	build = Cvar_Get("build", va("%i", Q_buildnum()), CVAR_INIT, "returns a current build number");
-//	ver = Cvar_Get("ver", va("%i/%g (hw build %i)", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum()), CVAR_INIT, "shows an engine version");
+	host_cheats = cvar->get("sv_cheats", "0", CVAR_LATCH, "allow cheat variables to enable");
+	host_maxfps = cvar->get("fps_max", "72", CVAR_ARCHIVE, "host fps upper limit");
+	host_framerate =  cvar->get("host_framerate", "0", 0, "locks frame timing to this value in seconds");
+	host_serverstate =  cvar->get("host_serverstate", "0", CVAR_INIT, "displays current server state");
+	host_gameloaded =  cvar->get("host_gameloaded", "0", CVAR_INIT, "inidcates a loaded game.dll");
+	host_clientloaded =  cvar->get("host_clientloaded", "0", CVAR_INIT, "inidcates a loaded client.dll");
+	host_limitlocal =  cvar->get("host_limitlocal", "0", 0, "apply cl_cmdrate and rate to loopback connection");
+	con_gamemaps =  cvar->get("con_mapfilter", "1", CVAR_ARCHIVE, "when true show only maps in game folder");
+	build =  cvar->get("build", "666", CVAR_INIT, "returns a current build number");
+	ver =  cvar->get("ver", QString("{1}/{2} (hw build {3})")
+					 .arg(PROTOCOL_VERSION).arg(XASH_VERSION).arg(666), CVAR_INIT, "shows an engine version");
 
-//	// content control
-//	Cvar_Get("violence_hgibs", "1", CVAR_ARCHIVE, "show human gib entities");
-//	Cvar_Get("violence_agibs", "1", CVAR_ARCHIVE, "show alien gib entities");
-//	Cvar_Get("violence_hblood", "1", CVAR_ARCHIVE, "draw human blood");
-//	Cvar_Get("violence_ablood", "1", CVAR_ARCHIVE, "draw alien blood");
+	// content control
+	 cvar->get("violence_hgibs", "1", CVAR_ARCHIVE, "show human gib entities");
+	 cvar->get("violence_agibs", "1", CVAR_ARCHIVE, "show alien gib entities");
+	 cvar->get("violence_hblood", "1", CVAR_ARCHIVE, "draw human blood");
+	 cvar->get("violence_ablood", "1", CVAR_ARCHIVE, "draw alien blood");
 
-//	if(host.type != HOST_DEDICATED)
-//	{
-//		// when we in developer-mode automatically turn cheats on
-//		if(host.developer > 1) Cvar_SetFloat("sv_cheats", 1.0f);
-//		Cbuf_AddText("exec video.cfg\n");
-//	}
+	if(host.type != HOST_DEDICATED)
+	{
+		// when we in developer-mode automatically turn cheats on
+		if(host.developer > 1) cvar->setFloat("sv_cheats", 1.0f);
+		Cbuf_AddText("exec video.cfg\n");
+	}
 
 //	Mod_Init();
 //	NET_Init();
@@ -891,11 +776,11 @@ int CHost::main(const char *progname, int bChangeGame)
 //	if(pChangeGame != NULL)
 //	{
 //		Cmd_AddCommand("game", &CHost::changeGame_f, "change game");
-//		Cvar_Get("host_allow_changegame", "1", CVAR_READ_ONLY, "allows to change games");
+//		 cvar->get("host_allow_changegame", "1", CVAR_READ_ONLY, "allows to change games");
 //	}
 //	else
 //	{
-//		Cvar_Get("host_allow_changegame", "0", CVAR_READ_ONLY, "allows to change games");
+//		 cvar->get("host_allow_changegame", "0", CVAR_READ_ONLY, "allows to change games");
 //	}
 
 //	SV_Init();
@@ -962,14 +847,16 @@ int CHost::main(const char *progname, int bChangeGame)
 
 void CHost::shutdown()
 {
-//	if(host.shutdown_issued) return;
-//	host.shutdown_issued = true;
+	if(host.shutdown_issued) return;
+	host.shutdown_issued = true;
 
-//	if(host.state != HOST_ERR_FATAL) host.state = HOST_SHUTDOWN; // prepare host to normal shutdown
-//	if(!host.change_game) Q_strncpy(host.finalmsg, "Server shutdown", sizeof(host.finalmsg));
+	if(host.state != HOST_ERR_FATAL)
+		host.state = HOST_SHUTDOWN; // prepare host to normal shutdown
+	if(!host.change_game)
+		host.finalmsg = "Server shutdown";
 
-//	if(host.type == HOST_NORMAL)
-//		writeConfig();
+	if(host.type == HOST_NORMAL)
+		writeConfig();
 
 //	SV_Shutdown(false);
 //	CL_Shutdown();
@@ -990,11 +877,11 @@ void CHost::shutdown()
 //	return TRUE;
 //}
 
-double CHost::sys_DoubleTime( void )
+double CHost::sys_DoubleTime()
 {
-//	static LARGE_INTEGER	g_PerformanceFrequency;
-//	static LARGE_INTEGER	g_ClockStart;
-//	LARGE_INTEGER		CurrentTime;
+//	static LARGE_INTEGER g_PerformanceFrequency;
+//	static LARGE_INTEGER g_ClockStart;
+//	LARGE_INTEGER CurrentTime;
 
 //	if( !g_PerformanceFrequency.QuadPart )
 //	{
@@ -1006,106 +893,25 @@ double CHost::sys_DoubleTime( void )
 	return 0;//(double)( CurrentTime.QuadPart - g_ClockStart.QuadPart ) / (double)( g_PerformanceFrequency.QuadPart );
 }
 
-/*
-================
-Sys_GetClipboardData
-
-create buffer, that contain clipboard
-================
-*/
-char *CHost::sys_GetClipboardData( void )
+QString CHost::sys_GetClipboardData()
 {
-	char	*data = NULL;
-//	char	*cliptext;
-
-//	if( OpenClipboard( NULL ) != 0 )
-//	{
-//		HANDLE	hClipboardData;
-
-//		if(( hClipboardData = GetClipboardData( CF_TEXT )) != 0 )
-//		{
-//			if(( cliptext = reinterpret_cast<char*>(GlobalLock( hClipboardData ))) != 0 )
-//			{
-//				data = reinterpret_cast<char*>(Z_Malloc( GlobalSize( hClipboardData ) + 1 ));
-//				Q_strcpy( data, cliptext );
-//				GlobalUnlock( hClipboardData );
-//			}
-//		}
-//		CloseClipboard();
-//	}
-	return data;
+	return QApplication::clipboard()->text();
 }
 
-/*
-================
-Sys_SetClipboardData
-
-write screenshot into clipboard
-================
-*/
-void CHost::sys_SetClipboardData(const quint8 *buffer, size_t size )
+void CHost::sys_SetClipboardData(const QString &text )
 {
-//	EmptyClipboard();
-
-//	if( OpenClipboard( NULL ) != 0 )
-//	{
-//		HGLOBAL hResult = GlobalAlloc( GMEM_MOVEABLE, size );
-//		byte *bufferCopy = (byte *)GlobalLock( hResult );
-
-//		Q_memcpy( bufferCopy, buffer, size );
-//		GlobalUnlock( hResult );
-
-//		if( SetClipboardData( CF_DIB, hResult ) == NULL )
-//		{
-//			MsgDev( D_ERROR, "unable to write screenshot\n" );
-//			GlobalFree( hResult );
-//		}
-//		CloseClipboard();
-//	}
+	QApplication::clipboard()->setText(text);
 }
 
-/*
-================
-Sys_Sleep
-
-freeze application for some time
-================
-*/
-void CHost::sys_Sleep( int msec )
+QString CHost::currentUser()
 {
-//	msec = bound( 1, msec, 1000 );
-//	Sleep( msec );
+	QString name = qgetenv("USER");
+	if (name.isEmpty())
+		name = qgetenv("USERNAME");
+	return name;
 }
 
-/*
-================
-Sys_GetCurrentUser
 
-returns username for current profile
-================
-*/
-char *CHost::sys_GetCurrentUser( void )
-{
-//	static string	s_userName;
-//	dword		size = sizeof( s_userName );
-
-//	if( !GetUserName( s_userName, &size ) || !s_userName[0] )
-//		Q_strcpy( s_userName, "player" );
-
-	return 0;//s_userName;
-}
-
-/*
-=================
-Sys_ShellExecute
-=================
-*/
-void CHost::sys_ShellExecute( const char *path, const char *parms, bool exit )
-{
-//	ShellExecute( NULL, "open", path, parms, NULL, SW_SHOW );
-
-//	if( exit ) Sys_Quit();
-}
 
 /*
 ==================
@@ -1115,9 +921,9 @@ Sys_ParseCommandLine
 */
 //void CHost::Sys_ParseCommandLine( LPSTR lpCmdLine )
 //{
-//	const char	*blank = "censored";
-//	static char	commandline[MAX_SYSPATH];
-//	int		i;
+//	const  QString &blank = "censored";
+//	static char commandline[MAX_SYSPATH];
+//	int i;
 
 //	host.argc = 1;
 //	host.argv[0] = "exe";
@@ -1161,15 +967,15 @@ Sys_ParseCommandLine
 //	for( i = 0; i < host.argc; i++ )
 //	{
 //		// we wan't return to first game
-//		if( !Q_stricmp( "-game", host.argv[i] )) host.argv[i] = (char *)blank;
+//		if( !Q_stricmp( "-game", host.argv[i] )) host.argv[i] = ( QString &)blank;
 //		// probably it's timewaster, because engine rejected second change
-//		if( !Q_stricmp( "+game", host.argv[i] )) host.argv[i] = (char *)blank;
+//		if( !Q_stricmp( "+game", host.argv[i] )) host.argv[i] = ( QString &)blank;
 //		// you sure what is map exists in new game?
-//		if( !Q_stricmp( "+map", host.argv[i] )) host.argv[i] = (char *)blank;
+//		if( !Q_stricmp( "+map", host.argv[i] )) host.argv[i] = ( QString &)blank;
 //		// just stupid action
-//		if( !Q_stricmp( "+load", host.argv[i] )) host.argv[i] = (char *)blank;
+//		if( !Q_stricmp( "+load", host.argv[i] )) host.argv[i] = ( QString &)blank;
 //		// changelevel beetwen games? wow it's great idea!
-//		if( !Q_stricmp( "+changelevel", host.argv[i] )) host.argv[i] = (char *)blank;
+//		if( !Q_stricmp( "+changelevel", host.argv[i] )) host.argv[i] = ( QString &)blank;
 //	}
 //}
 
@@ -1181,8 +987,8 @@ Sys_MergeCommandLine
 */
 //void CHost::Sys_MergeCommandLine( LPSTR lpCmdLine )
 //{
-//	const char	*blank = "censored";
-//	int		i;
+//	const  QString &blank = "censored";
+//	int i;
 
 //	if( !host.change_game ) return;
 
@@ -1190,7 +996,7 @@ Sys_MergeCommandLine
 //	{
 //		// second call
 //		if( host.type == HOST_DEDICATED && !Q_strnicmp( "+menu_", host.argv[i], 6 ))
-//			host.argv[i] = (char *)blank;
+//			host.argv[i] = ( QString &)blank;
 //	}
 //}
 
@@ -1214,9 +1020,9 @@ Sys_GetParmFromCmdLine
 Returns the argument for specified parm
 ================
 */
-bool CHost::_sys_GetParmFromCmdLine( char *parm, char *out, size_t size )
+bool CHost::_sys_GetParmFromCmdLine(  QString &parm,  QString &out, size_t size )
 {
-//	int	argc = Sys_CheckParm( parm );
+//	int argc = Sys_CheckParm( parm );
 
 //	if( !argc ) return false;
 //	if( !out ) return false;
@@ -1226,9 +1032,9 @@ bool CHost::_sys_GetParmFromCmdLine( char *parm, char *out, size_t size )
 	return true;
 }
 
-void CHost::sys_SendKeyEvents( void )
+void CHost::sys_SendKeyEvents()
 {
-//	MSG	msg;
+//	MSG msg;
 
 //	while( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ))
 //	{
@@ -1240,88 +1046,6 @@ void CHost::sys_SendKeyEvents( void )
 //	}
 }
 
-//=======================================================================
-//			DLL'S MANAGER SYSTEM
-//=======================================================================
-bool CHost::sys_LoadLibrary( SDllInfo *dll )
-{
-//	const dllfunc_t	*func;
-//	string		errorstring;
-
-//	// check errors
-//	if( !dll ) return false;	// invalid desc
-//	if( dll->link ) return true;	// already loaded
-
-//	if( !dll->name || !*dll->name )
-//		return false; // nothing to load
-
-//	MsgDev( D_NOTE, "Sys_LoadLibrary: Loading %s", dll->name );
-
-//	if( dll->fcts )
-//	{
-//		// lookup export table
-//		for( func = dll->fcts; func && func->name != NULL; func++ )
-//			*func->func = NULL;
-//	}
-
-//	if( !dll->link ) dll->link = LoadLibrary ( dll->name ); // environment pathes
-
-//	// no DLL found
-//	if( !dll->link )
-//	{
-//		Q_snprintf( errorstring, sizeof( errorstring ), "Sys_LoadLibrary: couldn't load %s\n", dll->name );
-//		goto error;
-//	}
-
-//	// Get the function adresses
-//	for( func = dll->fcts; func && func->name != NULL; func++ )
-//	{
-//		if( !( *func->func = Sys_GetProcAddress( dll, func->name )))
-//		{
-//			Q_snprintf( errorstring, sizeof( errorstring ), "Sys_LoadLibrary: %s missing or invalid function (%s)\n", dll->name, func->name );
-//			goto error;
-//		}
-//	}
-//		  MsgDev( D_NOTE, " - ok\n" );
-
-//	return true;
-//error:
-//	MsgDev( D_NOTE, " - failed\n" );
-//	Sys_FreeLibrary( dll ); // trying to free
-//	if( dll->crash ) Sys_Error( errorstring );
-//	else MsgDev( D_ERROR, errorstring );
-
-	return false;
-}
-
-void* CHost::sys_GetProcAddress( SDllInfo *dll, const char* name )
-{
-//	if( !dll || !dll->link ) // invalid desc
-//		return NULL;
-
-	return 0;//(void *)GetProcAddress( reinterpret_cast<HMODULE>(dll->link), name );
-}
-
-bool CHost::sys_FreeLibrary( SDllInfo *dll )
-{
-//	// invalid desc or alredy freed
-//	if( !dll || !dll->link )
-//		return false;
-
-//	if( host.state == HOST_CRASHED )
-//	{
-//		// we need to hold down all modules, while MSVC can find error
-//		MsgDev( D_NOTE, "Sys_FreeLibrary: hold %s for debugging\n", dll->name );
-//		return false;
-//	}
-//	else MsgDev( D_NOTE, "Sys_FreeLibrary: Unloading %s\n", dll->name );
-
-//	FreeLibrary( reinterpret_cast<HMODULE>(dll->link) );
-//	dll->link = NULL;
-
-	return true;
-}
-
 /*
 ================
 Sys_WaitForQuit
@@ -1329,9 +1053,9 @@ Sys_WaitForQuit
 wait for 'Esc' key will be hit
 ================
 */
-void CHost::sys_WaitForQuit( void )
+void CHost::sys_WaitForQuit()
 {
-//	MSG	msg;
+//	MSG msg;
 
 //	Con_RegisterHotkeys();
 
@@ -1357,10 +1081,10 @@ NOTE: we must prepare engine to shutdown
 before call this
 ================
 */
-void CHost::sys_Error( const char *error, ... )
+void CHost::sys_Error( const  QString &error, ... )
 {
-//	va_list	argptr;
-//	char	text[MAX_SYSPATH];
+//	va_list argptr;
+//	char text[MAX_SYSPATH];
 
 //	if( host.state == HOST_ERR_FATAL )
 //		return; // don't multiple executes
@@ -1405,10 +1129,10 @@ Sys_Break
 same as Error
 ================
 */
-void CHost::sys_Break( const char *error, ... )
+void CHost::sys_Break( const  QString &error, ... )
 {
-//	va_list	argptr;
-//	char	text[MAX_SYSPATH];
+//	va_list argptr;
+//	char text[MAX_SYSPATH];
 
 //	if( host.state == HOST_ERR_FATAL )
 //		return; // don't multiple executes
@@ -1446,7 +1170,7 @@ void CHost::sys_Break( const char *error, ... )
 Sys_Quit
 ================
 */
-void CHost::sys_Quit( void )
+void CHost::sys_Quit()
 {
 //	Host_Shutdown();
 //	exit( error_on_exit );
@@ -1459,14 +1183,14 @@ Sys_Print
 print into window console
 ================
 */
-void CHost::sys_Print( const char *pMsg )
+void CHost::sys_Print( const QString pMsg )
 {
-//	const char	*msg;
-//	char		buffer[32768];
-//	char		logbuf[32768];
-//	char		*b = buffer;
-//	char		*c = logbuf;
-//	int		i = 0;
+//	const  QString &msg;
+//	char buffer[32768];
+//	char logbuf[32768];
+//	 QString &b = buffer;
+//	 QString &c = logbuf;
+//	int i = 0;
 
 //	if( host.type == HOST_NORMAL )
 //		Con_Print( pMsg );
@@ -1529,10 +1253,10 @@ Msg
 formatted message
 ================
 */
-void CHost::msg( const char *pMsg, ... )
+void CHost::msg( const  QString &pMsg, ... )
 {
-//	va_list	argptr;
-//	char	text[8192];
+//	va_list argptr;
+//	char text[8192];
 
 //	va_start( argptr, pMsg );
 //	Q_vsnprintf( text, sizeof( text ), pMsg, argptr );
@@ -1548,10 +1272,10 @@ MsgDev
 formatted developer message
 ================
 */
-void CHost::msgDev( int level, const char *pMsg, ... )
+void CHost::msgDev( int level, const  QString &pMsg, ... )
 {
-//	va_list	argptr;
-//	char	text[8192];
+//	va_list argptr;
+//	char text[8192];
 
 //	if( host.developer < level ) return;
 
@@ -1573,4 +1297,126 @@ void CHost::msgDev( int level, const char *pMsg, ... )
 //		Sys_Print( text );
 //		break;
 //	}
+}
+
+
+
+void CHost::CChangeGameCmd::exec(const QStringList &args)
+{
+
+		int i;
+
+	//	if(Cmd_Argc() != 2)
+	//	{
+	//		Msg("Usage: game <directory>\n");
+	//		return;
+	//	}
+
+	//	// validate gamedir
+	//	for(i = 0; i < SI.numgames; i++)
+	//	{
+	//		if(!Q_stricmp(SI.games[i]->gamefolder, Cmd_Argv(1)))
+	//			break;
+	//	}
+
+	//	if(i == SI.numgames)
+	//	{
+	//		Msg("%s not exist\n", Cmd_Argv(1));
+	//	}
+	//	else if(!Q_stricmp(GI->gamefolder, Cmd_Argv(1)))
+	//	{
+	//		Msg("%s already active\n", Cmd_Argv(1));
+	//	}
+	//	else
+	//	{
+	//		const  QString &arg1 = va("%s%s", (host.type == HOST_NORMAL) ? "" : "#", Cmd_Argv(1));
+	//		const  QString &arg2 = va("change game to '%s'", SI.games[i]->title);
+
+	//		CHost::newInstance(arg1, arg2);
+	//	}
+
+
+}
+
+void CHost::CExecCmd::exec(const QStringList &args)
+{
+	//	string cfgpath;
+	//	 QString &f, *txt;
+	//	size_t len;
+
+	//	if(Cmd_Argc() != 2)
+	//	{
+	//		Msg("Usage: exec <filename>\n");
+	//		return;
+	//	}
+
+	//	// HACKHACK: don't execute listenserver.cfg in singleplayer
+	//	if(!Q_stricmp(Cvar_VariableString("lservercfgfile"),  Cmd_Argv(1)))
+	//	{
+	//		if(Cvar_VariableValue("maxplayers") == 1.0f)
+	//			return;
+	//	}
+
+	//	Q_strncpy(cfgpath, Cmd_Argv(1), sizeof(cfgpath));
+	//	FS_DefaultExtension(cfgpath, ".cfg"); // append as default
+
+	//	f = reinterpret_cast<char*>(FS_LoadFile(cfgpath, reinterpret_cast<fs_offset_t*>(&len), false));
+	//	if(!f)
+	//	{
+	//		MsgDev(D_NOTE, "couldn't exec %s\n", Cmd_Argv(1));
+	//		return;
+	//	}
+
+	//	// adds \n\0 at end of the file
+	//	txt = reinterpret_cast<char*>(Z_Malloc(len + 2));
+	//	Q_memcpy(txt, f, len);
+	//	Q_strncat(txt, "\n", len + 2);
+	//	Mem_Free(f);
+
+	//	MsgDev(D_INFO, "execing %s\n", Cmd_Argv(1));
+	//	Cbuf_InsertText(txt);
+	//	Mem_Free(txt);
+}
+
+void CHost::CErrorCmd::exec(const QStringList &args)
+{
+	//	const  QString &error = Cmd_Argv(1);
+
+	//	if(!*error) error = "Invoked host error";
+	//	CHost::error("%s\n", error);
+}
+
+void CHost::CNetErrorCmd::exec(const QStringList &args)
+{
+	//	Q_strncpy(host.finalmsg, Cmd_Argv(1), sizeof(host.finalmsg));
+	//	SV_ForceError();
+}
+
+void CHost::CCrashCmd::exec(const QStringList &args)
+{
+	*(int *)0 = 0xffffffff;
+}
+
+void CHost::CMemStatsCmd::exec(const QStringList &args)
+{
+	//	switch(Cmd_Argc())
+	//	{
+	//	case 1:
+	//		Mem_PrintList(1<<30);
+	//		Mem_PrintStats();
+	//		break;
+	//	case 2:
+	//		Mem_PrintList(Q_atoi(Cmd_Argv(1)) * 1024);
+	//		Mem_PrintStats();
+	//		break;
+	//	default:
+	//		Msg("Usage: memlist <all>\n");
+	//		break;
+	//	}
+}
+
+void CHost::CMinimizeCmd::exec(const QStringList &args)
+{
+	//	if(host.hWnd)
+	//		ShowWindow(host.hWnd, SW_MINIMIZE);
 }

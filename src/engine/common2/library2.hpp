@@ -47,6 +47,10 @@ public:
 	quint32 Com_FunctionFromName( void *hInstance, const char *pName );
 	const char *Com_NameForFunction( void *hInstance, quint32 function );
 
+
+	bool Sys_LoadLibrary( SDllInfo *dll );
+	void* Sys_GetProcAddress( SDllInfo *dll, const QString &name );
+	bool Sys_FreeLibrary( SDllInfo *dll );
 };
 
 #endif //LIBRARY_H

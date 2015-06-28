@@ -2,10 +2,10 @@
 
 CCvar::CCvar()
 {
-	userinfo = get( "@userinfo", "0", CF_ReadOnly, "" ); // use ->modified value only
-	physinfo = get( "@physinfo", "0", CF_ReadOnly, "" ); // use ->modified value only
-	serverinfo = get( "@serverinfo", "0", CF_ReadOnly, "" ); // use ->modified value only
-	renderinfo = get( "@renderinfo", "0", CF_ReadOnly, "" ); // use ->modified value only
+	userinfo   = get( "@userinfo",   "0", CVAR_READ_ONLY, "" ); // use ->modified value only
+	physinfo   = get( "@physinfo",   "0", CVAR_READ_ONLY, "" ); // use ->modified value only
+	serverinfo = get( "@serverinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
+	renderinfo = get( "@renderinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
 
 	//	Cmd_AddCommand ("toggle", &CCvar::toggle_f, "toggles a console variable's values (use for more info)" );
 	//	Cmd_AddCommand ("set", &CCvar::set_f, "create or change the value of a console variable" );

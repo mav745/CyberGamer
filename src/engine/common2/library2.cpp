@@ -25,6 +25,101 @@ typedef bool (WINAPI *DllEntryProc)( HINSTANCE hinstDLL, quint32 fdwReason, LPVO
 #define GET_HEADER_DICTIONARY( module, idx )	&(module)->headers->OptionalHeader.DataDirectory[idx]
 #define CALCULATE_ADDRESS( base, offset )	(((quint32)(base)) + (offset))
 
+
+//=======================================================================
+//			DLL'S MANAGER SYSTEM
+//=======================================================================
+bool CLibrary::Sys_LoadLibrary( SDllInfo *dll )
+{
+	const SDllFunc	*func;
+	QString		errorstring;
+
+	// check errors
+	if( ! dll )
+		return false;	// invalid desc
+	if( dll->link )
+		return true;	// already loaded
+
+	if( dll->name.isEmpty() )
+		return false; // nothing to load
+
+	//MsgDev( D_NOTE, "Sys_LoadLibrary: Loading %s", dll->name );
+
+	if( dll->fcts )
+	{
+		// lookup export table
+		for( func = dll->fcts; func && func->name != NULL; func++ )
+			*func->func = NULL;
+	}
+
+	if( ! dll->link )
+		dll->link = LoadLibrary ( dll->name.toLatin1().constData() ); // environment pathes
+
+	bool fine = true;
+
+	// no DLL found
+	if( ! dll->link )
+	{
+		errorstring = QString("Sys_LoadLibrary: couldn't load %s\n").arg(dll->name);
+		fine = false;
+	}
+
+	// Get the function adresses
+	for( func = dll->fcts; func && func->name != NULL && fine; func++ )
+		if( !( *func->func = Sys_GetProcAddress( dll, func->name.toLatin1().constData() )))
+		{
+			errorstring.append( QString("Sys_LoadLibrary: {1} missing or invalid function {2}\n")
+								.arg(dll->name).arg(func->name) );
+			fine = false; // breaks effectively
+		}
+	//MsgDev( D_NOTE, " - ok\n" );
+
+	if ( ! fine ) {
+		//MsgDev( D_NOTE, " - failed\n" );
+		Sys_FreeLibrary( dll ); // trying to free
+//		if( dll->crash )
+//			Sys_Error( errorstring );
+//		else
+//			MsgDev( D_ERROR, errorstring );
+	}
+
+	return fine;
+}
+
+void* CLibrary::Sys_GetProcAddress( SDllInfo *dll, const QString &name )
+{
+	if( !dll || !dll->link ) // invalid desc
+		return NULL;
+
+	return (void *)GetProcAddress( reinterpret_cast<HMODULE>(dll->link), name.toLatin1().constData() );
+}
+
+bool CLibrary::Sys_FreeLibrary( SDllInfo *dll )
+{
+	// invalid desc or alredy freed
+	if( !dll || !dll->link )
+		return false;
+
+//	if( host.state == HOST_CRASHED )
+//	{
+//		// we need to hold down all modules, while MSVC can find error
+////		MsgDev( D_NOTE, "Sys_FreeLibrary: hold %s for debugging\n", dll->name );
+//		return false;
+//	}
+////	else MsgDev( D_NOTE, "Sys_FreeLibrary: Unloading %s\n", dll->name );
+
+	FreeLibrary( reinterpret_cast<HMODULE>(dll->link) );
+	dll->link = NULL;
+
+	return true;
+}
+
+
+
+
+
+
+
 void CLibrary::CopySections( const quint8 *data, PIMAGE_NT_HEADERS old_headers, MEMORYMODULE *module )
 {
 	int i, size;
@@ -847,16 +942,16 @@ const char *CLibrary::Com_NameForFunction( void *hInstance, quint32 function )
 	SDllUser	*hInst = (SDllUser *)hInstance;
 	int		i, index;
 
-	if( !hInst || !hInst->hInstance )
-		return NULL;
+//	if( !hInst || !hInst->hInstance )
+//		return NULL;
 
-	for( i = 0; i < hInst->num_ordinals; i++ )
-	{
-		index = hInst->ordinals[i];
+//	for( i = 0; i < hInst->num_ordinals; i++ )
+//	{
+//		index = hInst->ordinals[i];
 
-		if(( function - hInst->funcBase ) == hInst->funcs[index] )
-			return hInst->names[i];
-	}
+//		if(( function - hInst->funcBase ) == hInst->funcs[index] )
+//			return hInst->names[i];
+//	}
 	// couldn't find the function address to return name
 	return NULL;
 }

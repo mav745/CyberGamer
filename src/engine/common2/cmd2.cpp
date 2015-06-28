@@ -17,7 +17,6 @@ GNU General Public License for more details.
 
 CCmd::CCmd()
 {
-	CCmd::cbuf_init();
 
 	//	// register our commands
 	//	addCommand ("echo", CCmd::Echo_f, "print a message to the console (useful in scripts)" );
@@ -28,88 +27,19 @@ CCmd::CCmd()
 	//	addCommand ("alias", CCmd::Alias_f, "create a script function. Without arguments show the list of all alias" );
 }
 
-void CCmd::cbuf_init()
-{
-	cmd_text = cmd_text_buf;
-}
-
 void CCmd::cbuf_clear()
 {
 	cmd_text.clear();
 }
 
-void *CCmd::cbuf_getSpace( SCmdBuf *buf, int length )
-{
-//	void    *data;
-
-//	if( buf->cursize + length > buf->maxsize )
-//	{
-//		buf->cursize = 0;
-//		Host_Error( "CCmd::GetSpace: overflow\n" );
-//	}
-
-//	data = buf->data + buf->cursize;
-//	buf->cursize += length;
-
-	return 0;//data;
-}
-
-/*
-============
-CCmd::AddText
-
-Adds command text at the end of the buffer
-============
-*/
 void CCmd::cbuf_addText( const QString &text )
 {
 	cmd_text.append(text);
-//	int	l;
-
-//	l = Q_strlen( text );
-
-//	if( cmd_text.cursize + l >= cmd_text.maxsize )
-//	{
-//		MsgDev( D_WARN, "CCmd::AddText: overflow\n" );
-//		return;
-//	}
-
-//	Q_memcpy( CCmd::GetSpace( &cmd_text, l ), text, l );
 }
 
-/*
-============
-CCmd::InsertText
-
-Adds command text immediately after the current command
-Adds a \n to the text
-============
-*/
 void CCmd::cbuf_insertText( const QString &text )
 {
-//	char	*temp;
-//	int	templen;
-
-//	// copy off any commands still remaining in the exec buffer
-//	templen = cmd_text.cursize;
-
-//	if( templen )
-//	{
-//		temp = reinterpret_cast<char*>(Z_Malloc( templen ));
-//		Q_memcpy( temp, cmd_text.data, templen );
-//		cmd_text.cursize = 0;
-//	}
-//	else temp = NULL;
-
-//	// add the entire text of the file
-//	addText( text );
-
-//	// add the copied off data
-//	if( templen )
-//	{
-//		Q_memcpy( CCmd::GetSpace( &cmd_text, templen ), temp, templen );
-//		Z_Free( temp );
-//	}
+	cmd_text.prepend(text);
 }
 
 /*
@@ -119,20 +49,17 @@ CCmd::Execute
 */
 void CCmd::cbuf_execute()
 {
-//	char	*text;
-//	char	line[MAX_CMD_LINE];
-//	int	i, quotes;
+	char	*text;
+	char	line[MAX_CMD_LINE];
+	int	i, quotes;
 
-//	while( cmd_text.cursize )
-//	{
-//		if( cmd_wait )
-//		{
-//			// skip out while text still remains in buffer,
-//			// leaving it for next frame
-//			//Sys_Print("waiting...\n\0");
-//			cmd_wait = false;
-//			break;
-//		}
+	while( cmd_text.size() )
+	{
+		if( cmd_wait )
+		{
+			cmd_wait = false;
+			break;
+		}
 
 //		// find a \n or ; line break
 //		text = (char *)cmd_text.data;
@@ -174,7 +101,7 @@ void CCmd::cbuf_execute()
 //		//Sys_Print("\n\0");
 //		// execute the command line
 //		CCmd::ExecuteString( line, src_command );
-//	}
+	}
 }
 
 /*
@@ -343,22 +270,22 @@ void CCmd::alias_f()
 //	a->value = copystring( cmd );
 }
 
-uint CCmd::argc()
-{
-	return cmd_argc;
-}
+//uint CCmd::argc()
+//{
+//	return cmd_argc;
+//}
 
-char *CCmd::argv( int arg )
-{
-	if((uint)arg >= cmd_argc )
-		return "";
-	return 0;//cmd_argv[arg];
-}
+//char *CCmd::argv( int arg )
+//{
+//	if((uint)arg >= cmd_argc )
+//		return "";
+//	return 0;//cmd_argv[arg];
+//}
 
-char *CCmd::args()
-{
-	return 0;//cmd_args;
-}
+//char *CCmd::args()
+//{
+//	return 0;//cmd_args;
+//}
 
 
 SCmdAlias *CCmd::aliasGetList()
@@ -386,6 +313,80 @@ QString CCmd::getName( SCmd *cmd )
 	return cmd->name;
 }
 
+
+
+char *COM_ParseFile( char *data, char *token )
+{
+	int	c, len;
+
+	if( !token )
+		return NULL;
+
+	len = 0;
+	token[0] = 0;
+
+	if( !data )
+		return NULL;
+// skip whitespace
+skipwhite:
+	while(( c = ((byte)*data)) <= ' ' )
+	{
+		if( c == 0 )
+			return NULL;	// end of file;
+		data++;
+	}
+
+	// skip // comments
+	if( c=='/' && data[1] == '/' )
+	{
+		while( *data && *data != '\n' )
+			data++;
+		goto skipwhite;
+	}
+
+	// handle quoted strings specially
+	if( c == '\"' )
+	{
+		data++;
+		while( 1 )
+		{
+			c = (byte)*data++;
+			if( c == '\"' || !c )
+			{
+				token[len] = 0;
+				return data;
+			}
+			token[len] = c;
+			len++;
+		}
+	}
+
+	// parse single characters
+	if( c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ',' )
+	{
+		token[len] = c;
+		len++;
+		token[len] = 0;
+		return data + 1;
+	}
+
+	// parse a regular word
+	do
+	{
+		token[len] = c;
+		data++;
+		len++;
+		c = ((byte)*data);
+
+		if( c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ',' )
+			break;
+	} while( c > 32 );
+
+	token[len] = 0;
+
+	return data;
+}
+
 /*
 ============
 CCmd::TokenizeString
@@ -396,51 +397,45 @@ are inserted in the apropriate place, The argv array
 will point into this temporary buffer.
 ============
 */
-void CCmd::tokenizeString( QString text )
+QStringList CCmd::tokenizeString( const QString &text )
 {
-//	char	cmd_token[MAX_CMD_BUFFER];
-//	int	i;
+	QStringList result;
+	QString buffer = text.trimmed();
 
-//	// clear the args from the last string
-//	for( i = 0; i < cmd_argc; i++ )
-//		Z_Free( cmd_argv[i] );
+	if( buffer.isEmpty() )
+		return result;
 
-//	cmd_argc = 0; // clear previous args
-//	cmd_args = NULL;
+	while( 1 )
+	{
+		// skip whitespace up to a /n
+		while( *text && ((byte)*text) <= ' ' && *text != '\n' )
+			text++;
 
-//	if( !text ) return;
+		if( *text == '\n' )
+		{
+			// a newline seperates commands in the buffer
+			text++;
+			break;
+		}
 
-//	while( 1 )
-//	{
-//		// skip whitespace up to a /n
-//		while( *text && ((byte)*text) <= ' ' && *text != '\n' )
-//			text++;
+		if( !*text )
+			return;
 
-//		if( *text == '\n' )
-//		{
-//			// a newline seperates commands in the buffer
-//			text++;
-//			break;
-//		}
+		if( cmd_argc == 1 )
+			 cmd_args = text;
 
-//		if( !*text )
-//			return;
+		text = COM_ParseFile( text, cmd_token );
+		if( !text ) return;
 
-//		if( cmd_argc == 1 )
-//			 cmd_args = text;
-
-//		text = COM_ParseFile( text, cmd_token );
-//		if( !text ) return;
-
-//		if( cmd_argc < MAX_CMD_TOKENS )
-//		{
-//			cmd_argv[cmd_argc] = copystring( cmd_token );
-//			cmd_argc++;
-//		}
-//	}
+		if( cmd_argc < MAX_CMD_TOKENS )
+		{
+			cmd_argv[cmd_argc] = copystring( cmd_token );
+			cmd_argc++;
+		}
+	}
 }
 
-void CCmd::addCommand( const QString &cmd_name, xcommand_t function, const QString &cmd_desc )
+void CCmd::addCommand(const QString &cmdName, CCmdCode &cmdCode, const QString &cmdDesc )
 {
 //	cmd_t	*cmd;
 
@@ -467,7 +462,7 @@ void CCmd::addCommand( const QString &cmd_name, xcommand_t function, const QStri
 //	cmd_functions = cmd;
 }
 
-void CCmd::addGameCommand( const QString &cmd_name, xcommand_t function )
+void CCmd::addGameCommand(const QString &cmdName, CCmdCode &cmdCode )
 {
 //	SCmd	*cmd;
 
@@ -495,7 +490,7 @@ void CCmd::addGameCommand( const QString &cmd_name, xcommand_t function )
 //	cmd_functions = cmd;
 }
 
-void CCmd::addClientCommand(const QString &cmd_name, xcommand_t function )
+void CCmd::addClientCommand(const QString &cmd_name, CCmdCode &cmdCode )
 {
 //	SCmd	*cmd;
 
@@ -572,7 +567,7 @@ void CCmd::lookupCmds( char *buffer, void *ptr, setpair_t callback )
 //		callback( alias->name, alias->value, buffer, ptr );
 }
 
-bool CCmd::exists(const QString &cmd_name )
+bool CCmd::exists(const QString &cmdName )
 {
 //	SCmd	*cmd;
 
@@ -593,54 +588,51 @@ A complete command line has been parsed, so try to execute it
 */
 void CCmd::executeString(QString &text, ECmdSource src )
 {
-//	SCmd	*cmd;
-//	cmdalias_t	*a;
+	SCmd *cmd;
+	SCmdAlias *a;
 
-//	// set cmd source
-//	cmd_source = src;
+	// execute the command line
+	CCmd::TokenizeString( text );
 
-//	// execute the command line
-//	CCmd::TokenizeString( text );
+	if( !CCmd::Argc()) return; // no tokens
 
-//	if( !CCmd::Argc()) return; // no tokens
+	// check alias
+	for( a = cmd_alias; a; a = a->next )
+	{
+		if( !Q_stricmp( cmd_argv[0], a->name ))
+		{
+			CCmd::InsertText( a->value );
+			return;
+		}
+	}
 
-//	// check alias
-//	for( a = cmd_alias; a; a = a->next )
-//	{
-//		if( !Q_stricmp( cmd_argv[0], a->name ))
-//		{
-//			CCmd::InsertText( a->value );
-//			return;
-//		}
-//	}
+	// check functions
+	for( cmd = cmd_functions; cmd; cmd = cmd->next )
+	{
+		if( !Q_stricmp( cmd_argv[0], cmd->name ) && cmd->function )
+		{
+			cmd->function();
+			return;
+		}
+	}
 
-//	// check functions
-//	for( cmd = cmd_functions; cmd; cmd = cmd->next )
-//	{
-//		if( !Q_stricmp( cmd_argv[0], cmd->name ) && cmd->function )
-//		{
-//			cmd->function();
-//			return;
-//		}
-//	}
+	// check cvars
+	if( Cvar_Command( )) return;
 
-//	// check cvars
-//	if( Cvar_Command( )) return;
-
-//	// forward the command line to the server, so the entity DLL can parse it
-//	if( cmd_source == src_command && host.type == HOST_NORMAL )
-//	{
-//		if( cls.state >= ca_connected )
-//		{
-//			CCmd::ForwardToServer();
-//			return;
-//		}
-//	}
-//	else if( text[0] != '@' && host.type == HOST_NORMAL )
-//	{
-//		// commands with leading '@' are hidden system commands
-//		MsgDev( D_INFO, "Unknown command \"%s\"\n", text );
-//	}
+	// forward the command line to the server, so the entity DLL can parse it
+	if( src == src_command && host.type == HOST_NORMAL )
+	{
+		if( cls.state >= ca_connected )
+		{
+			CCmd::ForwardToServer();
+			return;
+		}
+	}
+	else if( text[0] != '@' && host.type == HOST_NORMAL )
+	{
+		// commands with leading '@' are hidden system commands
+		MsgDev( D_INFO, "Unknown command \"%s\"\n", text );
+	}
 }
 
 /*
