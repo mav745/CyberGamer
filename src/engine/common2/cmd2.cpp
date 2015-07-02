@@ -15,31 +15,37 @@ GNU General Public License for more details.
 
 #include "cmd2.hpp"
 
+#include "xash.hpp"
+
+#include <QRegularExpression>
+
 CCmd::CCmd()
 {
-
 	//	// register our commands
-	//	addCommand ("echo", CCmd::Echo_f, "print a message to the console (useful in scripts)" );
-	//	addCommand ("wait", CCmd::Wait_f, "make script execution wait for some rendered frames" );
-	//	addCommand ("cmdlist", CCmd::List_f, "display all console commands beginning with the specified prefix" );
-	//	addCommand ("stuffcmds", CCmd::StuffCmds_f, va( "execute commandline parameters (must be present in %s.rc script)", SI.ModuleName ));
-	//	addCommand ("cmd", CCmd::ForwardToServer, "send a console commandline to the server" );
-	//	addCommand ("alias", CCmd::Alias_f, "create a script function. Without arguments show the list of all alias" );
+	addCommand ("echo",      CCmd::CEchoCmd (), "print a message to the console (useful in scripts)" );
+	addCommand ("wait",      CCmd::CWaitCmd (), "make script execution wait for some rendered frames" );
+	addCommand ("cmdlist",   CCmd::CListCmd (), "display all console commands beginning with the specified prefix" );
+	addCommand ("stuffcmds", CCmd::CStuffCmd(), QString("execute commandline parameters (must be present in {1}.rc script)").arg(1/*SI.ModuleName*/));
+	addCommand ("cmd",     CCmd::CCmdCmd(this), "send a console commandline to the server" );
+	addCommand ("alias",     CCmd::CAliasCmd(), "create a script function. Without arguments show the list of all alias" );
 }
 
 void CCmd::cbuf_clear()
 {
-	cmd_text.clear();
+	queue.clear();
 }
 
 void CCmd::cbuf_addText( const QString &text )
 {
-	cmd_text.append(text);
+	/// (;)(?=(?:[^"]|"[^"]*")*$)  - all ;s OUTSIDE quotes
+	/// \n{1,} - all line ends
+	/// \n{1,}|,(?=(?:[^"]|"[^"]*")*$) - combined
+	queue.append(text.split(QRegularExpression("\\n{1,}|,(?=(?:[^\"]|\"[^\"]*\")*$)")));
 }
 
 void CCmd::cbuf_insertText( const QString &text )
 {
-	cmd_text.prepend(text);
+	queue.prepend(text.split(QRegularExpression("\\n{1,}|,(?=(?:[^\"]|\"[^\"]*\")*$)")));
 }
 
 /*
@@ -49,271 +55,20 @@ CCmd::Execute
 */
 void CCmd::cbuf_execute()
 {
-	char	*text;
-	char	line[MAX_CMD_LINE];
-	int	i, quotes;
-
-	while( cmd_text.size() )
-	{
-		if( cmd_wait )
-		{
-			cmd_wait = false;
+	while (queue.size()) {
+		if( wait ) {
+			wait = false;
 			break;
 		}
-
-//		// find a \n or ; line break
-//		text = (char *)cmd_text.data;
-
-//		quotes = 0;
-
-//		for( i = 0; i < cmd_text.cursize; i++ )
-//		{
-//			if( text[i] == '"' ) quotes++;
-//			if(!( quotes & 1 ) &&  text[i] == ';' )
-//				break; // don't break if inside a quoted string
-//			if( text[i] == '\n' || text[i] == '\r' )
-//				break;
-//		}
-
-//		if( i >= ( MAX_CMD_LINE - 1 ))
-//			Sys_Error( "CCmd::Execute: command string owerflow\n" );
-
-//		Q_memcpy( line, text, i );
-//		line[i] = 0;
-
-//		// delete the text from the command buffer and move remaining commands down
-//		// this is necessary because commands (exec) can insert data at the
-//		// beginning of the text buffer
-//		if( i == cmd_text.cursize )
-//		{
-//			cmd_text.cursize = 0;
-//		}
-//		else
-//		{
-//			i++;
-//			cmd_text.cursize -= i;
-//			Q_memcpy( text, text + i, cmd_text.cursize );
-//		}
-
-
-
-//		//Sys_Print(line);
-//		//Sys_Print("\n\0");
-//		// execute the command line
-//		CCmd::ExecuteString( line, src_command );
+		executeString( queue.first(), src_command );
+		queue.removeFirst();
 	}
 }
 
-/*
-==============================================================================
-
-			SCRIPT COMMANDS
-
-==============================================================================
-*/
-/*
-===============
-CCmd::StuffCmds_f
-
-Adds command line parameters as script statements
-Commands lead with a +, and continue until a - or another +
-xash -dev 3 +map c1a0d
-xash -nosound -game bshift
-===============
-*/
-void CCmd::stuffCmds_f()
+QList<SCmdAlias> CCmd::aliasGetList()
 {
-//	int	i, j, l = 0;
-//	QString build; // this is for all commandline options combined (and is bounds checked)
-
-//	if( argc() != 1 )
-//	{
-//		msg( "Usage: stuffcmds : execute command line parameters\n" );
-//		return;
-//	}
-
-//	// no reason to run the commandline arguments twice
-//	if( host.stuffcmdsrun ) return;
-
-//	host.stuffcmdsrun = true;
-//	build[0] = 0;
-
-//	for( i = 0; i < host.argc; i++ )
-//	{
-//		if( host.argv[i] && host.argv[i][0] == '+' && ( host.argv[i][1] < '0' || host.argv[i][1] > '9' ) && l + Q_strlen( host.argv[i] ) - 1 <= sizeof( build ) - 1 )
-//		{
-//			j = 1;
-
-//			while( host.argv[i][j] )
-//				build[l++] = host.argv[i][j++];
-
-//			for( i++; i < host.argc; i++ )
-//			{
-//				if( !host.argv[i] ) continue;
-//				if(( host.argv[i][0] == '+' || host.argv[i][0] == '-' ) && ( host.argv[i][1] < '0' || host.argv[i][1] > '9' ))
-//					break;
-//				if( l + Q_strlen( host.argv[i] ) + 4 > sizeof( build ) - 1 )
-//					break;
-//				build[l++] = ' ';
-
-//				if( Q_strchr( host.argv[i], ' ' ))
-//					build[l++] = '\"';
-
-//				for( j = 0; host.argv[i][j]; j++ )
-//					build[l++] = host.argv[i][j];
-
-//				if( Q_strchr( host.argv[i], ' ' ))
-//					build[l++] = '\"';
-//			}
-//			build[l++] = '\n';
-//			i--;
-//		}
-//	}
-
-//	// now terminate the combined string and prepend it to the command buffer
-//	// we already reserved space for the terminator
-//	build[l++] = 0;
-//	insertText( build );
+	return aliases;
 }
-
-/*
-============
-CCmd::Wait_f
-
-Causes execution of the remainder of the command buffer to be delayed until
-next frame.  This allows commands like:
-bind g "cmd use rocket ; +attack ; wait ; -attack ; cmd use blaster"
-============
-*/
-void CCmd::wait_f()
-{
-	cmd_wait = true;
-}
-
-/*
-===============
-CCmd::Echo_f
-
-Just prints the rest of the line to the console
-===============
-*/
-void CCmd::echo_f()
-{
-//	int	i;
-
-//	for( i = 1; i < CCmd::Argc(); i++ )
-//		Sys_Print( CCmd::Argv( i ));
-//	Sys_Print( "\n" );
-}
-
-/*
-===============
-CCmd::Alias_f
-
-Creates a new command that executes a command string (possibly ; seperated)
-===============
-*/
-void CCmd::alias_f()
-{
-//	cmdalias_t	*a;
-//	char		cmd[MAX_CMD_LINE];
-//	int		i, c;
-//	char		*s;
-
-//	if( CCmd::Argc() == 1 )
-//	{
-//		Msg( "Current alias commands:\n" );
-//		for( a = cmd_alias; a; a = a->next )
-//			Msg( "^2%s^7 : ^3%s^7\n", a->name, a->value );
-//		return;
-//	}
-
-//	s = CCmd::Argv( 1 );
-
-//	if( Q_strlen( s ) >= MAX_ALIAS_NAME )
-//	{
-//		Msg( "Alias name is too long\n" );
-//		return;
-//	}
-
-//	// if the alias allready exists, reuse it
-//	for( a = cmd_alias; a; a = a->next )
-//	{
-//		if( !Q_strcmp( s, a->name ))
-//		{
-//			Z_Free( a->value );
-//			break;
-//		}
-//	}
-
-//	if( !a )
-//	{
-//		a = reinterpret_cast<cmdalias_t*>(Z_Malloc( sizeof( cmdalias_t )));
-//		a->next = cmd_alias;
-//		cmd_alias = a;
-//	}
-
-//	Q_strncpy( a->name, s, sizeof( a->name ));
-
-//	// copy the rest of the command line
-//	cmd[0] = 0; // start out with a null string
-
-//	c = CCmd::Argc();
-
-//	for( i = 2; i < c; i++ )
-//	{
-//		Q_strcat( cmd, CCmd::Argv( i ));
-//		if( i != c ) Q_strcat( cmd, " " );
-//	}
-
-//	Q_strcat( cmd, "\n" );
-//	a->value = copystring( cmd );
-}
-
-//uint CCmd::argc()
-//{
-//	return cmd_argc;
-//}
-
-//char *CCmd::argv( int arg )
-//{
-//	if((uint)arg >= cmd_argc )
-//		return "";
-//	return 0;//cmd_argv[arg];
-//}
-
-//char *CCmd::args()
-//{
-//	return 0;//cmd_args;
-//}
-
-
-SCmdAlias *CCmd::aliasGetList()
-{
-	return cmd_alias;
-}
-
-/*
-============
-CCmd::GetList
-============
-*/
-SCmd *CCmd::getFirstFunctionHandle()
-{
-	return 0;//cmd_functions;
-}
-
-SCmd *CCmd::getNextFunctionHandle( SCmd *cmd )
-{
-	return (cmd) ? cmd->next : NULL;
-}
-
-QString CCmd::getName( SCmd *cmd )
-{
-	return cmd->name;
-}
-
-
 
 char *COM_ParseFile( char *data, char *token )
 {
@@ -592,46 +347,47 @@ void CCmd::executeString(QString &text, ECmdSource src )
 	SCmdAlias *a;
 
 	// execute the command line
-	CCmd::TokenizeString( text );
-
-	if( !CCmd::Argc()) return; // no tokens
+	QStringList args = tokenizeString( text );
+	if (args.isEmpty())
+		return;
 
 	// check alias
-	for( a = cmd_alias; a; a = a->next )
-	{
-		if( !Q_stricmp( cmd_argv[0], a->name ))
+	foreach (SCmdAlias a, aliases) {
+		if(args.at(0) == a.name)
 		{
-			CCmd::InsertText( a->value );
+			cbuf_insertText( a.value );
 			return;
 		}
 	}
 
 	// check functions
-	for( cmd = cmd_functions; cmd; cmd = cmd->next )
-	{
-		if( !Q_stricmp( cmd_argv[0], cmd->name ) && cmd->function )
+	foreach (SCmd c, commands) {
+		if(args.at(0) == c.name && c.code)
 		{
-			cmd->function();
+			args.removeFirst();
+			c.code->exec(args);
 			return;
 		}
 	}
 
+
 	// check cvars
-	if( Cvar_Command( )) return;
+//	if( Cvar_Command( ))
+//		return;
 
 	// forward the command line to the server, so the entity DLL can parse it
-	if( src == src_command && host.type == HOST_NORMAL )
+	if( src == src_command && host->params().type == HOST_NORMAL )
 	{
 		if( cls.state >= ca_connected )
 		{
-			CCmd::ForwardToServer();
+			forwardToServer();
 			return;
 		}
 	}
-	else if( text[0] != '@' && host.type == HOST_NORMAL )
+	else if( text[0] != '@' && host->params().type == HOST_NORMAL )
 	{
 		// commands with leading '@' are hidden system commands
-		MsgDev( D_INFO, "Unknown command \"%s\"\n", text );
+		//MsgDev( D_INFO, "Unknown command \"%s\"\n", text );
 	}
 }
 
@@ -751,15 +507,163 @@ void CCmd::unlink( int group )
 //	}
 }
 
-/*
-============
-CCmd::Null_f
 
-null function for some cmd stubs
-============
-*/
-void CCmd::null_f()
+void CCmd::CStuffCmd::exec(const QStringList &args)
 {
+	//	int	i, j, l = 0;
+	//	QString build; // this is for all commandline options combined (and is bounds checked)
+
+	//	if( argc() != 1 )
+	//	{
+	//		msg( "Usage: stuffcmds : execute command line parameters\n" );
+	//		return;
+	//	}
+
+	//	// no reason to run the commandline arguments twice
+	//	if( host.stuffcmdsrun ) return;
+
+	//	host.stuffcmdsrun = true;
+	//	build[0] = 0;
+
+	//	for( i = 0; i < host.argc; i++ )
+	//	{
+	//		if( host.argv[i] && host.argv[i][0] == '+' && ( host.argv[i][1] < '0' || host.argv[i][1] > '9' ) && l + Q_strlen( host.argv[i] ) - 1 <= sizeof( build ) - 1 )
+	//		{
+	//			j = 1;
+
+	//			while( host.argv[i][j] )
+	//				build[l++] = host.argv[i][j++];
+
+	//			for( i++; i < host.argc; i++ )
+	//			{
+	//				if( !host.argv[i] ) continue;
+	//				if(( host.argv[i][0] == '+' || host.argv[i][0] == '-' ) && ( host.argv[i][1] < '0' || host.argv[i][1] > '9' ))
+	//					break;
+	//				if( l + Q_strlen( host.argv[i] ) + 4 > sizeof( build ) - 1 )
+	//					break;
+	//				build[l++] = ' ';
+
+	//				if( Q_strchr( host.argv[i], ' ' ))
+	//					build[l++] = '\"';
+
+	//				for( j = 0; host.argv[i][j]; j++ )
+	//					build[l++] = host.argv[i][j];
+
+	//				if( Q_strchr( host.argv[i], ' ' ))
+	//					build[l++] = '\"';
+	//			}
+	//			build[l++] = '\n';
+	//			i--;
+	//		}
+	//	}
+
+	//	// now terminate the combined string and prepend it to the command buffer
+	//	// we already reserved space for the terminator
+	//	build[l++] = 0;
+	//	insertText( build );
 }
 
 
+void CCmd::CWaitCmd::exec(const QStringList &args)
+{
+	wait = true;
+}
+
+
+void CCmd::CEchoCmd::exec(const QStringList &args)
+{
+	//	int	i;
+
+	//	for( i = 1; i < CCmd::Argc(); i++ )
+	//		Sys_Print( CCmd::Argv( i ));
+	//	Sys_Print( "\n" );
+}
+
+
+void CCmd::CAliasCmd::exec(const QStringList &args)
+{
+	//	cmdalias_t	*a;
+	//	char		cmd[MAX_CMD_LINE];
+	//	int		i, c;
+	//	char		*s;
+
+	//	if( CCmd::Argc() == 1 )
+	//	{
+	//		Msg( "Current alias commands:\n" );
+	//		for( a = cmd_alias; a; a = a->next )
+	//			Msg( "^2%s^7 : ^3%s^7\n", a->name, a->value );
+	//		return;
+	//	}
+
+	//	s = CCmd::Argv( 1 );
+
+	//	if( Q_strlen( s ) >= MAX_ALIAS_NAME )
+	//	{
+	//		Msg( "Alias name is too long\n" );
+	//		return;
+	//	}
+
+	//	// if the alias allready exists, reuse it
+	//	for( a = cmd_alias; a; a = a->next )
+	//	{
+	//		if( !Q_strcmp( s, a->name ))
+	//		{
+	//			Z_Free( a->value );
+	//			break;
+	//		}
+	//	}
+
+	//	if( !a )
+	//	{
+	//		a = reinterpret_cast<cmdalias_t*>(Z_Malloc( sizeof( cmdalias_t )));
+	//		a->next = cmd_alias;
+	//		cmd_alias = a;
+	//	}
+
+	//	Q_strncpy( a->name, s, sizeof( a->name ));
+
+	//	// copy the rest of the command line
+	//	cmd[0] = 0; // start out with a null string
+
+	//	c = CCmd::Argc();
+
+	//	for( i = 2; i < c; i++ )
+	//	{
+	//		Q_strcat( cmd, CCmd::Argv( i ));
+	//		if( i != c ) Q_strcat( cmd, " " );
+	//	}
+
+	//	Q_strcat( cmd, "\n" );
+	//	a->value = copystring( cmd );
+}
+
+
+void CCmd::CListCmd::exec(const QStringList &args)
+{
+	//	cmd_t	*cmd;
+	//	int	i = 0;
+	//	char	*match;
+
+	//	if( CCmd::Argc() > 1 ) match = CCmd::Argv( 1 );
+	//	else match = NULL;
+
+	//	for( cmd = cmd_functions; cmd; cmd = cmd->next )
+	//	{
+	//		if( match && !Q_stricmpext( match, cmd->name ))
+	//			continue;
+	//		Msg( "%10s            %s\n", cmd->name, cmd->desc );
+	//		i++;
+	//	}
+	//	Msg( "%i commands\n", i );
+}
+
+
+void CCmd::CNullCmd::exec(const QStringList &args)
+{ // null function for some cmd stubs
+}
+
+
+void CCmd::CCmdCmd::exec(const QStringList &args)
+{
+	cmd->forwardToServer();
+}

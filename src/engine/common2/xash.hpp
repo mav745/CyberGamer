@@ -26,13 +26,6 @@ public:
 	class CMemStatsCmd  : public CCmdCode { public: void exec(const QStringList &args); };
 	class CMinimizeCmd  : public CCmdCode { public: void exec(const QStringList &args); };
 
-//	void changeGame_f();
-//	void exec_f();
-//	void error_f();
-//	void crash_f();
-//	void memStats_f();
-//	void minimize_f();
-
 	void initCommon(const QString &progname, bool bChangeGame);
 	void freeCommon();
 
@@ -84,6 +77,9 @@ public:
 	void sys_Print(const QString pMsg);
 	void msg(const QString &pMsg, ...);
 	void msgDev(int level, const QString &pMsg, ...);
+
+	SHostParams &params() { return host; }
+	SSysInfo &info() { return SI; }
 
 private:
 	CConsole *console;

@@ -3,9 +3,24 @@
 
 #include "xash_types.hpp"
 
+class CHost;
+
 class CCmd
 {
 public:
+	class CStuffCmd: public CCmdCode { public: void exec(const QStringList &args); };
+	class CWaitCmd : public CCmdCode { public: void exec(const QStringList &args); };
+	class CEchoCmd : public CCmdCode { public: void exec(const QStringList &args); };
+	class CAliasCmd: public CCmdCode { public: void exec(const QStringList &args); };
+	class CListCmd : public CCmdCode { public: void exec(const QStringList &args); };
+	class CNullCmd : public CCmdCode { public: void exec(const QStringList &args); };
+	class CCmdCmd  : public CCmdCode {
+		CCmd *cmd;
+	public:
+		CCmdCmd(CCmd *_cmd): cmd(_cmd) { }
+		void exec(const QStringList &args);
+	};
+
 	CCmd();
 
 
@@ -25,9 +40,9 @@ public:
 //	uint argc();
 //	char *argv( int arg );
 //	char *args();
-	SCmdAlias *aliasGetList();
-	SCmd *getFirstFunctionHandle();
-	SCmd *getNextFunctionHandle( struct SCmd *cmd );
+	QList<SCmdAlias> aliasGetList();
+//	SCmd *getFirstFunctionHandle();
+//	SCmd *getNextFunctionHandle( SCmd *cmd );
 	QString getName( SCmd *cmd );
 	QStringList tokenizeString(const QString &text );
 	void addCommand(const QString &cmdName, CCmdCode &cmdCode, const QString &cmdDesc );
@@ -36,21 +51,25 @@ public:
 	void removeCommand( const QString &cmdName );
 	void lookupCmds( char *buffer, void *ptr, setpair_t callback );
 	bool exists( const QString &cmdName );
+
 	void executeString( QString &text, ECmdSource src );
+
 	void forwardToServer();
 
 	void unlink( int group );
 
 
 private:
-	bool cmd_wait;
-	QString cmd_text;
-	QString cmd_text_buf;
-	SCmdAlias *cmd_alias;
+	CHost *host;
 
-	QString cmd_tokenized; // will have 0 bytes inserted
-	QList<SCmd> cmd_functions; // possible commands to execute
-	ECmdSource SCmdource;
+	bool wait;
+	//QString cmd_text;
+	QStringList queue;
+	QList<SCmdAlias> aliases;
+
+	//QString cmd_tokenized; // will have 0 bytes inserted
+	QList<SCmd> commands; // possible commands to execute
+	//ECmdSource CmdSource;
 };
 
 #endif // CMD_HPP

@@ -17,7 +17,7 @@
 // --------------- HEADERS ---------------- //
 // ---------------------------------------- //
 
-#include <QByteArray>
+#include <Qquint8Array>
 #include <QString>
 #include <QStringList>
 #include <QtGlobal>
@@ -423,24 +423,24 @@
 #define svc_setview 5 // [short] entity number
 #define svc_sound 6 // <see code>
 #define svc_time 7 // [float] server time
-#define svc_print 8 // [byte] id [string] null terminated string
+#define svc_print 8 // [quint8] id [string] null terminated string
 #define svc_stufftext 9 // [string] stuffed into client's console buffer
 #define svc_setangle 10 // [angle angle angle] set the view angle to this absolute value
 #define svc_serverdata 11 // [long] protocol ...
 #define svc_lightstyle 12 // [index][pattern][float]
-#define svc_updateuserinfo 13 // [byte] playernum, [string] userinfo
+#define svc_updateuserinfo 13 // [quint8] playernum, [string] userinfo
 #define svc_deltatable 14 // [table header][...]
 #define svc_clientdata 15 // [...]
 #define svc_stopsound 16 // <see code>
 #define svc_updatepings 17 // [bit][idx][ping][packet_loss]
-#define svc_particle 18 // [float*3][char*3][byte][byte]
+#define svc_particle 18 // [float*3][char*3][quint8][quint8]
 #define svc_restoresound 19 // <see code>
 #define svc_spawnstatic 20 // creates a static client entity
 #define svc_event_reliable 21 // playback event directly from message, not queue
 #define svc_spawnbaseline 22 // <see code>
 #define svc_temp_entity 23 // <variable sized>
-#define svc_setpause 24 // [byte] 0 = unpaused, 1 = paused
-#define svc_signonnum 25 // [byte] used for the signon sequence
+#define svc_setpause 24 // [quint8] 0 = unpaused, 1 = paused
+#define svc_signonnum 25 // [quint8] used for the signon sequence
 #define svc_centerprint 26 // [string] to put in center of the screen
 #define svc_event 27 // playback event queue
 #define svc_soundindex 28 // [index][soundpath]
@@ -450,21 +450,21 @@
 #define svc_cdtrack 32 // [string] trackname
 #define svc_serverinfo 33 // [string] key [string] value
 #define svc_eventindex 34 // [index][eventname]
-#define svc_weaponanim 35 // [byte]iAnim [byte]body
+#define svc_weaponanim 35 // [quint8]iAnim [quint8]body
 #define svc_bspdecal 36 // [float*3][short][short][short]
 #define svc_roomtype 37 // [short] room type
 #define svc_addangle 38 // [angle] add angles when client turn on mover
-#define svc_usermessage 39 // [byte][byte][string] REG_USER_MSG stuff
+#define svc_usermessage 39 // [quint8][quint8][string] REG_USER_MSG stuff
 #define svc_packetentities 40 // [short][...]
-#define svc_deltapacketentities 41 // [short][byte][...]
-#define svc_chokecount 42 // [byte]
+#define svc_deltapacketentities 41 // [short][quint8][...]
+#define svc_chokecount 42 // [quint8]
 #define svc_resourcelist 43 // [short][...]
 #define svc_deltamovevars 44 // [movevars_t]
 #define svc_customization 45 // <see code>
-#define svc_crosshairangle 47 // [byte][byte]
+#define svc_crosshairangle 47 // [quint8][quint8]
 #define svc_soundfade 48 // [float*4] sound fade parms
 #define svc_director 51 // <variable sized>
-#define svc_studiodecal 52 // [float*3][float*3][short][short][byte]
+#define svc_studiodecal 52 // [float*3][float*3][short][short][quint8]
 #define svc_querycvarvalue 57 // [string]
 #define svc_querycvarvalue2 58 // [string][long] (context)
 #define svc_lastmsg 64 // start user messages at this point
@@ -473,7 +473,7 @@
 #define clc_nop 1
 #define clc_move 2 // [[usercmd_t]
 #define clc_stringcmd 3 // [string] message
-#define clc_delta 4 // [byte] sequence number, requests delta compression of message
+#define clc_delta 4 // [quint8] sequence number, requests delta compression of message
 #define clc_resourcelist 5
 #define clc_userinfo 6 // [[userinfo string]
 #define clc_fileconsistency 7
@@ -498,13 +498,13 @@
 #define MAX_USER_MESSAGES 191 // another 63 messages reserved for engine routines
 #define MAX_DLIGHTS 32 // dynamic lights (rendered per one frame)
 #define MAX_ELIGHTS 64 // entity only point lights
-#define MAX_LIGHTSTYLES 256 // a byte limit, don't modify
+#define MAX_LIGHTSTYLES 256 // a quint8 limit, don't modify
 #define MAX_RENDER_DECALS 4096 // max rendering decals per a level
 // sound flags
-#define SND_VOLUME (1<<0)	// a scaled byte
-#define SND_ATTENUATION (1<<1)	// a byte
+#define SND_VOLUME (1<<0)	// a scaled quint8
+#define SND_ATTENUATION (1<<1)	// a quint8
 #define SND_LARGE_INDEX (1<<2)	// a send sound as short
-#define SND_PITCH (1<<3)	// a byte
+#define SND_PITCH (1<<3)	// a quint8
 #define SND_SENTENCE (1<<4)	// set if sound num is actually a sentence num
 #define SND_STOP (1<<5)	// stop the sound
 #define SND_CHANGE_VOL (1<<6)	// change sound vol
@@ -1705,7 +1705,7 @@ struct SResource
 	char      szFileName[64];	// File name to download/precache.
 	EResourceType type; // t_sound, t_skin, t_model, t_decal.
 	int       nIndex; // For t_decals
-	int       nDownloadSize;	// Size in Bytes if this must be downloaded.
+	int       nDownloadSize;	// Size in quint8s if this must be downloaded.
 	quint8    ucFlags;
 
 	// for handling client to client resource propagation
@@ -2098,7 +2098,7 @@ struct SMextraSurf
 	float origin[3]; // surface origin
 	SMsurfMesh *mesh; // VBO\VA ready surface mesh. Not used by engine but can be used by mod-makers
 
-	int   dlight_s, dlight_t;	// gl lightmap coordinates for dynamic lightmaps
+	int   dlight_s, SDlight;	// gl lightmap coordinates for dynamic lightmaps
 
 	int   mirrortexturenum;	// gl texnum
 	float mirrormatrix[4][4];
@@ -2261,7 +2261,7 @@ struct SNetadr
 struct SHostRedirect
 {
 	ERdType    target;
-	QByteArray buffer;
+	Qquint8Array buffer;
 	int        buffersize;
 	SNetadr    address;
 	void (*flush)( SNetadr adr, ERdType target, char *buffer );
@@ -2300,13 +2300,13 @@ struct SHostParams
 	QString rootdir;	// member root directory
 	QString gamefolder;	// it's a default gamefolder
 
-	QByteArray mempool; // static mempool for misc allocations
-	QByteArray imagepool;	// imagelib mempool
-	QByteArray soundpool;	// soundlib mempool
+	Qquint8Array mempool; // static mempool for misc allocations
+	Qquint8Array imagepool;	// imagelib mempool
+	Qquint8Array soundpool;	// soundlib mempool
 
 	quint32 features; // custom features that enables by mod-maker request
 
-	QList<QByteArray> draw_decals;
+	QList<Qquint8Array> draw_decals;
 	QList<SDecalItem> decalList;
 	QList<SSoundItem> soundList;
 };
@@ -2402,8 +2402,8 @@ struct SConsole
 	int     background;	// console background
 
 	// conchars
-//	cl_font_t chars[CON_NUMFONTS];// fonts.wad/font1.fnt
-//	cl_font_t *curFont, *lastUsedFont;
+//	SClFont chars[CON_NUMFONTS];// fonts.wad/font1.fnt
+//	SClFont *curFont, *lastUsedFont;
 
 	// console input
 	SField  input;
@@ -2734,6 +2734,1913 @@ struct SSearchPath
 	int    flags;
 	struct searchpath_s *next;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#define MAX_ALIAS_NAME	32
+
+struct cmdalias_s
+{
+	struct cmdalias_s	*next;
+	char		name[MAX_ALIAS_NAME];
+	char		*value;
+} cmdalias_t;
+
+// this file is included by both the engine and the client-dll,
+// so make sure engine declarations aren't done twice
+
+typedef int VHSPRITE;	// handle to a graphic
+typedef int (*pfnUserMsgHook)( const char *pszName, int iSize, void *pbuf );
+
+#define SCRINFO_SCREENFLASH	1
+#define SCRINFO_STRETCHED	2
+
+struct SCREENINFO_s
+{
+	int		iSize;
+	int		iWidth;
+	int		iHeight;
+	int		iFlags;
+	int		iCharHeight;
+	short		charWidths[256];
+} SCREENINFO;
+
+struct client_data_s
+{
+	// fields that cannot be modified  (ie. have no effect if changed)
+	float[3]		origin;
+
+	// fields that can be changed by the cldll
+	float[3]		viewangles;
+	int		iWeaponBits;
+	float		fov;		// field of view
+} client_data_t;
+
+struct client_sprite_s
+{
+	char		szName[64];
+	char		szSprite[64];
+	int		hspr;
+	int		iRes;
+	SWrect		rc;
+} client_sprite_t;
+
+struct client_textmessage_s
+{
+	int		effect;
+	quint8		r1, g1, b1, a1;	// 2 colors for effects
+	quint8		r2, g2, b2, a2;
+	float		x;
+	float		y;
+	float		fadein;
+	float		fadeout;
+	float		holdtime;
+	float		fxtime;
+	const char	*pName;
+	const char	*pMessage;
+} client_textmessage_t;
+
+struct hud_player_info_s
+{
+	char		*name;
+	short		ping;
+	quint8		thisplayer;	// TRUE if this is the calling player
+
+	// stuff that's unused at the moment,  but should be done
+	quint8		spectator;
+	quint8		packetloss;
+	char		*model;
+	short		topcolor;
+	short		bottomcolor;
+
+	unsigned __int64	m_nSteamID;
+} hud_player_info_t;
+
+struct cl_enginefuncs_s
+{
+	// sprite handlers
+	VHSPRITE	(*pfnSPR_Load)( const char *szPicName );
+	int	(*pfnSPR_Frames)( VHSPRITE hPic );
+	int	(*pfnSPR_Height)( VHSPRITE hPic, int frame );
+	int	(*pfnSPR_Width)( VHSPRITE hPic, int frame );
+	void	(*pfnSPR_Set)( VHSPRITE hPic, int r, int g, int b );
+	void	(*pfnSPR_Draw)( int frame, int x, int y, const SWrect *prc );
+	void	(*pfnSPR_DrawHoles)( int frame, int x, int y, const SWrect *prc );
+	void	(*pfnSPR_DrawAdditive)( int frame, int x, int y, const SWrect *prc );
+	void	(*pfnSPR_EnableScissor)( int x, int y, int width, int height );
+	void	(*pfnSPR_DisableScissor)( void );
+	client_sprite_t *(*pfnSPR_GetList)( char *psz, int *piCount );
+
+	// screen handlers
+	void	(*pfnFillRGBA)( int x, int y, int width, int height, int r, int g, int b, int a );
+	int	(*pfnGetScreenInfo)( SCREENINFO *pscrinfo );
+	void	(*pfnSetCrosshair)( VHSPRITE hspr, SWrect rc, int r, int g, int b );
+
+	// cvar handlers
+	struct cvar_s *(*pfnRegisterVariable)( char *szName, char *szValue, int flags );
+	float	(*pfnGetCvarFloat)( char *szName );
+	char*	(*pfnGetCvarString)( char *szName );
+
+	// command handlers
+	int	(*pfnAddCommand)( char *cmd_name, void (*function)(void) );
+	int	(*pfnHookUserMsg)( char *szMsgName, pfnUserMsgHook pfn );
+	int	(*pfnServerCmd)( char *szCmdString );
+	int	(*pfnClientCmd)( char *szCmdString );
+
+	void	(*pfnGetPlayerInfo)( int ent_num, hud_player_info_t *pinfo );
+
+	// sound handlers
+	void	(*pfnPlaySoundByName)( char *szSound, float volume );
+	void	(*pfnPlaySoundByIndex)( int iSound, float volume );
+
+	// vector helpers
+	void	(*pfnAngleVectors)( const float *vecAngles, float *forward, float *right, float *up );
+
+	// text message system
+	client_textmessage_t *(*pfnTextMessageGet)( const char *pName );
+	int	(*pfnDrawCharacter)( int x, int y, int number, int r, int g, int b );
+	int	(*pfnDrawConsoleString)( int x, int y, char *string );
+	void	(*pfnDrawSetTextColor)( float r, float g, float b );
+	void	(*pfnDrawConsoleStringLen)(  const char *string, int *length, int *height );
+
+	void	(*pfnConsolePrint)( const char *string );
+	void	(*pfnCenterPrint)( const char *string );
+
+	// Added for user input processing
+	int	(*GetWindowCenterX)( void );
+	int	(*GetWindowCenterY)( void );
+	void	(*GetViewAngles)( float * );
+	void	(*SetViewAngles)( float * );
+	int	(*GetMaxClients)( void );
+	void	(*Cvar_SetValue)( char *cvar, float value );
+
+	int       (*Cmd_Argc)( void );
+	char	*(*Cmd_Argv)( int arg );
+	void	(*Con_Printf)( char *fmt, ... );
+	void	(*Con_DPrintf)( char *fmt, ... );
+	void	(*Con_NPrintf)( int pos, char *fmt, ... );
+	void	(*Con_NXPrintf)( struct con_nprint_s *info, char *fmt, ... );
+
+	const char* (*PhysInfo_ValueForKey)( const char *key );
+	const char* (*ServerInfo_ValueForKey)( const char *key );
+	float	(*GetClientMaxspeed)( void );
+	int	(*CheckParm)( char *parm, char **ppnext );
+
+	void	(*Key_Event)( int key, int down );
+	void	(*GetMousePosition)( int *mx, int *my );
+	int	(*IsNoClipping)( void );
+
+	struct cl_entity_s *(*GetLocalPlayer)( void );
+	struct cl_entity_s *(*GetViewModel)( void );
+	struct cl_entity_s *(*GetEntityByIndex)( int idx );
+
+	float	(*GetClientTime)( void );
+	void	(*V_CalcShake)( void );
+	void	(*V_ApplyShake)( float *origin, float *angles, float factor );
+
+	int	(*PM_PointContents)( float *point, int *truecontents );
+	int	(*PM_WaterEntity)( float *p );
+	struct pmtrace_s *(*PM_TraceLine)( float *start, float *end, int flags, int usehull, int ignore_pe );
+
+	struct model_s *(*CL_LoadModel)( const char *modelname, int *index );
+	int	(*CL_CreateVisibleEntity)( int type, struct cl_entity_s *ent );
+
+	const struct model_s* (*GetSpritePointer)( VHSPRITE hSprite );
+	void	(*pfnPlaySoundByNameAtLocation)( char *szSound, float volume, float *origin );
+
+	unsigned short (*pfnPrecacheEvent)( int type, const char* psz );
+	void	(*pfnPlaybackEvent)( int flags, const struct edict_s *pInvoker, unsigned short eventindex, float delay, float *origin, float *angles, float fparam1, float fparam2, int iparam1, int iparam2, int bparam1, int bparam2 );
+	void	(*pfnWeaponAnim)( int iAnim, int body );
+	float	(*pfnRandomFloat)( float flLow, float flHigh );
+	long	(*pfnRandomLong)( long lLow, long lHigh );
+	void	(*pfnHookEvent)( char *name, void ( *pfnEvent )( struct event_args_s *args ));
+	int	(*Con_IsVisible) ();
+	const char *(*pfnGetGameDirectory)( void );
+	struct cvar_s *(*pfnGetCvarPointer)( const char *szName );
+	const char *(*Key_LookupBinding)( const char *pBinding );
+	const char *(*pfnGetLevelName)( void );
+	void	(*pfnGetScreenFade)( struct screenfade_s *fade );
+	void	(*pfnSetScreenFade)( struct screenfade_s *fade );
+	void*	(*VGui_GetPanel)( );
+	void	(*VGui_ViewportPaintBackground)( int extents[4] );
+
+	quint8*	(*COM_LoadFile)( char *path, int usehunk, int *pLength );
+	char*	(*COM_ParseFile)( char *data, char *token );
+	void	(*COM_FreeFile)( void *buffer );
+
+	struct triangleapi_s	*pTriAPI;
+	struct efx_api_s		*pEfxAPI;
+	struct event_api_s		*pEventAPI;
+	struct demo_api_s		*pDemoAPI;
+	struct net_api_s		*pNetAPI;
+	struct IVoiceTweak_s	*pVoiceTweak;
+
+	// returns 1 if the client is a spectator only (connected to a proxy), 0 otherwise or 2 if in dev_overview mode
+	int	(*IsSpectateOnly)( void );
+	struct model_s *(*LoadMapSprite)( const char *filename );
+
+	// file search functions
+	void	 (*COM_AddAppDirectoryToSearchPath)( const char *pszBaseDir, const char *appName );
+	int	 (*COM_ExpandFilename)( const char *fileName, char *nameOutBuffer, int nameOutBufferSize );
+
+	// User info
+	// playerNum is in the range (1, MaxClients)
+	// returns NULL if player doesn't exit
+	// returns "" if no value is set
+	const char *( *PlayerInfo_ValueForKey )( int playerNum, const char *key );
+	void	(*PlayerInfo_SetValueForKey )( const char *key, const char *value );
+
+	// Gets a unique ID for the specified player. This is the same even if you see the player on a different server.
+	// iPlayer is an entity index, so client 0 would use iPlayer=1.
+	// Returns false if there is no player on the server in the specified slot.
+	bool	(*GetPlayerUniqueID)(int iPlayer, char playerID[16]);
+
+	// TrackerID access
+	int	(*GetTrackerIDForPlayer)(int playerSlot);
+	int	(*GetPlayerForTrackerID)(int trackerID);
+
+	// Same as pfnServerCmd, but the message goes in the unreliable stream so it can't clog the net stream
+	// (but it might not get there).
+	int	( *pfnServerCmdUnreliable )( char *szCmdString );
+
+	void	(*pfnGetMousePos)( struct tagPOINT *ppt );
+	void	(*pfnSetMousePos)( int x, int y );
+	void	(*pfnSetMouseEnable)( bool fEnable );
+
+	// undocumented interface starts here
+	struct cvar_s*	(*pfnGetFirstCvarPtr)( void );
+	void*		(*pfnGetFirstCmdFunctionHandle)( void );
+	void*		(*pfnGetNextCmdFunctionHandle)( void *cmdhandle );
+	const char*	(*pfnGetCmdFunctionName)( void *cmdhandle );
+	float		(*pfnGetClientOldTime)( void );
+	float		(*pfnGetGravity)( void );
+	struct model_s*	(*pfnGetModelByIndex)( int index );
+	void		(*pfnSetFilterMode)( int mode ); // same as gl_texsort in original Quake
+	void		(*pfnSetFilterColor)( float red, float green, float blue );
+	void		(*pfnSetFilterBrightness)( float brightness );
+	void		*(*pfnSequenceGet)( const char *fileName, const char *entryName );
+	void		(*pfnSPR_DrawGeneric)( int frame, int x, int y, const SWrect *prc, int blendsrc, int blenddst, int width, int height );
+	void		*(*pfnSequencePickSentence)( const char *groupName, int pickMethod, int *entryPicked );
+	int		(*pfnDrawString)( int x, int y, const char *str, int r, int g, int b );
+	int		(*pfnDrawStringReverse)( int x, int y, const char *str, int r, int g, int b );
+	const char	*(*LocalPlayerInfo_ValueForKey)( const char* key );
+	int		(*pfnVGUI2DrawCharacter)( int x, int y, int ch, unsigned int font );
+	int		(*pfnVGUI2DrawCharacterAdditive)( int x, int y, int ch, int r, int g, int b, unsigned int font );
+	unsigned int	(*pfnGetApproxWavePlayLen)( char *filename );
+	void*		(*GetCareerGameUI)( void );	// g-cont. !!!! potential crash-point!
+	void		(*Cvar_Set)( char *name, char *value );
+	int		(*pfnIsPlayingCareerMatch)( void );
+	void		(*pfnPlaySoundVoiceByName)( char *szSound, float volume, int pitch );
+	void		(*pfnPrimeMusicStream)( char *filename, int looping );
+	double		(*pfnSys_FloatTime)( void );
+
+	// decay funcs
+	void		(*pfnProcessTutorMessageDecayBuffer)( int *buffer, int buflen );
+	void		(*pfnConstructTutorMessageDecayBuffer)( int *buffer, int buflen );
+	void		(*pfnResetTutorMessageDecayData)( void );
+
+	void		(*pfnPlaySoundByNameAtPitch)( char *szSound, float volume, int pitch );
+	void		(*pfnFillRGBABlend)( int x, int y, int width, int height, int r, int g, int b, int a );
+	int		(*pfnGetAppID)( void );
+	cmdalias_t	*(*pfnGetAliases)( void );
+	void		(*pfnVguiWrap2_GetMouseDelta)( int *x, int *y );
+} cl_enginefunc_t;
+
+#define CLDLL_INTERFACE_VERSION	7
+
+struct
+{
+	// filesystem info
+	char		gamefolder[64];	// used for change game '-game x'
+	char		startmap[64];	// map to start singleplayer game
+	char		trainmap[64];	// map to start hazard course (if specified)
+	char		title[64];	// Game Main Title
+	char		version[14];	// game version (optional)
+	short		flags;		// game flags
+
+	// about mod info
+	char		game_url[256];	// link to a developer's site
+	char		update_url[256];	// link to updates page
+	char		type[64];		// single, toolkit, multiplayer etc
+	char		date[64];
+	char		size[64];		// displayed mod size
+
+	int		gamemode;
+} GAMEINFO;
+
+struct wrect_s
+{
+	int	left, right, top, bottom;
+} SWrect;
+
+typedef int		HIMAGE;		// handle to a graphic
+
+// flags for PIC_Load
+#define PIC_NEAREST		(1<<0)		// disable texfilter
+#define PIC_KEEP_RGBDATA	(1<<1)		// some images keep source
+#define PIC_NOFLIP_TGA	(1<<2)		// Steam background completely ignore tga attribute 0x20
+#define PIC_KEEP_8BIT	(1<<3)		// keep original 8-bit image (if present)
+
+struct ui_globalvars_s
+{
+	float		time;		// unclamped host.realtime
+	float		frametime;
+
+	int		scrWidth;		// actual values
+	int		scrHeight;
+
+	int		maxClients;
+	int		developer;
+	int		demoplayback;
+	int		demorecording;
+	char		demoname[64];	// name of currently playing demo
+	char		maptitle[64];	// title of active map
+} ui_globalvars_t;
+
+struct ui_enginefuncs_s
+{
+	// image handlers
+	HIMAGE	(*pfnPIC_Load)( const char *szPicName, const quint8 *ucRawImage, long ulRawImageSize, long flags );
+	void	(*pfnPIC_Free)( const char *szPicName );
+	int	(*pfnPIC_Width)( HIMAGE hPic );
+	int	(*pfnPIC_Height)( HIMAGE hPic );
+	void	(*pfnPIC_Set)( HIMAGE hPic, int r, int g, int b, int a );
+	void	(*pfnPIC_Draw)( int x, int y, int width, int height, const SWrect *prc );
+	void	(*pfnPIC_DrawHoles)( int x, int y, int width, int height, const SWrect *prc );
+	void	(*pfnPIC_DrawTrans)( int x, int y, int width, int height, const SWrect *prc );
+	void	(*pfnPIC_DrawAdditive)( int x, int y, int width, int height, const SWrect *prc );
+	void	(*pfnPIC_EnableScissor)( int x, int y, int width, int height );
+	void	(*pfnPIC_DisableScissor)( void );
+
+	// screen handlers
+	void	(*pfnFillRGBA)( int x, int y, int width, int height, int r, int g, int b, int a );
+
+	// cvar handlers
+	cvar_t*	(*pfnRegisterVariable)( const char *szName, const char *szValue, int flags );
+	float	(*pfnGetCvarFloat)( const char *szName );
+	char*	(*pfnGetCvarString)( const char *szName );
+	void	(*pfnCvarSetString)( const char *szName, const char *szValue );
+	void	(*pfnCvarSetValue)( const char *szName, float flValue );
+
+	// command handlers
+	int	(*pfnAddCommand)( const char *cmd_name, void (*function)(void) );
+	void	(*pfnClientCmd)( int execute_now, const char *szCmdString );
+	void	(*pfnDelCommand)( const char *cmd_name );
+	int       (*pfnCmdArgc)( void );
+	char*	(*pfnCmdArgv)( int argc );
+	char*	(*pfnCmd_Args)( void );
+
+	// debug messages (in-menu shows only notify)
+	void	(*Con_Printf)( char *fmt, ... );
+	void	(*Con_DPrintf)( char *fmt, ... );
+	void	(*Con_NPrintf)( int pos, char *fmt, ... );
+	void	(*Con_NXPrintf)( struct con_nprint_s *info, char *fmt, ... );
+
+	// sound handlers
+	void	(*pfnPlayLocalSound)( const char *szSound );
+
+	// cinematic handlers
+	void	(*pfnDrawLogo)( const char *filename, float x, float y, float width, float height );
+	int	(*pfnGetLogoWidth)( void );
+	int	(*pfnGetLogoHeight)( void );
+	float	(*pfnGetLogoLength)( void );	// cinematic duration in seconds
+
+	// text message system
+	void	(*pfnDrawCharacter)( int x, int y, int width, int height, int ch, int ulRGBA, HIMAGE hFont );
+	int	(*pfnDrawConsoleString)( int x, int y, const char *string );
+	void	(*pfnDrawSetTextColor)( int r, int g, int b, int alpha );
+	void	(*pfnDrawConsoleStringLen)(  const char *string, int *length, int *height );
+	void	(*pfnSetConsoleDefaultColor)( int r, int g, int b ); // color must came from colors.lst
+
+	// custom rendering (for playermodel preview)
+	struct cl_entity_s* (*pfnGetPlayerModel)( void );	// for drawing playermodel previews
+	void	(*pfnSetModel)( struct cl_entity_s *ed, const char *path );
+	void	(*pfnClearScene)( void );
+	void	(*pfnRenderScene)( const struct ref_params_s *fd );
+	int	(*CL_CreateVisibleEntity)( int type, struct cl_entity_s *ent );
+
+	// misc handlers
+	void	(*pfnHostError)( const char *szFmt, ... );
+	int	(*pfnFileExists)( const char *filename, int gamedironly );
+	void	(*pfnGetGameDir)( char *szGetGameDir );
+
+	// gameinfo handlers
+	int	(*pfnCreateMapsList)( int fRefresh );
+	int	(*pfnClientInGame)( void );
+	void	(*pfnClientJoin)( const struct netadr_s adr );
+
+	// parse txt files
+	quint8*	(*COM_LoadFile)( const char *filename, int *pLength );
+	char*	(*COM_ParseFile)( char *data, char *token );
+	void	(*COM_FreeFile)( void *buffer );
+
+	// keyfuncs
+	void	(*pfnKeyClearStates)( void );				// call when menu open or close
+	void	(*pfnSetKeyDest)( int dest );
+	const char *(*pfnKeynumToString)( int keynum );
+	const char *(*pfnKeyGetBinding)( int keynum );
+	void	(*pfnKeySetBinding)( int keynum, const char *binding );
+	int	(*pfnKeyIsDown)( int keynum );
+	int	(*pfnKeyGetOverstrikeMode)( void );
+	void	(*pfnKeySetOverstrikeMode)( int fActive );
+	void	*(*pfnKeyGetState)( const char *name );			// for mlook, klook etc
+
+	// engine memory manager
+	void*	(*pfnMemAlloc)( size_t cb, const char *filename, const int fileline );
+	void	(*pfnMemFree)( void *mem, const char *filename, const int fileline );
+
+	// collect info from engine
+	int	(*pfnGetGameInfo)( GAMEINFO *pgameinfo );
+	GAMEINFO	**(*pfnGetGamesList)( int *numGames );			// collect info about all mods
+	char 	**(*pfnGetFilesList)( const char *pattern, int *numFiles, int gamedironly );	// find in files
+	int 	(*pfnGetSaveComment)( const char *savename, char *comment );
+	int	(*pfnGetDemoComment)( const char *demoname, char *comment );
+	int	(*pfnCheckGameDll)( void );				// returns false if hl.dll is missed or invalid
+	char	*(*pfnGetClipboardData)( void );
+
+	// engine launcher
+	void	(*pfnShellExecute)( const char *name, const char *args, int closeEngine );
+	void	(*pfnWriteServerConfig)( const char *name );
+	void	(*pfnChangeInstance)( const char *newInstance, const char *szFinalMessage );
+	void	(*pfnPlayBackgroundTrack)( const char *introName, const char *loopName );
+	void	(*pfnHostEndGame)( const char *szFinalMessage );
+
+	// menu interface is freezed at version 0.75
+	// new functions starts here
+	float	(*pfnRandomFloat)( float flLow, float flHigh );
+	long	(*pfnRandomLong)( long lLow, long lHigh );
+
+	void	(*pfnSetCursor)( void *hCursor );			// change cursor
+	int	(*pfnIsMapValid)( char *filename );
+	void	(*pfnProcessImage)( int texnum, float gamma, int topColor, int bottomColor );
+	int	(*pfnCompareFileTime)( char *filename1, char *filename2, int *iCompare );
+} ui_enginefuncs_t;
+
+struct
+{
+	int	(*pfnVidInit)( void );
+	void	(*pfnInit)( void );
+	void	(*pfnShutdown)( void );
+	void	(*pfnRedraw)( float flTime );
+	void	(*pfnKeyEvent)( int key, int down );
+	void	(*pfnMouseMove)( int x, int y );
+	void	(*pfnSetActiveMenu)( int active );
+	void	(*pfnAddServerToList)( struct netadr_s adr, const char *info );
+	void	(*pfnGetCursorPos)( int *pos_x, int *pos_y );
+	void	(*pfnSetCursorPos)( int pos_x, int pos_y );
+	void	(*pfnShowCursor)( int show );
+	void	(*pfnCharEvent)( int key );
+	int	(*pfnMouseInRect)( void );	// mouse entering\leave game window
+	int	(*pfnIsVisible)( void );
+	int	(*pfnCreditsActive)( void );	// unused
+	void	(*pfnFinalCredits)( void );	// show credits + game end
+} UI_FUNCTIONS;
+
+typedef int (*MENUAPI)( UI_FUNCTIONS *pFunctionTable, ui_enginefuncs_t* engfuncs, ui_globalvars_t *pGlobals );
+
+
+
+// 1/32 epsilon to keep floating point happy
+#define DIST_EPSILON		(1.0f / 32.0f)
+#define FRAC_EPSILON		(1.0f / 1024.0f)
+#define BACKFACE_EPSILON		0.01f
+#define MAX_BOX_LEAFS		256
+#define DVIS_PVS			0
+#define DVIS_PHS			1
+#define ANIM_CYCLE			2
+
+// remapping info
+#define SUIT_HUE_START		192
+#define SUIT_HUE_END		223
+#define PLATE_HUE_START		160
+#define PLATE_HUE_END		191
+
+#define LM_SAMPLE_SIZE		world.lm_sample_size	// lightmap resoultion
+
+#define SURF_INFO( surf, mod )	((mextrasurf_t *)mod->cache.data + (surf - mod->surfaces))
+#define INFO_SURF( surf, mod )	(mod->surfaces + (surf - (mextrasurf_t *)mod->cache.data))
+
+// model flags (stored in model_t->flags)
+#define MODEL_CONVEYOR		BIT( 0 )
+#define MODEL_HAS_ORIGIN		BIT( 1 )
+#define MODEL_LIQUID		BIT( 2 )	// model has only point hull
+
+struct wadlist_s
+{
+	char		wadnames[256][32];
+	int		count;
+} wadlist_t;
+
+struct leaflist_s
+{
+	int		count;
+	int		maxcount;
+	bool		overflowed;
+	short		*list;
+	float[3]		mins, maxs;
+	int		topnode;		// for overflows where each leaf can't be stored individually
+} leaflist_t;
+
+struct
+{
+	int		version;		// bsp version
+	int		mapversion;	// map version (an key-value in worldspawn settings)
+	uint		checksum;		// current map checksum
+	int		load_sequence;	// increace each map change
+	float[3]		hull_sizes[MAX_MAP_HULLS];	// actual hull sizes
+	msurface_t	**draw_surfaces;	// used for sorting translucent surfaces
+	int		max_surfaces;	// max surfaces per submodel (for all models)
+	size_t		visdatasize;	// actual size of the visdata
+	size_t		litdatasize;	// actual size of the lightdata
+	size_t		vecdatasize;	// actual size of the deluxdata
+	size_t		entdatasize;	// actual size of the entity string
+	size_t		texdatasize;	// actual size of the textures lump
+	bool		loading;		// true if worldmodel is loading
+	bool		sky_sphere;	// true when quake sky-sphere is used
+	bool		has_mirrors;	// one or more brush models contain reflective textures
+	int		lm_sample_size;	// defaulting to 16 (BSP31 uses 8)
+	int		block_size;	// lightmap blocksize
+	color24		*deluxedata;	// deluxemap data pointer
+	char		message[2048];	// just for debug
+
+	float[3]		mins;		// real accuracy world bounds
+	float[3]		maxs;
+	float[3]		size;
+} world_static_t;
+
+
+#define MAX_PHYSENTS	600		// Must have room for all entities in the world.
+#define MAX_MOVEENTS	64
+#define MAX_CLIP_PLANES	5
+
+#define PM_NORMAL		0x00000000
+#define PM_STUDIO_IGNORE	0x00000001	// Skip studio models
+#define PM_STUDIO_BOX	0x00000002	// Use boxes for non-complex studio models (even in traceline)
+#define PM_GLASS_IGNORE	0x00000004	// Ignore entities with non-normal rendermode
+#define PM_WORLD_ONLY	0x00000008	// Only trace against the world
+#define PM_CUSTOM_IGNORE	0x00000010	// Ignore entities with SOLID_CUSTOM mode
+
+// Values for flags parameter of PM_TraceLine
+#define PM_TRACELINE_PHYSENTSONLY	0
+#define PM_TRACELINE_ANYVISIBLE	1
+
+
+// PM_PlayerTrace results.
+struct
+{
+	float[3]	normal;
+	float	dist;
+} pmplane_t;
+
+struct pmtrace_s pmtrace_t;
+
+struct pmtrace_s
+{
+	bool	allsolid;		// if true, plane is not valid
+	bool	startsolid;	// if true, the initial point was in a solid area
+	bool	inopen, inwater;  // End point is in empty space or in water
+	float	fraction;		// time completed, 1.0 = didn't hit anything
+	float[3]	endpos;		// final position
+	pmplane_t	plane;		// surface normal at impact
+	int	ent;		// entity at impact
+	float[3]	deltavelocity;	// Change in player's velocity caused by impact.
+				// Only run on server.
+	int	hitgroup;
+};
+
+struct usercmd_s
+{
+	short		lerp_msec;	// Interpolation time on client
+	quint8		msec;		// Duration in ms of command
+	float[3]		viewangles;	// Command view angles
+
+	// intended velocities
+	float		forwardmove;	// Forward velocity
+	float		sidemove;		// Sideways velocity
+	float		upmove;		// Upward velocity
+	quint8		lightlevel;	// Light level at spot where we are standing.
+	unsigned short	buttons;		// Attack and move buttons
+	quint8		impulse;		// Impulse command issued
+	quint8		weaponselect;	// Current weapon id
+
+	// Experimental player impact stuff.
+	int		impact_index;
+	float[3]		impact_position;
+} usercmd_t;
+
+// physent_t
+struct physent_s
+{
+	char		name[32];		// Name of model, or "player" or "world".
+	int		player;
+	float[3]		origin;		// Model's origin in world coordinates.
+	struct model_s	*model;		// only for bsp models
+	struct model_s	*studiomodel;	// SOLID_BBOX, but studio clip intersections.
+	float[3]		mins, maxs;	// only for non-bsp models
+	int		info;		// For client or server to use to identify (index into edicts or cl_entities)
+	float[3]		angles;		// rotated entities need this info for hull testing to work.
+
+	int		solid;		// Triggers and func_door type WATER brushes are SOLID_NOT
+	int		skin;		// BSP Contents for such things like fun_door water brushes.
+	int		rendermode;	// So we can ignore glass
+
+	// Complex collision detection.
+	float		frame;
+	int		sequence;
+	quint8		controller[4];
+	quint8		blending[2];
+
+	int		movetype;
+	int		takedamage;
+	int		blooddecal;
+	int		team;
+	int		classnumber;
+
+	// For mods
+	int		iuser1;
+	int		iuser2;
+	int		iuser3;
+	int		iuser4;
+	float		fuser1;		// also contains pev->scale when "sv_allow_studio_scaling" is "1"
+	float		fuser2;
+	float		fuser3;
+	float		fuser4;
+	float[3]		vuser1;
+	float[3]		vuser2;
+	float[3]		vuser3;
+	float[3]		vuser4;
+} physent_t;
+
+struct playermove_s
+{
+	int		player_index;	// So we don't try to run the PM_CheckStuck nudging too quickly.
+	bool		server;		// For debugging, are we running physics code on server side?
+
+	bool		multiplayer;	// 1 == multiplayer server
+	float		time;		// realtime on host, for reckoning duck timing
+	float		frametime;	// Duration of this frame
+
+	float[3]		forward, right, up;	// Vectors for angles
+
+	// player state
+	float[3]		origin;		// Movement origin.
+	float[3]		angles;		// Movement view angles.
+	float[3]		oldangles;	// Angles before movement view angles were looked at.
+	float[3]		velocity;		// Current movement direction.
+	float[3]		movedir;		// For waterjumping, a forced forward velocity so we can fly over lip of ledge.
+	float[3]		basevelocity;	// Velocity of the conveyor we are standing, e.g.
+
+	// For ducking/dead
+	float[3]		view_ofs;		// Our eye position.
+	float		flDuckTime;	// Time we started duck
+	bool		bInDuck;		// In process of ducking or ducked already?
+
+	// For walking/falling
+	int		flTimeStepSound;	// Next time we can play a step sound
+	int		iStepLeft;
+
+	float		flFallVelocity;
+	float[3]		punchangle;
+
+	float		flSwimTime;
+	float		flNextPrimaryAttack;
+
+	int		effects;		// MUZZLE FLASH, e.g.
+
+	int		flags;		// FL_ONGROUND, FL_DUCKING, etc.
+	int		usehull;		// 0 = regular player hull, 1 = ducked player hull, 2 = point hull
+	float		gravity;		// Our current gravity and friction.
+	float		friction;
+	int		oldbuttons;	// Buttons last usercmd
+	float		waterjumptime;	// Amount of time left in jumping out of water cycle.
+	bool		dead;		// Are we a dead player?
+	int		deadflag;
+	int		spectator;	// Should we use spectator physics model?
+	int		movetype;		// Our movement type, NOCLIP, WALK, FLY
+
+	int		onground;
+	int		waterlevel;
+	int		watertype;
+	int		oldwaterlevel;
+
+	char		sztexturename[256];
+	char		chtexturetype;
+
+	float		maxspeed;
+	float		clientmaxspeed;	// Player specific maxspeed
+
+	// For mods
+	int		iuser1;
+	int		iuser2;
+	int		iuser3;
+	int		iuser4;
+	float		fuser1;
+	float		fuser2;
+	float		fuser3;
+	float		fuser4;
+	float[3]		vuser1;
+	float[3]		vuser2;
+	float[3]		vuser3;
+	float[3]		vuser4;
+
+	// world state
+
+	// Number of entities to clip against.
+	int		numphysent;
+	physent_t		physents[MAX_PHYSENTS];
+
+	// Number of momvement entities (ladders)
+	int		nummoveent;
+	// just a list of ladders
+	physent_t		moveents[MAX_MOVEENTS];
+
+	// All things being rendered, for tracing against things you don't actually collide with
+	int		numvisent;
+	physent_t		visents[MAX_PHYSENTS];
+
+	// input to run through physics.
+	usercmd_t		cmd;
+
+	// Trace results for objects we collided with.
+	int		numtouch;
+	pmtrace_t		touchindex[MAX_PHYSENTS];
+
+	char		physinfo[MAX_PHYSINFO_STRING]; // Physics info string
+
+	struct movevars_s	*movevars;
+	float[3]		player_mins[4];
+	float[3]		player_maxs[4];
+
+	// Common functions
+	const char	*(*PM_Info_ValueForKey) ( const char *s, const char *key );
+	void		(*PM_Particle)( float *origin, int color, float life, int zpos, int zvel );
+	int		(*PM_TestPlayerPosition)( float *pos, pmtrace_t *ptrace );
+	void		(*Con_NPrintf)( int idx, char *fmt, ... );
+	void		(*Con_DPrintf)( char *fmt, ... );
+	void		(*Con_Printf)( char *fmt, ... );
+	double		(*Sys_FloatTime)( void );
+	void		(*PM_StuckTouch)( int hitent, pmtrace_t *ptraceresult );
+	int		(*PM_PointContents)( float *p, int *truecontents /*filled in if this is non-null*/ );
+	int		(*PM_TruePointContents)( float *p );
+	int		(*PM_HullPointContents)( struct hull_s *hull, int num, float *p );
+	pmtrace_t		(*PM_PlayerTrace)( float *start, float *end, int traceFlags, int ignore_pe );
+	struct pmtrace_s	*(*PM_TraceLine)( float *start, float *end, int flags, int usehulll, int ignore_pe );
+	long		(*RandomLong)( long lLow, long lHigh );
+	float		(*RandomFloat)( float flLow, float flHigh );
+	int		(*PM_GetModelType)( struct model_s *mod );
+	void		(*PM_GetModelBounds)( struct model_s *mod, float *mins, float *maxs );
+	void		*(*PM_HullForBsp)( physent_t *pe, float *offset );
+	float		(*PM_TraceModel)( physent_t *pEnt, float *start, float *end, trace_t *trace );
+	int		(*COM_FileSize)( char *filename );
+	quint8		*(*COM_LoadFile)( char *path, int usehunk, int *pLength );
+	void		(*COM_FreeFile)( void *buffer );
+	char		*(*memfgets)( quint8 *pMemFile, int fileSize, int *pFilePos, char *pBuffer, int bufferSize );
+
+	// Functions
+	// Run functions for this frame?
+	bool		runfuncs;
+	void		(*PM_PlaySound)( int channel, const char *sample, float volume, float attenuation, int fFlags, int pitch );
+	const char	*(*PM_TraceTexture)( int ground, float *vstart, float *vend );
+	void		(*PM_PlaybackEventFull)( int flags, int clientindex, unsigned short eventindex, float delay, float *origin, float *angles, float fparam1, float fparam2, int iparam1, int iparam2, int bparam1, int bparam2 );
+	pmtrace_t		(*PM_PlayerTraceEx) (float *start, float *end, int traceFlags, int (*pfnIgnore)( physent_t *pe ));
+	int		(*PM_TestPlayerPositionEx) (float *pos, pmtrace_t *ptrace, int (*pfnIgnore)( physent_t *pe ));
+	struct pmtrace_s	*(*PM_TraceLineEx)( float *start, float *end, int flags, int usehulll, int (*pfnIgnore)( physent_t *pe ));
+} playermove_t;
+
+struct
+{
+	char		pattern[256];
+	float		map[256];
+	int		length;
+	float		value;
+	bool		interp;		// allow to interpolate this lightstyle
+	float		time;		// local time is gurantee what new style begins from the start, not mid or end of the sequence
+} SLightStyle;
+
+
+struct dlight_s
+{
+	float[3]		origin;
+	float		radius;
+	color24		color;
+	float		die;	// stop lighting after this time
+	float		decay;	// drop this each second
+	float		minlight;	// don't add when contributing less
+	int		key;
+	bool		dark;	// subtracts light instead of adding
+} SDlight;
+
+// changes for version 28
+// replace decal_t from software declaration to hardware (matched to normal HL)
+// mextrasurf_t->increased limit of reserved fields (up from 7 to 32)
+// replace R_StoreEfrags with him extended version
+// formed group for BSP decal manipulating
+// move misc functions at end of the interface
+// added new export for clearing studio decals
+
+#define CL_RENDER_INTERFACE_VERSION	35
+#define MAX_STUDIO_DECALS		4096	// + unused space of BSP decals
+
+#define SURF_INFO( surf, mod )	((mextrasurf_t *)mod->cache.data + (surf - mod->surfaces))
+#define INFO_SURF( surf, mod )	(mod->surfaces + (surf - (mextrasurf_t *)mod->cache.data))
+
+// render info parms
+#define PARM_TEX_WIDTH	1	// all parms with prefix 'TEX_' receive arg as texnum
+#define PARM_TEX_HEIGHT	2	// otherwise it's not used
+#define PARM_TEX_SRC_WIDTH	3
+#define PARM_TEX_SRC_HEIGHT	4
+#define PARM_TEX_SKYBOX	5	// second arg as skybox ordering num
+#define PARM_TEX_SKYTEXNUM	6	// skytexturenum for quake sky
+#define PARM_TEX_LIGHTMAP	7	// second arg as number 0 - 128
+#define PARM_TEX_TARGET	8
+#define PARM_TEX_TEXNUM	9
+#define PARM_TEX_FLAGS	10
+#define PARM_TEX_TYPE	11
+#define PARM_TEX_CACHEFRAME	12	// compare with worldmodel->needload
+// reserved
+#define PARM_WORLD_VERSION	16	// return the version of bsp
+#define PARM_SKY_SPHERE	17	// sky is quake sphere ?
+#define PARM_MAP_HAS_MIRRORS	18	// current map has mirorrs
+#define PARM_MAP_HAS_DELUXE	19	// map has deluxedata
+#define PARM_MAX_ENTITIES	20
+#define PARM_WIDESCREEN	21
+#define PARM_FULLSCREEN	22
+#define PARM_SCREEN_WIDTH	23
+#define PARM_SCREEN_HEIGHT	24
+#define PARM_CLIENT_INGAME	25
+#define PARM_FEATURES	26	// same as movevars->features
+#define PARM_ACTIVE_TMU	27	// for debug
+#define PARM_CACHEFRAME	28
+#define PARM_MAX_IMAGE_UNITS	29
+#define PARM_CLIENT_ACTIVE	30
+
+enum
+{
+	// skybox ordering
+	SKYBOX_RIGHT	= 0,
+	SKYBOX_BACK,
+	SKYBOX_LEFT,
+	SKYBOX_FORWARD,
+	SKYBOX_UP,
+	SKYBOX_DOWN,
+};
+
+enum
+{
+	TEX_INVALID = 0,	// free slot
+	TEX_SYSTEM,	// generated by engine
+	TEX_NOMIP,	// hud pics, menu etc
+	TEX_BRUSH,	// a map texture
+	TEX_SPRITE,	// sprite frames
+	TEX_STUDIO,	// studio skins
+	TEX_LIGHTMAP,	// lightmap textures
+	TEX_DECAL,	// decals
+	TEX_VGUI,		// vgui fonts or images
+	TEX_CUBEMAP,	// cubemap textures (sky)
+	TEX_DETAIL,	// detail textures
+	TEX_REMAP,	// local copy of remap texture
+	TEX_SCREENCOPY,	// keep screen copy e.g. for mirror
+	TEX_CUSTOM,	// user created texture
+	TEX_DEPTHMAP	// shadowmap texture
+} texType_t;
+
+enum
+{
+	TF_NEAREST	= (1<<0),		// disable texfilter
+	TF_KEEP_RGBDATA	= (1<<1),		// some images keep source
+	TF_NOFLIP_TGA	= (1<<2),		// Steam background completely ignore tga attribute 0x20
+	TF_KEEP_8BIT	= (1<<3),		// keep original 8-bit image (if present)
+	TF_NOPICMIP	= (1<<4),		// ignore r_picmip resample rules
+	TF_UNCOMPRESSED	= (1<<5),		// don't compress texture in video memory
+	TF_CUBEMAP	= (1<<6),		// it's cubemap texture
+	TF_DEPTHMAP	= (1<<7),		// custom texture filter used
+	TF_INTENSITY	= (1<<8),		// monochrome intensity image
+	TF_LUMINANCE	= (1<<9),		// force image to grayscale
+	TF_SKYSIDE	= (1<<10),	// this is a part of skybox
+	TF_CLAMP		= (1<<11),	// clamp texcoords to [0..1] range
+	TF_NOMIPMAP	= (1<<12),	// don't build mips for this image
+	TF_HAS_LUMA	= (1<<13),	// sets by GL_UploadTexture
+	TF_MAKELUMA	= (1<<14),	// create luma from quake texture (only q1 textures contain luma-pixels)
+	TF_NORMALMAP	= (1<<15),	// is a normalmap
+	TF_HAS_ALPHA	= (1<<16),	// image has alpha (used only for GL_CreateTexture)
+	TF_FORCE_COLOR	= (1<<17),	// force upload monochrome textures as RGB (detail textures)
+	TF_TEXTURE_1D	= (1<<18),	// this is GL_TEXTURE_1D
+	TF_BORDER		= (1<<19),	// zero clamp for projected textures
+	TF_TEXTURE_3D	= (1<<20),	// this is GL_TEXTURE_3D
+	TF_STATIC		= (1<<21),	// a marker for purge mechanism (not used by engine)
+	TF_TEXTURE_RECTANGLE= (1<<22),	// this is GL_TEXTURE_RECTANGLE
+	TF_ALPHA_BORDER	= (1<<23),	// clamp to (0,0,0,255) (probably no difference)
+	TF_IMAGE_PROGRAM	= (1<<24),	// enable image program support like in Doom3
+	TF_ALPHACONTRAST	= (1<<25),	// special texture flags for internal usage
+	TF_FLOAT		= (1<<26),	// float textures
+	TF_NOCOMPARE	= (1<<27),	// disable comparing for depth textures
+} texFlags_t;
+
+// 12 quint8s here
+struct modelstate_s
+{
+	short		sequence;
+	short		frame;		// 10 bits multiple by 4, should be enough
+	quint8		blending[2];
+	quint8		controller[4];
+	quint8		body;
+	quint8		skin;
+} modelstate_t;
+
+struct decallist_s
+{
+	float[3]		position;
+	char		name[64];
+	short		entityIndex;
+	quint8		depth;
+	quint8		flags;
+	float		scale;
+
+	// this is the surface plane that we hit so that
+	// we can move certain decals across
+	// transitions if they hit similar geometry
+	float[3]		impactPlaneNormal;
+
+	modelstate_t	studio_state;	// studio decals only
+} decallist_t;
+
+struct render_api_s
+{
+	// Get renderer info (doesn't changes engine state at all)
+	int		(*RenderGetParm)( int parm, int arg );	// generic
+	void		(*GetDetailScaleForTexture)( int texture, float *xScale, float *yScale );
+	void		(*GetExtraParmsForTexture)( int texture, quint8 *red, quint8 *green, quint8 *blue, quint8 *alpha );
+	SLightStyle*	(*GetLightStyle)( int number );
+	SDlight*		(*GetDynamicLight)( int number );
+	SDlight*		(*GetEntityLight)( int number );
+	quint8		(*TextureToTexGamma)( quint8 color );	// software gamma support
+	void		(*GetBeamChains)( BEAM ***active_beams, BEAM ***free_beams, particle_t ***free_trails );
+
+	// Set renderer info (tell engine about changes)
+	void		(*R_SetCurrentEntity)( struct cl_entity_s *ent ); // tell engine about both currententity and currentmodel
+	void		(*R_SetCurrentModel)( struct model_s *mod );	// change currentmodel but leave currententity unchanged
+	void		(*GL_SetWorldviewProjectionMatrix)( const float *glmatrix ); // update viewprojection matrix (tracers uses it)
+	void		(*R_StoreEfrags)( struct efrag_s **ppefrag, int framecount );// store efrags for static entities
+
+	// Texture tools
+	int		(*GL_FindTexture)( const char *name );
+	const char*	(*GL_TextureName)( unsigned int texnum );
+	const quint8*	(*GL_TextureData)( unsigned int texnum ); // may be NULL
+	int		(*GL_LoadTexture)( const char *name, const quint8 *buf, size_t size, int flags );
+	int		(*GL_CreateTexture)( const char *name, int width, int height, const void *buffer, int flags );
+	void		(*GL_SetTextureType)( unsigned int texnum, unsigned int type );
+	void		(*GL_TextureCacheFrame)( unsigned int texnum );
+	void		(*GL_FreeTexture)( unsigned int texnum );
+
+	// Decals manipulating (draw & remove)
+	void		(*DrawSingleDecal)( struct decal_s *pDecal, struct msurface_s *fa );
+	float		*(*R_DecalSetupVerts)( struct decal_s *pDecal, struct msurface_s *surf, int texture, int *outCount );
+	void		(*R_EntityRemoveDecals)( struct model_s *mod ); // remove all the decals from specified entity (BSP only)
+
+	// AVIkit support
+	void		*(*AVI_LoadVideo)( const char *filename, int ignore_hwgamma );
+	int		(*AVI_GetVideoInfo)( void *Avi, long *xres, long *yres, float *duration );
+	long		(*AVI_GetVideoFrameNumber)( void *Avi, float time );
+	quint8		*(*AVI_GetVideoFrame)( void *Avi, long frame );
+	void		(*AVI_UploadRawFrame)( int texture, int cols, int rows, int width, int height, const quint8 *data );
+	void		(*AVI_FreeVideo)( void *Avi );
+	int		(*AVI_IsActive)( void *Avi );
+
+	// glState related calls (must use this instead of normal gl-calls to prevent de-synchornize local states between engine and the client)
+	void		(*GL_Bind)( int tmu, unsigned int texnum );
+	void		(*GL_SelectTexture)( int tmu );
+	void		(*GL_LoadTextureMatrix)( const float *glmatrix );
+	void		(*GL_TexMatrixIdentity)( void );
+	void		(*GL_CleanUpTextureUnits)( int last );	// pass 0 for clear all the texture units
+	void		(*GL_TexGen)( unsigned int coord, unsigned int mode );
+	void		(*GL_TextureTarget)( unsigned int target ); // change texture unit mode without bind texture
+	void		(*GL_TexCoordArrayMode)( unsigned int texmode );
+	void		(*GL_Reserved0)( void );	// for potential interface expansion without broken compatibility
+	void		(*GL_Reserved1)( void );
+	void		(*GL_Reserved2)( void );
+	void		(*GL_Reserved3)( void );
+
+	// Misc renderer functions
+	void		(*GL_DrawParticles)( const float *vieworg, const float *fwd, const float *rt, const float *up, unsigned int clipFlags );
+	void		(*EnvShot)( const float *vieworg, const char *name, bool skyshot, int shotsize ); // creates a cubemap or skybox into gfx\env folder
+	int		(*COM_CompareFileTime)( const char *filename1, const char *filename2, int *iCompare );
+	void		(*Host_Error)( const char *error, ... ); // cause Host Error
+	int		(*SPR_LoadExt)( const char *szPicName, unsigned int texFlags ); // extended version of SPR_Load
+	void		(*TessPolygon)( struct msurface_s *surf, struct model_s *mod, float tessSize );
+	SMstudioTex *( *StudioGetTexture )( struct cl_entity_s *e );
+	const SRefOverview *( *GetOverviewParms )( void );
+	void		(*S_FadeMusicVolume)( float fadePercent );	// fade background track (0-100 percents)
+	void		(*SetRandomSeed)( long lSeed );		// set custom seed for RANDOM_FLOAT\RANDOM_LONG for predictable random
+	// static allocations
+	void		*(*pfnMemAlloc)( size_t cb, const char *filename, const int fileline );
+	void		(*pfnMemFree)( void *mem, const char *filename, const int fileline );
+	// find in files
+	char		**(*pfnGetFilesList)( const char *pattern, int *numFiles, int gamedironly );
+	// ONLY ADD NEW FUNCTIONS TO THE END OF THIS STRUCT.  INTERFACE VERSION IS FROZEN AT 35
+} IRenderApi;
+
+// render callbacks
+struct render_interface_s
+{
+	int		version;
+	// passed through R_RenderFrame (0 - use engine renderer, 1 - use custom client renderer)
+	int		(*GL_RenderFrame)( const struct ref_params_s *pparams, bool drawWorld );
+	// build all the lightmaps on new level or when gamma is changed
+	void		(*GL_BuildLightmaps)( void );
+	// setup map bounds for ortho-projection when we in dev_overview mode
+	void		(*GL_OrthoBounds)( const float *mins, const float *maxs );
+	// handle decals which hit mod_studio or mod_sprite
+	void		(*R_StudioDecalShoot)( int decalTexture, struct cl_entity_s *ent, const float *start, const float *pos, int flags, modelstate_t *state );
+	// prepare studio decals for save
+	int		(*R_CreateStudioDecalList)( decallist_t *pList, int count, bool changelevel );
+	// clear decals by engine request (e.g. for demo recording or vid_restart)
+	void		(*R_ClearStudioDecals)( void );
+	// grab r_speeds message
+	bool		(*R_SpeedsMessage)( char *out, size_t size );
+	// replace with built-in R_DrawCubemapView for make skyshots or envshots
+	bool		(*R_DrawCubemapView)( const float *origin, const float *angles, int size );
+	// alloc or destroy studiomodel custom data
+	void		(*Mod_ProcessUserData)( struct model_s *mod, bool create, const quint8 *buffer );
+} IRenderInterface;
+
+
+// NOTE: ordering is important!
+struct cldll_func_s
+{
+	int	(*pfnInitialize)( cl_enginefunc_t *pEnginefuncs, int iVersion );
+	void	(*pfnInit)( void );
+	int	(*pfnVidInit)( void );
+	int	(*pfnRedraw)( float flTime, int intermission );
+	int	(*pfnUpdateClientData)( client_data_t *cdata, float flTime );
+	void	(*pfnReset)( void );
+	void	(*pfnPlayerMove)( struct playermove_s *ppmove, int server );
+	void	(*pfnPlayerMoveInit)( struct playermove_s *ppmove );
+	char	(*pfnPlayerMoveTexture)( char *name );
+	void	(*IN_ActivateMouse)( void );
+	void	(*IN_DeactivateMouse)( void );
+	void	(*IN_MouseEvent)( int mstate );
+	void	(*IN_ClearStates)( void );
+	void	(*IN_Accumulate)( void );
+	void	(*CL_CreateMove)( float frametime, struct usercmd_s *cmd, int active );
+	int	(*CL_IsThirdPerson)( void );
+	void	(*CL_CameraOffset)( float *ofs );
+	void	*(*KB_Find)( const char *name );
+	void	(*CAM_Think)( void );		// camera stuff
+	void	(*pfnCalcRefdef)( ref_params_t *pparams );
+	int	(*pfnAddEntity)( int type, cl_entity_t *ent, const char *modelname );
+	void	(*pfnCreateEntities)( void );
+	void	(*pfnDrawNormalTriangles)( void );
+	void	(*pfnDrawTransparentTriangles)( void );
+	void	(*pfnStudioEvent)( const struct mstudioevent_s *event, const cl_entity_t *entity );
+	void	(*pfnPostRunCmd)( struct local_state_s *from, struct local_state_s *to, usercmd_t *cmd, int runfuncs, double time, unsigned int random_seed );
+	void	(*pfnShutdown)( void );
+	void	(*pfnTxferLocalOverrides)( SEntityState *state, const clientdata_t *client );
+	void	(*pfnProcessPlayerState)( SEntityState *dst, const SEntityState *src );
+	void	(*pfnTxferPredictionData)( SEntityState *ps, const SEntityState *pps, clientdata_t *pcd, const clientdata_t *ppcd, weapon_data_t *wd, const weapon_data_t *pwd );
+	void	(*pfnDemo_ReadBuffer)( int size, quint8 *buffer );
+	int	(*pfnConnectionlessPacket)( const struct netadr_s *net_from, const char *args, char *buffer, int *size );
+	int	(*pfnGetHullBounds)( int hullnumber, float *mins, float *maxs );
+	void	(*pfnFrame)( double time );
+	int	(*pfnKey_Event)( int eventcode, int keynum, const char *pszCurrentBinding );
+	void	(*pfnTempEntUpdate)( double frametime, double client_time, double cl_gravity, struct tempent_s **ppTempEntFree, struct tempent_s **ppTempEntActive, int ( *Callback_AddVisibleEntity )( cl_entity_t *pEntity ), void ( *Callback_TempEntPlaySound )( struct tempent_s *pTemp, float damp ));
+	cl_entity_t *(*pfnGetUserEntity)( int index );
+	void	(*pfnVoiceStatus)( int entindex, bool bTalking );
+	void	(*pfnDirectorMessage)( int iSize, void *pbuf );
+	int	(*pfnGetStudioModelInterface)( int version, struct r_studio_interface_s **ppinterface, struct engine_studio_api_s *pstudio );
+	void	(*pfnChatInputPosition)( int *x, int *y );
+	int	(*pfnGetPlayerTeam)( int playerIndex );
+	void	*(*pfnGetClientFactory)( void );
+	// Xash3D extension
+	int	(*pfnGetRenderInterface)( int version, IRenderApi *renderfuncs, IRenderInterface *callback );
+	void	(*pfnClipMoveToEntity)( struct physent_s *pe, const float[3] start, float[3] mins, float[3] maxs, const float[3] end, struct pmtrace_s *tr );
+} ICldllFunc;
+
+struct screenfade_s
+{
+	float	fadeSpeed;			// How fast to fade (tics / second) (+ fade in, - fade out)
+	float	fadeEnd;				// When the fading hits maximum
+	float	fadeTotalEnd;			// Total End Time of the fade (used for FFADE_OUT)
+	float	fadeReset;			// When to reset to not fading (for fadeout and hold)
+	quint8	fader, fadeg, fadeb, fadealpha;	// Fade color
+	int	fadeFlags;			// Fading flags
+} SScreenFade;
+
+
+// list of engine features that can be enabled through callback SV_CheckFeatures
+#define ENGINE_WRITE_LARGE_COORD	(1<<0)	// replace standard message WRITE_COORD with big message for support more than 8192 units in world
+#define ENGINE_BUILD_SURFMESHES	(1<<1)	// bulid surface meshes that goes into mextrasurf->mesh. For mod makers and custom renderers
+#define ENGINE_LOAD_DELUXEDATA	(1<<2)	// loading deluxemap for map (if present)
+#define ENGINE_TRANSFORM_TRACE_AABB	(1<<3)	// transform trace bbox into local space of rotating bmodels
+#define ENGINE_LARGE_LIGHTMAPS	(1<<4)	// change lightmap sizes from 128x128 to 256x256
+#define ENGINE_COMPENSATE_QUAKE_BUG	(1<<5)	// compensate stupid quake bug (inverse pitch) for mods where this bug is fixed
+#define ENGINE_DISABLE_HDTEXTURES	(1<<6)	// disable support of HD-textures in case custom renderer have separate way to load them
+#define ENGINE_COMPUTE_STUDIO_LERP	(1<<7)	// enable MOVETYPE_STEP lerping back in engine
+
+// Pad a number so it lies on an N quint8 boundary.
+// So PAD_NUMBER(0,4) is 0 and PAD_NUMBER(1,4) is 4
+#define PAD_NUMBER( num, boundary )	((( num ) + (( boundary ) - 1 )) / ( boundary )) * ( boundary )
+
+struct sizebuf_s
+{
+	bool		bOverflow;	// overflow reading or writing
+	const char	*pDebugName;	// buffer name (pointer to const name)
+
+	quint8		*pData;
+	int		iCurBit;
+	int		nDataBits;
+} SSizeBuf;
+
+// 0 == regular, 1 == file stream
+#define MAX_STREAMS			2
+
+// flow control quint8s per second limits
+#define MAX_RATE			20000
+#define MIN_RATE			1000
+
+// default data rate
+#define DEFAULT_RATE		(9999.0f)
+
+// NETWORKING INFO
+
+// This is the packet payload without any header quint8s (which are attached for actual sending)
+#define NET_MAX_PAYLOAD		80000
+
+// This is the payload plus any header info (excluding UDP header)
+
+// Packet header is:
+//  4 quint8s of outgoing seq
+//  4 quint8s of incoming seq
+//  and for each stream
+// {
+//  quint8 (on/off)
+//  int (fragment id)
+//  short (startpos)
+//  short (length)
+// }
+#define HEADER_quint8S		( 8 + MAX_STREAMS * 9 )
+
+// Pad this to next higher 16 quint8 boundary
+// This is the largest packet that can come in/out over the wire, before processing the header
+//  quint8s will be stripped by the networking channel layer
+#define NET_MAX_MESSAGE		PAD_NUMBER(( NET_MAX_PAYLOAD + HEADER_quint8S ), 16 )
+
+#define MASTERSERVER_ADR		"hl1master.steampowered.com:27010"
+#define PORT_MASTER			27010
+#define PORT_CLIENT			27005
+#define PORT_SERVER			27015
+#define MULTIPLAYER_BACKUP		64	// how many data slots to use when in multiplayer (must be power of 2)
+#define SINGLEPLAYER_BACKUP		16	// same for single player
+
+/*
+==============================================================
+
+NET
+
+==============================================================
+*/
+#define MAX_FLOWS			2
+
+#define FLOW_OUTGOING		0
+#define FLOW_INCOMING		1
+#define MAX_LATENT			32
+
+// size of fragmentation buffer internal buffers
+#define FRAGMENT_SIZE 		1400
+
+#define FRAG_NORMAL_STREAM		0
+#define FRAG_FILE_STREAM		1
+
+// message data
+struct
+{
+	int		size;		// size of message sent/received
+	double		time;		// time that message was sent/received
+} flowstats_t;
+
+struct
+{
+	flowstats_t	stats[MAX_LATENT];	// data for last MAX_LATENT messages
+	int		current;		// current message position
+	double		nextcompute; 	// time when we should recompute k/sec data
+	float		kquint8spersec;	// average data
+	float		avgkquint8spersec;
+	int		totalquint8s;
+} SFlow;
+
+// generic fragment structure
+struct fragbuf_s
+{
+	struct fragbuf_s	*next;		// next buffer in chain
+	int		bufferid;		// id of this buffer
+	SSizeBuf		frag_message;	// message buffer where raw data is stored
+	quint8		frag_message_buf[FRAGMENT_SIZE];	// the actual data sits here
+	bool		isfile;		// is this a file buffer?
+	bool		isbuffer;		// is this file buffer from memory ( custom decal, etc. ).
+	char		filename[CS_SIZE];	// name of the file to save out on remote host
+	int		foffset;		// offset in file from which to read data
+	int		size;		// size of data to read at that offset
+} SFragBuf;
+
+// Waiting list of fragbuf chains
+struct fragbufwaiting_s
+{
+	struct fragbufwaiting_s	*next;	// next chain in waiting list
+	int		fragbufcount;	// number of buffers in this chain
+	SFragBuf		*fragbufs;	// the actual buffers
+} SFragBufWaiting;
+
+// Network Connection Channel
+struct netchan_s
+{
+	ENetSrc		sock;		// NS_SERVER or NS_CLIENT, depending on channel.
+	netadr_t		remote_address;	// address this channel is talking to.
+	int		qport;		// qport value to write when transmitting
+
+	bool		compress;		// enable huffman compression
+
+	double		last_received;	// for timeouts
+	double		last_sent;	// for retransmits
+
+	double		rate;		// bandwidth choke. quint8s per second
+	double		cleartime;	// if realtime > cleartime, free to send next packet
+	double		connect_time;	// Usage: host.realtime - netchan.connect_time
+
+	int		drop_count;	// dropped packets, cleared each level
+	int		good_count;	// cleared each level
+
+	// Sequencing variables
+	int		incoming_sequence;		// increasing count of sequence numbers
+	int		incoming_acknowledged;	// # of last outgoing message that has been ack'd.
+
+	int		incoming_reliable_acknowledged;	// toggles T/F as reliable messages are received.
+	int		incoming_reliable_sequence;	// single bit, maintained local
+	int		outgoing_sequence;		// message we are sending to remote
+	int		reliable_sequence;		// whether the message contains reliable payload, single bit
+	int		last_reliable_sequence; // outgoing sequence number of last send that had reliable data
+
+	// staging and holding areas
+	SSizeBuf		message;
+	quint8		message_buf[NET_MAX_PAYLOAD];
+
+	// reliable message buffer.
+	// we keep adding to it until reliable is acknowledged.  Then we clear it.
+	int		reliable_length;
+	quint8		reliable_buf[NET_MAX_PAYLOAD];	// unacked reliable message
+
+	// Waiting list of buffered fragments to go onto queue.
+	// Multiple outgoing buffers can be queued in succession
+	SFragBufWaiting	*waitlist[MAX_STREAMS];
+
+	int		reliable_fragment[MAX_STREAMS];	// is reliable waiting buf a fragment?
+	uint		reliable_fragid[MAX_STREAMS];		// buffer id for each waiting fragment
+
+	SFragBuf		*fragbufs[MAX_STREAMS];	// the current fragment being set
+	int		fragbufcount[MAX_STREAMS];	// the total number of fragments in this stream
+
+	short		frag_startpos[MAX_STREAMS];	// position in outgoing buffer where frag data starts
+	short		frag_length[MAX_STREAMS];	// length of frag data in the buffer
+
+	SFragBuf		*incomingbufs[MAX_STREAMS];	// incoming fragments are stored here
+	bool		incomingready[MAX_STREAMS];	// set to true when incoming data is ready
+
+	// Only referenced by the FRAG_FILE_STREAM component
+	char		incomingfilename[CS_SIZE];	// Name of file being downloaded
+
+	// incoming and outgoing flow metrics
+	SFlow		flow[MAX_FLOWS];
+
+	// added for net_speeds
+	size_t		total_sended;
+	size_t		total_sended_uncompressed;
+
+	size_t		total_received;
+	size_t		total_received_uncompressed;
+} SNetChan;
+
+
+#define NETAPI_REQUEST_SERVERLIST		( 0 )  // Doesn't need a remote address
+#define NETAPI_REQUEST_PING			( 1 )
+#define NETAPI_REQUEST_RULES			( 2 )
+#define NETAPI_REQUEST_PLAYERS		( 3 )
+#define NETAPI_REQUEST_DETAILS		( 4 )
+
+// Set this flag for things like broadcast requests, etc. where the engine should not
+// kill the request hook after receiving the first response
+#define FNETAPI_MULTIPLE_RESPONSE		( 1<<0 )
+
+typedef void (*net_api_response_func_t) ( struct net_response_s *response );
+
+#define NET_SUCCESS				( 0 )
+#define NET_ERROR_TIMEOUT			( 1<<0 )
+#define NET_ERROR_PROTO_UNSUPPORTED		( 1<<1 )
+#define NET_ERROR_UNDEFINED			( 1<<2 )
+
+struct net_adrlist_s
+{
+	struct net_adrlist_s	*next;
+	netadr_t			remote_address;
+} net_adrlist_t;
+
+struct net_response_s
+{
+	// NET_SUCCESS or an error code
+	int		error;
+	// Context ID
+	int		context;
+	// Type
+	int		type;
+	// Server that is responding to the request
+	netadr_t		remote_address;
+	// Response RTT ping time
+	double		ping;
+	// Key/Value pair string ( separated by backlash \ characters )
+	// WARNING:  You must copy this buffer in the callback function, because it is freed
+	// by the engine right after the call!!!!
+	// ALSO: For NETAPI_REQUEST_SERVERLIST requests, this will be a pointer to a linked list of net_adrlist_t's
+	void		*response;
+} net_response_t;
+
+struct net_status_s
+{
+	// Connected to remote server?  1 == yes, 0 otherwise
+	int		connected;
+	// Client's IP address
+	netadr_t		local_address;
+	// Address of remote server
+	netadr_t		remote_address;
+	// Packet Loss ( as a percentage )
+	int		packet_loss;
+	// Latency, in seconds ( multiply by 1000.0 to get milliseconds )
+	double		latency;
+	// Connection time, in seconds
+	double		connection_time;
+	// Rate setting ( for incoming data )
+	double		rate;
+} net_status_t;
+
+struct net_api_s
+{
+	// APIs
+	void		(*InitNetworking)( void );
+	void		(*Status )( struct net_status_s *status );
+	void		(*SendRequest)( int context, int request, int flags, double timeout, struct netadr_s *remote_address, net_api_response_func_t response );
+	void		(*CancelRequest)( int context );
+	void		(*CancelAllRequests)( void );
+	char		*(*AdrToString)( struct netadr_s *a );
+	int		( *CompareAdr)( struct netadr_s *a, struct netadr_s *b );
+	int		( *StringToAdr)( char *s, struct netadr_s *a );
+	const char	*(*ValueForKey)( const char *s, const char *key );
+	void		(*RemoveKey)( char *s, const char *key );
+	void		(*SetValueForKey)( char *s, const char *key, const char *value, int maxsize );
+} net_api_t;
+
+#define MOVE_NORMAL		0	// normal trace
+#define MOVE_NOMONSTERS	1	// ignore monsters (edicts with flags (FL_MONSTER|FL_FAKECLIENT|FL_CLIENT) set)
+#define MOVE_MISSILE	2	// extra size for monsters
+
+#define FMOVE_IGNORE_GLASS	0x100
+#define FMOVE_SIMPLEBOX	0x200
+
+#define CONTENTS_NONE	0	// no custom contents specified
+
+#define MAX_TOTAL_ENT_LEAFS		128
+#define AREA_NODES			32
+#define AREA_DEPTH			4
+
+
+#define check_angles( x )	( (int)x == 90 || (int)x == 180 || (int)x == 270 || (int)x == -90 || (int)x == -180 || (int)x == -270 )
+
+// Spectator Movement modes (stored in pev->iuser1, so the physics code can get at them)
+#define OBS_NONE			0
+#define OBS_CHASE_LOCKED		1
+#define OBS_CHASE_FREE		2
+#define OBS_ROAMING			3
+#define OBS_IN_EYE			4
+#define OBS_MAP_FREE		5
+#define OBS_MAP_CHASE		6
+
+
+#define EVENT_API_VERSION	1
+
+struct event_api_s
+{
+	int	version;
+	void	( *EV_PlaySound )( int ent, float *origin, int channel, const char *sample, float volume, float attenuation, int fFlags, int pitch );
+	void	( *EV_StopSound )( int ent, int channel, const char *sample );
+	int	( *EV_FindModelIndex )( const char *pmodel );
+	int	( *EV_IsLocal )( int playernum );
+	int	( *EV_LocalPlayerDucking )( void );
+	void	( *EV_LocalPlayerViewheight )( float * );
+	void	( *EV_LocalPlayerBounds )( int hull, float *mins, float *maxs );
+	int	( *EV_IndexFromTrace)( struct pmtrace_s *pTrace );
+	struct physent_s *( *EV_GetPhysent )( int idx );
+	void	( *EV_SetUpPlayerPrediction )( int dopred, int bIncludeLocalClient );
+	void	( *EV_PushPMStates )( void );
+	void	( *EV_PopPMStates )( void );
+	void	( *EV_SetSolidPlayers )( int playernum );
+	void	( *EV_SetTraceHull )( int hull );
+	void	( *EV_PlayerTrace )( float *start, float *end, int traceFlags, int ignore_pe, struct pmtrace_s *tr );
+	void	( *EV_WeaponAnimation )( int sequence, int body );
+	unsigned short ( *EV_PrecacheEvent )( int type, const char* psz );
+	void	( *EV_PlaybackEvent )( int flags, const struct edict_s *pInvoker, unsigned short eventindex, float delay, float *origin, float *angles, float fparam1, float fparam2, int iparam1, int iparam2, int bparam1, int bparam2 );
+	const char *( *EV_TraceTexture )( int ground, float *vstart, float *vend );
+	void	( *EV_StopAllSounds )( int entnum, int entchannel );
+	void	( *EV_KillEvents )( int entnum, const char *eventname );
+
+	// Xash3D extension
+	unsigned short (*EV_IndexForEvent)( const char *name );
+	const char *(*EV_EventForIndex)( unsigned short index );
+	void	( *EV_PlayerTraceExt )( float *start, float *end, int traceFlags, int (*pfnIgnore)( struct physent_s *pe ), struct pmtrace_s *tr );
+	const char *(*EV_SoundForIndex)( int index );
+} event_api_t;
+
+#define MAX_EVENT_QUEUE	64		// 16 simultaneous events, max
+
+struct event_info_s
+{
+	word		index;		// 0 implies not in use
+	short		packet_index;	// Use data from state info for entity in delta_packet .
+					// -1 implies separate info based on event
+					// parameter signature
+	short		entity_index;	// The edict this event is associated with
+	float		fire_time;	// if non-zero, the time when the event should be fired
+					// ( fixed up on the client )
+	event_args_t	args;
+	int		flags;		// reliable or not, etc. ( CLIENT ONLY )
+} event_info_t;
+
+struct event_state_s
+{
+	event_info_t	ei[MAX_EVENT_QUEUE];
+} event_state_t;
+
+#define MAX_DEMOS		32
+#define MAX_MOVIES		8
+#define MAX_CDTRACKS	32
+#define MAX_IMAGES		256	// SpriteTextures
+#define MAX_EFRAGS		1024
+#define MAX_REQUESTS	32
+
+// screenshot types
+#define VID_SCREENSHOT	0
+#define VID_LEVELSHOT	1
+#define VID_MINISHOT	2
+#define VID_MAPSHOT		3	// special case for overview layer
+#define VID_SNAPSHOT	4	// save screenshot into root dir and no gamma correction
+
+typedef int		sound_t;
+
+//=============================================================================
+struct frame_s
+{
+	// received from server
+	double		receivedtime;	// time message was received, or -1
+	double		latency;
+	double		time;		// server timestamp
+
+	local_state_t	local;		// local client state
+	SEntityState	playerstate[MAX_CLIENTS];
+	int		num_entities;
+	int		first_entity;	// into the circular cl_packet_entities[]
+
+	bool		valid;		// cleared if delta parsing was invalid
+} frame_t;
+
+#define CMD_BACKUP		MULTIPLAYER_BACKUP	// allow a lot of command backups for very fast systems
+#define CMD_MASK		(CMD_BACKUP - 1)
+
+#define CL_UPDATE_MASK	(CL_UPDATE_BACKUP - 1)
+
+#define INVALID_HANDLE	0xFFFF		// for XashXT cache system
+
+// the client_t structure is wiped completely at every
+// server map change
+struct
+{
+	int		timeoutcount;
+
+	int		servercount;		// server identification for prespawns
+	int		validsequence;		// this is the sequence number of the last good
+						// world snapshot/update we got.  If this is 0, we can't
+						// render a frame yet
+	int		parsecount;		// server message counter
+	int		parsecountmod;		// modulo with network window
+
+	bool		video_prepped;		// false if on new level or new ref dll
+	bool		audio_prepped;		// false if on new level or new snd dll
+	bool		force_refdef;		// vid has changed, so we can't use a paused refdef
+
+	int		delta_sequence;		// acknowledged sequence number
+
+	double		mtime[2];			// the timestamp of the last two messages
+
+
+	int		last_incoming_sequence;
+
+	bool		force_send_usercmd;
+	bool		thirdperson;
+	bool		background;		// not real game, just a background
+
+	uint		checksum;			// for catching cheater maps
+
+	client_data_t	data;			// some clientdata holds
+
+	frame_t		frame;			// received from server
+	int		predictcount;		// advances with next clientdata
+	frame_t		frames[MULTIPLAYER_BACKUP];	// alloced on svc_serverdata
+	usercmd_t		cmds[MULTIPLAYER_BACKUP];	// each mesage will send several old cmds
+	local_state_t	predict[MULTIPLAYER_BACKUP];	// local client state
+
+	double		time;			// this is the time value that the client
+						// is rendering at.  always <= cls.realtime
+						// a lerp point for other data
+	double		oldtime;			// previous cl.time, time-oldtime is used
+						// to decay light values and smooth step ups
+
+	float		lerpFrac;			// interpolation value
+	ref_params_t	refdef;			// shared refdef
+
+	char		serverinfo[MAX_INFO_STRING];
+	player_info_t	players[MAX_CLIENTS];
+	event_state_t	events;
+
+	// predicting stuff
+	float[3]		predicted_origin;		// generated by CL_PredictMovement
+	float[3]		predicted_viewofs;
+	float[3]		predicted_velocity;
+	float[3]		predicted_punchangle;
+
+	// server state information
+	int		playernum;
+	int		maxclients;
+	int		movemessages;
+	int		num_custombeams;			// server beams count
+
+	char		model_precache[MAX_MODELS][CS_SIZE];
+	char		sound_precache[MAX_SOUNDS][CS_SIZE];
+	char		event_precache[MAX_EVENTS][CS_SIZE];
+	SLightStyle	lightstyles[MAX_LIGHTSTYLES];
+
+	int		sound_index[MAX_SOUNDS];
+	int		decal_index[MAX_DECALS];
+
+	cl_entity_t	*world;
+	model_t		*worldmodel;			// pointer to world
+} client_t;
+
+/*
+==================================================================
+
+the client_static_t structure is persistant through an arbitrary number
+of server connections
+
+==================================================================
+*/
+enum
+{
+	ca_uninitialized = 0,
+	ca_disconnected, 	// not talking to a server
+	ca_connecting,	// sending request packets to the server
+	ca_connected,	// SNetChan established, waiting for svc_serverdata
+	ca_active,	// game views should be displayed
+	ca_cinematic,	// playing a cinematic, not connected to a server
+} connstate_t;
+
+enum
+{
+	scrshot_inactive,
+	scrshot_normal,	// in-game screenshot
+	scrshot_snapshot,	// in-game snapshot
+	scrshot_plaque,  	// levelshot
+	scrshot_savegame,	// saveshot
+	scrshot_demoshot,	// for demos preview
+	scrshot_envshot,	// cubemap view
+	scrshot_skyshot,	// skybox view
+	scrshot_mapshot	// overview layer
+} SScrShot;
+
+// client screen state
+enum
+{
+	CL_LOADING = 1,	// draw loading progress-bar
+	CL_ACTIVE,	// draw normal hud
+	CL_PAUSED,	// pause when active
+	CL_CHANGELEVEL,	// draw 'loading' during changelevel
+} scrstate_t;
+
+struct
+{
+	char		name[32];
+	int		number;	// svc_ number
+	int		size;	// if size == -1, size come from first quint8 after svcnum
+	pfnUserMsgHook	func;	// user-defined function
+} cl_user_message_t;
+
+typedef void (*pfnEventHook)( event_args_t *args );
+
+struct
+{
+	char		name[CS_SIZE];
+	word		index;	// event index
+	pfnEventHook	func;	// user-defined function
+} SClUserEvent;
+
+struct
+{
+	int		hFontTexture;		// handle to texture
+	SWrect		fontRc[256];		// rectangles
+	quint8		charWidths[256];
+	int		charHeight;
+	bool		valid;			// all rectangles are valid
+} SClFont;
+
+struct
+{
+	// temp handle
+	const model_t	*pSprite;			// pointer to current SpriteTexture
+
+	// scissor test
+	int		scissor_x;
+	int		scissor_y;
+	int		scissor_width;
+	int		scissor_height;
+	bool		scissor_test;
+	bool		adjust_size;		// allow to adjust scale for fonts
+
+	int		cullMode;			// override CULL FACE from TriAPI
+
+	// holds text color
+	quint8[4]		textColor;
+	quint8[4]		spriteColor;
+	quint8[4]		triColor;
+
+	// crosshair members
+	const model_t	*pCrosshair;
+	SWrect		rcCrosshair;
+	quint8[4]		rgbaCrosshair;
+	quint8		gammaTable[256];
+} SClientDraw;
+
+struct
+{
+	int		gl_texturenum;	// this is a real texnum
+
+	// scissor test
+	int		scissor_x;
+	int		scissor_y;
+	int		scissor_width;
+	int		scissor_height;
+	bool		scissor_test;
+
+	// holds text color
+	quint8[4]		textColor;
+} SGameuiDraw;
+
+struct
+{
+	// centerprint stuff
+	float		time;
+	int		y, lines;
+	char		message[2048];
+	int		totalWidth;
+	int		totalHeight;
+} SCenterPrint;
+
+struct
+{
+	float		time;
+	float		duration;
+	float		amplitude;
+	float		frequency;
+	float		next_shake;
+	float[3]		offset;
+	float		angle;
+	float[3]		applied_offset;
+	float		applied_angle;
+} SScreenShake;
+
+struct
+{
+	struct SMstudioTex	*ptexture;	// array of textures with local copy of remapped textures
+	short		numtextures;	// textures count
+	short		topcolor;		// cached value
+	short		bottomcolor;	// cached value
+	model_t		*model;		// for catch model changes
+} SRemapInfo;
+
+struct
+{
+	net_response_t		resp;
+	net_api_response_func_t	pfnFunc;
+	double			timeout;
+	double			timesend;	// time when request was sended
+	int			flags;	// FNETAPI_MULTIPLE_RESPONSE etc
+} SNetRequest;
+
+// new versions of client dlls have a sanigle export with all callbacks
+typedef void (*CL_EXPORT_FUNCS)( void *pv );
+
+struct
+{
+	void		*hInstance;		// pointer to client.dll
+	ICldllFunc	dllFuncs;			// dll exported funcs
+	IRenderInterface	drawFuncs;		// custom renderer support
+	quint8		*mempool;			// client edicts pool
+	string		mapname;			// map name
+	string		maptitle;			// display map title
+	string		itemspath;		// path to items description for auto-complete func
+
+	cl_entity_t	*entities;		// dynamically allocated entity array
+	cl_entity_t	*static_entities;		// dynamically allocated static entity array
+	SRemapInfo	**remap_info;		// store local copy of all remap textures for each entity
+
+	int		maxEntities;
+	int		maxRemapInfos;		// maxEntities + cl.viewEnt; also used for catch entcount
+	int		numStatics;		// actual static entity count
+
+	// movement values from server
+	movevars_t	movevars;
+	movevars_t	oldmovevars;
+	playermove_t	*pmove;			// pmove state
+
+	int		old_trace_hull;		// used by PM_Push\Pop state
+	int		oldcount;			// used by PM_Push\Pop state
+
+	float[3]		player_mins[MAX_MAP_HULLS];	// 4 hulls allowed
+	float[3]		player_maxs[MAX_MAP_HULLS];	// 4 hulls allowed
+
+	cl_user_message_t	msg[MAX_USER_MESSAGES];	// keep static to avoid fragment memory
+	SClUserEvent	*events[MAX_EVENTS];
+
+	string		cdtracks[MAX_CDTRACKS];	// 32 cd-tracks read from cdaudio.txt
+
+	model_t		sprites[MAX_IMAGES];	// client spritetextures
+	int		load_sequence;		// for unloading unneeded sprites
+
+	SClientDraw	ds;			// draw2d stuff (hud, weaponmenu etc)
+	SScreenFade	fade;			// screen fade
+	SScreenShake	shake;			// screen shake
+	SCenterPrint	centerPrint;		// centerprint variables
+	SCREENINFO	scrInfo;			// actual screen info
+	ref_overview_t	overView;			// overView params
+	rgb_t		palette[256];		// palette used for particle colors
+
+	client_textmessage_t *titles;			// title messages, not network messages
+	int		numTitles;
+
+	SNetRequest	net_requests[MAX_REQUESTS];	// no reason to keep more
+
+	efrag_t		*free_efrags;		// linked efrags
+	cl_entity_t	viewent;			// viewmodel
+} SClgameStatic;
+
+struct
+{
+	void		*hInstance;		// pointer to client.dll
+	UI_FUNCTIONS	dllFuncs;			// dll exported funcs
+	quint8		*mempool;			// client edicts pool
+
+	cl_entity_t	playermodel;		// uiPlayerSetup drawing model
+	player_info_t	playerinfo;		// local playerinfo
+
+	SGameuiDraw	ds;			// draw2d stuff (menu images)
+	GAMEINFO		gameInfo;			// current gameInfo
+	GAMEINFO		*modsInfo[MAX_MODS];	// simplified gameInfo for MainUI
+
+	ui_globalvars_t	*globals;
+
+	bool		drawLogo;			// set to TRUE if logo.avi missed or corrupted
+	long		logo_xres;
+	long		logo_yres;
+	float		logo_length;
+} SMenuStatic;
+
+struct
+{
+	connstate_t	state;
+	bool		initialized;
+	bool		changelevel;		// during changelevel
+	bool		changedemo;		// during changedemo
+
+	// screen rendering information
+	float		disable_screen;		// showing loading plaque between levels
+						// or changing rendering dlls
+						// if time gets > 30 seconds ahead, break it
+	int		disable_servercount;	// when we receive a frame and cl.servercount
+						// > cls.disable_servercount, clear disable_screen
+
+	bool		draw_changelevel;		// draw changelevel image 'Loading...'
+
+	EKeyDest		key_dest;
+
+	quint8		*mempool;			// client premamnent pool: edicts etc
+
+	int		framecount;
+	int		quakePort;		// a 16 bit value that allows quake servers
+						// to work around address translating routers
+						// g-cont. this port allow many copies of engine in multiplayer game
+	// connection information
+	string		servername;		// name of server from original connect
+	double		connect_time;		// for connection retransmits
+
+
+	SSizeBuf		datagram;			// unreliable stuff. gets sent in CL_Move about cl_cmdrate times per second.
+	quint8		datagram_buf[NET_MAX_PAYLOAD];
+
+	SNetChan		netchan;
+	int		serverProtocol;		// in case we are doing some kind of version hack
+	int		challenge;		// from the server to use for connecting
+
+	float		packet_loss;
+	double		packet_loss_recalc_time;
+
+	float		nextcmdtime;		// when can we send the next command packet?
+	int		lastoutgoingcommand;	// sequence number of last outgoing command
+
+	// internal images
+	int		fillImage;		// used for emulate FillRGBA to avoid wrong draw-sort
+	int		particleImage;		// built-in particle and sparks image
+	int		pauseIcon;		// draw 'paused' when game in-pause
+	int		loadingBar;		// 'loading' progress bar
+	int		glowShell;		// for renderFxGlowShell
+	int		tileImage;		// for draw any areas not covered by the refresh
+	VHSPRITE		hChromeSprite;		// this is a really HudSprite handle, not texnum!
+	SClFont		creditsFont;		// shared creditsfont
+
+	int		num_client_entities;	// cl.maxclients * CL_UPDATE_BACKUP * MAX_PACKET_ENTITIES
+	int		next_client_entities;	// next client_entity to use
+	SEntityState	*packet_entities;		// [num_client_entities]
+
+	SScrShot		scrshot_request;		// request for screen shot
+	SScrShot		scrshot_action;		// in-action
+	const float	*envshot_vieworg;		// envshot position
+	int		envshot_viewsize;		// override cvar
+	bool		envshot_disable_vis;	// disable VIS on server while makes an envshots
+	string		shotname;
+
+	// download info
+	int		downloadcount;
+	int		downloadfileid;
+
+	// demo loop control
+	int		demonum;			// -1 = don't play demos
+	int		olddemonum;		// restore playing
+	string		demos[MAX_DEMOS];		// when not playing
+
+	// movie playlist
+	int		movienum;
+	string		movies[MAX_MOVIES];
+
+	// demo recording info must be here, so it isn't clearing on level change
+	bool		demorecording;
+	bool		demoplayback;
+	bool		demowaiting;		// don't record until a non-delta message is received
+	bool		timedemo;
+	string		demoname;			// for demo looping
+	double		demotime;			// recording time
+
+	file_t		*demofile;
+	file_t		*demoheader;		// contain demo startup info in case we record a demo on this level
+} client_static_t;
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif // XASH_TYPES_HPP
 
