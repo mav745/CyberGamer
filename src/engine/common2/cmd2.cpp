@@ -45,7 +45,10 @@ void CCmd::cbuf_addText( const QString &text )
 
 void CCmd::cbuf_insertText( const QString &text )
 {
-	queue.prepend(text.split(QRegularExpression("\\n{1,}|,(?=(?:[^\"]|\"[^\"]*\")*$)")));
+	const QStringList &l = text.split(QRegularExpression("\\n{1,}|,(?=(?:[^\"]|\"[^\"]*\")*$)"));
+	for (int i = l.size()-1; i >= 0; i--) {
+		queue.prepend(l.at(i));
+	}
 }
 
 /*
@@ -84,7 +87,7 @@ char *COM_ParseFile( char *data, char *token )
 		return NULL;
 // skip whitespace
 skipwhite:
-	while(( c = ((byte)*data)) <= ' ' )
+	while(( c = ((quint8)*data)) <= ' ' )
 	{
 		if( c == 0 )
 			return NULL;	// end of file;
@@ -105,7 +108,7 @@ skipwhite:
 		data++;
 		while( 1 )
 		{
-			c = (byte)*data++;
+			c = (quint8)*data++;
 			if( c == '\"' || !c )
 			{
 				token[len] = 0;
@@ -131,7 +134,7 @@ skipwhite:
 		token[len] = c;
 		data++;
 		len++;
-		c = ((byte)*data);
+		c = ((quint8)*data);
 
 		if( c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ',' )
 			break;
@@ -163,7 +166,7 @@ QStringList CCmd::tokenizeString( const QString &text )
 	while( 1 )
 	{
 		// skip whitespace up to a /n
-		while( *text && ((byte)*text) <= ' ' && *text != '\n' )
+		while( *text && ((quint8)*text) <= ' ' && *text != '\n' )
 			text++;
 
 		if( *text == '\n' )

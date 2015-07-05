@@ -617,7 +617,7 @@ void CHost::initCommon(const QString &progname, bool bChangeGame)
 	host.rootdir = QApplication::applicationDirPath();
 	host.argv = QApplication::arguments();
 	host.change_game = bChangeGame;
-	host.state = HS_Init; // initialzation started
+	host.state = HOST_INIT; // initialzation started
 	host.developer = host.old_developer = 0;
 
 	//CRT_Init(); // init some CRT functions
@@ -765,7 +765,7 @@ int CHost::main(const QString &progname, int bChangeGame)
 	{
 		// when we in developer-mode automatically turn cheats on
 		if(host.developer > 1) cvar->setFloat("sv_cheats", 1.0f);
-		Cbuf_AddText("exec video.cfg\n");
+		cmd->cbuf_addText("exec video.cfg\n");
 	}
 
 //	Mod_Init();
