@@ -7,7 +7,7 @@ TEMPLATE = app
 TARGET = hl
 CONFIG += link_prl c++11
 
-RC_FILE = game.rc
+#RC_FILE = game.rc
 
 debug:DESTDIR = $$PWD/../../build_d/
 else:DESTDIR = $$PWD/../../build/
