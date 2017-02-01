@@ -580,7 +580,7 @@ void Host_Print( const char *txt )
 Host_Error
 =================
 */
-void Host_Error( const char *error, ... )
+void __cdecl Host_Error( const char *error, ... )
 {
 	static char	hosterror1[MAX_SYSPATH];
 	static char	hosterror2[MAX_SYSPATH];
@@ -951,7 +951,7 @@ int EXPORT Host_Main( const char *progname, int bChangeGame, pfnChangeGame func 
 	return 0;
 }
 
-int EXPORT Host_Iterate(  )
+int EXPORT __cdecl Host_Iterate(  )
 {
 	if(host.crashed)
 		return 0;

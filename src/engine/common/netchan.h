@@ -38,7 +38,7 @@ GNU General Public License for more details.
 // NETWORKING INFO
 
 // This is the packet payload without any header bytes (which are attached for actual sending)
-#define NET_MAX_PAYLOAD		80000
+#define NET_MAX_PAYLOAD		2000
 
 // This is the payload plus any header info (excluding UDP header)
 
@@ -199,27 +199,27 @@ extern byte		net_message_buffer[NET_MAX_PAYLOAD];
 extern convar_t		*net_speeds;
 extern int		net_drop;
 
-void Netchan_Init( void );
-void Netchan_Shutdown( void );
-void Netchan_Setup( netsrc_t sock, netchan_t *chan, netadr_t adr, int qport );
-qboolean Netchan_CopyNormalFragments( netchan_t *chan, sizebuf_t *msg );
-qboolean Netchan_CopyFileFragments( netchan_t *chan, sizebuf_t *msg );
-void Netchan_CreateFragments( qboolean server, netchan_t *chan, sizebuf_t *msg );
-int Netchan_CreateFileFragments( qboolean server, netchan_t *chan, const char *filename );
-void Netchan_Transmit( netchan_t *chan, int lengthInBytes, byte *data );
-void Netchan_TransmitBits( netchan_t *chan, int lengthInBits, byte *data );
-void Netchan_OutOfBand( int net_socket, netadr_t adr, int length, byte *data );
-void Netchan_OutOfBandPrint( int net_socket, netadr_t adr, char *format, ... );
-qboolean Netchan_Process( netchan_t *chan, sizebuf_t *msg );
-void Netchan_UpdateProgress( netchan_t *chan );
-qboolean Netchan_IncomingReady( netchan_t *chan );
-qboolean Netchan_CanPacket( netchan_t *chan );
-void Netchan_FragSend( netchan_t *chan );
-void Netchan_Clear( netchan_t *chan );
+void __cdecl Netchan_Init( void );
+void __cdecl Netchan_Shutdown( void );
+void __cdecl Netchan_Setup( netsrc_t sock, netchan_t *chan, netadr_t adr, int qport );
+qboolean __cdecl Netchan_CopyNormalFragments( netchan_t *chan, sizebuf_t *msg );
+qboolean __cdecl Netchan_CopyFileFragments( netchan_t *chan, sizebuf_t *msg );
+void __cdecl Netchan_CreateFragments( qboolean server, netchan_t *chan, sizebuf_t *msg );
+int __cdecl Netchan_CreateFileFragments( qboolean server, netchan_t *chan, const char *filename );
+void __cdecl Netchan_Transmit( netchan_t *chan, int lengthInBytes, byte *data );
+void __cdecl Netchan_TransmitBits( netchan_t *chan, int lengthInBits, byte *data );
+void __cdecl Netchan_OutOfBand( int net_socket, netadr_t adr, int length, byte *data );
+void __cdecl Netchan_OutOfBandPrint( int net_socket, netadr_t adr, char *format, ... );
+qboolean __cdecl Netchan_Process( netchan_t *chan, sizebuf_t *msg );
+void __cdecl Netchan_UpdateProgress( netchan_t *chan );
+qboolean __cdecl Netchan_IncomingReady( netchan_t *chan );
+qboolean __cdecl Netchan_CanPacket( netchan_t *chan );
+void __cdecl Netchan_FragSend( netchan_t *chan );
+void __cdecl Netchan_Clear( netchan_t *chan );
 
 // huffman compression
-void Huff_Init( void );
-void Huff_CompressPacket( sizebuf_t *msg, int offset );
-void Huff_DecompressPacket( sizebuf_t *msg, int offset );
+void __cdecl Huff_Init( void );
+void __cdecl Huff_CompressPacket( sizebuf_t *msg, int offset );
+void __cdecl Huff_DecompressPacket( sizebuf_t *msg, int offset );
 
 #endif//NET_MSG_H

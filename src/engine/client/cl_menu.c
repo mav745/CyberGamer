@@ -21,30 +21,30 @@ GNU General Public License for more details.
 #include "input.h"
 
 static MENUAPI	GetMenuAPI;
-static void UI_UpdateUserinfo( void );
+static void __cdecl UI_UpdateUserinfo( void );
 
 menu_static_t	menu;
 
-void UI_UpdateMenu( float realtime )
+void __cdecl UI_UpdateMenu( float realtime )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnRedraw( realtime );
 	UI_UpdateUserinfo();
 }
 
-void UI_KeyEvent( int key, qboolean down )
+void __cdecl UI_KeyEvent( int key, qboolean down )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnKeyEvent( key, down );
 }
 
-void UI_MouseMove( int x, int y )
+void __cdecl UI_MouseMove( int x, int y )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnMouseMove( x, y );
 }
 
-void UI_SetActiveMenu( qboolean fActive )
+void __cdecl UI_SetActiveMenu( qboolean fActive )
 {
 	movie_state_t	*cin_state;
 
@@ -66,55 +66,55 @@ void UI_SetActiveMenu( qboolean fActive )
 	}
 }
 
-void UI_AddServerToList( netadr_t adr, const char *info )
+void __cdecl UI_AddServerToList( netadr_t adr, const char *info )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnAddServerToList( adr, info );
 }
 
-void UI_GetCursorPos( int *pos_x, int *pos_y )
+void __cdecl UI_GetCursorPos( int *pos_x, int *pos_y )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnGetCursorPos( pos_x, pos_y );
 }
 
-void UI_SetCursorPos( int pos_x, int pos_y )
+void __cdecl UI_SetCursorPos( int pos_x, int pos_y )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnSetCursorPos( pos_x, pos_y );
 }
 
-void UI_ShowCursor( qboolean show )
+void __cdecl UI_ShowCursor( qboolean show )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnShowCursor( show );
 }
 
-qboolean UI_CreditsActive( void )
+qboolean __cdecl UI_CreditsActive( void )
 {
 	if( !menu.hInstance ) return 0;
 	return menu.dllFuncs.pfnCreditsActive();
 }
 
-void UI_CharEvent( int key )
+void __cdecl UI_CharEvent( int key )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnCharEvent( key );
 }
 
-qboolean UI_MouseInRect( void )
+qboolean __cdecl UI_MouseInRect( void )
 {
 	if( !menu.hInstance ) return 1;
 	return menu.dllFuncs.pfnMouseInRect();
 }
 
-qboolean UI_IsVisible( void )
+qboolean __cdecl UI_IsVisible( void )
 {
 	if( !menu.hInstance ) return 0;
 	return menu.dllFuncs.pfnIsVisible();
 }
 
-static void UI_DrawLogo( const char *filename, float x, float y, float width, float height )
+static void __cdecl UI_DrawLogo( const char *filename, float x, float y, float width, float height )
 {
 	static float	cin_time;
 	static int	last_frame = -1;
@@ -183,22 +183,22 @@ static void UI_DrawLogo( const char *filename, float x, float y, float width, fl
 	R_DrawStretchRaw( x, y, width, height, menu.logo_xres, menu.logo_yres, cin_data, redraw );
 }
 
-static int UI_GetLogoWidth( void )
+static int __cdecl UI_GetLogoWidth( void )
 {
 	return menu.logo_xres;
 }
 
-static int UI_GetLogoHeight( void )
+static int __cdecl UI_GetLogoHeight( void )
 {
 	return menu.logo_yres;
 }
 
-static float UI_GetLogoLength( void )
+static float __cdecl UI_GetLogoLength( void )
 {
 	return menu.logo_length;
 }
 
-static void UI_UpdateUserinfo( void )
+static void __cdecl UI_UpdateUserinfo( void )
 {
 	player_info_t	*player;
 
@@ -212,13 +212,13 @@ static void UI_UpdateUserinfo( void )
 	player->bottomcolor = Q_atoi( Info_ValueForKey( player->userinfo, "bottomcolor" ));
 }
 
-void Host_Credits( void )
+void __cdecl Host_Credits( void )
 {
 	if( !menu.hInstance ) return;
 	menu.dllFuncs.pfnFinalCredits();
 }
 
-static void UI_ConvertGameInfo( GAMEINFO *out, gameinfo_t *in )
+static void __cdecl UI_ConvertGameInfo( GAMEINFO *out, gameinfo_t *in )
 {
 	Q_strncpy( out->gamefolder, in->gamefolder, sizeof( out->gamefolder ));
 	Q_strncpy( out->startmap, in->startmap, sizeof( out->startmap ));
@@ -238,7 +238,7 @@ static void UI_ConvertGameInfo( GAMEINFO *out, gameinfo_t *in )
 		out->flags |= GFL_NOMODELS;
 }
 
-qboolean PIC_Scissor( float *x, float *y, float *width, float *height, float *u0, float *v0, float *u1, float *v1 )
+qboolean __cdecl PIC_Scissor( float *x, float *y, float *width, float *height, float *u0, float *v0, float *u1, float *v1 )
 {
 	float	dudx, dvdy;
 
@@ -348,7 +348,7 @@ pfnPIC_Load
 
 =========
 */
-static HIMAGE pfnPIC_Load( const char *szPicName, const byte *image_buf, long image_size, long flags )
+static HIMAGE __cdecl pfnPIC_Load( const char *szPicName, const byte *image_buf, long image_size, long flags )
 {
 	HIMAGE	tx;
 
@@ -374,7 +374,7 @@ pfnPIC_Width
 
 =========
 */
-static int pfnPIC_Width( HIMAGE hPic )
+static int __cdecl pfnPIC_Width( HIMAGE hPic )
 {
 	int	picWidth;
 
@@ -389,7 +389,7 @@ pfnPIC_Height
 
 =========
 */
-static int pfnPIC_Height( HIMAGE hPic )
+static int __cdecl pfnPIC_Height( HIMAGE hPic )
 {
 	int	picHeight;
 
@@ -420,7 +420,7 @@ pfnPIC_Draw
 
 =========
 */
-void pfnPIC_Draw( int x, int y, int width, int height, const wrect_t *prc )
+void __cdecl pfnPIC_Draw( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderNormal );
 	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
@@ -432,7 +432,7 @@ pfnPIC_DrawTrans
 
 =========
 */
-void pfnPIC_DrawTrans( int x, int y, int width, int height, const wrect_t *prc )
+void __cdecl pfnPIC_DrawTrans( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransTexture );
 	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
@@ -444,7 +444,7 @@ pfnPIC_DrawHoles
 
 =========
 */
-void pfnPIC_DrawHoles( int x, int y, int width, int height, const wrect_t *prc )
+void __cdecl pfnPIC_DrawHoles( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransAlpha );
 	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
@@ -456,7 +456,7 @@ pfnPIC_DrawAdditive
 
 =========
 */
-void pfnPIC_DrawAdditive( int x, int y, int width, int height, const wrect_t *prc )
+void __cdecl pfnPIC_DrawAdditive( int x, int y, int width, int height, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransAdd );
 	PIC_DrawGeneric( (float)x, (float)y, (float)width, (float)height, prc );
@@ -468,7 +468,7 @@ pfnPIC_EnableScissor
 
 =========
 */
-static void pfnPIC_EnableScissor( int x, int y, int width, int height )
+static void __cdecl pfnPIC_EnableScissor( int x, int y, int width, int height )
 {
 	// check bounds
 	x = bound( 0, x, menu.globals->scrWidth );
@@ -489,7 +489,7 @@ pfnPIC_DisableScissor
 
 =========
 */
-static void pfnPIC_DisableScissor( void )
+static void __cdecl pfnPIC_DisableScissor( void )
 {
 	menu.ds.scissor_x = 0;
 	menu.ds.scissor_width = 0;
@@ -522,7 +522,7 @@ pfnClientCmd
 
 =============
 */
-static void pfnClientCmd( int exec_now, const char *szCmdString )
+static void __cdecl pfnClientCmd( int exec_now, const char *szCmdString )
 {
 	if( !szCmdString || !szCmdString[0] )
 		return;
@@ -540,7 +540,7 @@ pfnPlaySound
 
 =============
 */
-static void pfnPlaySound( const char *szSound )
+static void __cdecl pfnPlaySound( const char *szSound )
 {
 	if( !szSound || !*szSound ) return;
 	S_StartLocalSound( szSound, VOL_NORM, false );
@@ -598,7 +598,7 @@ UI_DrawConsoleString
 drawing string like a console string
 =============
 */
-static int UI_DrawConsoleString( int x, int y, const char *string )
+static int __cdecl UI_DrawConsoleString( int x, int y, const char *string )
 {
 	int	drawLen;
 
@@ -616,7 +616,7 @@ pfnDrawSetTextColor
 set color for anything
 =============
 */
-static void UI_DrawSetTextColor( int r, int g, int b, int alpha )
+static void __cdecl UI_DrawSetTextColor( int r, int g, int b, int alpha )
 {
 	// bound color and convert to byte
 	menu.ds.textColor[0] = r;
@@ -632,7 +632,7 @@ pfnGetPlayerModel
 for drawing playermodel previews
 ====================
 */
-static cl_entity_t* pfnGetPlayerModel( void )
+static cl_entity_t* __cdecl pfnGetPlayerModel( void )
 {
 	return &menu.playermodel;
 }
@@ -644,7 +644,7 @@ pfnSetPlayerModel
 for drawing playermodel previews
 ====================
 */
-static void pfnSetPlayerModel( cl_entity_t *ent, const char *path )
+static void __cdecl pfnSetPlayerModel( cl_entity_t *ent, const char *path )
 {
 	Mod_RegisterModel( path, MAX_MODELS - 1 );
 	ent->curstate.modelindex = MAX_MODELS - 1;
@@ -658,7 +658,7 @@ pfnRenderScene
 for drawing playermodel previews
 ====================
 */
-static void pfnRenderScene( const ref_params_t *fd )
+static void __cdecl pfnRenderScene( const ref_params_t *fd )
 {
 	// to avoid division by zero
 	if( !fd || fd->fov_x <= 0.0f || fd->fov_y <= 0.0f )
@@ -673,7 +673,7 @@ pfnClientJoin
 send client connect
 ====================
 */
-static void pfnClientJoin( const netadr_t adr )
+static void __cdecl pfnClientJoin( const netadr_t adr )
 {
 	Cbuf_AddText( va( "connect %s\n", NET_AdrToString( adr )));
 }
@@ -685,7 +685,7 @@ pfnKeyGetOverstrikeMode
 get global key overstrike state
 ====================
 */
-static int pfnKeyGetOverstrikeMode( void )
+static int __cdecl pfnKeyGetOverstrikeMode( void )
 {
 	return host.key_overstrike;
 }
@@ -697,7 +697,7 @@ pfnKeySetOverstrikeMode
 set global key overstrike mode
 ====================
 */
-static void pfnKeySetOverstrikeMode( int fActive )
+static void __cdecl pfnKeySetOverstrikeMode( int fActive )
 {
 	host.key_overstrike = fActive;
 }
@@ -709,7 +709,7 @@ pfnKeyGetState
 returns kbutton struct if found
 ====================
 */
-static void *pfnKeyGetState( const char *name )
+static void *__cdecl pfnKeyGetState( const char *name )
 {
 	if( clgame.dllFuncs.KB_Find )
 		return clgame.dllFuncs.KB_Find( name );
@@ -722,7 +722,7 @@ pfnMemAlloc
 
 =========
 */
-static void *pfnMemAlloc( size_t cb, const char *filename, const int fileline )
+static void *__cdecl pfnMemAlloc( size_t cb, const char *filename, const int fileline )
 {
 	return _Mem_Alloc( menu.mempool, cb, filename, fileline );
 }

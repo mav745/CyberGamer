@@ -439,22 +439,17 @@ static qboolean NET_GetLoopPacket( netsrc_t sock, netadr_t *from, byte *data, si
 
 	return true;
 }
-#include <stdio.h>
-void mylog(char *txt) {
-	FILE *ofp = fopen("./net-log.txt", "a");
-	fprintf(ofp, "%s\n", txt);
-	fclose(ofp);
-}
+
 static void NET_SendLoopPacket( netsrc_t sock, size_t length, const void *data, netadr_t to )
 {
 	int		i;
 	loopback_t	*loop;
-char buf[256];
+	
 	loop = &loopbacks[sock^1];
 
 	i = loop->send & MASK_LOOPBACK;
 	loop->send++;
-	sprintf(buf, "\nNET_SendLoopPacket length: %u", length); mylog(buf);
+	
 	Q_memcpy( loop->msgs[i].data, data, length );
 	loop->msgs[i].datalen = length;
 }

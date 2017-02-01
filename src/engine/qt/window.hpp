@@ -15,6 +15,7 @@ class Window : public QOpenGLWidget, public QOpenGLFunctions
 	Q_OBJECT
 public:
 	Window(QWidget *parent = 0);
+	~Window();
 
 	void glBegin(GLenum mode);
 	void glEnd();
@@ -54,8 +55,10 @@ private:
 
 	QOpenGLBuffer drawVerts;
 	QOpenGLBuffer drawCoords;
-	QVector<float> tempVerts;
-	QVector<float> tempCoords;
+	float *tempVerts;
+	float *tempCoords;
+	int numVerts;
+	int numCoords;
 	QVector4D drawColor;
 
 };

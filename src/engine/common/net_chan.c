@@ -1159,7 +1159,7 @@ transmition / retransmition of the reliable messages.
 A 0 length will still generate a packet and deal with the reliable messages.
 ================
 */
-void Netchan_TransmitBits( netchan_t *chan, int length, byte *data )
+void __cdecl Netchan_TransmitBits( netchan_t *chan, int length, byte *data )
 {
 	sizebuf_t	send;
 	byte	send_buf[NET_MAX_MESSAGE];

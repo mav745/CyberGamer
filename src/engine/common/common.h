@@ -352,70 +352,70 @@ extern sysinfo_t	SI;
 //
 // filesystem.c
 //
-void FS_Init( void );
-void FS_Path( void );
-void FS_Shutdown( void );
-void FS_ClearSearchPath( void );
-void FS_AllowDirectPaths( qboolean enable );
-void FS_AddGameDirectory( const char *dir, int flags );
-void FS_AddGameHierarchy( const char *dir, int flags );
-void FS_LoadGameInfo( const char *rootfolder );
-void FS_FileBase( const char *in, char *out );
-const char *FS_FileExtension( const char *in );
-void FS_DefaultExtension( char *path, const char *extension );
-void FS_ExtractFilePath( const char* const path, char* dest );
-const char *FS_GetDiskPath( const char *name, qboolean gamedironly );
-const char *FS_FileWithoutPath( const char *in );
-wfile_t *W_Open( const char *filename, const char *mode );
-byte *W_LoadLump( wfile_t *wad, const char *lumpname, size_t *lumpsizeptr, const char type );
-void W_Close( wfile_t *wad );
-file_t *FS_OpenFile( const char *path, fs_offset_t *filesizeptr, qboolean gamedironly );
-byte *FS_LoadFile( const char *path, fs_offset_t *filesizeptr, qboolean gamedironly );
-qboolean FS_WriteFile( const char *filename, const void *data, fs_offset_t len );
-int COM_FileSize( const char *filename );
-void COM_FixSlashes( char *pname );
-void COM_FreeFile( void *buffer );
-int COM_CompareFileTime( const char *filename1, const char *filename2, int *iCompare );
-search_t *FS_Search( const char *pattern, int caseinsensitive, int gamedironly );
-file_t *FS_Open( const char *filepath, const char *mode, qboolean gamedironly );
-fs_offset_t FS_Write( file_t *file, const void *data, size_t datasize );
-fs_offset_t FS_Read( file_t *file, void *buffer, size_t buffersize );
-int FS_VPrintf( file_t *file, const char *format, va_list ap );
-int FS_Seek( file_t *file, fs_offset_t offset, int whence );
-int FS_Gets( file_t *file, byte *string, size_t bufsize );
-int FS_Printf( file_t *file, const char *format, ... );
-fs_offset_t FS_FileSize( const char *filename, qboolean gamedironly );
-fs_offset_t FS_FileTime( const char *filename, qboolean gamedironly );
-int FS_Print( file_t *file, const char *msg );
-qboolean FS_Rename( const char *oldname, const char *newname );
-qboolean FS_FileExists( const char *filename, qboolean gamedironly );
-void FS_FileCopy( file_t *pOutput, file_t *pInput, int fileSize );
-qboolean FS_Delete( const char *path );
-int FS_UnGetc( file_t *file, byte c );
-void FS_StripExtension( char *path );
-fs_offset_t FS_Tell( file_t *file );
-qboolean FS_Eof( file_t *file );
-void FS_Purge( file_t *file );
-int FS_Close( file_t *file );
-int FS_Getc( file_t *file );
-qboolean FS_Eof( file_t *file );
-fs_offset_t FS_FileLength( file_t *f );
+void __cdecl FS_Init( void );
+void __cdecl FS_Path( void );
+void __cdecl FS_Shutdown( void );
+void __cdecl FS_ClearSearchPath( void );
+void __cdecl FS_AllowDirectPaths( qboolean enable );
+void __cdecl FS_AddGameDirectory( const char *dir, int flags );
+void __cdecl FS_AddGameHierarchy( const char *dir, int flags );
+void __cdecl FS_LoadGameInfo( const char *rootfolder );
+void __cdecl FS_FileBase( const char *in, char *out );
+const char *__cdecl FS_FileExtension( const char *in );
+void __cdecl FS_DefaultExtension( char *path, const char *extension );
+void __cdecl FS_ExtractFilePath( const char* const path, char* dest );
+const char *__cdecl FS_GetDiskPath( const char *name, qboolean gamedironly );
+const char *__cdecl FS_FileWithoutPath( const char *in );
+wfile_t *__cdecl W_Open( const char *filename, const char *mode );
+byte *__cdecl W_LoadLump( wfile_t *wad, const char *lumpname, size_t *lumpsizeptr, const char type );
+void __cdecl W_Close( wfile_t *wad );
+file_t *__cdecl FS_OpenFile( const char *path, fs_offset_t *filesizeptr, qboolean gamedironly );
+byte *__cdecl FS_LoadFile( const char *path, fs_offset_t *filesizeptr, qboolean gamedironly );
+qboolean __cdecl FS_WriteFile( const char *filename, const void *data, fs_offset_t len );
+int __cdecl COM_FileSize( const char *filename );
+void __cdecl COM_FixSlashes( char *pname );
+void __cdecl COM_FreeFile( void *buffer );
+int __cdecl COM_CompareFileTime( const char *filename1, const char *filename2, int *iCompare );
+search_t *__cdecl FS_Search( const char *pattern, int caseinsensitive, int gamedironly );
+file_t *__cdecl FS_Open( const char *filepath, const char *mode, qboolean gamedironly );
+fs_offset_t __cdecl FS_Write( file_t *file, const void *data, size_t datasize );
+fs_offset_t __cdecl FS_Read( file_t *file, void *buffer, size_t buffersize );
+int __cdecl FS_VPrintf( file_t *file, const char *format, va_list ap );
+int __cdecl FS_Seek( file_t *file, fs_offset_t offset, int whence );
+int __cdecl FS_Gets( file_t *file, byte *string, size_t bufsize );
+int __cdecl FS_Printf( file_t *file, const char *format, ... );
+fs_offset_t __cdecl FS_FileSize( const char *filename, qboolean gamedironly );
+fs_offset_t __cdecl FS_FileTime( const char *filename, qboolean gamedironly );
+int __cdecl FS_Print( file_t *file, const char *msg );
+qboolean __cdecl FS_Rename( const char *oldname, const char *newname );
+qboolean __cdecl FS_FileExists( const char *filename, qboolean gamedironly );
+void __cdecl FS_FileCopy( file_t *pOutput, file_t *pInput, int fileSize );
+qboolean __cdecl FS_Delete( const char *path );
+int __cdecl FS_UnGetc( file_t *file, byte c );
+void __cdecl FS_StripExtension( char *path );
+fs_offset_t __cdecl FS_Tell( file_t *file );
+qboolean __cdecl FS_Eof( file_t *file );
+void __cdecl FS_Purge( file_t *file );
+int __cdecl FS_Close( file_t *file );
+int __cdecl FS_Getc( file_t *file );
+qboolean __cdecl FS_Eof( file_t *file );
+fs_offset_t __cdecl FS_FileLength( file_t *f );
 
 //
 // network.c
 //
-void NET_Init( void );
-void NET_Shutdown( void );
-void NET_Sleep( int msec );
-void NET_Config( qboolean net_enable );
-qboolean NET_IsLocalAddress( netadr_t adr );
-char *NET_AdrToString( const netadr_t a );
-char *NET_BaseAdrToString( const netadr_t a );
-qboolean NET_StringToAdr( const char *string, netadr_t *adr );
-qboolean NET_CompareAdr( const netadr_t a, const netadr_t b );
-qboolean NET_CompareBaseAdr( const netadr_t a, const netadr_t b );
-qboolean NET_GetPacket( netsrc_t sock, netadr_t *from, byte *data, size_t *length );
-void NET_SendPacket( netsrc_t sock, size_t length, const void *data, netadr_t to );
+void __cdecl NET_Init( void );
+void __cdecl NET_Shutdown( void );
+void __cdecl NET_Sleep( int msec );
+void __cdecl NET_Config( qboolean net_enable );
+qboolean __cdecl NET_IsLocalAddress( netadr_t adr );
+char *__cdecl NET_AdrToString( const netadr_t a );
+char *__cdecl NET_BaseAdrToString( const netadr_t a );
+qboolean __cdecl NET_StringToAdr( const char *string, netadr_t *adr );
+qboolean __cdecl NET_CompareAdr( const netadr_t a, const netadr_t b );
+qboolean __cdecl NET_CompareBaseAdr( const netadr_t a, const netadr_t b );
+qboolean __cdecl NET_GetPacket( netsrc_t sock, netadr_t *from, byte *data, size_t *length );
+void __cdecl NET_SendPacket( netsrc_t sock, size_t length, const void *data, netadr_t to );
 
 /*
 ========================================================================
@@ -525,16 +525,16 @@ typedef struct imgfilter_s
 //
 // imagelib
 //
-void Image_Init( void );
-void Image_Shutdown( void );
-rgbdata_t *FS_LoadImage( const char *filename, const byte *buffer, size_t size );
-qboolean FS_SaveImage( const char *filename, rgbdata_t *pix );
-rgbdata_t *FS_CopyImage( rgbdata_t *in );
-void FS_FreeImage( rgbdata_t *pack );
+void __cdecl Image_Init( void );
+void __cdecl Image_Shutdown( void );
+rgbdata_t *__cdecl FS_LoadImage( const char *filename, const byte *buffer, size_t size );
+qboolean __cdecl FS_SaveImage( const char *filename, rgbdata_t *pix );
+rgbdata_t *__cdecl FS_CopyImage( rgbdata_t *in );
+void __cdecl FS_FreeImage( rgbdata_t *pack );
 extern const bpc_desc_t PFDesc[];	// image get pixelformat
-qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uint flags, imgfilter_t *filter );
-void Image_PaletteHueReplace( byte *palSrc, int newHue, int start, int end );
-void Image_SetForceFlags( uint flags );	// set image force flags on loading
+qboolean __cdecl Image_Process( rgbdata_t **pix, int width, int height, float gamma, uint flags, imgfilter_t *filter );
+void __cdecl Image_PaletteHueReplace( byte *palSrc, int newHue, int start, int end );
+void __cdecl Image_SetForceFlags( uint flags );	// set image force flags on loading
 
 /*
 ========================================================================
@@ -588,49 +588,49 @@ typedef struct
 //
 // soundlib
 //
-void Sound_Init( void );
-void Sound_Shutdown( void );
-wavdata_t *FS_LoadSound( const char *filename, const byte *buffer, size_t size );
-void FS_FreeSound( wavdata_t *pack );
-stream_t *FS_OpenStream( const char *filename );
-wavdata_t *FS_StreamInfo( stream_t *stream );
-long FS_ReadStream( stream_t *stream, int bytes, void *buffer );
-long FS_SetStreamPos( stream_t *stream, long newpos );
-long FS_GetStreamPos( stream_t *stream );
-void FS_FreeStream( stream_t *stream );
-qboolean Sound_Process( wavdata_t **wav, int rate, int width, uint flags );
-uint Sound_GetApproxWavePlayLen( const char *filepath );
+void __cdecl Sound_Init( void );
+void __cdecl Sound_Shutdown( void );
+wavdata_t *__cdecl FS_LoadSound( const char *filename, const byte *buffer, size_t size );
+void __cdecl FS_FreeSound( wavdata_t *pack );
+stream_t *__cdecl FS_OpenStream( const char *filename );
+wavdata_t *__cdecl FS_StreamInfo( stream_t *stream );
+long __cdecl FS_ReadStream( stream_t *stream, int bytes, void *buffer );
+long __cdecl FS_SetStreamPos( stream_t *stream, long newpos );
+long __cdecl FS_GetStreamPos( stream_t *stream );
+void __cdecl FS_FreeStream( stream_t *stream );
+qboolean __cdecl Sound_Process( wavdata_t **wav, int rate, int width, uint flags );
+uint __cdecl Sound_GetApproxWavePlayLen( const char *filepath );
 
 //
 // build.c
 //
-int Q_buildnum( void );
+int __cdecl Q_buildnum( void );
 
 //
 // host.c
 //
-void EXPORT Host_Shutdown( void );
-void Host_SetServerState( int state );
-int Host_ServerState( void );
-int Host_CompareFileTime( long ft1, long ft2 );
-void Host_NewInstance( const char *name, const char *finalmsg );
-qboolean Host_NewGame( const char *mapName, qboolean loadGame );
-void Host_EndGame( const char *message, ... );
-void Host_AbortCurrentFrame( void );
-void Host_RestartAmbientSounds( void );
-void Host_RestartDecals( void );
-qboolean CL_ChangeGame( const char *gamefolder, qboolean bReset );
-void Host_WriteServerConfig( const char *name );
-void Host_WriteOpenGLConfig( void );
-void Host_WriteVideoConfig( void );
-void Host_WriteConfig( void );
-qboolean Host_IsLocalGame( void );
-void Host_ShutdownServer( void );
-void Host_Print( const char *txt );
-void Host_Error( const char *error, ... );
-void Host_PrintEngineFeatures( void );
-void Host_InitDecals( void );
-void Host_Credits( void );
+void EXPORT __cdecl Host_Shutdown( void );
+void __cdecl Host_SetServerState( int state );
+int __cdecl Host_ServerState( void );
+int __cdecl Host_CompareFileTime( long ft1, long ft2 );
+void __cdecl Host_NewInstance( const char *name, const char *finalmsg );
+qboolean __cdecl Host_NewGame( const char *mapName, qboolean loadGame );
+void __cdecl Host_EndGame( const char *message, ... );
+void __cdecl Host_AbortCurrentFrame( void );
+void __cdecl Host_RestartAmbientSounds( void );
+void __cdecl Host_RestartDecals( void );
+qboolean __cdecl CL_ChangeGame( const char *gamefolder, qboolean bReset );
+void __cdecl Host_WriteServerConfig( const char *name );
+void __cdecl Host_WriteOpenGLConfig( void );
+void __cdecl Host_WriteVideoConfig( void );
+void __cdecl Host_WriteConfig( void );
+qboolean __cdecl Host_IsLocalGame( void );
+void __cdecl Host_ShutdownServer( void );
+void __cdecl Host_Print( const char *txt );
+void __cdecl Host_Error( const char *error, ... );
+void __cdecl Host_PrintEngineFeatures( void );
+void __cdecl Host_InitDecals( void );
+void __cdecl Host_Credits( void );
 
 /*
 ==============================================================
@@ -639,15 +639,15 @@ CLIENT / SERVER SYSTEMS
 
 ==============================================================
 */
-void CL_Init( void );
-void CL_Shutdown( void );
-void Host_ClientFrame(double frametime );
-qboolean CL_Active( void );
+void __cdecl CL_Init( void );
+void __cdecl CL_Shutdown( void );
+void __cdecl Host_ClientFrame(double frametime );
+qboolean __cdecl CL_Active( void );
 
-void SV_Init( void );
-void SV_Shutdown( qboolean reconnect );
-void Host_ServerFrame( void );
-qboolean SV_Active( void );
+void __cdecl SV_Init( void );
+void __cdecl SV_Shutdown( qboolean reconnect );
+void __cdecl Host_ServerFrame( void );
+qboolean __cdecl SV_Active( void );
 
 /*
 ==============================================================
@@ -656,36 +656,36 @@ qboolean SV_Active( void );
 
 ==============================================================
 */
-cvar_t *pfnCvar_RegisterVariable( const char *szName, const char *szValue, int flags );
-char *COM_MemFgets( byte *pMemFile, int fileSize, int *filePos, char *pBuffer, int bufferSize );
-byte* COM_LoadFileForMe( const char *filename, int *pLength );
-cvar_t *pfnCVarGetPointer( const char *szVarName );
-int pfnDrawConsoleString( int x, int y, char *string );
-void pfnDrawSetTextColor( float r, float g, float b );
-void pfnDrawConsoleStringLen( const char *pText, int *length, int *height );
-int pfnAddClientCommand( const char *cmd_name, xcommand_t func );
-void *Cache_Check( byte *mempool, struct cache_user_s *c );
-edict_t* pfnPEntityOfEntIndex( int iEntIndex );
-void pfnGetModelBounds( model_t *mod, float *mins, float *maxs );
-void pfnGetGameDir( char *szGetGameDir );
-int pfnDecalIndex( const char *m );
-int pfnGetModelType( model_t *mod );
-int pfnIsMapValid( char *filename );
-void Con_DPrintf( char *fmt, ... );
-void Con_Printf( char *szFmt, ... );
-int pfnIsInGame( void );
+cvar_t *__cdecl pfnCvar_RegisterVariable( const char *szName, const char *szValue, int flags );
+char *__cdecl COM_MemFgets( byte *pMemFile, int fileSize, int *filePos, char *pBuffer, int bufferSize );
+byte *__cdecl COM_LoadFileForMe( const char *filename, int *pLength );
+cvar_t *__cdecl pfnCVarGetPointer( const char *szVarName );
+int __cdecl pfnDrawConsoleString( int x, int y, char *string );
+void __cdecl pfnDrawSetTextColor( float r, float g, float b );
+void __cdecl pfnDrawConsoleStringLen( const char *pText, int *length, int *height );
+int __cdecl pfnAddClientCommand( const char *cmd_name, xcommand_t func );
+void *__cdecl Cache_Check( byte *mempool, struct cache_user_s *c );
+edict_t *__cdecl pfnPEntityOfEntIndex( int iEntIndex );
+void __cdecl pfnGetModelBounds( model_t *mod, float *mins, float *maxs );
+void __cdecl pfnGetGameDir( char *szGetGameDir );
+int __cdecl pfnDecalIndex( const char *m );
+int __cdecl pfnGetModelType( model_t *mod );
+int __cdecl pfnIsMapValid( char *filename );
+void __cdecl Con_DPrintf( char *fmt, ... );
+void __cdecl Con_Printf( char *szFmt, ... );
+int __cdecl pfnIsInGame( void );
 
 // CS:CS engfuncs (stubs)
-void *pfnSequenceGet( const char *fileName, const char *entryName );
-void *pfnSequencePickSentence( const char *groupName, int pickMethod, int *picked );
-int pfnIsCareerMatch( void );
+void *__cdecl pfnSequenceGet( const char *fileName, const char *entryName );
+void *__cdecl pfnSequencePickSentence( const char *groupName, int pickMethod, int *picked );
+int __cdecl pfnIsCareerMatch( void );
 
 // Decay engfuncs (stubs)
-int pfnGetTimesTutorMessageShown( int mid );
-void pfnRegisterTutorMessageShown( int mid );
-void pfnConstructTutorMessageDecayBuffer( int *buffer, int buflen );
-void pfnProcessTutorMessageDecayBuffer( int *buffer, int bufferLength );
-void pfnResetTutorMessageDecayData( void );
+int __cdecl pfnGetTimesTutorMessageShown( int mid );
+void __cdecl pfnRegisterTutorMessageShown( int mid );
+void __cdecl pfnConstructTutorMessageDecayBuffer( int *buffer, int buflen );
+void __cdecl pfnProcessTutorMessageDecayBuffer( int *buffer, int bufferLength );
+void __cdecl pfnResetTutorMessageDecayData( void );
 
 /*
 ==============================================================
@@ -701,181 +701,181 @@ void pfnResetTutorMessageDecayData( void );
 //
 // crclib.c
 //
-void CRC32_Init( dword *pulCRC );
-byte CRC32_BlockSequence( byte *base, int length, int sequence );
-void CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, int nBuffer );
-void CRC32_ProcessByte( dword *pulCRC, byte ch );
-void CRC32_Final( dword *pulCRC );
-qboolean CRC32_File( dword *crcvalue, const char *filename );
-qboolean CRC32_MapFile( dword *crcvalue, const char *filename );
-void MD5Init( MD5Context_t *ctx );
-void MD5Update( MD5Context_t *ctx, const byte *buf, uint len );
-void MD5Final( byte digest[16], MD5Context_t *ctx );
-qboolean MD5_HashFile( byte digest[16], const char *pszFileName, uint seed[4] );
-uint Com_HashKey( const char *string, uint hashSize );
+void __cdecl CRC32_Init( dword *pulCRC );
+byte __cdecl CRC32_BlockSequence( byte *base, int length, int sequence );
+void __cdecl CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, int nBuffer );
+void __cdecl CRC32_ProcessByte( dword *pulCRC, byte ch );
+void __cdecl CRC32_Final( dword *pulCRC );
+qboolean __cdecl CRC32_File( dword *crcvalue, const char *filename );
+qboolean __cdecl CRC32_MapFile( dword *crcvalue, const char *filename );
+void __cdecl MD5Init( MD5Context_t *ctx );
+void __cdecl MD5Update( MD5Context_t *ctx, const byte *buf, uint len );
+void __cdecl MD5Final( byte digest[16], MD5Context_t *ctx );
+qboolean __cdecl MD5_HashFile( byte digest[16], const char *pszFileName, uint seed[4] );
+uint __cdecl Com_HashKey( const char *string, uint hashSize );
 
 //
 // hpak.c
 //
-void HPAK_Init( void );
-qboolean HPAK_GetDataPointer( const char *filename, struct resource_s *pRes, byte **buffer, int *size );
-qboolean HPAK_ResourceForHash( const char *filename, char *hash, struct resource_s *pRes );
-void HPAK_AddLump( qboolean queue, const char *filename, struct resource_s *pRes, byte *data, file_t *f );
-void HPAK_CheckIntegrity( const char *filename );
-void HPAK_CheckSize( const char *filename );
-void HPAK_FlushHostQueue( void );
+void __cdecl HPAK_Init( void );
+qboolean __cdecl HPAK_GetDataPointer( const char *filename, struct resource_s *pRes, byte **buffer, int *size );
+qboolean __cdecl HPAK_ResourceForHash( const char *filename, char *hash, struct resource_s *pRes );
+void __cdecl HPAK_AddLump( qboolean queue, const char *filename, struct resource_s *pRes, byte *data, file_t *f );
+void __cdecl HPAK_CheckIntegrity( const char *filename );
+void __cdecl HPAK_CheckSize( const char *filename );
+void __cdecl HPAK_FlushHostQueue( void );
 
 //
 // keys.c
 //
-qboolean Key_IsDown( int keynum );
-const char *Key_IsBind( int keynum );
-void Key_Event( int key, qboolean down );
-void Key_Init( void );
-void Key_WriteBindings( file_t *f );
-const char *Key_GetBinding( int keynum );
-void Key_SetBinding( int keynum, const char *binding );
-void Key_ClearStates( void );
-const char *Key_KeynumToString( int keynum );
-int Key_StringToKeynum( const char *str );
-int Key_GetKey( const char *binding );
-void Key_EnumCmds_f( void );
-void Key_SetKeyDest( int key_dest );
+qboolean __cdecl Key_IsDown( int keynum );
+const char *__cdecl Key_IsBind( int keynum );
+void __cdecl Key_Event( int key, qboolean down );
+void __cdecl Key_Init( void );
+void __cdecl Key_WriteBindings( file_t *f );
+const char *__cdecl Key_GetBinding( int keynum );
+void __cdecl Key_SetBinding( int keynum, const char *binding );
+void __cdecl Key_ClearStates( void );
+const char *__cdecl Key_KeynumToString( int keynum );
+int __cdecl Key_StringToKeynum( const char *str );
+int __cdecl Key_GetKey( const char *binding );
+void __cdecl Key_EnumCmds_f( void );
+void __cdecl Key_SetKeyDest( int key_dest );
 
 //
 // avikit.c
 //
 typedef struct movie_state_s	movie_state_t;
-long AVI_GetVideoFrameNumber( movie_state_t *Avi, float time );
-byte *AVI_GetVideoFrame( movie_state_t *Avi, long frame );
-qboolean AVI_GetVideoInfo( movie_state_t *Avi, long *xres, long *yres, float *duration );
-qboolean AVI_GetAudioInfo( movie_state_t *Avi, wavdata_t *snd_info );
-fs_offset_t AVI_GetAudioChunk( movie_state_t *Avi, char *audiodata, long offset, long length );
-void AVI_OpenVideo( movie_state_t *Avi, const char *filename, qboolean load_audio, qboolean ignore_hwgamma, int quiet );
-movie_state_t *AVI_LoadVideo( const char *filename, qboolean load_audio, qboolean ignore_hwgamma );
-movie_state_t *AVI_LoadVideoNoSound( const char *filename, qboolean ignore_hwgamma );
-void AVI_CloseVideo( movie_state_t *Avi );
-qboolean AVI_IsActive( movie_state_t *Avi );
-void AVI_FreeVideo( movie_state_t *Avi );
-movie_state_t *AVI_GetState( int num );
-qboolean AVI_Initailize( void );
-void AVI_Shutdown( void );
+long __cdecl AVI_GetVideoFrameNumber( movie_state_t *Avi, float time );
+byte *__cdecl AVI_GetVideoFrame( movie_state_t *Avi, long frame );
+qboolean __cdecl AVI_GetVideoInfo( movie_state_t *Avi, long *xres, long *yres, float *duration );
+qboolean __cdecl AVI_GetAudioInfo( movie_state_t *Avi, wavdata_t *snd_info );
+fs_offset_t __cdecl AVI_GetAudioChunk( movie_state_t *Avi, char *audiodata, long offset, long length );
+void __cdecl AVI_OpenVideo( movie_state_t *Avi, const char *filename, qboolean load_audio, qboolean ignore_hwgamma, int quiet );
+movie_state_t *__cdecl AVI_LoadVideo( const char *filename, qboolean load_audio, qboolean ignore_hwgamma );
+movie_state_t *__cdecl AVI_LoadVideoNoSound( const char *filename, qboolean ignore_hwgamma );
+void __cdecl AVI_CloseVideo( movie_state_t *Avi );
+qboolean __cdecl AVI_IsActive( movie_state_t *Avi );
+void __cdecl AVI_FreeVideo( movie_state_t *Avi );
+movie_state_t *__cdecl AVI_GetState( int num );
+qboolean __cdecl AVI_Initailize( void );
+void __cdecl AVI_Shutdown( void );
 
 // shared calls
-qboolean CL_IsInGame( void );
-qboolean CL_IsInMenu( void );
-qboolean CL_IsInConsole( void );
-qboolean CL_IsThirdPerson( void );
-qboolean CL_IsIntermission( void );
-float CL_GetServerTime( void );
-float CL_GetLerpFrac( void );
-void CL_CharEvent( int key );
-qboolean CL_DisableVisibility( void );
-int CL_PointContents( const vec3_t point );
-char *COM_ParseFile( char *data, char *token );
-byte *COM_LoadFile( const char *filename, int usehunk, int *pLength );
-void CL_StudioEvent( struct mstudioevent_s *event, struct cl_entity_s *ent );
-qboolean CL_GetComment( const char *demoname, char *comment );
-void COM_AddAppDirectoryToSearchPath( const char *pszBaseDir, const char *appName );
-int COM_ExpandFilename( const char *fileName, char *nameOutBuffer, int nameOutBufferSize );
-struct pmtrace_s *PM_TraceLine( float *start, float *end, int flags, int usehull, int ignore_pe );
-void SV_StartSound( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch );
-void SV_StartMusic( const char *curtrack, const char *looptrack, fs_offset_t position );
-void SV_CreateDecal( struct sizebuf_s *msg, const float *origin, int decalIndex, int entityIndex, int modelIndex, int flags, float scale );
-void SV_CreateStudioDecal( struct sizebuf_s *msg, const float *origin, const float *start, int decalIndex, int entityIndex, int modelIndex,
+qboolean __cdecl CL_IsInGame( void );
+qboolean __cdecl CL_IsInMenu( void );
+qboolean __cdecl CL_IsInConsole( void );
+qboolean __cdecl CL_IsThirdPerson( void );
+qboolean __cdecl CL_IsIntermission( void );
+float __cdecl CL_GetServerTime( void );
+float __cdecl CL_GetLerpFrac( void );
+void __cdecl CL_CharEvent( int key );
+qboolean __cdecl CL_DisableVisibility( void );
+int __cdecl CL_PointContents( const vec3_t point );
+char *__cdecl COM_ParseFile( char *data, char *token );
+byte *__cdecl COM_LoadFile( const char *filename, int usehunk, int *pLength );
+void __cdecl CL_StudioEvent( struct mstudioevent_s *event, struct cl_entity_s *ent );
+qboolean __cdecl CL_GetComment( const char *demoname, char *comment );
+void __cdecl COM_AddAppDirectoryToSearchPath( const char *pszBaseDir, const char *appName );
+int __cdecl COM_ExpandFilename( const char *fileName, char *nameOutBuffer, int nameOutBufferSize );
+struct pmtrace_s *__cdecl PM_TraceLine( float *start, float *end, int flags, int usehull, int ignore_pe );
+void __cdecl SV_StartSound( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch );
+void __cdecl SV_StartMusic( const char *curtrack, const char *looptrack, fs_offset_t position );
+void __cdecl SV_CreateDecal( struct sizebuf_s *msg, const float *origin, int decalIndex, int entityIndex, int modelIndex, int flags, float scale );
+void __cdecl SV_CreateStudioDecal( struct sizebuf_s *msg, const float *origin, const float *start, int decalIndex, int entityIndex, int modelIndex,
 int flags, struct modelstate_s *state );
-struct sizebuf_s *SV_GetReliableDatagram( void );
-qboolean SV_RestoreCustomDecal( struct decallist_s *entry, edict_t *pEdict, qboolean adjacent );
-int R_CreateDecalList( struct decallist_s *pList, qboolean changelevel );
-void R_ClearAllDecals( void );
-void R_ClearStaticEntities( void );
-qboolean S_StreamGetCurrentState( char *currentTrack, char *loopTrack, int *position );
-struct cl_entity_s *CL_GetEntityByIndex( int index );
-struct cl_entity_s *CL_GetLocalPlayer( void );
-struct player_info_s *CL_GetPlayerInfo( int playerIndex );
-void SV_DrawDebugTriangles( void );
-void SV_DrawOrthoTriangles( void );
-qboolean UI_CreditsActive( void );
-void CL_ExtraUpdate( void );
-int CL_GetMaxClients( void );
-qboolean CL_IsPlaybackDemo( void );
-qboolean CL_IsBackgroundDemo( void );
-qboolean CL_IsBackgroundMap( void );
-qboolean CL_LoadProgs( const char *name );
-qboolean SV_GetComment( const char *savename, char *comment );
-qboolean SV_NewGame( const char *mapName, qboolean loadGame );
-void SV_ClipPMoveToEntity( struct physent_s *pe, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, struct pmtrace_s *tr );
-void CL_ClipPMoveToEntity( struct physent_s *pe, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, struct pmtrace_s *tr );
-void SV_SysError( const char *error_string );
-void SV_InitGameProgs( void );
-void SV_FreeGameProgs( void );
-void SV_ForceError( void );
-void CL_WriteMessageHistory( void );
-void CL_SendCmd( void );
-void CL_Disconnect( void );
-void CL_ClearEdicts( void );
-void CL_Crashed( void );
-qboolean CL_NextDemo( void );
-void CL_Drop( void );
-void SCR_Init( void );
-void SCR_UpdateScreen( void );
-void SCR_BeginLoadingPlaque( qboolean is_background );
-void SCR_CheckStartupVids( void );
-long SCR_GetAudioChunk( char *rawdata, long length );
-wavdata_t *SCR_GetMovieInfo( void );
-void SCR_Shutdown( void );
-void Con_Print( const char *txt );
-void Con_NPrintf( int idx, char *fmt, ... );
-void Con_NXPrintf( struct con_nprint_s *info, char *fmt, ... );
-void UI_NPrintf( int idx, char *fmt, ... );
-void UI_NXPrintf( struct con_nprint_s *info, char *fmt, ... );
-char *Info_ValueForKey( const char *s, const char *key );
-void Info_RemovePrefixedKeys( char *start, char prefix );
-qboolean Info_RemoveKey( char *s, const char *key );
-qboolean Info_SetValueForKey( char *s, const char *key, const char *value );
-qboolean Info_SetValueForStarKey( char *s, const char *key, const char *value, int maxsize );
-qboolean Info_Validate( const char *s );
-void Info_Print( const char *s );
-char *Cvar_Userinfo( void );
-char *Cvar_Serverinfo( void );
-void Cmd_WriteVariables( file_t *f );
-qboolean Cmd_CheckMapsList( qboolean fRefresh );
-void Cmd_AutoComplete( char *complete_string );
-void COM_SetRandomSeed( long lSeed );
-long Com_RandomLong( long lMin, long lMax );
-float Com_RandomFloat( float fMin, float fMax );
-void TrimSpace( const char *source, char *dest );
-void GL_FreeImage( const char *name );
+struct sizebuf_s *__cdecl SV_GetReliableDatagram( void );
+qboolean __cdecl SV_RestoreCustomDecal( struct decallist_s *entry, edict_t *pEdict, qboolean adjacent );
+int __cdecl R_CreateDecalList( struct decallist_s *pList, qboolean changelevel );
+void __cdecl R_ClearAllDecals( void );
+void __cdecl R_ClearStaticEntities( void );
+qboolean __cdecl S_StreamGetCurrentState( char *currentTrack, char *loopTrack, int *position );
+struct cl_entity_s *__cdecl CL_GetEntityByIndex( int index );
+struct cl_entity_s *__cdecl CL_GetLocalPlayer( void );
+struct player_info_s *__cdecl CL_GetPlayerInfo( int playerIndex );
+void __cdecl SV_DrawDebugTriangles( void );
+void __cdecl SV_DrawOrthoTriangles( void );
+qboolean __cdecl UI_CreditsActive( void );
+void __cdecl CL_ExtraUpdate( void );
+int __cdecl CL_GetMaxClients( void );
+qboolean __cdecl CL_IsPlaybackDemo( void );
+qboolean __cdecl CL_IsBackgroundDemo( void );
+qboolean __cdecl CL_IsBackgroundMap( void );
+qboolean __cdecl CL_LoadProgs( const char *name );
+qboolean __cdecl SV_GetComment( const char *savename, char *comment );
+qboolean __cdecl SV_NewGame( const char *mapName, qboolean loadGame );
+void __cdecl SV_ClipPMoveToEntity( struct physent_s *pe, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, struct pmtrace_s *tr );
+void __cdecl CL_ClipPMoveToEntity( struct physent_s *pe, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, struct pmtrace_s *tr );
+void __cdecl SV_SysError( const char *error_string );
+void __cdecl SV_InitGameProgs( void );
+void __cdecl SV_FreeGameProgs( void );
+void __cdecl SV_ForceError( void );
+void __cdecl CL_WriteMessageHistory( void );
+void __cdecl CL_SendCmd( void );
+void __cdecl CL_Disconnect( void );
+void __cdecl CL_ClearEdicts( void );
+void __cdecl CL_Crashed( void );
+qboolean __cdecl CL_NextDemo( void );
+void __cdecl CL_Drop( void );
+void __cdecl SCR_Init( void );
+void __cdecl SCR_UpdateScreen( void );
+void __cdecl SCR_BeginLoadingPlaque( qboolean is_background );
+void __cdecl SCR_CheckStartupVids( void );
+long __cdecl SCR_GetAudioChunk( char *rawdata, long length );
+wavdata_t *__cdecl SCR_GetMovieInfo( void );
+void __cdecl SCR_Shutdown( void );
+void __cdecl Con_Print( const char *txt );
+void __cdecl Con_NPrintf( int idx, char *fmt, ... );
+void __cdecl Con_NXPrintf( struct con_nprint_s *info, char *fmt, ... );
+void __cdecl UI_NPrintf( int idx, char *fmt, ... );
+void __cdecl UI_NXPrintf( struct con_nprint_s *info, char *fmt, ... );
+char *__cdecl Info_ValueForKey( const char *s, const char *key );
+void __cdecl Info_RemovePrefixedKeys( char *start, char prefix );
+qboolean __cdecl Info_RemoveKey( char *s, const char *key );
+qboolean __cdecl Info_SetValueForKey( char *s, const char *key, const char *value );
+qboolean __cdecl Info_SetValueForStarKey( char *s, const char *key, const char *value, int maxsize );
+qboolean __cdecl Info_Validate( const char *s );
+void __cdecl Info_Print( const char *s );
+char *__cdecl Cvar_Userinfo( void );
+char *__cdecl Cvar_Serverinfo( void );
+void __cdecl Cmd_WriteVariables( file_t *f );
+qboolean __cdecl Cmd_CheckMapsList( qboolean fRefresh );
+void __cdecl Cmd_AutoComplete( char *complete_string );
+void __cdecl COM_SetRandomSeed( long lSeed );
+long __cdecl Com_RandomLong( long lMin, long lMax );
+float __cdecl Com_RandomFloat( float fMin, float fMax );
+void __cdecl TrimSpace( const char *source, char *dest );
+void __cdecl GL_FreeImage( const char *name );
 //void VID_RestoreGamma( void );
-void UI_SetActiveMenu( qboolean fActive );
-struct cmd_s *Cmd_GetFirstFunctionHandle( void );
-struct cmd_s *Cmd_GetNextFunctionHandle( struct cmd_s *cmd );
-struct cmdalias_s *Cmd_AliasGetList( void );
-char *Cmd_GetName( struct cmd_s *cmd );
-cvar_t *Cvar_GetList( void );
-void Cmd_Null_f( void );
+void __cdecl UI_SetActiveMenu( qboolean fActive );
+struct cmd_s *__cdecl Cmd_GetFirstFunctionHandle( void );
+struct cmd_s *__cdecl Cmd_GetNextFunctionHandle( struct cmd_s *cmd );
+struct cmdalias_s *__cdecl Cmd_AliasGetList( void );
+char *__cdecl Cmd_GetName( struct cmd_s *cmd );
+cvar_t *__cdecl Cvar_GetList( void );
+void __cdecl Cmd_Null_f( void );
 
 typedef struct autocomplete_list_s
 {
 	const char *name;
-	qboolean (*func)( const char *s, char *name, int length );
+	qboolean (__cdecl *func)( const char *s, char *name, int length );
 } autocomplete_list_t;
 
 extern autocomplete_list_t cmd_list[];
 extern const char *svc_strings[256];
 
 // soundlib shared exports
-qboolean S_Init( void );
-void S_Shutdown( void );
-void S_Activate( qboolean active, void *hInst );
-void S_StopSound( int entnum, int channel, const char *soundname );
-int S_GetCurrentStaticSounds( soundlist_t *pout, int size );
-void S_StopAllSounds( void );
+qboolean __cdecl S_Init( void );
+void __cdecl S_Shutdown( void );
+void __cdecl S_Activate( qboolean active, void *hInst );
+void __cdecl S_StopSound( int entnum, int channel, const char *soundname );
+int __cdecl S_GetCurrentStaticSounds( soundlist_t *pout, int size );
+void __cdecl S_StopAllSounds( void );
 
 // gamma routines
-void BuildGammaTable( float gamma, float texGamma );
-byte TextureToTexGamma( byte b );
-byte TextureToGamma( byte b );
+void __cdecl BuildGammaTable( float gamma, float texGamma );
+byte __cdecl TextureToTexGamma( byte b );
+byte __cdecl TextureToGamma( byte b );
 
 #ifdef __cplusplus
 }

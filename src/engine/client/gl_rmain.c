@@ -391,7 +391,7 @@ int R_ComputeFxBlend( cl_entity_t *e )
 R_ClearScene
 ===============
 */
-void R_ClearScene( void )
+void __cdecl R_ClearScene( void )
 {
 	tr.num_solid_entities = tr.num_trans_entities = 0;
 	tr.num_static_entities = tr.num_mirror_entities = 0;
@@ -781,7 +781,7 @@ void R_FindViewLeaf( void )
 R_SetupFrame
 ===============
 */
-static void R_SetupFrame( void )
+static void __cdecl R_SetupFrame( void )
 {
 	vec3_t	viewOrg, viewAng;
 
@@ -1211,7 +1211,7 @@ R_RenderScene
 RI.refdef must be set before the first call
 ================
 */
-void R_RenderScene( const ref_params_t *fd )
+void __cdecl R_RenderScene( const ref_params_t *fd )
 {
 	RI.refdef = *fd;
 

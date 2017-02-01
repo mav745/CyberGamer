@@ -27,7 +27,7 @@ V_SetupRefDef
 update refdef values each frame
 ===============
 */
-void V_SetupRefDef( void )
+void __cdecl V_SetupRefDef( void )
 {
 	cl_entity_t	*clent;
 	int		size;
@@ -123,7 +123,7 @@ V_SetupOverviewState
 Get initial overview values
 ===============
 */
-void V_SetupOverviewState( void )
+void __cdecl V_SetupOverviewState( void )
 {
 	ref_overview_t	*ov = &clgame.overView;
 	float		mapAspect, screenAspect, aspect;
@@ -226,7 +226,7 @@ V_MergeOverviewRefdef
 merge refdef with overview settings
 ===============
 */
-void V_MergeOverviewRefdef( ref_params_t *fd )
+void __cdecl V_MergeOverviewRefdef( ref_params_t *fd )
 {
 	ref_overview_t	*ov = &clgame.overView;
 	float		aspect;
@@ -303,7 +303,7 @@ V_CalcRefDef
 sets cl.refdef view values
 ===============
 */
-void V_CalcRefDef( void )
+void __cdecl V_CalcRefDef( void )
 {
 	R_Set2DMode( false );
 	tr.framecount++;	// g-cont. keep actual frame for all viewpasses
@@ -335,7 +335,7 @@ V_RenderView
 
 ==================
 */
-void V_RenderView( void )
+void __cdecl V_RenderView( void )
 {
 	if( !cl.video_prepped || ( UI_IsVisible() && !cl.background ))
 		return; // still loading
@@ -358,7 +358,7 @@ V_PreRender
 
 ==================
 */
-qboolean V_PreRender( void )
+qboolean __cdecl V_PreRender( void )
 {
 	// too early
 	if( !glw_state.initialized )

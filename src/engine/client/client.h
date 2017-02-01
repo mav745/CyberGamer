@@ -195,7 +195,7 @@ typedef struct
 	pfnUserMsgHook	func;	// user-defined function	
 } cl_user_message_t;
 
-typedef void (*pfnEventHook)( event_args_t *args );
+typedef void (__cdecl *pfnEventHook)( event_args_t *args );
 
 typedef struct
 {
@@ -297,7 +297,7 @@ typedef struct
 } net_request_t;
 
 // new versions of client dlls have a sanigle export with all callbacks
-typedef void (*CL_EXPORT_FUNCS)( void *pv );
+typedef void (__cdecl *CL_EXPORT_FUNCS)( void *pv );
 
 typedef struct
 {
@@ -504,110 +504,110 @@ extern convar_t	*hltv;
 
 //=============================================================================
 
-void CL_SetLightstyle( int style, const char* s, float f );
-void CL_RunLightStyles( void );
+void __cdecl CL_SetLightstyle( int style, const char* s, float f );
+void __cdecl CL_RunLightStyles( void );
 
-void CL_AddEntities( void );
-void CL_DecayLights( void );
+void __cdecl CL_AddEntities( void );
+void __cdecl CL_DecayLights( void );
 
 //=================================================
 
-void CL_PrepVideo( void );
-void CL_PrepSound( void );
+void __cdecl CL_PrepVideo( void );
+void __cdecl CL_PrepSound( void );
 
 //
 // cl_cmds.c
 //
-void CL_Quit_f( void );
-void CL_ScreenShot_f( void );
-void CL_SnapShot_f( void );
-void CL_PlayCDTrack_f( void );
-void CL_EnvShot_f( void );
-void CL_SkyShot_f( void );
-void CL_SaveShot_f( void );
-void CL_DemoShot_f( void );
-void CL_LevelShot_f( void );
-void CL_SetSky_f( void );
-void SCR_Viewpos_f( void );
-void SCR_TimeRefresh_f( void );
+void __cdecl CL_Quit_f( void );
+void __cdecl CL_ScreenShot_f( void );
+void __cdecl CL_SnapShot_f( void );
+void __cdecl CL_PlayCDTrack_f( void );
+void __cdecl CL_EnvShot_f( void );
+void __cdecl CL_SkyShot_f( void );
+void __cdecl CL_SaveShot_f( void );
+void __cdecl CL_DemoShot_f( void );
+void __cdecl CL_LevelShot_f( void );
+void __cdecl CL_SetSky_f( void );
+void __cdecl SCR_Viewpos_f( void );
+void __cdecl SCR_TimeRefresh_f( void );
 
 //
 // cl_main.c
 //
-void CL_Init( void );
-void CL_SendCommand( void );
-void CL_Disconnect_f( void );
-void CL_ProcessFile( qboolean successfully_received, const char *filename );
-void CL_WriteUsercmd( sizebuf_t *msg, int from, int to );
-void CL_GetChallengePacket( void );
-void CL_PingServers_f( void );
-void CL_ClearState( void );
+void __cdecl CL_Init( void );
+void __cdecl CL_SendCommand( void );
+void __cdecl CL_Disconnect_f( void );
+void __cdecl CL_ProcessFile( qboolean successfully_received, const char *filename );
+void __cdecl CL_WriteUsercmd( sizebuf_t *msg, int from, int to );
+void __cdecl CL_GetChallengePacket( void );
+void __cdecl CL_PingServers_f( void );
+void __cdecl CL_ClearState( void );
 
 //
 // cl_demo.c
 //
-void CL_StartupDemoHeader( void );
-void CL_DrawDemoRecording( void );
-void CL_WriteDemoUserCmd( int cmdnumber );
-void CL_WriteDemoMessage( qboolean startup, int start, sizebuf_t *msg );
-void CL_WriteDemoUserMessage( const byte *buffer, size_t size );
-qboolean CL_DemoReadMessage( byte *buffer, size_t *length );
-void CL_WriteDemoJumpTime( void );
-void CL_CloseDemoHeader( void );
-void CL_StopPlayback( void );
-void CL_StopRecord( void );
-void CL_PlayDemo_f( void );
-void CL_StartDemos_f( void );
-void CL_Demos_f( void );
-void CL_DeleteDemo_f( void );
-void CL_Record_f( void );
-void CL_Stop_f( void );
-void CL_FreeDemo( void );
+void __cdecl CL_StartupDemoHeader( void );
+void __cdecl CL_DrawDemoRecording( void );
+void __cdecl CL_WriteDemoUserCmd( int cmdnumber );
+void __cdecl CL_WriteDemoMessage( qboolean startup, int start, sizebuf_t *msg );
+void __cdecl CL_WriteDemoUserMessage( const byte *buffer, size_t size );
+qboolean __cdecl CL_DemoReadMessage( byte *buffer, size_t *length );
+void __cdecl CL_WriteDemoJumpTime( void );
+void __cdecl CL_CloseDemoHeader( void );
+void __cdecl CL_StopPlayback( void );
+void __cdecl CL_StopRecord( void );
+void __cdecl CL_PlayDemo_f( void );
+void __cdecl CL_StartDemos_f( void );
+void __cdecl CL_Demos_f( void );
+void __cdecl CL_DeleteDemo_f( void );
+void __cdecl CL_Record_f( void );
+void __cdecl CL_Stop_f( void );
+void __cdecl CL_FreeDemo( void );
 
 //
 // cl_events.c
 //
-void CL_ParseEvent( sizebuf_t *msg );
-void CL_ParseReliableEvent( sizebuf_t *msg );
-void CL_SetEventIndex( const char *szEvName, int ev_index );
-void CL_QueueEvent( int flags, int index, float delay, event_args_t *args );
-void CL_PlaybackEvent( int flags, const edict_t *pInvoker, word eventindex, float delay, float *origin,
+void __cdecl CL_ParseEvent( sizebuf_t *msg );
+void __cdecl CL_ParseReliableEvent( sizebuf_t *msg );
+void __cdecl CL_SetEventIndex( const char *szEvName, int ev_index );
+void __cdecl CL_QueueEvent( int flags, int index, float delay, event_args_t *args );
+void __cdecl CL_PlaybackEvent( int flags, const edict_t *pInvoker, word eventindex, float delay, float *origin,
 	float *angles, float fparam1, float fparam2, int iparam1, int iparam2, int bparam1, int bparam2 );
-void CL_RegisterEvent( int lastnum, const char *szEvName, pfnEventHook func );
-word CL_EventIndex( const char *name );
-const char *CL_IndexEvent( word index );
-void CL_ResetEvent( event_info_t *ei );
-void CL_FireEvents( void );
+void __cdecl CL_RegisterEvent( int lastnum, const char *szEvName, pfnEventHook func );
+word __cdecl CL_EventIndex( const char *name );
+const char *__cdecl CL_IndexEvent( word index );
+void __cdecl CL_ResetEvent( event_info_t *ei );
+void __cdecl CL_FireEvents( void );
 
 //
 // cl_game.c
 //
-void CL_UnloadProgs( void );
-qboolean CL_LoadProgs( const char *name );
-void CL_ParseUserMessage( sizebuf_t *msg, int svc_num );
-void CL_LinkUserMessage( char *pszName, const int svc_num, int iSize );
-void CL_ParseTextMessage( sizebuf_t *msg );
-void CL_DrawHUD( int state );
-void CL_InitEdicts( void );
-void CL_FreeEdicts( void );
-void CL_ClearWorld( void );
-void CL_DrawCenterPrint( void );
-void CL_FreeEntity( cl_entity_t *pEdict );
-void CL_CenterPrint( const char *text, float y );
-void CL_TextMessageParse( byte *pMemFile, int fileSize );
-client_textmessage_t *CL_TextMessageGet( const char *pName );
-int pfnDecalIndexFromName( const char *szDecalName );
-int pfnIndexFromTrace( struct pmtrace_s *pTrace );
-int CL_FindModelIndex( const char *m );
-VHSPRITE pfnSPR_Load( const char *szPicName );
-VHSPRITE pfnSPR_LoadExt( const char *szPicName, uint texFlags );
-void TextAdjustSize( int *x, int *y, int *w, int *h );
-void PicAdjustSize( float *x, float *y, float *w, float *h );
-void CL_PlayerTrace( float *start, float *end, int traceFlags, int ignore_pe, pmtrace_t *tr );
-void CL_PlayerTraceExt( float *start, float *end, int traceFlags, int (*pfnIgnore)( physent_t *pe ), pmtrace_t *tr );
-void CL_SetTraceHull( int hull );
+void __cdecl CL_UnloadProgs( void );
+qboolean __cdecl CL_LoadProgs( const char *name );
+void __cdecl CL_ParseUserMessage( sizebuf_t *msg, int svc_num );
+void __cdecl CL_LinkUserMessage( char *pszName, const int svc_num, int iSize );
+void __cdecl CL_ParseTextMessage( sizebuf_t *msg );
+void __cdecl CL_DrawHUD( int state );
+void __cdecl CL_InitEdicts( void );
+void __cdecl CL_FreeEdicts( void );
+void __cdecl CL_ClearWorld( void );
+void __cdecl CL_DrawCenterPrint( void );
+void __cdecl CL_FreeEntity( cl_entity_t *pEdict );
+void __cdecl CL_CenterPrint( const char *text, float y );
+void __cdecl CL_TextMessageParse( byte *pMemFile, int fileSize );
+client_textmessage_t *__cdecl CL_TextMessageGet( const char *pName );
+int __cdecl pfnDecalIndexFromName( const char *szDecalName );
+int __cdecl pfnIndexFromTrace( struct pmtrace_s *pTrace );
+int __cdecl CL_FindModelIndex( const char *m );
+VHSPRITE __cdecl pfnSPR_Load( const char *szPicName );
+VHSPRITE __cdecl pfnSPR_LoadExt( const char *szPicName, uint texFlags );
+void __cdecl TextAdjustSize( int *x, int *y, int *w, int *h );
+void __cdecl PicAdjustSize( float *x, float *y, float *w, float *h );
+void __cdecl CL_PlayerTrace( float *start, float *end, int traceFlags, int ignore_pe, pmtrace_t *tr );
+void __cdecl CL_PlayerTraceExt( float *start, float *end, int traceFlags, int (*pfnIgnore)( physent_t *pe ), pmtrace_t *tr );
+void __cdecl CL_SetTraceHull( int hull );
 
-_inline cl_entity_t *CL_EDICT_NUM( int n )
+_inline cl_entity_t *__cdecl CL_EDICT_NUM( int n )
 {
 	if(( n >= 0 ) && ( n < clgame.maxEntities ))
 		return clgame.entities + n;
@@ -619,195 +619,195 @@ _inline cl_entity_t *CL_EDICT_NUM( int n )
 //
 // cl_parse.c
 //
-void CL_ParseServerMessage( sizebuf_t *msg );
-void CL_ParseTempEntity( sizebuf_t *msg );
-qboolean CL_DispatchUserMessage( const char *pszName, int iSize, void *pbuf );
+void __cdecl CL_ParseServerMessage( sizebuf_t *msg );
+void __cdecl CL_ParseTempEntity( sizebuf_t *msg );
+qboolean __cdecl CL_DispatchUserMessage( const char *pszName, int iSize, void *pbuf );
 
 //
 // cl_scrn.c
 //
-void SCR_VidInit( void );
-void SCR_TileClear( void );
-void SCR_AddDirtyPoint( int x, int y );
-void SCR_InstallParticlePalette( void );
-void SCR_EndLoadingPlaque( void );
-void SCR_RebuildGammaTable( void );
-void SCR_RegisterTextures( void );
-void SCR_LoadCreditsFont( void );
-void SCR_MakeScreenShot( void );
-void SCR_MakeLevelShot( void );
-void SCR_NetSpeeds( void );
-void SCR_RSpeeds( void );
-void SCR_DrawFPS( void );
+void __cdecl SCR_VidInit( void );
+void __cdecl SCR_TileClear( void );
+void __cdecl SCR_AddDirtyPoint( int x, int y );
+void __cdecl SCR_InstallParticlePalette( void );
+void __cdecl SCR_EndLoadingPlaque( void );
+void __cdecl SCR_RebuildGammaTable( void );
+void __cdecl SCR_RegisterTextures( void );
+void __cdecl SCR_LoadCreditsFont( void );
+void __cdecl SCR_MakeScreenShot( void );
+void __cdecl SCR_MakeLevelShot( void );
+void __cdecl SCR_NetSpeeds( void );
+void __cdecl SCR_RSpeeds( void );
+void __cdecl SCR_DrawFPS( void );
 
 //
 // cl_view.c
 //
 
-void V_Init (void);
-void V_Shutdown( void );
-qboolean V_PreRender( void );
-void V_PostRender( void );
-void V_RenderView( void );
-void V_SetupOverviewState( void );
-void V_ProcessOverviewCmds( usercmd_t *cmd );
-void V_MergeOverviewRefdef( ref_params_t *fd );
-void V_ProcessShowTexturesCmds( usercmd_t *cmd );
-void V_WriteOverviewScript( void );
+void __cdecl V_Init (void);
+void __cdecl V_Shutdown( void );
+qboolean __cdecl V_PreRender( void );
+void __cdecl V_PostRender( void );
+void __cdecl V_RenderView( void );
+void __cdecl V_SetupOverviewState( void );
+void __cdecl V_ProcessOverviewCmds( usercmd_t *cmd );
+void __cdecl V_MergeOverviewRefdef( ref_params_t *fd );
+void __cdecl V_ProcessShowTexturesCmds( usercmd_t *cmd );
+void __cdecl V_WriteOverviewScript( void );
 
 //
 // cl_pmove.c
 //
-void CL_SetSolidEntities( void );
-void CL_SetSolidPlayers( int playernum );
-void CL_InitClientMove( void );
-void CL_PredictMovement( void );
-void CL_CheckPredictionError( void );
-qboolean CL_IsPredicted( void );
-int CL_TruePointContents( const vec3_t p );
-int CL_PointContents( const vec3_t p );
-int CL_WaterEntity( const float *rgflPos );
-cl_entity_t *CL_GetWaterEntity( const float *rgflPos );
-void CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state, usercmd_t *ucmd );
-pmtrace_t CL_TraceLine( vec3_t start, vec3_t end, int flags );
-void CL_ClearPhysEnts( void );
+void __cdecl CL_SetSolidEntities( void );
+void __cdecl CL_SetSolidPlayers( int playernum );
+void __cdecl CL_InitClientMove( void );
+void __cdecl CL_PredictMovement( void );
+void __cdecl CL_CheckPredictionError( void );
+qboolean __cdecl CL_IsPredicted( void );
+int __cdecl CL_TruePointContents( const vec3_t p );
+int __cdecl CL_PointContents( const vec3_t p );
+int __cdecl CL_WaterEntity( const float *rgflPos );
+cl_entity_t *__cdecl CL_GetWaterEntity( const float *rgflPos );
+void __cdecl CL_SetupPMove( playermove_t *pmove, clientdata_t *cd, entity_state_t *state, usercmd_t *ucmd );
+pmtrace_t __cdecl CL_TraceLine( vec3_t start, vec3_t end, int flags );
+void __cdecl CL_ClearPhysEnts( void );
 
 //
 // cl_studio.c
 //
-void CL_InitStudioAPI( void );
+void __cdecl CL_InitStudioAPI( void );
 
 //
 // cl_frame.c
 //
-void CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta );
-qboolean CL_AddVisibleEntity( cl_entity_t *ent, int entityType );
-void CL_UpdateStudioVars( cl_entity_t *ent, entity_state_t *newstate, qboolean noInterp );
-qboolean CL_GetEntitySpatialization( int entnum, vec3_t origin, float *pradius );
-void CL_UpdateEntityFields( cl_entity_t *ent );
-qboolean CL_IsPlayerIndex( int idx );
+void __cdecl CL_ParsePacketEntities( sizebuf_t *msg, qboolean delta );
+qboolean __cdecl CL_AddVisibleEntity( cl_entity_t *ent, int entityType );
+void __cdecl CL_UpdateStudioVars( cl_entity_t *ent, entity_state_t *newstate, qboolean noInterp );
+qboolean __cdecl CL_GetEntitySpatialization( int entnum, vec3_t origin, float *pradius );
+void __cdecl CL_UpdateEntityFields( cl_entity_t *ent );
+qboolean __cdecl CL_IsPlayerIndex( int idx );
 
 //
 // cl_remap.c
 //
-remap_info_t *CL_GetRemapInfoForEntity( cl_entity_t *e );
-void CL_AllocRemapInfo( int topcolor, int bottomcolor );
-void CL_FreeRemapInfo( remap_info_t *info );
-void R_StudioSetRemapColors( int top, int bottom );
-void CL_UpdateRemapInfo( int topcolor, int bottomcolor );
-void CL_ClearAllRemaps( void );
+remap_info_t *__cdecl CL_GetRemapInfoForEntity( cl_entity_t *e );
+void __cdecl CL_AllocRemapInfo( int topcolor, int bottomcolor );
+void __cdecl CL_FreeRemapInfo( remap_info_t *info );
+void __cdecl R_StudioSetRemapColors( int top, int bottom );
+void __cdecl CL_UpdateRemapInfo( int topcolor, int bottomcolor );
+void __cdecl CL_ClearAllRemaps( void );
 
 //
 // cl_tent.c
 //
-int CL_AddEntity( int entityType, cl_entity_t *pEnt );
-void CL_WeaponAnim( int iAnim, int body );
-void CL_ClearEffects( void );
-void CL_ClearEfrags( void );
-void CL_TestLights( void );
-void CL_DrawParticlesExternal( const float *vieworg, const float *fwd, const float *rt, const float *up, uint clipFlags );
-void CL_FireCustomDecal( int textureIndex, int entityIndex, int modelIndex, float *pos, int flags, float scale );
-void CL_DecalShoot( int textureIndex, int entityIndex, int modelIndex, float *pos, int flags );
-void CL_PlayerDecal( int textureIndex, int entityIndex, float *pos );
-void CL_InitParticles( void );
-void CL_ClearParticles( void );
-void CL_FreeParticles( void );
-void CL_DrawParticles( void );
-void CL_InitTempEnts( void );
-void CL_ClearTempEnts( void );
-void CL_FreeTempEnts( void );
-void CL_AddTempEnts( void );
-void CL_InitViewBeams( void );
-void CL_ClearViewBeams( void );
-void CL_FreeViewBeams( void );
-void CL_DrawBeams( int fTrans );
-void CL_AddCustomBeam( cl_entity_t *pEnvBeam );
-void CL_KillDeadBeams( cl_entity_t *pDeadEntity );
-void CL_ParseViewBeam( sizebuf_t *msg, int beamType );
-void CL_RegisterMuzzleFlashes( void );
-void CL_ReadPointFile_f( void );
-void CL_ReadLineFile_f( void );
+int __cdecl CL_AddEntity( int entityType, cl_entity_t *pEnt );
+void __cdecl CL_WeaponAnim( int iAnim, int body );
+void __cdecl CL_ClearEffects( void );
+void __cdecl CL_ClearEfrags( void );
+void __cdecl CL_TestLights( void );
+void __cdecl CL_DrawParticlesExternal( const float *vieworg, const float *fwd, const float *rt, const float *up, uint clipFlags );
+void __cdecl CL_FireCustomDecal( int textureIndex, int entityIndex, int modelIndex, float *pos, int flags, float scale );
+void __cdecl CL_DecalShoot( int textureIndex, int entityIndex, int modelIndex, float *pos, int flags );
+void __cdecl CL_PlayerDecal( int textureIndex, int entityIndex, float *pos );
+void __cdecl CL_InitParticles( void );
+void __cdecl CL_ClearParticles( void );
+void __cdecl CL_FreeParticles( void );
+void __cdecl CL_DrawParticles( void );
+void __cdecl CL_InitTempEnts( void );
+void __cdecl CL_ClearTempEnts( void );
+void __cdecl CL_FreeTempEnts( void );
+void __cdecl CL_AddTempEnts( void );
+void __cdecl CL_InitViewBeams( void );
+void __cdecl CL_ClearViewBeams( void );
+void __cdecl CL_FreeViewBeams( void );
+void __cdecl CL_DrawBeams( int fTrans );
+void __cdecl CL_AddCustomBeam( cl_entity_t *pEnvBeam );
+void __cdecl CL_KillDeadBeams( cl_entity_t *pDeadEntity );
+void __cdecl CL_ParseViewBeam( sizebuf_t *msg, int beamType );
+void __cdecl CL_RegisterMuzzleFlashes( void );
+void __cdecl CL_ReadPointFile_f( void );
+void __cdecl CL_ReadLineFile_f( void );
 
 //
 // console.c
 //
 extern convar_t *con_fontsize;
-qboolean Con_Visible( void );
-void Con_Init( void );
-void Con_VidInit( void );
-void Con_ToggleConsole_f( void );
-void Con_ClearNotify( void );
-void Con_DrawDebug( void );
-void Con_RunConsole( void );
-void Con_DrawConsole( void );
-void Con_DrawVersion( void );
-void Con_DrawStringLen( const char *pText, int *length, int *height );
-int Con_DrawString( int x, int y, const char *string, rgba_t setColor );
-int Con_DrawCharacter( int x, int y, int number, rgba_t color );
-void Con_DrawCharacterLen( int number, int *width, int *height );
-void Con_DefaultColor( int r, int g, int b );
-void Con_InvalidateFonts( void );
-void Con_SetFont( int fontNum );
-void Con_CharEvent( int key );
-void Con_RestoreFont( void );
-void Key_Console( int key );
-void Key_Message( int key );
-void Con_Close( void );
+qboolean __cdecl Con_Visible( void );
+void __cdecl Con_Init( void );
+void __cdecl Con_VidInit( void );
+void __cdecl Con_ToggleConsole_f( void );
+void __cdecl Con_ClearNotify( void );
+void __cdecl Con_DrawDebug( void );
+void __cdecl Con_RunConsole( void );
+void __cdecl Con_DrawConsole( void );
+void __cdecl Con_DrawVersion( void );
+void __cdecl Con_DrawStringLen( const char *pText, int *length, int *height );
+int __cdecl Con_DrawString( int x, int y, const char *string, rgba_t setColor );
+int __cdecl Con_DrawCharacter( int x, int y, int number, rgba_t color );
+void __cdecl Con_DrawCharacterLen( int number, int *width, int *height );
+void __cdecl Con_DefaultColor( int r, int g, int b );
+void __cdecl Con_InvalidateFonts( void );
+void __cdecl Con_SetFont( int fontNum );
+void __cdecl Con_CharEvent( int key );
+void __cdecl Con_RestoreFont( void );
+void __cdecl Key_Console( int key );
+void __cdecl Key_Message( int key );
+void __cdecl Con_Close( void );
 
 //
 // s_main.c
 //
-void S_StreamRawSamples( int samples, int rate, int width, int channels, const byte *data );
-void S_StartBackgroundTrack( const char *intro, const char *loop, long position );
-void S_StopBackgroundTrack( void );
-void S_StreamSetPause( int pause );
-void S_StartStreaming( void );
-void S_StopStreaming( void );
-void S_BeginRegistration( void );
-sound_t S_RegisterSound( const char *sample );
-void S_EndRegistration( void );
-void S_RestoreSound( const vec3_t pos, int ent, int chan, sound_t handle, float fvol, float attn, int pitch, int flags, double sample, double end, int wordIndex );
-void S_StartSound( const vec3_t pos, int ent, int chan, sound_t sfx, float vol, float attn, int pitch, int flags );
-void S_AmbientSound( const vec3_t pos, int ent, sound_t handle, float fvol, float attn, int pitch, int flags );
-void S_FadeClientVolume( float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds );
-void S_FadeMusicVolume( float fadePercent );
-void S_StartLocalSound( const char *name, float volume, qboolean reliable );
-void S_RenderFrame( struct ref_params_s *fd );
-void S_ExtraUpdate( void );
+void __cdecl S_StreamRawSamples( int samples, int rate, int width, int channels, const byte *data );
+void __cdecl S_StartBackgroundTrack( const char *intro, const char *loop, long position );
+void __cdecl S_StopBackgroundTrack( void );
+void __cdecl S_StreamSetPause( int pause );
+void __cdecl S_StartStreaming( void );
+void __cdecl S_StopStreaming( void );
+void __cdecl S_BeginRegistration( void );
+sound_t __cdecl S_RegisterSound( const char *sample );
+void __cdecl S_EndRegistration( void );
+void __cdecl S_RestoreSound( const vec3_t pos, int ent, int chan, sound_t handle, float fvol, float attn, int pitch, int flags, double sample, double end, int wordIndex );
+void __cdecl S_StartSound( const vec3_t pos, int ent, int chan, sound_t sfx, float vol, float attn, int pitch, int flags );
+void __cdecl S_AmbientSound( const vec3_t pos, int ent, sound_t handle, float fvol, float attn, int pitch, int flags );
+void __cdecl S_FadeClientVolume( float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds );
+void __cdecl S_FadeMusicVolume( float fadePercent );
+void __cdecl S_StartLocalSound( const char *name, float volume, qboolean reliable );
+void __cdecl S_RenderFrame( struct ref_params_s *fd );
+void __cdecl S_ExtraUpdate( void );
 
 //
 // cl_menu.c
 //
-void UI_UnloadProgs( void );
-qboolean UI_LoadProgs( void );
-void UI_UpdateMenu( float realtime );
-void UI_KeyEvent( int key, qboolean down );
-void UI_MouseMove( int x, int y );
-void UI_SetActiveMenu( qboolean fActive );
-void UI_AddServerToList( netadr_t adr, const char *info );
-void UI_GetCursorPos( int *pos_x, int *pos_y );
-void UI_SetCursorPos( int pos_x, int pos_y );
-void UI_ShowCursor( qboolean show );
-qboolean UI_CreditsActive( void );
-void UI_CharEvent( int key );
-qboolean UI_MouseInRect( void );
-qboolean UI_IsVisible( void );
-void pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a );
-void pfnPIC_Draw( int x, int y, int width, int height, const wrect_t *prc );
-void pfnPIC_DrawTrans( int x, int y, int width, int height, const wrect_t *prc );
-void pfnPIC_DrawHoles( int x, int y, int width, int height, const wrect_t *prc );
-void pfnPIC_DrawAdditive( int x, int y, int width, int height, const wrect_t *prc );
+void __cdecl UI_UnloadProgs( void );
+qboolean __cdecl UI_LoadProgs( void );
+void __cdecl UI_UpdateMenu( float realtime );
+void __cdecl UI_KeyEvent( int key, qboolean down );
+void __cdecl UI_MouseMove( int x, int y );
+void __cdecl UI_SetActiveMenu( qboolean fActive );
+void __cdecl UI_AddServerToList( netadr_t adr, const char *info );
+void __cdecl UI_GetCursorPos( int *pos_x, int *pos_y );
+void __cdecl UI_SetCursorPos( int pos_x, int pos_y );
+void __cdecl UI_ShowCursor( qboolean show );
+qboolean __cdecl UI_CreditsActive( void );
+void __cdecl UI_CharEvent( int key );
+qboolean __cdecl UI_MouseInRect( void );
+qboolean __cdecl UI_IsVisible( void );
+void __cdecl pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a );
+void __cdecl pfnPIC_Draw( int x, int y, int width, int height, const wrect_t *prc );
+void __cdecl pfnPIC_DrawTrans( int x, int y, int width, int height, const wrect_t *prc );
+void __cdecl pfnPIC_DrawHoles( int x, int y, int width, int height, const wrect_t *prc );
+void __cdecl pfnPIC_DrawAdditive( int x, int y, int width, int height, const wrect_t *prc );
 
 //
 // cl_video.c
 //
-void SCR_InitCinematic( void );
-void SCR_FreeCinematic( void );
-qboolean SCR_PlayCinematic( const char *name );
-qboolean SCR_DrawCinematic( void );
-qboolean SCR_NextMovie( void );
-void SCR_RunCinematic( void );
-void SCR_StopCinematic( void );
-void CL_PlayVideo_f( void );
+void __cdecl SCR_InitCinematic( void );
+void __cdecl SCR_FreeCinematic( void );
+qboolean __cdecl SCR_PlayCinematic( const char *name );
+qboolean __cdecl SCR_DrawCinematic( void );
+qboolean __cdecl SCR_NextMovie( void );
+void __cdecl SCR_RunCinematic( void );
+void __cdecl SCR_StopCinematic( void );
+void __cdecl CL_PlayVideo_f( void );
 
 #endif//CLIENT_H

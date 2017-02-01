@@ -167,7 +167,7 @@ void SCR_NetSpeeds( void )
 SCR_RSpeeds
 ================
 */
-void SCR_RSpeeds( void )
+void __cdecl SCR_RSpeeds( void )
 {
 	char	msg[MAX_SYSPATH];
 
@@ -198,7 +198,7 @@ void SCR_RSpeeds( void )
 	}
 }
 
-void SCR_MakeLevelShot( void )
+void __cdecl SCR_MakeLevelShot( void )
 {
 	if( cls.scrshot_request != scrshot_plaque )
 		return;
@@ -207,7 +207,7 @@ void SCR_MakeLevelShot( void )
 	Cbuf_AddText( "levelshot\n" );
 }
 
-void SCR_MakeScreenShot( void )
+void __cdecl SCR_MakeScreenShot( void )
 {
 	qboolean	iRet = false;
 	int	viewsize;
@@ -260,7 +260,7 @@ void SCR_MakeScreenShot( void )
 	cls.shotname[0] = '\0';
 }
 
-void SCR_DrawPlaque( void )
+void __cdecl SCR_DrawPlaque( void )
 {
 	int	levelshot;
 
@@ -415,7 +415,7 @@ This is called every frame, and can also be called explicitly to flush
 text to the screen.
 ==================
 */
-void SCR_UpdateScreen( void )
+void __cdecl SCR_UpdateScreen( void )
 {
 //	char txt[64];
 

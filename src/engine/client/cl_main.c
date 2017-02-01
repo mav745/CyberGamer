@@ -1732,7 +1732,7 @@ Host_ClientFrame
 
 ==================
 */
-void Host_ClientFrame( double frametime )
+void __cdecl Host_ClientFrame( double frametime )
 {
 	// if client is not active, do nothing
 	if( !cls.initialized ) return;

@@ -216,7 +216,7 @@ static void SubdividePolygon_r( msurface_t *warpface, int numverts, float *verts
 	Q_memcpy( poly->verts[i+1], poly->verts[1], sizeof( poly->verts[0] ));
 }
 
-void GL_SetupFogColorForSurfaces( void )
+void __cdecl GL_SetupFogColorForSurfaces( void )
 {
 	vec3_t	fogColor;
 	float	factor, div;
@@ -238,7 +238,7 @@ void GL_SetupFogColorForSurfaces( void )
 	glFogfv( GL_FOG_COLOR, fogColor );
 }
 
-void GL_ResetFogColor( void )
+void __cdecl GL_ResetFogColor( void )
 {
 	// restore fog here
 	if(( RI.fogEnabled || RI.fogCustom ) && !RI.refdef.onlyClientDraw )
@@ -541,7 +541,7 @@ void R_AddDynamicLights( msurface_t *surf )
 R_SetCacheState
 ================
 */
-void R_SetCacheState( msurface_t *surf )
+void __cdecl R_SetCacheState( msurface_t *surf )
 {
 	int	maps;
 
@@ -652,7 +652,7 @@ Combine and scale multiple lightmaps into the floating
 format in r_blocklights
 =================
 */
-void R_BuildLightMap( msurface_t *surf, byte *dest, int stride, qboolean dynamic )
+void __cdecl R_BuildLightMap( msurface_t *surf, byte *dest, int stride, qboolean dynamic )
 {
 	int	smax, tmax;
 	uint	*bl, scale;

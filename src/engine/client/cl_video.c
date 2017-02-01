@@ -182,7 +182,7 @@ Returns true if a cinematic is active, meaning the view rendering
 should be skipped
 ==================
 */
-qboolean SCR_DrawCinematic( void )
+qboolean __cdecl SCR_DrawCinematic( void )
 {
 	static int	last_frame = -1;
 	qboolean		redraw = false;

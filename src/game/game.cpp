@@ -23,23 +23,23 @@ GNU General Public License for more details.
 #pragma warning(disable : 4100)
 #pragma warning(disable : 4996)
 
-typedef void (*pfnChangeGame)( const char *progname );
-typedef int (*pfnInit)( const char *progname, int bChangeGame, pfnChangeGame func );
-typedef void (*pfnShutdown)( void );
-typedef int (*pfnIterate)( void );
+typedef void (__cdecl *pfnChangeGame)( const char *progname );
+typedef int (__cdecl *pfnInit)( const char *progname, int bChangeGame, pfnChangeGame func );
+typedef void (__cdecl *pfnShutdown)( void );
+typedef int (__cdecl *pfnIterate)( void );
 pfnInit Host_Main;
 pfnIterate Host_Iterate;
 pfnShutdown Host_Shutdown = NULL;
 char szGameDir[128]; // safe place to keep gamedir
 HINSTANCE	hEngine;
 
-void Sys_Error( const char *errorstring )
+void __cdecl Sys_Error( const char *errorstring )
 {
 	MessageBox( NULL, errorstring, "Xash Error", MB_OK|MB_SETFOREGROUND|MB_ICONSTOP );
 	exit( 1 );
 }
 
-void Sys_LoadEngine( void )
+void __cdecl Sys_LoadEngine( void )
 {
 	if(( hEngine = LoadLibrary( "xash.dll" )) == NULL )
 	{
@@ -60,13 +60,13 @@ void Sys_LoadEngine( void )
 	Host_Shutdown = (pfnShutdown)GetProcAddress( hEngine, "Host_Shutdown" );
 }
 
-void Sys_UnloadEngine( void )
+void __cdecl Sys_UnloadEngine( void )
 {
 	if( Host_Shutdown ) Host_Shutdown( );
 	if( hEngine ) FreeLibrary( hEngine );
 }
 
-void Sys_ChangeGame( const char *progname )
+void __cdecl Sys_ChangeGame( const char *progname )
 {
 	if( !progname || !progname[0] ) Sys_Error( "Sys_ChangeGame: NULL gamedir" );
 	if( Host_Shutdown == NULL ) Sys_Error( "Sys_ChangeGame: missed 'Host_Shutdown' export\n" );

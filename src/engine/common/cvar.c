@@ -89,7 +89,7 @@ float Cvar_VariableValue( const char *var_name )
 Cvar_VariableInteger
 ============
 */
-int Cvar_VariableInteger( const char *var_name )
+int __cdecl Cvar_VariableInteger( const char *var_name )
 {
 	convar_t	*var;
 

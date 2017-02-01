@@ -49,7 +49,7 @@ qboolean R_SpeedsMessage( char *out, size_t size )
 GL_BackendStartFrame
 ==============
 */
-void GL_BackendStartFrame( void )
+void __cdecl GL_BackendStartFrame( void )
 {
 	r_speeds_msg[0] = '\0';
 
@@ -61,7 +61,7 @@ void GL_BackendStartFrame( void )
 GL_BackendEndFrame
 ==============
 */
-void GL_BackendEndFrame( void )
+void __cdecl GL_BackendEndFrame( void )
 {
 	// go into 2D mode (in case we draw PlayerSetup between two 2d calls)
 	if( !RI.drawWorld ) R_Set2DMode( true );

@@ -24,6 +24,11 @@ Window::Window(QWidget *parent)
 	projection.setToIdentity();
 	modelview.setToIdentity();
 	texmat.setToIdentity();
+	
+	tempVerts  = new float[300000];
+	tempCoords = new float[200000];
+	numVerts   = 0;
+	numCoords  = 0;
 
 	//theTimer.start(5, Qt::PreciseTimer, this);
 
@@ -38,7 +43,13 @@ Window::Window(QWidget *parent)
 //	dse->setBlurRadius(10);
 //	dse->setColor(0xffff66);
 //	dse->setOffset(2.f);
-//	lawl->setGraphicsEffect(dse);
+	//	lawl->setGraphicsEffect(dse);
+}
+
+Window::~Window()
+{
+	delete [] tempCoords;
+	delete [] tempVerts;
 }
 
 void Window::initializeGL()
@@ -52,10 +63,15 @@ void Window::initializeGL()
 	drawVerts = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 	drawVerts.create();
 	drawVerts.setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	drawVerts.bind();
+	drawVerts.allocate(300000 * sizeof(float));
+	
 
 	drawCoords = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 	drawCoords.create();
 	drawCoords.setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	drawCoords.bind();
+	drawCoords.allocate(200000 * sizeof(float));
 
 	QApplication::instance()->installEventFilter(this);
 }
@@ -74,8 +90,8 @@ void Window::resizeGL(int w, int h)
 
 void Window::paintGL()
 {
-	glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	QOpenGLFunctions::glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
+	QOpenGLFunctions::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	SCR_UpdateScreen( );
 }
@@ -97,8 +113,8 @@ void Window::glBegin(GLenum mode)
 
 	drawMode = mode;
 	hasBegun = true;
-	tempVerts.clear();
-	tempCoords.clear();
+	numVerts   = 0;
+	numCoords  = 0;
 }
 
 void Window::glEnd()
@@ -109,8 +125,8 @@ void Window::glEnd()
 		return;
 	}
 	hasBegun = false;
-	int vc = tempVerts.size(), cc = tempCoords.size();
-	if(!vc || vc != (cc+cc/2))
+	
+	if(!numVerts || numVerts != (numCoords+numCoords/2))
 	{
 		qDebug() << "glEnd(): Vertex buffer is ill-formed!";
 		return;
@@ -119,43 +135,60 @@ void Window::glEnd()
 	program.bind();
 
 	drawVerts.bind();
-	drawVerts.allocate(tempVerts.constData(), vc * sizeof(float));
+	drawVerts.write(0, tempVerts, numVerts * sizeof(float));
 	program.enableAttributeArray("pos");
 	program.setAttributeBuffer("pos", GL_FLOAT, 0, 3);
 
 	drawCoords.bind();
-	drawCoords.allocate(tempCoords.constData(), cc * sizeof(float));
+	drawCoords.write(0, tempCoords, numCoords * sizeof(float));
 	program.enableAttributeArray("uv");
 	program.setAttributeBuffer("uv", GL_FLOAT, 0, 2);
-
-	//QMatrix4x4 &curMat = matMode == GL_MODELVIEW? modelview:
-	//					matMode == GL_PROJECTION? projection:
-	//											  texmat;
+	
+	if (numVerts > 100000) {
+		qDebug() << "bleat";
+	}
+//	//QMatrix4x4 &curMat = matMode == GL_MODELVIEW? modelview:
+//	//					matMode == GL_PROJECTION? projection:
+//	//											  texmat;
 	program.setUniformValue("mat", projection*modelview);
 	program.setUniformValue("texture", 0);
 	program.setUniformValue("col", drawColor);
 
-	glDrawArrays(drawMode, 0, vc);
+	QOpenGLFunctions::glDrawArrays(drawMode, 0, numVerts);
+
+	drawVerts.release();
+	drawCoords.release();
 }
 
 void Window::glVertex2f(float x, float y)
 {
-	tempVerts << x << y << 0.f;
+	tempVerts[numVerts  ] = x;
+	tempVerts[numVerts+1] = y;
+	tempVerts[numVerts+2] = 0;
+	numVerts += 3;
 }
 
 void Window::glVertex3f(float x, float y, float z)
 {
-	tempVerts << x << y << z;
+	tempVerts[numVerts  ] = x;
+	tempVerts[numVerts+1] = y;
+	tempVerts[numVerts+2] = z;
+	numVerts += 3;
 }
 
 void Window::glVertex3fv(const float *v)
 {
-	tempVerts << v[0] << v[1] << v[2];
+	tempVerts[numVerts  ] = v[0];
+	tempVerts[numVerts+1] = v[1];
+	tempVerts[numVerts+2] = v[2];
+	numVerts += 3;
 }
 
 void Window::glTexCoord2f(float u, float v)
 {
-	tempCoords << u << v;
+	tempCoords[numCoords  ] = u;
+	tempCoords[numCoords+1] = v;
+	numCoords += 2;
 }
 
 void Window::glMatrixMode(GLenum mode)

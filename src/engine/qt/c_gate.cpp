@@ -8,7 +8,7 @@
 
 Window *xW = nullptr;
 
-void initWindow(int width, int height, int fullscreen)
+void __cdecl initWindow(int width, int height, int fullscreen)
 {
 	delete xW;
 	xW = new Window;
@@ -26,18 +26,18 @@ void initWindow(int width, int height, int fullscreen)
 }
 
 
-void killWindow()
+void __cdecl killWindow()
 {
 	delete xW;
 	xW = nullptr;
 }
 
-void updateWindow()
+void __cdecl updateWindow()
 {
 	xW->update();
 }
 
-void GL_SelectTexture( GLint tmu )
+void __cdecl GL_SelectTexture( GLint tmu )
 {
 	// don't allow negative texture units
 	if( tmu < 0 ) return;
@@ -52,7 +52,7 @@ void GL_SelectTexture( GLint tmu )
 	xW->glActiveTexture( tmu + GL_TEXTURE0 );
 }
 
-void GL_Bind( GLint tmu, GLenum texnum )
+void __cdecl GL_Bind( GLint tmu, GLenum texnum )
 {
 	gltexture_t	*texture;
 
@@ -80,7 +80,7 @@ void GL_Bind( GLint tmu, GLenum texnum )
 	xW->glBindTexture( GL_TEXTURE_2D, texture->texid );
 	glState.currentTextures[tmu] = texture->texnum;
 }
-void GL_TexFilter( gltexture_t *tex, qboolean update )
+void __cdecl GL_TexFilter( gltexture_t *tex, qboolean update )
 {
 	qboolean	allowNearest;
 	vec4_t	zeroClampBorder = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -220,7 +220,7 @@ void GL_TexFilter( gltexture_t *tex, qboolean update )
 	}
 }
 
-void R_SetTextureParameters()
+void __cdecl R_SetTextureParameters()
 {
 	gltexture_t	*texture;
 	int		i;
@@ -289,11 +289,11 @@ void R_SetTextureParameters()
 	for( i = 0, texture = r_textures; i < r_numTextures; i++, texture++ )
 	{
 		if( !texture->texnum ) continue;	// free slot
-		GL_Bind( GL_TEXTURE0, i );
+		GL_Bind( 0, i );
 		GL_TexFilter( texture, true );
 	}
 }
-void GL_Cull( GLenum cull )
+void __cdecl GL_Cull( GLenum cull )
 {
 	if( !cull )
 	{
@@ -312,13 +312,13 @@ void GL_Cull( GLenum cull )
 GL_FrontFace
 =================
 */
-void GL_FrontFace( GLenum front )
+void __cdecl GL_FrontFace( GLenum front )
 {
 	xW->glFrontFace( front ? GL_CW : GL_CCW );
 	glState.frontFace = front;
 }
 
-void GL_SetRenderMode( int mode )
+void __cdecl GL_SetRenderMode( int mode )
 {
 	switch( mode )
 	{
@@ -352,7 +352,7 @@ void GL_SetRenderMode( int mode )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum )
+void __cdecl R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum )
 {
 	GL_Bind( 0, texnum );
 
@@ -371,7 +371,7 @@ void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, f
 	xW->glEnd();
 }
 
-void R_DrawTileClear( int x, int y, int w, int h )
+void __cdecl R_DrawTileClear( int x, int y, int w, int h )
 {
 	float		tw, th;
 	gltexture_t	*glt;
@@ -396,7 +396,7 @@ void R_DrawTileClear( int x, int y, int w, int h )
 	xW->glEnd ();
 }
 
-void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
+void __cdecl R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
 {
 	byte		*raw = NULL;
 	gltexture_t	*tex;
@@ -508,7 +508,7 @@ void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, c
 //	xW->glEnd();
 //}
 
-void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data )
+void __cdecl R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data )
 {
 	byte		*raw = NULL;
 	gltexture_t	*tex;
@@ -537,7 +537,7 @@ void R_UploadStretchRaw( int texture, int cols, int rows, int width, int height,
 	GL_TexFilter( tex, false );
 }
 
-void R_Set2DMode( qboolean enable )
+void __cdecl R_Set2DMode( qboolean enable )
 {
 	if( enable )
 	{
@@ -580,7 +580,7 @@ void R_Set2DMode( qboolean enable )
 
 //////////////////////////////////////////////////////////////////////////////////
 
-int R_AllocateMirrorTexture()
+int __cdecl R_AllocateMirrorTexture()
 {
 	rgbdata_t	r_screen;
 	int	i, texture;
@@ -613,14 +613,14 @@ int R_AllocateMirrorTexture()
 		texture = tr.mirrorTextures[i];
 	}
 
-	GL_Bind( GL_TEXTURE0, texture );
+	GL_Bind( 0, texture );
 	xW->glCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, RI.viewport[0], RI.viewport[1], RI.viewport[2], RI.viewport[3], 0 );
 
 	return texture;
 }
 
 
-void CL_BulletTracerDraw( particle_t *p, float frametime )
+void __cdecl CL_BulletTracerDraw( particle_t *p, float frametime )
 {
 	vec3_t	lineDir, viewDir, cross;
 	vec3_t	vecEnd, vecStart, vecDir;
@@ -676,7 +676,7 @@ void CL_BulletTracerDraw( particle_t *p, float frametime )
 
 	GL_SetRenderMode( kRenderTransTexture );
 
-	GL_Bind( GL_TEXTURE0, cls.particleImage );
+	GL_Bind( 0, cls.particleImage );
 	glBegin( GL_QUADS );
 
 	glColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
@@ -707,7 +707,7 @@ CL_UpdateParticle
 update particle color, position etc
 ================
 */
-void CL_UpdateParticle( particle_t *p, float ft )
+void __cdecl CL_UpdateParticle( particle_t *p, float ft )
 {
 	float	time3 = 15.0f * ft;
 	float	time2 = 10.0f * ft;
@@ -817,7 +817,7 @@ void CL_UpdateParticle( particle_t *p, float ft )
 	GL_SetRenderMode( kRenderTransTexture );
 	xW->glColor4ub( color[0], color[1], color[2], alpha );
 
-	GL_Bind( GL_TEXTURE0, cls.particleImage );
+	GL_Bind( 0, cls.particleImage );
 
 	// add the 4 corner vertices.
 	xW->glBegin( GL_QUADS );
@@ -840,7 +840,7 @@ void CL_UpdateParticle( particle_t *p, float ft )
 	}
 }
 
-void CL_DrawTracer( vec3_t start, vec3_t delta, float width, rgb_t color, int alpha, float startV, float endV )
+void __cdecl CL_DrawTracer( vec3_t start, vec3_t delta, float width, rgb_t color, int alpha, float startV, float endV )
 {
 	// Clip the tracer
 	vec3_t	verts[4];
@@ -855,7 +855,7 @@ void CL_DrawTracer( vec3_t start, vec3_t delta, float width, rgb_t color, int al
 
 	xW->glColor4ub( color[0], color[1], color[2], alpha );
 
-	GL_Bind( GL_TEXTURE0, cls.particleImage );
+	GL_Bind( 0, cls.particleImage );
 	xW->glBegin( GL_QUADS );
 
 	xW->glTexCoord2f( 0.0f, endV );
@@ -873,7 +873,7 @@ void CL_DrawTracer( vec3_t start, vec3_t delta, float width, rgb_t color, int al
 	xW->glEnd();
 }
 
-void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta,
+void __cdecl CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta,
 	float width, float scale, float freq, float speed, int segments, int flags, float *color )
 {
 	int	noiseIndex, noiseStep;
@@ -950,7 +950,7 @@ void CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec3_t sour
 	total_segs = segments;
 
 	SetBeamRenderMode( rendermode );
-	GL_Bind( GL_TEXTURE0, m_hSprite );
+	GL_Bind( 0, m_hSprite );
 	xW->glBegin( GL_TRIANGLE_STRIP );
 
 	// specify all the segments.
@@ -1087,7 +1087,7 @@ CL_DrawDisk
 Draw beamdisk
 ================
 */
-void CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta,
+void __cdecl CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta,
 	float width, float scale, float freq, float speed, int segments, float *color )
 {
 	float	div, length, fraction;
@@ -1117,7 +1117,7 @@ void CL_DrawDisk( int modelIndex, float frame, int rendermode, const vec3_t sour
 	w = freq * delta[2];
 
 	SetBeamRenderMode( rendermode );
-	GL_Bind( GL_TEXTURE0, m_hSprite );
+	GL_Bind( 0, m_hSprite );
 
 	xW->glBegin( GL_TRIANGLE_STRIP );
 
@@ -1155,7 +1155,7 @@ CL_DrawCylinder
 Draw beam cylinder
 ================
 */
-void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta,
+void __cdecl CL_DrawCylinder( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta,
 	float width, float scale, float freq, float speed, int segments, float *color )
 {
 	float	length, fraction;
@@ -1184,7 +1184,7 @@ void CL_DrawCylinder( int modelIndex, float frame, int rendermode, const vec3_t 
 
 	GL_Cull( GL_NONE );	// draw both sides
 	SetBeamRenderMode( rendermode );
-	GL_Bind( GL_TEXTURE0, m_hSprite );
+	GL_Bind( 0, m_hSprite );
 
 	xW->glBegin( GL_TRIANGLE_STRIP );
 
@@ -1225,7 +1225,7 @@ CL_DrawRing
 Draw beamring
 ================
 */
-void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta, float width,
+void __cdecl CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t source, const vec3_t delta, float width,
 	float amplitude, float freq, float speed, int segments, float *color )
 {
 	int	i, j, noiseIndex, noiseStep;
@@ -1297,7 +1297,7 @@ void CL_DrawRing( int modelIndex, float frame, int rendermode, const vec3_t sour
 	j = segments / 8;
 
 	SetBeamRenderMode( rendermode );
-	GL_Bind( GL_TEXTURE0, m_hSprite );
+	GL_Bind( 0, m_hSprite );
 
 	xW->glBegin( GL_TRIANGLE_STRIP );
 
@@ -1368,7 +1368,7 @@ CL_DrawLaser
 Helper to drawing laser
 ==============
 */
-void CL_DrawLaser( BEAM *pbeam, int frame, int rendermode, float *color, int spriteIndex )
+void __cdecl CL_DrawLaser( BEAM *pbeam, int frame, int rendermode, float *color, int spriteIndex )
 {
 	float	color2[3];
 	vec3_t	beamDir;
@@ -1426,7 +1426,7 @@ CL_DrawBeamFollow
 Draw beam trail
 ================
 */
-void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int rendermode, vec3_t delta,
+void __cdecl DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int rendermode, vec3_t delta,
 	vec3_t screen, vec3_t screenLast, float die, const vec3_t source, int flags, float width,
 	float amplitude, float freq, float *color )
 {
@@ -1467,7 +1467,7 @@ void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int rendermod
 	nColor[2] = (byte)bound( 0, (int)(scaledColor[2] * 255.0f), 255 );
 
 	SetBeamRenderMode( rendermode );
-	GL_Bind( GL_TEXTURE0, m_hSprite );
+	GL_Bind( 0, m_hSprite );
 
 	xW->glBegin( GL_QUADS );
 
@@ -1529,7 +1529,7 @@ void DrawBeamFollow( int modelIndex, particle_t *pHead, int frame, int rendermod
 
 	xW->glEnd();
 }
-void DrawGLPoly( glpoly_t *p, float xScale, float yScale )
+void __cdecl DrawGLPoly( glpoly_t *p, float xScale, float yScale )
 {
 	float		*v;
 	float		sOffset, sy;
@@ -1599,7 +1599,7 @@ DrawGLPolyChain
 Render lightmaps
 ================
 */
-void DrawGLPolyChain( glpoly_t *p, float soffset, float toffset )
+void __cdecl DrawGLPolyChain( glpoly_t *p, float soffset, float toffset )
 {
 	qboolean	dynamic = true;
 
@@ -1629,7 +1629,7 @@ void DrawGLPolyChain( glpoly_t *p, float soffset, float toffset )
 R_BlendLightmaps
 ================
 */
-void R_BlendLightmaps( void )
+void __cdecl R_BlendLightmaps( void )
 {
 	msurface_t	*surf, *newsurf = NULL;
 	mextrasurf_t	*info;
@@ -1677,7 +1677,7 @@ void R_BlendLightmaps( void )
 	{
 		if( gl_lms.lightmap_surfaces[i] )
 		{
-			GL_Bind( GL_TEXTURE0, tr.lightmapTextures[i] );
+			GL_Bind( 0, tr.lightmapTextures[i] );
 
 			for( surf = gl_lms.lightmap_surfaces[i]; surf != NULL; surf = surf->lightmapchain )
 			{
@@ -1692,8 +1692,8 @@ void R_BlendLightmaps( void )
 		LM_InitBlock();
 
 		if( host.features & ENGINE_LARGE_LIGHTMAPS )
-			GL_Bind( GL_TEXTURE0, tr.dlightTexture2 );
-		else GL_Bind( GL_TEXTURE0, tr.dlightTexture );
+			GL_Bind( 0, tr.dlightTexture2 );
+		else GL_Bind( 0, tr.dlightTexture );
 
 		newsurf = gl_lms.dynamic_surfaces;
 
@@ -1791,7 +1791,7 @@ void R_BlendLightmaps( void )
 R_RenderFullbrights
 ================
 */
-void R_RenderFullbrights()
+void __cdecl R_RenderFullbrights()
 {
 	glpoly_t	*p;
 	int	i;
@@ -1812,7 +1812,7 @@ void R_RenderFullbrights()
 	{
 		if( !fullbright_polys[i] )
 			continue;
-		GL_Bind( GL_TEXTURE0, i );
+		GL_Bind( 0, i );
 
 		for( p = fullbright_polys[i]; p; p = p->next )
 		{
@@ -1841,7 +1841,7 @@ void R_RenderFullbrights()
 R_RenderDetails
 ================
 */
-void R_RenderDetails()
+void __cdecl R_RenderDetails()
 {
 	gltexture_t	*glt;
 	mextrasurf_t	*es, *p;
@@ -1865,7 +1865,7 @@ void R_RenderDetails()
 		es = detail_surfaces[i];
 		if( !es ) continue;
 
-		GL_Bind( GL_TEXTURE0, i );
+		GL_Bind( 0, i );
 
 		for( p = es; p; p = p->detailchain )
 		{
@@ -1895,7 +1895,7 @@ void R_RenderDetails()
 R_RenderBrushPoly
 ================
 */
-void R_RenderBrushPoly( msurface_t *fa )
+void __cdecl R_RenderBrushPoly( msurface_t *fa )
 {
 	texture_t	*t;
 	int	maps;
@@ -1922,23 +1922,23 @@ void R_RenderBrushPoly( msurface_t *fa )
 	{
 		if( SURF_INFO( fa, RI.currentmodel )->mirrortexturenum )
 		{
-			GL_Bind( GL_TEXTURE0, SURF_INFO( fa, RI.currentmodel )->mirrortexturenum );
+			GL_Bind( 0, SURF_INFO( fa, RI.currentmodel )->mirrortexturenum );
 			is_mirror = true;
 
 			// BEGIN WATER STUFF
 			if( fa->flags & SURF_DRAWTURB )
 			{
 				R_BeginDrawMirror( fa );
-				GL_Bind( GL_TEXTURE1, t->gl_texturenum );
+				GL_Bind( 1, t->gl_texturenum );
 				//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 			}
 		}
-		else GL_Bind( GL_TEXTURE0, t->gl_texturenum ); // dummy
+		else GL_Bind( 0, t->gl_texturenum ); // dummy
 
 		// DEBUG: reset the mirror texture after drawing
 		SURF_INFO( fa, RI.currentmodel )->mirrortexturenum = 0;
 	}
-	else GL_Bind( GL_TEXTURE0, t->gl_texturenum );
+	else GL_Bind( 0, t->gl_texturenum );
 
 	if( fa->flags & SURF_DRAWTURB )
 	{
@@ -2028,7 +2028,7 @@ dynamic:
 			R_BuildLightMap( fa, temp, smax * 4, true );
 			R_SetCacheState( fa );
 
-			GL_Bind( GL_TEXTURE0, tr.lightmapTextures[fa->lightmaptexturenum] );
+			GL_Bind( 0, tr.lightmapTextures[fa->lightmaptexturenum] );
 
 			xW->glTexSubImage2D( GL_TEXTURE_2D, 0, fa->light_s, fa->light_t, smax, tmax,
 				GL_RGBA, GL_UNSIGNED_BYTE, temp );
@@ -2049,7 +2049,7 @@ dynamic:
 	}
 }
 
-void R_DrawSpriteModel( cl_entity_t *e )
+void __cdecl R_DrawSpriteModel( cl_entity_t *e )
 {
 	mspriteframe_t	*frame, *oldframe;
 	msprite_t		*psprite;
@@ -2210,7 +2210,7 @@ void R_DrawSpriteModel( cl_entity_t *e )
 	{
 		// draw the single non-lerped frame
 		xW->glColor4f( color[0], color[1], color[2], flAlpha );
-		GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
+		GL_Bind( 0, frame->gl_texturenum );
 		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
 	}
 	else
@@ -2222,14 +2222,14 @@ void R_DrawSpriteModel( cl_entity_t *e )
 		if( ilerp != 0.0f )
 		{
 			xW->glColor4f( color[0], color[1], color[2], flAlpha * ilerp );
-			GL_Bind( GL_TEXTURE0, oldframe->gl_texturenum );
+			GL_Bind( 0, oldframe->gl_texturenum );
 			R_DrawSpriteQuad( oldframe, origin, v_right, v_up, scale );
 		}
 
 		if( lerp != 0.0f )
 		{
 			xW->glColor4f( color[0], color[1], color[2], flAlpha * lerp );
-			GL_Bind( GL_TEXTURE0, frame->gl_texturenum );
+			GL_Bind( 0, frame->gl_texturenum );
 			R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
 		}
 	}
@@ -2244,7 +2244,7 @@ void R_DrawSpriteModel( cl_entity_t *e )
 		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 		xW->glColor4f( color2[0], color2[1], color2[2], flAlpha );
-		GL_Bind( GL_TEXTURE0, tr.whiteTexture );
+		GL_Bind( 0, tr.whiteTexture );
 		R_DrawSpriteQuad( frame, origin, v_right, v_up, scale );
 
 		if( glState.drawTrans )
@@ -2332,7 +2332,7 @@ rebuild_page:
 		y = k / base_w * h;
 
 		xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-		GL_Bind( GL_TEXTURE0, image->texid ); // NOTE: don't use image->texnum here, because skybox has a 'wrong' indexes
+		GL_Bind( 0, image->texid ); // NOTE: don't use image->texnum here, because skybox has a 'wrong' indexes
 
 		if(( image->flags & TF_DEPTHMAP ) && !( image->flags & TF_NOCOMPARE ))
 			xW->glTexParameteri( image->target, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
@@ -2394,13 +2394,13 @@ int TriSpriteTexture( model_t *pSpriteModel, int frame )
 		////xW->glAlphaFunc( GL_GREATER, 0.0f );
 	}
 
-	GL_Bind( GL_TEXTURE0, gl_texturenum );
+	GL_Bind( 0, gl_texturenum );
 
 	return 1;
 }
 
 
-void DrawSingleDecal( decal_t *pDecal, msurface_t *fa )
+void __cdecl DrawSingleDecal( decal_t *pDecal, msurface_t *fa )
 {
 	float	*v;
 	int	i, numVerts;
@@ -2408,7 +2408,7 @@ void DrawSingleDecal( decal_t *pDecal, msurface_t *fa )
 	v = R_DecalSetupVerts( pDecal, fa, pDecal->texture, &numVerts );
 	if( !numVerts ) return;
 
-	GL_Bind( GL_TEXTURE0, pDecal->texture );
+	GL_Bind( 0, pDecal->texture );
 
 	xW->glBegin( GL_POLYGON );
 
@@ -2421,7 +2421,7 @@ void DrawSingleDecal( decal_t *pDecal, msurface_t *fa )
 	xW->glEnd();
 }
 
-void DrawSurfaceDecals( msurface_t *fa )
+void __cdecl DrawSurfaceDecals( msurface_t *fa )
 {
 	decal_t		*p;
 	cl_entity_t	*e;
@@ -2550,7 +2550,7 @@ void DrawSurfaceDecals( msurface_t *fa )
 		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 }
 
-void R_StudioDrawPoints(void)
+void __cdecl R_StudioDrawPoints(void)
 {
 	int		i, j, m_skinnum;
 	byte		*pvertbone;
@@ -2684,7 +2684,7 @@ void R_StudioDrawPoints(void)
 
 		if( !( g_nForceFaceFlags & STUDIO_NF_CHROME ))
 		{
-			GL_Bind( GL_TEXTURE0, ptexture[pskinref[pmesh->skinref]].index );
+			GL_Bind( 0, ptexture[pskinref[pmesh->skinref]].index );
 		}
 
 		while( i = *( ptricmds++ ))
@@ -2810,7 +2810,7 @@ void R_StudioSetupSkin( mstudiotexture_t *ptexture, int index )
 	if( m_skinnum != 0 && m_skinnum < m_pTextureHeader->numskinfamilies )
 		pskinref += (m_skinnum * m_pTextureHeader->numskinref);
 
-	GL_Bind( GL_TEXTURE0, ptexture[pskinref[index]].index );
+	GL_Bind( 0, ptexture[pskinref[index]].index );
 }
 
 void R_DrawWaterSurfaces()
@@ -2848,7 +2848,7 @@ void R_DrawWaterSurfaces()
 			continue;
 
 		// set modulate mode explicitly
-		GL_Bind( GL_TEXTURE0, t->gl_texturenum );
+		GL_Bind( 0, t->gl_texturenum );
 
 		for( ; s; s = s->texturechain )
 			EmitWaterPolys( s->polys, ( s->flags & SURF_NOCULL ));
@@ -2878,8 +2878,8 @@ void LM_UploadBlock( qboolean dynamic )
 		}
 
 		if( host.features & ENGINE_LARGE_LIGHTMAPS )
-			GL_Bind( GL_TEXTURE0, tr.dlightTexture2 );
-		else GL_Bind( GL_TEXTURE0, tr.dlightTexture );
+			GL_Bind( 0, tr.dlightTexture2 );
+		else GL_Bind( 0, tr.dlightTexture );
 
 		xW->glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, BLOCK_SIZE, height, GL_RGBA, GL_UNSIGNED_BYTE, gl_lms.lightmap_buffer );
 	}
@@ -2908,7 +2908,7 @@ void LM_UploadBlock( qboolean dynamic )
 	}
 }
 
-void R_DrawSkyBox()
+void __cdecl R_DrawSkyBox()
 {
 	int	i;
 
@@ -2948,7 +2948,7 @@ void R_DrawSkyBox()
 		if( RI.skyMins[0][i] >= RI.skyMaxs[0][i] || RI.skyMins[1][i] >= RI.skyMaxs[1][i] )
 			continue;
 
-		GL_Bind( GL_TEXTURE0, tr.skyboxTextures[r_skyTexOrder[i]] );
+		GL_Bind( 0, tr.skyboxTextures[r_skyTexOrder[i]] );
 
 		xW->glBegin( GL_QUADS );
 		MakeSkyVec( RI.skyMins[0][i], RI.skyMins[1][i], i );
@@ -3049,12 +3049,12 @@ void EmitSkyPolys( msurface_t *fa )
 	}
 }
 
-void R_DrawSkyChain( msurface_t *s )
+void __cdecl R_DrawSkyChain( msurface_t *s )
 {
 	msurface_t	*fa;
 
 	GL_SetRenderMode( kRenderNormal );
-	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
+	GL_Bind( 0, tr.solidskyTexture );
 
 	speedscale = (float)cl.time * 8.0f;
 	speedscale -= (int)speedscale & ~127;
@@ -3063,7 +3063,7 @@ void R_DrawSkyChain( msurface_t *s )
 		EmitSkyPolys( fa );
 
 	GL_SetRenderMode( kRenderTransTexture );
-	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
+	GL_Bind( 0, tr.alphaskyTexture );
 
 	speedscale = (float)cl.time * 16.0f;
 	speedscale -= (int)speedscale & ~127;
@@ -3077,7 +3077,7 @@ void R_DrawSkyChain( msurface_t *s )
 void EmitSkyLayers( msurface_t *fa )
 {
 	GL_SetRenderMode( kRenderNormal );
-	GL_Bind( GL_TEXTURE0, tr.solidskyTexture );
+	GL_Bind( 0, tr.solidskyTexture );
 
 	speedscale = (float)cl.time * 8.0f;
 	speedscale -= (int)speedscale & ~127;
@@ -3085,7 +3085,7 @@ void EmitSkyLayers( msurface_t *fa )
 	EmitSkyPolys( fa );
 
 	GL_SetRenderMode( kRenderTransTexture );
-	GL_Bind( GL_TEXTURE0, tr.alphaskyTexture );
+	GL_Bind( 0, tr.alphaskyTexture );
 
 	speedscale = (float)cl.time * 16.0f;
 	speedscale -= (int)speedscale & ~127;
@@ -3165,14 +3165,14 @@ void VGUI_BindTexture( int id )
 {
 	if( id > 0 && id < VGUI_MAX_TEXTURES && g_textures[id] )
 	{
-		GL_Bind( GL_TEXTURE0, g_textures[id] );
+		GL_Bind( 0, g_textures[id] );
 		g_iBoundTexture = id;
 	}
 	else
 	{
 		// NOTE: same as bogus index 2700 in GoldSrc
 		id = g_iBoundTexture = 1;
-		GL_Bind( GL_TEXTURE0, g_textures[id] );
+		GL_Bind( 0, g_textures[id] );
 	}
 }
 
@@ -4430,7 +4430,7 @@ void R_ShutdownImages( void )
 	r_numTextures = 0;
 }
 
-void R_BeginDrawMirror( msurface_t *fa )
+void __cdecl R_BeginDrawMirror( msurface_t *fa )
 {
 	matrix4x4		m1, m2, matrix;
 	GLfloat		genVector[4][4];
@@ -4476,13 +4476,13 @@ R_EndDrawMirror
 Restore identity texmatrix
 ================
 */
-void R_EndDrawMirror( void )
+void __cdecl R_EndDrawMirror( void )
 {
 	GL_CleanUpTextureUnits( 0 );
 	xW->glMatrixMode( GL_MODELVIEW );
 }
 
-void R_Clear( int bitMask )
+void __cdecl R_Clear( int bitMask )
 {
 	int	bits;
 
@@ -4517,7 +4517,7 @@ void R_Clear( int bitMask )
 	//xW->glDepthRange( gldepthmin, gldepthmax );
 }
 
-void R_LoadIdentity( void )
+void __cdecl R_LoadIdentity( void )
 {
 	if( tr.modelviewIdentity ) return;
 
@@ -4676,7 +4676,7 @@ void R_DrawFog( void )
 R_DrawEntitiesOnList
 =============
 */
-void R_DrawEntitiesOnList( void )
+void __cdecl R_DrawEntitiesOnList( void )
 {
 	int	i;
 
@@ -4781,7 +4781,7 @@ void R_DrawEntitiesOnList( void )
 	CL_ExtraUpdate();
 }
 
-void R_BeginFrame( qboolean clearScene )
+void __cdecl R_BeginFrame( qboolean clearScene )
 {
 	if(( gl_clear->integer || gl_overview->integer ) && clearScene && cls.state != ca_cinematic )
 	{
@@ -4825,7 +4825,7 @@ void R_BeginFrame( qboolean clearScene )
 R_RenderFrame
 ===============
 */
-void R_RenderFrame( const ref_params_t *fd, qboolean drawWorld )
+void __cdecl R_RenderFrame( const ref_params_t *fd, qboolean drawWorld )
 {
 	if( r_norefresh->integer )
 		return;
@@ -4882,7 +4882,7 @@ void R_RenderFrame( const ref_params_t *fd, qboolean drawWorld )
 	GL_BackendEndFrame();
 }
 
-void R_DrawTextureChains( void )
+void __cdecl R_DrawTextureChains( void )
 {
 	int		i;
 	msurface_t	*s;
@@ -4929,7 +4929,7 @@ void R_DrawTextureChains( void )
 	GL_ResetFogColor();
 }
 
-void R_DrawBrushModel( cl_entity_t *e )
+void __cdecl R_DrawBrushModel( cl_entity_t *e )
 {
 	int		i, k, num_sorted;
 	qboolean		need_sort = false;

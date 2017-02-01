@@ -461,7 +461,7 @@ This has to be done before the world logic, because
 player processing happens outside RunWorldFrame
 ================
 */
-void SV_PrepWorldFrame( void )
+void __cdecl SV_PrepWorldFrame( void )
 {
 	edict_t	*ent;
 	int	i;
@@ -529,7 +529,7 @@ Host_ServerFrame
 
 ==================
 */
-void Host_ServerFrame( void )
+void __cdecl Host_ServerFrame( void )
 {
 	// if server is not active, do nothing
 	if( !svs.initialized ) return;

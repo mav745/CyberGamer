@@ -178,7 +178,7 @@ Draw all viewpasess from mirror position
 Mirror textures will be drawn in normal pass
 ================
 */
-void R_DrawMirrors( void )
+void __cdecl R_DrawMirrors( void )
 {
 	ref_instance_t	oldRI;
 	mplane_t		plane;
@@ -590,7 +590,7 @@ R_FindMirrors
 Build mirror chains for this frame
 ================
 */
-void R_FindMirrors( const ref_params_t *fd )
+void __cdecl R_FindMirrors( const ref_params_t *fd )
 {
 	vec3_t	viewOrg, viewAng;
 

@@ -959,7 +959,7 @@ CL_AddEntities
 Emits all entities, particles, and lights to the refresh
 ===============
 */
-void CL_AddEntities( void )
+void __cdecl CL_AddEntities( void )
 {
 	if( cls.state != ca_active )
 		return;
@@ -1028,7 +1028,7 @@ qboolean CL_GetEntitySpatialization( int entnum, vec3_t origin, float *pradius )
 	return true;
 }
 
-void CL_ExtraUpdate( void )
+void __cdecl CL_ExtraUpdate( void )
 {
 	clgame.dllFuncs.IN_Accumulate();
 	S_ExtraUpdate();

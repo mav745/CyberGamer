@@ -298,7 +298,7 @@ void R_ClearSkyBox( void )
 R_AddSkyBoxSurface
 =================
 */
-void R_AddSkyBoxSurface( msurface_t *fa )
+void __cdecl R_AddSkyBoxSurface( msurface_t *fa )
 {
 	vec3_t	verts[MAX_CLIP_VERTS];
 	glpoly_t	*p;

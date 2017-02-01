@@ -607,7 +607,7 @@ FRAME UPDATES
 SV_SendClientDatagram
 =======================
 */
-void SV_SendClientDatagram( sv_client_t *cl )
+void __cdecl SV_SendClientDatagram( sv_client_t *cl )
 {
 	byte    	msg_buf[NET_MAX_PAYLOAD];
 	sizebuf_t	msg;
@@ -644,7 +644,7 @@ void SV_SendClientDatagram( sv_client_t *cl )
 	// send the datagram
 	nbw = BF_GetNumBitsWritten( &msg );
 	gotData = BF_GetData( &msg );
-	printf("nbw: %i\n", nbw);
+	
 	Netchan_TransmitBits( &cl->netchan, nbw, gotData);
 /*	//Netchan_TransmitBits( &cl->netchan, BF_GetNumBitsWritten( &msg ), BF_GetData( &msg ));*/
 }

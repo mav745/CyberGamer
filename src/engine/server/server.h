@@ -432,154 +432,154 @@ extern	convar_t		*coop;
 //
 // sv_main.c
 //
-void SV_FinalMessage( char *message, qboolean reconnect );
-void SV_DropClient( sv_client_t *drop );
-void SV_UpdateMovevars( qboolean initialize );
-int SV_ModelIndex( const char *name );
-int SV_SoundIndex( const char *name );
-int SV_EventIndex( const char *name );
-int SV_GenericIndex( const char *name );
-int SV_CalcPacketLoss( sv_client_t *cl );
-void SV_ExecuteUserCommand (char *s);
-void SV_InitOperatorCommands( void );
-void SV_KillOperatorCommands( void );
-void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo );
-void SV_PrepWorldFrame( void );
-void SV_ProcessFile( sv_client_t *cl, char *filename );
-void SV_SendResourceList( sv_client_t *cl );
-void Master_Add( void );
-void Master_Heartbeat( void );
-void Master_Packet( void );
+void __cdecl SV_FinalMessage( char *message, qboolean reconnect );
+void __cdecl SV_DropClient( sv_client_t *drop );
+void __cdecl SV_UpdateMovevars( qboolean initialize );
+int __cdecl SV_ModelIndex( const char *name );
+int __cdecl SV_SoundIndex( const char *name );
+int __cdecl SV_EventIndex( const char *name );
+int __cdecl SV_GenericIndex( const char *name );
+int __cdecl SV_CalcPacketLoss( sv_client_t *cl );
+void __cdecl SV_ExecuteUserCommand (char *s);
+void __cdecl SV_InitOperatorCommands( void );
+void __cdecl SV_KillOperatorCommands( void );
+void __cdecl SV_UserinfoChanged( sv_client_t *cl, const char *userinfo );
+void __cdecl SV_PrepWorldFrame( void );
+void __cdecl SV_ProcessFile( sv_client_t *cl, char *filename );
+void __cdecl SV_SendResourceList( sv_client_t *cl );
+void __cdecl Master_Add( void );
+void __cdecl Master_Heartbeat( void );
+void __cdecl Master_Packet( void );
 
 //
 // sv_init.c
 //
-void SV_InitGame( void );
-void SV_ActivateServer( void );
-void SV_DeactivateServer( void );
-void SV_LevelInit( const char *pMapName, char const *pOldLevel, char const *pLandmarkName, qboolean loadGame );
-qboolean SV_SpawnServer( const char *server, const char *startspot );
+void __cdecl SV_InitGame( void );
+void __cdecl SV_ActivateServer( void );
+void __cdecl SV_DeactivateServer( void );
+void __cdecl SV_LevelInit( const char *pMapName, char const *pOldLevel, char const *pLandmarkName, qboolean loadGame );
+qboolean __cdecl SV_SpawnServer( const char *server, const char *startspot );
 
 //
 // sv_phys.c
 //
-void SV_Physics( void );
-qboolean SV_InitPhysicsAPI( void );
-void SV_CheckVelocity( edict_t *ent );
-qboolean SV_CheckWater( edict_t *ent );
-qboolean SV_RunThink( edict_t *ent );
-qboolean SV_PlayerRunThink( edict_t *ent, float frametime, double time );
-qboolean SV_TestEntityPosition( edict_t *ent, edict_t *blocker );	// for EntityInSolid checks
-void SV_Impact( edict_t *e1, edict_t *e2, trace_t *trace );
-qboolean SV_CanPushed( edict_t *ent );
-void SV_FreeOldEntities( void );
-void SV_CheckAllEnts( void );
+void __cdecl SV_Physics( void );
+qboolean __cdecl SV_InitPhysicsAPI( void );
+void __cdecl SV_CheckVelocity( edict_t *ent );
+qboolean __cdecl SV_CheckWater( edict_t *ent );
+qboolean __cdecl SV_RunThink( edict_t *ent );
+qboolean __cdecl SV_PlayerRunThink( edict_t *ent, float frametime, double time );
+qboolean __cdecl SV_TestEntityPosition( edict_t *ent, edict_t *blocker );	// for EntityInSolid checks
+void __cdecl SV_Impact( edict_t *e1, edict_t *e2, trace_t *trace );
+qboolean __cdecl SV_CanPushed( edict_t *ent );
+void __cdecl SV_FreeOldEntities( void );
+void __cdecl SV_CheckAllEnts( void );
 
 //
 // sv_move.c
 //
-qboolean SV_MoveStep( edict_t *ent, vec3_t move, qboolean relink );
-qboolean SV_MoveTest( edict_t *ent, vec3_t move, qboolean relink );
-void SV_MoveToOrigin( edict_t *ed, const vec3_t goal, float dist, int iMode );
-qboolean SV_CheckBottom( edict_t *ent, int iMode );
-float SV_VecToYaw( const vec3_t src );
-void SV_WaterMove( edict_t *ent );
+qboolean __cdecl SV_MoveStep( edict_t *ent, vec3_t move, qboolean relink );
+qboolean __cdecl SV_MoveTest( edict_t *ent, vec3_t move, qboolean relink );
+void __cdecl SV_MoveToOrigin( edict_t *ed, const vec3_t goal, float dist, int iMode );
+qboolean __cdecl SV_CheckBottom( edict_t *ent, int iMode );
+float __cdecl SV_VecToYaw( const vec3_t src );
+void __cdecl SV_WaterMove( edict_t *ent );
 
 //
 // sv_send.c
 //
-void SV_SendClientMessages( void );
-void SV_ClientPrintf( sv_client_t *cl, int level, char *fmt, ... );
-void SV_BroadcastPrintf( int level, char *fmt, ... );
-void SV_BroadcastCommand( char *fmt, ... );
+void __cdecl SV_SendClientMessages( void );
+void __cdecl SV_ClientPrintf( sv_client_t *cl, int level, char *fmt, ... );
+void __cdecl SV_BroadcastPrintf( int level, char *fmt, ... );
+void __cdecl SV_BroadcastCommand( char *fmt, ... );
 
 //
 // sv_client.c
 //
-char *SV_StatusString( void );
-void SV_RefreshUserinfo( void );
-void SV_GetChallenge( netadr_t from );
-void SV_DirectConnect( netadr_t from );
-void SV_TogglePause( const char *msg );
-void SV_PutClientInServer( edict_t *ent );
-qboolean SV_ShouldUpdatePing( sv_client_t *cl );
-const char *SV_GetClientIDString( sv_client_t *cl );
-void SV_FullClientUpdate( sv_client_t *cl, sizebuf_t *msg );
-void SV_FullUpdateMovevars( sv_client_t *cl, sizebuf_t *msg );
-void SV_GetPlayerStats( sv_client_t *cl, int *ping, int *packet_loss );
-qboolean SV_ClientConnect( edict_t *ent, char *userinfo );
-void SV_ClientThink( sv_client_t *cl, usercmd_t *cmd );
-void SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg );
-void SV_ConnectionlessPacket( netadr_t from, sizebuf_t *msg );
-edict_t *SV_FakeConnect( const char *netname );
- void SV_ExecuteClientCommand( sv_client_t *cl, char *s );
-void SV_RunCmd( sv_client_t *cl, usercmd_t *ucmd, int random_seed );
-qboolean SV_IsPlayerIndex( int idx );
-void SV_InitClientMove( void );
-void SV_UpdateServerInfo( void );
+char *__cdecl SV_StatusString( void );
+void __cdecl SV_RefreshUserinfo( void );
+void __cdecl SV_GetChallenge( netadr_t from );
+void __cdecl SV_DirectConnect( netadr_t from );
+void __cdecl SV_TogglePause( const char *msg );
+void __cdecl SV_PutClientInServer( edict_t *ent );
+qboolean __cdecl SV_ShouldUpdatePing( sv_client_t *cl );
+const char *__cdecl SV_GetClientIDString( sv_client_t *cl );
+void __cdecl SV_FullClientUpdate( sv_client_t *cl, sizebuf_t *msg );
+void __cdecl SV_FullUpdateMovevars( sv_client_t *cl, sizebuf_t *msg );
+void __cdecl SV_GetPlayerStats( sv_client_t *cl, int *ping, int *packet_loss );
+qboolean __cdecl SV_ClientConnect( edict_t *ent, char *userinfo );
+void __cdecl SV_ClientThink( sv_client_t *cl, usercmd_t *cmd );
+void __cdecl SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg );
+void __cdecl SV_ConnectionlessPacket( netadr_t from, sizebuf_t *msg );
+edict_t *__cdecl SV_FakeConnect( const char *netname );
+void __cdecl SV_ExecuteClientCommand( sv_client_t *cl, char *s );
+void __cdecl SV_RunCmd( sv_client_t *cl, usercmd_t *ucmd, int random_seed );
+qboolean __cdecl SV_IsPlayerIndex( int idx );
+void __cdecl SV_InitClientMove( void );
+void __cdecl SV_UpdateServerInfo( void );
 
 //
 // sv_cmds.c
 //
-void SV_Status_f( void );
-void SV_Newgame_f( void );
+void __cdecl SV_Status_f( void );
+void __cdecl SV_Newgame_f( void );
 
 //
 // sv_custom.c
 //
-void SV_SendResources( sizebuf_t *msg );
-int SV_TransferConsistencyInfo( void );
+void __cdecl SV_SendResources( sizebuf_t *msg );
+int __cdecl SV_TransferConsistencyInfo( void );
 
 //
 // sv_frame.c
 //
-void SV_WriteFrameToClient( sv_client_t *client, sizebuf_t *msg );
-void SV_BuildClientFrame( sv_client_t *client );
-void SV_InactivateClients( void );
-void SV_SendMessagesToAll( void );
-void SV_SkipUpdates( void );
+void __cdecl SV_WriteFrameToClient( sv_client_t *client, sizebuf_t *msg );
+void __cdecl SV_BuildClientFrame( sv_client_t *client );
+void __cdecl SV_InactivateClients( void );
+void __cdecl SV_SendMessagesToAll( void );
+void __cdecl SV_SkipUpdates( void );
 
 //
 // sv_game.c
 //
-qboolean SV_LoadProgs( const char *name );
-void SV_UnloadProgs( void );
-void SV_FreeEdicts( void );
-edict_t *SV_AllocEdict( void );
-void SV_FreeEdict( edict_t *pEdict );
-void SV_InitEdict( edict_t *pEdict );
-const char *SV_ClassName( const edict_t *e );
-void SV_SetModel( edict_t *ent, const char *name );
-void SV_CopyTraceToGlobal( trace_t *trace );
-void SV_SetMinMaxSize( edict_t *e, const float *min, const float *max );
-edict_t* SV_FindEntityByString( edict_t *pStartEdict, const char *pszField, const char *pszValue );
-void SV_PlaybackEventFull( int flags, const edict_t *pInvoker, word eventindex, float delay, float *origin,
+qboolean __cdecl SV_LoadProgs( const char *name );
+void __cdecl SV_UnloadProgs( void );
+void __cdecl SV_FreeEdicts( void );
+edict_t *__cdecl SV_AllocEdict( void );
+void __cdecl SV_FreeEdict( edict_t *pEdict );
+void __cdecl SV_InitEdict( edict_t *pEdict );
+const char *__cdecl SV_ClassName( const edict_t *e );
+void __cdecl SV_SetModel( edict_t *ent, const char *name );
+void __cdecl SV_CopyTraceToGlobal( trace_t *trace );
+void __cdecl SV_SetMinMaxSize( edict_t *e, const float *min, const float *max );
+edict_t *__cdecl SV_FindEntityByString( edict_t *pStartEdict, const char *pszField, const char *pszValue );
+void __cdecl SV_PlaybackEventFull( int flags, const edict_t *pInvoker, word eventindex, float delay, float *origin,
 	float *angles, float fparam1, float fparam2, int iparam1, int iparam2, int bparam1, int bparam2 );
-void SV_PlaybackReliableEvent( sizebuf_t *msg, word eventindex, float delay, event_args_t *args );
-void SV_BaselineForEntity( edict_t *pEdict );
-void SV_WriteEntityPatch( const char *filename );
-char *SV_ReadEntityScript( const char *filename, int *flags );
-float SV_AngleMod( float ideal, float current, float speed );
-void SV_SpawnEntities( const char *mapname, char *entities );
-edict_t* SV_AllocPrivateData( edict_t *ent, string_t className );
-string_t SV_AllocString( const char *szValue );
-string_t SV_MakeString( const char *szValue );
-const char *SV_GetString( string_t iString );
-sv_client_t *SV_ClientFromEdict( const edict_t *pEdict, qboolean spawned_only );
-void SV_SetClientMaxspeed( sv_client_t *cl, float fNewMaxspeed );
-int SV_MapIsValid( const char *filename, const char *spawn_entity, const char *landmark_name );
-void SV_StartSound( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch );
-void SV_CreateStaticEntity( struct sizebuf_s *msg, sv_static_entity_t *ent );
-edict_t* pfnPEntityOfEntIndex( int iEntIndex );
-int pfnIndexOfEdict( const edict_t *pEdict );
-void SV_UpdateBaseVelocity( edict_t *ent );
-byte *pfnSetFatPVS( const float *org );
-byte *pfnSetFatPAS( const float *org );
-int pfnPrecacheModel( const char *s );
-int pfnNumberOfEntities( void );
-void SV_RestartStaticEnts( void );
+void __cdecl SV_PlaybackReliableEvent( sizebuf_t *msg, word eventindex, float delay, event_args_t *args );
+void __cdecl SV_BaselineForEntity( edict_t *pEdict );
+void __cdecl SV_WriteEntityPatch( const char *filename );
+char *__cdecl SV_ReadEntityScript( const char *filename, int *flags );
+float __cdecl SV_AngleMod( float ideal, float current, float speed );
+void __cdecl SV_SpawnEntities( const char *mapname, char *entities );
+edict_t *__cdecl SV_AllocPrivateData( edict_t *ent, string_t className );
+string_t __cdecl SV_AllocString( const char *szValue );
+string_t __cdecl SV_MakeString( const char *szValue );
+const char *__cdecl SV_GetString( string_t iString );
+sv_client_t *__cdecl SV_ClientFromEdict( const edict_t *pEdict, qboolean spawned_only );
+void __cdecl SV_SetClientMaxspeed( sv_client_t *cl, float fNewMaxspeed );
+int __cdecl SV_MapIsValid( const char *filename, const char *spawn_entity, const char *landmark_name );
+void __cdecl SV_StartSound( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch );
+void __cdecl SV_CreateStaticEntity( struct sizebuf_s *msg, sv_static_entity_t *ent );
+edict_t *__cdecl pfnPEntityOfEntIndex( int iEntIndex );
+int __cdecl pfnIndexOfEdict( const edict_t *pEdict );
+void __cdecl SV_UpdateBaseVelocity( edict_t *ent );
+byte *__cdecl pfnSetFatPVS( const float *org );
+byte *__cdecl pfnSetFatPAS( const float *org );
+int __cdecl pfnPrecacheModel( const char *s );
+int __cdecl pfnNumberOfEntities( void );
+void __cdecl SV_RestartStaticEnts( void );
 
-_inline edict_t *SV_EDICT_NUM( int n, const char * file, const int line )
+_inline edict_t *__cdecl SV_EDICT_NUM( int n, const char * file, const int line )
 {
 	if((n >= 0) && (n < svgame.globals->maxEntities))
 		return svgame.edicts + n;
@@ -590,42 +590,42 @@ _inline edict_t *SV_EDICT_NUM( int n, const char * file, const int line )
 //
 // sv_save.c
 //
-void SV_ClearSaveDir( void );
-void SV_SaveGame( const char *pName );
-qboolean SV_LoadGame( const char *pName );
-void SV_ChangeLevel( qboolean loadfromsavedgame, const char *mapname, const char *start );
-int SV_LoadGameState( char const *level, qboolean createPlayers );
-void SV_LoadAdjacentEnts( const char *pOldLevel, const char *pLandmarkName );
-const char *SV_GetLatestSave( void );
-void SV_InitSaveRestore( void );
+void __cdecl SV_ClearSaveDir( void );
+void __cdecl SV_SaveGame( const char *pName );
+qboolean __cdecl SV_LoadGame( const char *pName );
+void __cdecl SV_ChangeLevel( qboolean loadfromsavedgame, const char *mapname, const char *start );
+int __cdecl SV_LoadGameState( char const *level, qboolean createPlayers );
+void __cdecl SV_LoadAdjacentEnts( const char *pOldLevel, const char *pLandmarkName );
+const char *__cdecl SV_GetLatestSave( void );
+void __cdecl SV_InitSaveRestore( void );
 
 //
 // sv_pmove.c
 //
-void SV_GetTrueOrigin( sv_client_t *cl, int edictnum, vec3_t origin );
-void SV_GetTrueMinMax( sv_client_t *cl, int edictnum, vec3_t mins, vec3_t maxs );
+void __cdecl SV_GetTrueOrigin( sv_client_t *cl, int edictnum, vec3_t origin );
+void __cdecl SV_GetTrueMinMax( sv_client_t *cl, int edictnum, vec3_t mins, vec3_t maxs );
 
 //
 // sv_world.c
 //
-void SV_ClearWorld( void );
-void SV_UnlinkEdict( edict_t *ent );
-qboolean SV_HeadnodeVisible( mnode_t *node, byte *visbits, int *lastleaf );
-void SV_ClipMoveToEntity( edict_t *ent, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, trace_t *trace );
-void SV_CustomClipMoveToEntity( edict_t *ent, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, trace_t *trace );
-trace_t SV_TraceHull( edict_t *ent, int hullNum, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end );
-trace_t SV_Move( const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int type, edict_t *e );
-trace_t SV_MoveNoEnts( const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int type, edict_t *e );
-const char *SV_TraceTexture( edict_t *ent, const vec3_t start, const vec3_t end );
-trace_t SV_MoveToss( edict_t *tossent, edict_t *ignore );
-void SV_LinkEdict( edict_t *ent, qboolean touch_triggers );
-void SV_TouchLinks( edict_t *ent, areanode_t *node );
-int SV_TruePointContents( const vec3_t p );
-int SV_PointContents( const vec3_t p );
-void SV_RunLightStyles( void );
-void SV_SetLightStyle( int style, const char* s, float f );
-const char *SV_GetLightStyle( int style );
-int SV_LightForEntity( edict_t *pEdict );
-void SV_ClearPhysEnts( void );
+void __cdecl SV_ClearWorld( void );
+void __cdecl SV_UnlinkEdict( edict_t *ent );
+qboolean __cdecl SV_HeadnodeVisible( mnode_t *node, byte *visbits, int *lastleaf );
+void __cdecl SV_ClipMoveToEntity( edict_t *ent, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, trace_t *trace );
+void __cdecl SV_CustomClipMoveToEntity( edict_t *ent, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, trace_t *trace );
+trace_t __cdecl SV_TraceHull( edict_t *ent, int hullNum, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end );
+trace_t __cdecl SV_Move( const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int type, edict_t *e );
+trace_t __cdecl SV_MoveNoEnts( const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int type, edict_t *e );
+const char *__cdecl SV_TraceTexture( edict_t *ent, const vec3_t start, const vec3_t end );
+trace_t __cdecl SV_MoveToss( edict_t *tossent, edict_t *ignore );
+void __cdecl SV_LinkEdict( edict_t *ent, qboolean touch_triggers );
+void __cdecl SV_TouchLinks( edict_t *ent, areanode_t *node );
+int __cdecl SV_TruePointContents( const vec3_t p );
+int __cdecl SV_PointContents( const vec3_t p );
+void __cdecl SV_RunLightStyles( void );
+void __cdecl SV_SetLightStyle( int style, const char* s, float f );
+const char *__cdecl SV_GetLightStyle( int style );
+int __cdecl SV_LightForEntity( edict_t *pEdict );
+void __cdecl SV_ClearPhysEnts( void );
 
 #endif//SERVER_H

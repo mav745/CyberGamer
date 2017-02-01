@@ -303,7 +303,7 @@ Con_CheckResize
 If the line width has changed, reformat the buffer.
 ================
 */
-void Con_CheckResize( void )
+void __cdecl Con_CheckResize( void )
 {
 	int	i, j, width, numlines, numchars;
 	int	oldwidth, oldtotallines;
@@ -1772,7 +1772,7 @@ Draws the last few lines of output transparently over the game top
 Con_DrawConsole
 ==================
 */
-void Con_DrawConsole( void )
+void __cdecl Con_DrawConsole( void )
 {
 	// never draw console when changelevel in-progress
 	if( cls.state != ca_disconnected && ( cls.changelevel || cls.changedemo ))

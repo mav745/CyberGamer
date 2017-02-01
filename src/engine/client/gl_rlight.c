@@ -154,7 +154,7 @@ void R_MarkLights( dlight_t *light, int bit, mnode_t *node )
 R_PushDlights
 =============
 */
-void R_PushDlights( void )
+void __cdecl R_PushDlights( void )
 {
 	dlight_t	*l;
 	int	i;
