@@ -677,27 +677,27 @@ void __cdecl CL_BulletTracerDraw( particle_t *p, float frametime )
 	GL_SetRenderMode( kRenderTransTexture );
 
 	GL_Bind( 0, cls.particleImage );
-	glBegin( GL_QUADS );
+	xW->glBegin( GL_QUADS );
 
-	glColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
+	xW->glColor4ub( clgame.palette[p->color][0], clgame.palette[p->color][1], clgame.palette[p->color][2], alpha );
 
 	VectorMA( vecStart, -width, cross, tmp );
-	glTexCoord2f( 1.0f, 0.0f );
-	glVertex3fv( tmp );
+	xW->glTexCoord2f( 1.0f, 0.0f );
+	xW->glVertex3fv( tmp );
 
 	VectorMA( vecStart, width, cross, tmp );
-	glTexCoord2f( 0.0f, 0.0f );
-	glVertex3fv( tmp );
+	xW->glTexCoord2f( 0.0f, 0.0f );
+	xW->glVertex3fv( tmp );
 
 	VectorMA( vecEnd, width, cross, tmp );
-	glTexCoord2f( 0.0f, fOffset );
-	glVertex3fv( tmp );
+	xW->glTexCoord2f( 0.0f, fOffset );
+	xW->glVertex3fv( tmp );
 
 	VectorMA( vecEnd, -width, cross, tmp );
-	glTexCoord2f( 1.0f, fOffset );
-	glVertex3fv( tmp );
+	xW->glTexCoord2f( 1.0f, fOffset );
+	xW->glVertex3fv( tmp );
 
-	glEnd();
+	xW->glEnd();
 }
 
 /*
@@ -2813,7 +2813,7 @@ void R_StudioSetupSkin( mstudiotexture_t *ptexture, int index )
 	GL_Bind( 0, ptexture[pskinref[index]].index );
 }
 
-void R_DrawWaterSurfaces()
+void __cdecl R_DrawWaterSurfaces()
 {
 	int		i;
 	msurface_t	*s;
@@ -5605,7 +5605,7 @@ void GL_SetDefaults( void )
 	xW->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 }
 
-void GL_InitExtensions( void )
+void __cdecl GL_InitExtensions( void )
 {
 	// initialize gl extensions
 	//GL_CheckExtension( "OpenGL 1.1.0", opengl_110funcs, NULL, GL_OPENGL_110 );
@@ -5631,7 +5631,7 @@ void GL_InitExtensions( void )
 
 	//if( GL_Support( GL_ARB_MULTITEXTURE ))
 	//{
-		glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &glConfig.max_texture_units );
+		xW->glGetIntegerv( GL_MAX_TEXTURE_UNITS_ARB, &glConfig.max_texture_units );
 		//GL_CheckExtension( "GL_ARB_texture_env_combine", NULL, "gl_texture_env_combine", GL_ENV_COMBINE_EXT );
 
 		//if( !GL_Support( GL_ENV_COMBINE_EXT ))

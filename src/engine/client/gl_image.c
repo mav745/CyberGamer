@@ -3563,7 +3563,7 @@ static rgbdata_t *R_LoadImage( char **script, const char *name, const byte *buf,
 R_FreeImage
 ================
 */
-void R_FreeImage( gltexture_t *image )
+void __cdecl R_FreeImage( gltexture_t *image )
 {
 	uint		hash;
 	gltexture_t	*cur;
@@ -3599,7 +3599,7 @@ void R_FreeImage( gltexture_t *image )
 	if( image->flags & (TF_KEEP_RGBDATA|TF_KEEP_8BIT) && image->original )
 		FS_FreeImage( image->original );
 
-	glDeleteTextures( 1, &image->texnum );
+//	glDeleteTextures( 1, &image->texnum );
 	Q_memset( image, 0, sizeof( *image ));
 }
 

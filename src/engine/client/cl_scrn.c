@@ -334,7 +334,7 @@ void SCR_DirtyScreen( void )
 SCR_TileClear
 ================
 */
-void SCR_TileClear( void )
+void __cdecl SCR_TileClear( void )
 {
 	int	i, top, bottom, left, right;
 	dirty_t	clear;

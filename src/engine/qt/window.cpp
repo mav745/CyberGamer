@@ -55,7 +55,7 @@ Window::~Window()
 void Window::initializeGL()
 {
 	initializeOpenGLFunctions();
-	glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+	QOpenGLFunctions::glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 	program.addShaderFromSourceFile(QOpenGLShader::Vertex, "advanced/shaders/normal.vert");
 	program.addShaderFromSourceFile(QOpenGLShader::Fragment, "advanced/shaders/normal.frag");
 	program.link();
@@ -65,14 +65,15 @@ void Window::initializeGL()
 	drawVerts.setUsagePattern(QOpenGLBuffer::DynamicDraw);
 	drawVerts.bind();
 	drawVerts.allocate(300000 * sizeof(float));
-	
+	drawVerts.release();
 
 	drawCoords = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 	drawCoords.create();
 	drawCoords.setUsagePattern(QOpenGLBuffer::DynamicDraw);
 	drawCoords.bind();
 	drawCoords.allocate(200000 * sizeof(float));
-
+	drawCoords.release();
+	
 	QApplication::instance()->installEventFilter(this);
 }
 
@@ -158,6 +159,7 @@ void Window::glEnd()
 
 	drawVerts.release();
 	drawCoords.release();
+	program.release();
 }
 
 void Window::glVertex2f(float x, float y)
@@ -233,7 +235,8 @@ void Window::glColor4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
 
 void Window::glColor3ub(GLubyte r, GLubyte g, GLubyte b)
 {
-	glColor4ub(r,g,b,255);
+//	QOpenGLFunctions::glColor4ub(r,g,b,255);
+	drawColor = QVector4D(r, g, b, 255)*(1.f/255.f);
 }
 
 void Window::glColor4ubv(GLubyte *v)

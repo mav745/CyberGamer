@@ -94,7 +94,7 @@ R_CullSphere
 Returns true if the sphere is completely outside the frustum
 =================
 */
-qboolean R_CullSphere( const vec3_t centre, const float radius, const uint clipflags )
+qboolean __cdecl R_CullSphere( const vec3_t centre, const float radius, const uint clipflags )
 {
 	uint	i, bit;
 	const mplane_t *p;

@@ -1349,7 +1349,7 @@ R_BeginFrame
 R_EndFrame
 ===============
 */
-void R_EndFrame( void )
+void __cdecl R_EndFrame( void )
 {
 	// flush any remaining 2D bits
 	R_Set2DMode( false );
@@ -1363,7 +1363,7 @@ void R_EndFrame( void )
 R_DrawCubemapView
 ===============
 */
-void R_DrawCubemapView( const vec3_t origin, const vec3_t angles, int size )
+void __cdecl R_DrawCubemapView( const vec3_t origin, const vec3_t angles, int size )
 {
 	ref_params_t *fd;
 
@@ -1397,7 +1397,7 @@ void R_DrawCubemapView( const vec3_t origin, const vec3_t angles, int size )
 	r_oldviewleaf = r_viewleaf = NULL;		// force markleafs next frame
 }
 
-static int GL_RenderGetParm( int parm, int arg )
+static int __cdecl GL_RenderGetParm( int parm, int arg )
 {
 	gltexture_t *glt;
 
@@ -1474,7 +1474,7 @@ static int GL_RenderGetParm( int parm, int arg )
 	return 0;
 }
 
-static void R_GetDetailScaleForTexture( int texture, float *xScale, float *yScale )
+static void __cdecl R_GetDetailScaleForTexture( int texture, float *xScale, float *yScale )
 {
 	gltexture_t *glt = R_GetTexture( texture );
 
@@ -1482,7 +1482,7 @@ static void R_GetDetailScaleForTexture( int texture, float *xScale, float *yScal
 	if( yScale ) *yScale = glt->yscale;
 }
 
-static void R_GetExtraParmsForTexture( int texture, byte *red, byte *green, byte *blue, byte *density )
+static void __cdecl R_GetExtraParmsForTexture( int texture, byte *red, byte *green, byte *blue, byte *density )
 {
 	gltexture_t *glt = R_GetTexture( texture );
 
@@ -1492,7 +1492,7 @@ static void R_GetExtraParmsForTexture( int texture, byte *red, byte *green, byte
 	if( density ) *density = glt->fogParams[3];
 }
 
-static void GL_TextureUpdateCache( unsigned int texture )
+static void __cdecl GL_TextureUpdateCache( unsigned int texture )
 {
 	gltexture_t *glt = R_GetTexture( texture );
 	if( !glt || !glt->texnum ) return;
@@ -1505,7 +1505,7 @@ R_EnvShot
 
 =================
 */
-static void R_EnvShot( const float *vieworg, const char *name, int skyshot, int shotsize )
+static void __cdecl R_EnvShot( const float *vieworg, const char *name, int skyshot, int shotsize )
 {
 	static vec3_t viewPoint;
 
@@ -1541,7 +1541,7 @@ static void R_EnvShot( const float *vieworg, const char *name, int skyshot, int 
 	cls.envshot_viewsize = max( 0, shotsize );
 }
 
-static void R_SetCurrentEntity( cl_entity_t *ent )
+static void __cdecl R_SetCurrentEntity( cl_entity_t *ent )
 {
 	RI.currententity = ent;
 
@@ -1552,49 +1552,49 @@ static void R_SetCurrentEntity( cl_entity_t *ent )
 	}
 }
 
-static void R_SetCurrentModel( model_t *mod )
+static void __cdecl R_SetCurrentModel( model_t *mod )
 {
 	RI.currentmodel = mod;
 }
 
-static lightstyle_t *CL_GetLightStyle( int number )
+static lightstyle_t *__cdecl CL_GetLightStyle( int number )
 {
 	ASSERT( number >= 0 && number < MAX_LIGHTSTYLES );
 	return &cl.lightstyles[number];
 }
 
-static dlight_t *CL_GetDynamicLight( int number )
+static dlight_t *__cdecl CL_GetDynamicLight( int number )
 {
 	ASSERT( number >= 0 && number < MAX_DLIGHTS );
 	return &cl_dlights[number];
 }
 
-static dlight_t *CL_GetEntityLight( int number )
+static dlight_t *__cdecl CL_GetEntityLight( int number )
 {
 	ASSERT( number >= 0 && number < MAX_ELIGHTS );
 	return &cl_elights[number];
 }
 
-static void CL_GetBeamChains( BEAM ***active_beams, BEAM ***free_beams, particle_t ***free_trails )
+static void __cdecl CL_GetBeamChains( BEAM ***active_beams, BEAM ***free_beams, particle_t ***free_trails )
 {
 	*active_beams = &cl_active_beams;
 	*free_beams = &cl_free_beams;
 	*free_trails = &cl_free_trails;
 }
 
-static void GL_SetWorldviewProjectionMatrix( const float *glmatrix )
+static void __cdecl GL_SetWorldviewProjectionMatrix( const float *glmatrix )
 {
 	if( !glmatrix ) return;
 
 	Matrix4x4_FromArrayFloatGL( RI.worldviewProjectionMatrix, glmatrix );
 }
 
-static const char *GL_TextureName( unsigned int texnum )
+static const char *__cdecl GL_TextureName( unsigned int texnum )
 {
 	return R_GetTexture( texnum )->name;
 }
 
-static const byte *GL_TextureData( unsigned int texnum )
+static const byte *__cdecl GL_TextureData( unsigned int texnum )
 {
 	rgbdata_t *pic = R_GetTexture( texnum )->original;
 
@@ -1603,22 +1603,22 @@ static const byte *GL_TextureData( unsigned int texnum )
 	return NULL;
 }
 
-static int GL_LoadTextureNoFilter( const char *name, const byte *buf, size_t size, int flags )
+static int __cdecl GL_LoadTextureNoFilter( const char *name, const byte *buf, size_t size, int flags )
 {
 	return GL_LoadTexture( name, buf, size, flags, NULL );
 }
 
-static const ref_overview_t *GL_GetOverviewParms( void )
+static const ref_overview_t *__cdecl GL_GetOverviewParms( void )
 {
 	return &clgame.overView;
 }
 
-static void *R_Mem_Alloc( size_t cb, const char *filename, const int fileline )
+static void *__cdecl R_Mem_Alloc( size_t cb, const char *filename, const int fileline )
 {
 	return _Mem_Alloc( cls.mempool, cb, filename, fileline );
 }
 
-static void R_Mem_Free( void *mem, const char *filename, const int fileline )
+static void __cdecl R_Mem_Free( void *mem, const char *filename, const int fileline )
 {
 	_Mem_Free( mem, filename, fileline );
 }
@@ -1629,7 +1629,7 @@ pfnGetFilesList
 
 =========
 */
-static char **pfnGetFilesList( const char *pattern, int *numFiles, int gamedironly )
+static char **__cdecl pfnGetFilesList( const char *pattern, int *numFiles, int gamedironly )
 {
 	static search_t	*t = NULL;
 

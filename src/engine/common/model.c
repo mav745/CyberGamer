@@ -248,7 +248,7 @@ byte *Mod_CompressVis( const byte *in, size_t *size )
 Mod_DecompressVis
 ===================
 */
-byte *Mod_DecompressVis( const byte *in )
+byte *__cdecl Mod_DecompressVis( const byte *in )
 {
 	int	c, row;
 	byte	*out;
@@ -321,7 +321,7 @@ Mod_LeafPVS
 
 ==================
 */
-byte *Mod_LeafPVS( mleaf_t *leaf, model_t *model )
+byte *__cdecl Mod_LeafPVS( mleaf_t *leaf, model_t *model )
 {
 	if( !model || !leaf || leaf == model->leafs || !model->visdata )
 		return Mod_DecompressVis( NULL );

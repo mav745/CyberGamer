@@ -105,7 +105,7 @@ void R_AnimateLight( void )
 R_MarkLights
 =============
 */
-void R_MarkLights( dlight_t *light, int bit, mnode_t *node )
+void __cdecl R_MarkLights( dlight_t *light, int bit, mnode_t *node )
 {
 	float		dist;
 	msurface_t	*surf;

@@ -392,7 +392,7 @@ V_PostRender
 
 ==================
 */
-void V_PostRender( void )
+void __cdecl V_PostRender( void )
 {
 	qboolean	draw_2d = false;
 

@@ -42,12 +42,12 @@ gllightmapstate_t	gl_lms;
 
 //static void LM_UploadBlock( int lightmapnum );
 
-byte *Mod_GetCurrentVis( void )
+byte *__cdecl Mod_GetCurrentVis( void )
 {
 	return Mod_LeafPVS( r_viewleaf, cl.worldmodel );
 }
 
-void Mod_SetOrthoBounds( float *mins, float *maxs )
+void __cdecl Mod_SetOrthoBounds( float *mins, float *maxs )
 {
 	if( clgame.drawFuncs.GL_OrthoBounds )
 	{
@@ -58,7 +58,7 @@ void Mod_SetOrthoBounds( float *mins, float *maxs )
 	Vector2Subtract( maxs, world_orthocenter, world_orthohalf );
 }
 
-static void BoundPoly( int numverts, float *verts, vec3_t mins, vec3_t maxs )
+static void __cdecl BoundPoly( int numverts, float *verts, vec3_t mins, vec3_t maxs )
 {
 	int	i, j;
 	float	*v;
@@ -226,7 +226,7 @@ void __cdecl GL_SetupFogColorForSurfaces( void )
 
 	if( RI.currententity->curstate.rendermode == kRenderTransTexture )
 		  {
-		glFogfv( GL_FOG_COLOR, RI.fogColor );
+//		glFogfv( GL_FOG_COLOR, RI.fogColor );
 		return;
 	}
 
@@ -235,14 +235,14 @@ void __cdecl GL_SetupFogColorForSurfaces( void )
 	fogColor[0] = powf( RI.fogColor[0] / div, ( 1.0f / factor ));
 	fogColor[1] = powf( RI.fogColor[1] / div, ( 1.0f / factor ));
 	fogColor[2] = powf( RI.fogColor[2] / div, ( 1.0f / factor ));
-	glFogfv( GL_FOG_COLOR, fogColor );
+//	glFogfv( GL_FOG_COLOR, fogColor );
 }
 
 void __cdecl GL_ResetFogColor( void )
 {
 	// restore fog here
-	if(( RI.fogEnabled || RI.fogCustom ) && !RI.refdef.onlyClientDraw )
-		glFogfv( GL_FOG_COLOR, RI.fogColor );
+//	if(( RI.fogEnabled || RI.fogCustom ) && !RI.refdef.onlyClientDraw )
+//		glFogfv( GL_FOG_COLOR, RI.fogColor );
 }
 
 /*

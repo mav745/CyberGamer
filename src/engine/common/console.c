@@ -607,7 +607,7 @@ Draws a multi-colored string, optionally forcing
 to a fixed color.
 ==================
 */
-int Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qboolean forceColor, int hideChar )
+int __cdecl Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qboolean forceColor, int hideChar )
 {
 	rgba_t		color;
 	int		drawLen = 0;
@@ -652,11 +652,11 @@ int Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qb
 		s++;
 	}
 
-	glColor4ub( 255, 255, 255, 255 );
+//	glColor4ub( 255, 255, 255, 255 );
 	return drawLen;
 }
 
-int Con_DrawString( int x, int y, const char *string, rgba_t setColor )
+int __cdecl Con_DrawString( int x, int y, const char *string, rgba_t setColor )
 {
 	return Con_DrawGenericString( x, y, string, setColor, false, -1 );
 }
@@ -666,7 +666,7 @@ int Con_DrawString( int x, int y, const char *string, rgba_t setColor )
 Con_Init
 ================
 */
-void Con_Init( void )
+void __cdecl Con_Init( void )
 {
 	int	i;
 
@@ -707,7 +707,7 @@ void Con_Init( void )
 Con_Linefeed
 ===============
 */
-void Con_Linefeed( void )
+void __cdecl Con_Linefeed( void )
 {
 	int	i;
 
@@ -794,7 +794,7 @@ Con_NPrint
 Draw a single debug line with specified height
 ================
 */
-void Con_NPrintf( int idx, char *fmt, ... )
+void __cdecl Con_NPrintf( int idx, char *fmt, ... )
 {
 	va_list	args;
 
