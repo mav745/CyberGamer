@@ -466,7 +466,7 @@ vidmode_t vidmode[] =
 GL_SetExtension
 =================
 */
-void GL_SetExtension( int r_ext, int enable )
+void __cdecl GL_SetExtension( int r_ext, int enable )
 {
 	if( r_ext >= 0 && r_ext < GL_EXTCOUNT )
 		glConfig.extension[r_ext] = enable ? GL_TRUE : GL_FALSE;
@@ -478,7 +478,7 @@ void GL_SetExtension( int r_ext, int enable )
 GL_Support
 =================
 */
-qboolean GL_Support( int r_ext )
+qboolean __cdecl GL_Support( int r_ext )
 {
 	return true;
 //	if( r_ext >= 0 && r_ext < GL_EXTCOUNT )
@@ -493,7 +493,7 @@ qboolean GL_Support( int r_ext )
 GL_MaxTextureUnits
 =================
 */
-int GL_MaxTextureUnits( void )
+int __cdecl GL_MaxTextureUnits( void )
 {
 	//if( GL_Support( GL_SHADER_GLSL100_EXT ))
 		return min( max( glConfig.max_texture_coords, glConfig.max_teximage_units ), MAX_TEXTURE_UNITS );
@@ -571,7 +571,7 @@ GL_CheckExtension
 GL_BuildGammaTable
 ===============
 */
-void GL_BuildGammaTable( void )
+void __cdecl GL_BuildGammaTable( void )
 {
 	int	i, v;
 	double	invGamma, div;
@@ -625,7 +625,7 @@ GL_UpdateSwapInterval
 GL_SetDefaultTexState
 ===============
 */
-static void GL_SetDefaultTexState( void )
+static void __cdecl GL_SetDefaultTexState( void )
 {
 	int	i;
 
@@ -645,7 +645,7 @@ static void GL_SetDefaultTexState( void )
 GL_SetDefaultState
 ===============
 */
-static void GL_SetDefaultState( void )
+static void __cdecl GL_SetDefaultState( void )
 {
 	Q_memset( &glState, 0, sizeof( glState ));
 	GL_SetDefaultTexState ();
@@ -656,7 +656,7 @@ static void GL_SetDefaultState( void )
 GL_ContextError
 ===============
 */
-static void GL_ContextError( void )
+static void __cdecl GL_ContextError( void )
 {
 	DWORD error = GetLastError();
 
@@ -850,7 +850,7 @@ VID_ChoosePFD
 //	return 1;
 //}
 
-void VID_StartupGamma( void )
+void __cdecl VID_StartupGamma( void )
 {
 //	size_t	gamma_size;
 //	byte	*savedGamma;
@@ -1042,7 +1042,7 @@ GL_SetPixelformat
 //	return true;
 //}
 
-void R_SaveVideoMode( int vid_mode )
+void __cdecl R_SaveVideoMode( int vid_mode )
 {
 	int	mode = bound( 0, vid_mode, num_vidmodes ); // check range
 
@@ -1057,7 +1057,7 @@ void R_SaveVideoMode( int vid_mode )
 	MsgDev( D_NOTE, "Set: %s [%dx%d]\n", vidmode[mode].desc, vidmode[mode].width, vidmode[mode].height );
 }
 
-qboolean R_DescribeVIDMode( int width, int height )
+qboolean __cdecl R_DescribeVIDMode( int width, int height )
 {
 	int	i;
 
@@ -1231,7 +1231,7 @@ qboolean R_DescribeVIDMode( int width, int height )
 //	}
 //}
 
-rserr_t R_ChangeDisplaySettings( int vid_mode, qboolean fullscreen )
+rserr_t __cdecl R_ChangeDisplaySettings( int vid_mode, qboolean fullscreen )
 {
 	int	width, height;
 //	int	cds_result;
@@ -1357,7 +1357,7 @@ VID_SetMode
 Set the described video mode
 ==================
 */
-qboolean VID_SetMode( void )
+qboolean __cdecl VID_SetMode( void )
 {
 	qboolean	fullscreen;
 	rserr_t	err;
@@ -1402,7 +1402,7 @@ VID_CheckChanges
 check vid modes and fullscreen
 ==================
 */
-void VID_CheckChanges( void )
+void __cdecl VID_CheckChanges( void )
 {
 	if( cl_allow_levelshots->modified )
 		  {
@@ -1433,7 +1433,7 @@ R_Init_OpenGL
 */
 
 
-qboolean R_Init_OpenGL( void )
+qboolean __cdecl R_Init_OpenGL( void )
 {
 	VID_SetMode();
 	initWindow(r_width->integer, r_height->integer, vid_fullscreen->integer);
@@ -1454,7 +1454,7 @@ qboolean R_Init_OpenGL( void )
 R_Free_OpenGL
 ==================
 */
-void R_Free_OpenGL( void )
+void __cdecl R_Free_OpenGL( void )
 {
 //	VID_RestoreGamma ();
 
@@ -1542,7 +1542,7 @@ GL_SetDefaults
 R_RenderInfo_f
 =================
 */
-void R_RenderInfo_f( void )
+void __cdecl R_RenderInfo_f( void )
 {
 	Msg( "\n" );
 	Msg( "GL_VENDOR: %s\n", glConfig.vendor_string );
@@ -1580,7 +1580,7 @@ void R_RenderInfo_f( void )
 
 //=======================================================================
 
-void GL_InitCommands( void )
+void __cdecl GL_InitCommands( void )
 {
 	Cbuf_AddText( "vidlatch\n" );
 	Cbuf_Execute();
@@ -1657,7 +1657,7 @@ void GL_InitCommands( void )
 	Cmd_AddCommand( "texturelist", R_TextureList_f, "display loaded textures list" );
 }
 
-void GL_RemoveCommands( void )
+void __cdecl GL_RemoveCommands( void )
 {
 	Cmd_RemoveCommand( "r_info");
 	Cmd_RemoveCommand( "texturelist" );
@@ -1837,7 +1837,7 @@ void GL_RemoveCommands( void )
 R_Init
 ===============
 */
-qboolean R_Init( void )
+qboolean __cdecl R_Init( void )
 {
 	if( glw_state.initialized )
 		return true;
@@ -1881,7 +1881,7 @@ qboolean R_Init( void )
 R_Shutdown
 ===============
 */
-void R_Shutdown( void )
+void __cdecl R_Shutdown( void )
 {
 	int	i;
 

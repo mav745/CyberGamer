@@ -20,12 +20,15 @@ Window::Window(QWidget *parent)
 {
 	//setFocusPolicy(Qt::StrongFocus);
 	setWindowIcon(QIcon("advanced/game.ico"));
-
+	
+	isPainting = false;
+	
 	projection.setToIdentity();
 	modelview.setToIdentity();
 	texmat.setToIdentity();
 	
 	tempVerts  = new float[300000];
+	tempColors  = new float[300000];
 	tempCoords = new float[200000];
 	numVerts   = 0;
 	numCoords  = 0;
@@ -67,6 +70,13 @@ void Window::initializeGL()
 	drawVerts.allocate(300000 * sizeof(float));
 	drawVerts.release();
 
+	drawColors = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+	drawColors.create();
+	drawColors.setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	drawColors.bind();
+	drawColors.allocate(300000 * sizeof(float));
+	drawColors.release();
+
 	drawCoords = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
 	drawCoords.create();
 	drawCoords.setUsagePattern(QOpenGLBuffer::DynamicDraw);
@@ -93,8 +103,15 @@ void Window::paintGL()
 {
 	QOpenGLFunctions::glClearColor(0.0f, 0.0f, 0.05f, 1.0f);
 	QOpenGLFunctions::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	SCR_UpdateScreen( );
+	
+	if (isPainting) {
+		qDebug() << "paintGL() already painting!";
+		return;
+	}
+	
+	isPainting = true;
+	SCR_UpdateScreen();
+	isPainting = false;
 }
 
 void Window::timerEvent(QTimerEvent *te)
@@ -105,9 +122,16 @@ void Window::timerEvent(QTimerEvent *te)
 
 void Window::glBegin(GLenum mode)
 {
-	if(!isValid())
+	if( ! isValid() )
 	{
 		qDebug() << "glBegin("<<mode<<") called before widget is ready!";
+		hasBegun = false;
+		return;
+	}
+
+	if( ! isPainting )
+	{
+		qDebug() << "glBegin("<<mode<<") called outside PAINT!";
 		hasBegun = false;
 		return;
 	}
@@ -127,6 +151,13 @@ void Window::glEnd()
 	}
 	hasBegun = false;
 	
+	if( ! isPainting )
+	{
+		qDebug() << "glEnd() called outside PAINT!";
+		hasBegun = false;
+		return;
+	}
+	
 	if(!numVerts || numVerts != (numCoords+numCoords/2))
 	{
 		qDebug() << "glEnd(): Vertex buffer is ill-formed!";
@@ -139,6 +170,11 @@ void Window::glEnd()
 	drawVerts.write(0, tempVerts, numVerts * sizeof(float));
 	program.enableAttributeArray("pos");
 	program.setAttributeBuffer("pos", GL_FLOAT, 0, 3);
+
+	drawColors.bind();
+	drawColors.write(0, tempColors, numVerts * sizeof(float));
+	program.enableAttributeArray("col");
+	program.setAttributeBuffer("col", GL_FLOAT, 0, 3);
 
 	drawCoords.bind();
 	drawCoords.write(0, tempCoords, numCoords * sizeof(float));
@@ -164,10 +200,7 @@ void Window::glEnd()
 
 void Window::glVertex2f(float x, float y)
 {
-	tempVerts[numVerts  ] = x;
-	tempVerts[numVerts+1] = y;
-	tempVerts[numVerts+2] = 0;
-	numVerts += 3;
+	this->glVertex3f(x, y, 0);
 }
 
 void Window::glVertex3f(float x, float y, float z)
@@ -175,15 +208,17 @@ void Window::glVertex3f(float x, float y, float z)
 	tempVerts[numVerts  ] = x;
 	tempVerts[numVerts+1] = y;
 	tempVerts[numVerts+2] = z;
+	
+	tempColors[numVerts  ] = drawColor.x();
+	tempColors[numVerts+1] = drawColor.y();
+	tempColors[numVerts+2] = drawColor.z();
+	
 	numVerts += 3;
 }
 
 void Window::glVertex3fv(const float *v)
 {
-	tempVerts[numVerts  ] = v[0];
-	tempVerts[numVerts+1] = v[1];
-	tempVerts[numVerts+2] = v[2];
-	numVerts += 3;
+	this->glVertex3f(v[0], v[1], v[2]);
 }
 
 void Window::glTexCoord2f(float u, float v)
@@ -230,18 +265,18 @@ void Window::glOrtho(GLdouble left, GLdouble right, GLdouble bottom, GLdouble to
 
 void Window::glColor4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
 {
-	drawColor = QVector4D(r, g, b, a)*(1.f/255.f);
+	drawColor = QVector4D(r, g, b, a) * (1.f/255.f);
 }
 
 void Window::glColor3ub(GLubyte r, GLubyte g, GLubyte b)
 {
 //	QOpenGLFunctions::glColor4ub(r,g,b,255);
-	drawColor = QVector4D(r, g, b, 255)*(1.f/255.f);
+	drawColor = QVector4D(r, g, b, 255) * (1.f/255.f);
 }
 
 void Window::glColor4ubv(GLubyte *v)
 {
-	drawColor = QVector4D(v[0], v[1], v[2], v[3])*(1.f/255.f);
+	drawColor = QVector4D(v[0], v[1], v[2], v[3]) * (1.f/255.f);
 }
 
 void Window::glColor3f(float r, float g, float b)

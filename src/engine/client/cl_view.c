@@ -402,7 +402,7 @@ void __cdecl V_PostRender( void )
 	{
 		SCR_TileClear();
 		CL_DrawHUD( CL_ACTIVE );
-		VGui_Paint();
+//		VGui_Paint();
 	}
 
 	switch( cls.scrshot_action )

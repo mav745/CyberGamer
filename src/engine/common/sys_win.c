@@ -255,7 +255,7 @@ Sys_GetParmFromCmdLine
 Returns the argument for specified parm
 ================
 */
-qboolean _Sys_GetParmFromCmdLine( char *parm, char *out, size_t size )
+qboolean __cdecl _Sys_GetParmFromCmdLine( char *parm, char *out, size_t size )
 {
 	int	argc = Sys_CheckParm( parm );
 
@@ -267,24 +267,25 @@ qboolean _Sys_GetParmFromCmdLine( char *parm, char *out, size_t size )
 	return true;
 }
 
-void Sys_SendKeyEvents( void )
+void __cdecl Sys_SendKeyEvents( void )
 {
 	MSG	msg;
 
 	while( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ))
 	{
-		if( !GetMessage( &msg, NULL, 0, 0 ))
+		if( !GetMessage( &msg, NULL, 0, 0 )) {
 			Sys_Quit ();
+		}
 
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
+		TranslateMessage( &msg );
+		DispatchMessage( &msg );
 	}
 }
 
 //=======================================================================
 //			DLL'S MANAGER SYSTEM
 //=======================================================================
-qboolean Sys_LoadLibrary( dll_info_t *dll )
+qboolean __cdecl Sys_LoadLibrary( dll_info_t *dll )
 {
 	const dllfunc_t	*func;
 	string		errorstring;
@@ -335,7 +336,7 @@ error:
 	return false;
 }
 
-void* Sys_GetProcAddress( dll_info_t *dll, const char* name )
+void* __cdecl Sys_GetProcAddress( dll_info_t *dll, const char* name )
 {
 	if( !dll || !dll->link ) // invalid desc
 		return NULL;
@@ -343,7 +344,7 @@ void* Sys_GetProcAddress( dll_info_t *dll, const char* name )
 	return (void *)GetProcAddress( dll->link, name );
 }
 
-qboolean Sys_FreeLibrary( dll_info_t *dll )
+qboolean __cdecl Sys_FreeLibrary( dll_info_t *dll )
 {
 	// invalid desc or alredy freed
 	if( !dll || !dll->link )
@@ -370,7 +371,7 @@ Sys_WaitForQuit
 wait for 'Esc' key will be hit
 ================
 */
-void Sys_WaitForQuit( void )
+void __cdecl Sys_WaitForQuit( void )
 {
 	MSG	msg;
 
@@ -429,7 +430,7 @@ NOTE: we must prepare engine to shutdown
 before call this
 ================
 */
-void Sys_Error( const char *error, ... )
+void __cdecl Sys_Error( const char *error, ... )
 {
 	va_list	argptr;
 	char	text[MAX_SYSPATH];
@@ -477,7 +478,7 @@ Sys_Break
 same as Error
 ================
 */
-void Sys_Break( const char *error, ... )
+void __cdecl Sys_Break( const char *error, ... )
 {
 	va_list	argptr;
 	char	text[MAX_SYSPATH];
@@ -518,7 +519,7 @@ void Sys_Break( const char *error, ... )
 Sys_Quit
 ================
 */
-void Sys_Quit( void )
+void __cdecl Sys_Quit( void )
 {
 	Host_Shutdown();
 	exit( error_on_exit );
@@ -531,7 +532,7 @@ Sys_Print
 print into window console
 ================
 */
-void Sys_Print( const char *pMsg )
+void __cdecl Sys_Print( const char *pMsg )
 {
 	const char	*msg;
 	char		buffer[32768];
@@ -601,7 +602,7 @@ Msg
 formatted message
 ================
 */
-void Msg( const char *pMsg, ... )
+void __cdecl Msg( const char *pMsg, ... )
 {
 	va_list	argptr;
 	char	text[8192];
@@ -620,7 +621,7 @@ MsgDev
 formatted developer message
 ================
 */
-void MsgDev( int level, const char *pMsg, ... )
+void __cdecl MsgDev( int level, const char *pMsg, ... )
 {
 	va_list	argptr;
 	char	text[8192];

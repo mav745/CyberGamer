@@ -529,7 +529,7 @@ qboolean Host_FilterTime( float time )
 Host_Frame
 =================
 */
-void Host_Frame( float time )
+void __cdecl Host_Frame( float time )
 {
 	if( setjmp( host.abortframe ))
 		return;
@@ -651,7 +651,7 @@ void __cdecl Host_Error( const char *error, ... )
 	Host_AbortCurrentFrame();
 }
 
-void Host_Error_f( void )
+void __cdecl Host_Error_f( void )
 {
 	const char *error = Cmd_Argv( 1 );
 
@@ -659,7 +659,7 @@ void Host_Error_f( void )
 	Host_Error( "%s\n", error );
 }
 
-void Sys_Error_f( void )
+void __cdecl Sys_Error_f( void )
 {
 	const char *error = Cmd_Argv( 1 );
 
@@ -667,7 +667,7 @@ void Sys_Error_f( void )
 	Sys_Error( "%s\n", error );
 }
 
-void Net_Error_f( void )
+void __cdecl Net_Error_f( void )
 {
 	Q_strncpy( host.finalmsg, Cmd_Argv( 1 ), sizeof( host.finalmsg ));
 	SV_ForceError();
@@ -678,7 +678,7 @@ void Net_Error_f( void )
 Host_Crash_f
 =================
 */
-static void Host_Crash_f( void )
+static void __cdecl Host_Crash_f( void )
 {
 	*(int *)0 = 0xffffffff;
 }
@@ -688,7 +688,7 @@ static void Host_Crash_f( void )
 Host_InitCommon
 =================
 */
-void Host_InitCommon( const char *progname, qboolean bChangeGame )
+void __cdecl Host_InitCommon( const char *progname, qboolean bChangeGame )
 {
 	MEMORYSTATUS	lpBuffer;
 	char		dev_level[4];
@@ -818,7 +818,7 @@ void Host_InitCommon( const char *progname, qboolean bChangeGame )
 	Key_Init();
 }
 
-void Host_FreeCommon( void )
+void __cdecl Host_FreeCommon( void )
 {
 	Image_Shutdown();
 	Sound_Shutdown();
@@ -835,7 +835,7 @@ Host_Main
 */
 
 double	oldtime, newtime;
-int EXPORT Host_Main( const char *progname, int bChangeGame, pfnChangeGame func )
+int EXPORT __cdecl Host_Main( const char *progname, int bChangeGame, pfnChangeGame func )
 {
 	pChangeGame = func;	// may be NULL
 
@@ -966,7 +966,7 @@ int EXPORT __cdecl Host_Iterate(  )
 Host_Shutdown
 =================
 */
-void EXPORT Host_Shutdown( void )
+void EXPORT __cdecl Host_Shutdown( void )
 {
 	if( host.shutdown_issued ) return;
 	host.shutdown_issued = true;

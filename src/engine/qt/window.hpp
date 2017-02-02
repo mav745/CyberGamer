@@ -50,12 +50,15 @@ private:
 	QMatrix4x4 texmat;
 
 	bool hasBegun;
+	bool isPainting;
 	GLenum drawMode;
 	GLenum matMode;
 
 	QOpenGLBuffer drawVerts;
+	QOpenGLBuffer drawColors;
 	QOpenGLBuffer drawCoords;
 	float *tempVerts;
+	float *tempColors;
 	float *tempCoords;
 	int numVerts;
 	int numCoords;

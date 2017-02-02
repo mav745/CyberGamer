@@ -60,7 +60,7 @@ typedef struct
 
 static WinConData	s_wcd;
 
-void Con_ShowConsole( qboolean show )
+void __cdecl Con_ShowConsole( qboolean show )
 {
 	if( !s_wcd.hWnd || show == s_wcd.status )
 		return;
@@ -74,21 +74,21 @@ void Con_ShowConsole( qboolean show )
 	else ShowWindow( s_wcd.hWnd, SW_HIDE );
 }
 
-void Con_DisableInput( void )
+void __cdecl Con_DisableInput( void )
 {
 	if( host.type != HOST_DEDICATED ) return;
 	SendMessage( s_wcd.hwndButtonSubmit, WM_ENABLE, 0, 0 );
 	SendMessage( s_wcd.hwndInputLine, WM_ENABLE, 0, 0 );
 }
 
-void Con_SetInputText( const char *inputText )
+void __cdecl Con_SetInputText( const char *inputText )
 {
 	if( host.type != HOST_DEDICATED ) return;
 	SetWindowText( s_wcd.hwndInputLine, inputText );
 	SendMessage( s_wcd.hwndInputLine, EM_SETSEL, Q_strlen( inputText ), -1 );
 }
 
-static void Con_Clear_f( void )
+static void __cdecl Con_Clear_f( void )
 {
 	if( host.type != HOST_DEDICATED ) return;
 	SendMessage( s_wcd.hwndBuffer, EM_SETSEL, 0, -1 );
@@ -96,7 +96,7 @@ static void Con_Clear_f( void )
 	UpdateWindow( s_wcd.hwndBuffer );
 }
 
-static int Con_KeyEvent( int key, qboolean down )
+static int __cdecl Con_KeyEvent( int key, qboolean down )
 {
 	char	inputBuffer[1024];
 
@@ -231,7 +231,7 @@ Con_WinPrint
 print into window console
 ================
 */
-void Con_WinPrint( const char *pMsg )
+void __cdecl Con_WinPrint( const char *pMsg )
 {
 	size_t	len = Q_strlen( pMsg );
 
@@ -258,7 +258,7 @@ Con_CreateConsole
 create win32 console
 ================
 */
-void Con_CreateConsole( void )
+void __cdecl Con_CreateConsole( void )
 {
 	HDC	hDC;
 	WNDCLASS	wc;
@@ -383,7 +383,7 @@ Con_InitConsoleCommands
 register console commands (dedicated only)
 ================
 */
-void Con_InitConsoleCommands( void )
+void __cdecl Con_InitConsoleCommands( void )
 {
 	if( host.type != HOST_DEDICATED ) return;
 	Cmd_AddCommand( "clear", Con_Clear_f, "clear console history" );
@@ -396,7 +396,7 @@ Con_DestroyConsole
 destroy win32 console
 ================
 */
-void Con_DestroyConsole( void )
+void __cdecl Con_DestroyConsole( void )
 {
 	// last text message into console or log 
 	MsgDev( D_NOTE, "Sys_FreeLibrary: Unloading xash.dll\n" );
@@ -441,7 +441,7 @@ Con_Input
 returned input text 
 ================
 */
-char *Con_Input( void )
+char *__cdecl Con_Input( void )
 {
 	if( s_wcd.consoleText[0] == 0 )
 		return NULL;
@@ -459,7 +459,7 @@ Con_SetFocus
 change focus to console hwnd 
 ================
 */
-void Con_RegisterHotkeys( void )
+void __cdecl Con_RegisterHotkeys( void )
 {
 	SetFocus( s_wcd.hWnd );
 
@@ -474,7 +474,7 @@ SYSTEM LOG
 
 ===============================================================================
 */
-void Sys_InitLog( void )
+void __cdecl Sys_InitLog( void )
 {
 	const char	*mode;
 
@@ -494,7 +494,7 @@ void Sys_InitLog( void )
 	}
 }
 
-void Sys_CloseLog( void )
+void __cdecl Sys_CloseLog( void )
 {
 	char	event_name[64];
 
@@ -526,7 +526,7 @@ void Sys_CloseLog( void )
 	}
 }
 
-void Sys_PrintLog( const char *pMsg )
+void __cdecl Sys_PrintLog( const char *pMsg )
 {
 	if( !s_wcd.logfile ) return;
 	fprintf( s_wcd.logfile, pMsg );

@@ -26,12 +26,12 @@ static qboolean g_bScissor = false;
 //-----------------------------------------------------------------------------
 // Enable/disable scissoring...
 //-----------------------------------------------------------------------------
-void EnableScissor( qboolean enable )
+void __cdecl EnableScissor( qboolean enable )
 {
 	g_bScissor = enable;
 }
 
-void SetScissorRect( int left, int top, int right, int bottom )
+void __cdecl SetScissorRect( int left, int top, int right, int bottom )
 {
 	// Check for a valid rectangle...
 	Assert( left <= right );
@@ -46,7 +46,7 @@ void SetScissorRect( int left, int top, int right, int bottom )
 //-----------------------------------------------------------------------------
 // Purpose: Used for clipping, produces an interpolated texture coordinate
 //-----------------------------------------------------------------------------
-inline float InterpTCoord( float val, float mins, float maxs, float tMin, float tMax )
+inline float __cdecl InterpTCoord( float val, float mins, float maxs, float tMin, float tMax )
 {
 	float	flPercent;
 
@@ -61,7 +61,7 @@ inline float InterpTCoord( float val, float mins, float maxs, float tMin, float 
 // Purpose: Does a scissor clip of the input rectangle.
 // Returns false if it is completely clipped off.
 //-----------------------------------------------------------------------------
-qboolean ClipRect( const vpoint_t &inUL, const vpoint_t &inLR, vpoint_t *pOutUL, vpoint_t *pOutLR )
+qboolean __cdecl ClipRect( const vpoint_t &inUL, const vpoint_t &inLR, vpoint_t *pOutUL, vpoint_t *pOutLR )
 {
 	if( g_bScissor )
 	{

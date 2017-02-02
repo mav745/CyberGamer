@@ -377,7 +377,7 @@ Host_InputFrame
 Called every frame, even if not generating commands
 ==================
 */
-void Host_InputFrame( void )
+void __cdecl Host_InputFrame( void )
 {
 	qboolean	shutdownMouse = false;
 

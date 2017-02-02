@@ -393,7 +393,7 @@ void __cdecl R_DrawTileClear( int x, int y, int w, int h )
 		xW->glVertex2f( (float)(x + w), (float)(y + h) );
 		xW->glTexCoord2f( (float)x / tw, (float)(y + h) / th );
 		xW->glVertex2f( (float)x, (float)(y + h) );
-	xW->glEnd ();
+	xW->glEnd();
 }
 
 void __cdecl R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
@@ -441,72 +441,16 @@ void __cdecl R_DrawStretchRaw( float x, float y, float w, float h, int cols, int
 	}
 
 	xW->glBegin( GL_QUADS );
-	xW->glTexCoord2f( 0, 0 );
-	xW->glVertex2f( x, y );
-	xW->glTexCoord2f( 1, 0 );
-	xW->glVertex2f( x + w, y );
-	xW->glTexCoord2f( 1, 1 );
-	xW->glVertex2f( x + w, y + h );
-	xW->glTexCoord2f( 0, 1 );
-	xW->glVertex2f( x, y + h );
+		xW->glTexCoord2f( 0, 0 );
+		xW->glVertex2f( x, y );
+		xW->glTexCoord2f( 1, 0 );
+		xW->glVertex2f( x + w, y );
+		xW->glTexCoord2f( 1, 1 );
+		xW->glVertex2f( x + w, y + h );
+		xW->glTexCoord2f( 0, 1 );
+		xW->glVertex2f( x, y + h );
 	xW->glEnd();
 }
-
-//void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, const byte *data, qboolean dirty )
-//{
-//	byte		*raw = NULL;
-//	gltexture_t	*tex;
-
-//	int	width = 1, height = 1;
-
-//	// check the dimensions
-//	width = NearestPOW( cols, true );
-//	height = NearestPOW( rows, false );
-
-//	if( cols != width || rows != height )
-//	{
-//		raw = GL_ResampleTexture( data, cols, rows, width, height, false );
-//		cols = width;
-//		rows = height;
-//	}
-//	else
-//		raw = data;
-
-//	xW->glDisable( GL_BLEND );
-//	xW->glDisable( GL_ALPHA_TEST );
-//	//xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-
-//	tex = R_GetTexture( tr.cinTexture );
-//	GL_Bind( 0, tr.cinTexture );
-
-//	if( cols == tex->width && rows == tex->height )
-//	{
-//		if( dirty )
-//		{
-//			xW->glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, cols, rows, GL_BGRA, GL_UNSIGNED_BYTE, raw );
-//		}
-//	}
-//	else
-//	{
-//		tex->width = cols;
-//		tex->height = rows;
-//		if( dirty )
-//		{
-//			xW->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, raw );
-//		}
-//	}
-
-//	xW->glBegin( GL_QUADS );
-//	xW->glTexCoord2f( 0, 0 );
-//	xW->glVertex2f( x, y );
-//	xW->glTexCoord2f( 1, 0 );
-//	xW->glVertex2f( x + w, y );
-//	xW->glTexCoord2f( 1, 1 );
-//	xW->glVertex2f( x + w, y + h );
-//	xW->glTexCoord2f( 0, 1 );
-//	xW->glVertex2f( x, y + h );
-//	xW->glEnd();
-//}
 
 void __cdecl R_UploadStretchRaw( int texture, int cols, int rows, int width, int height, const byte *data )
 {
@@ -2961,7 +2905,7 @@ void __cdecl R_DrawSkyBox()
 	R_LoadIdentity();
 }
 
-void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
+void __cdecl EmitWaterPolys( glpoly_t *polys, qboolean noCull )
 {
 	glpoly_t	*p;
 	float	*v, nv, waveHeight;
@@ -3015,7 +2959,7 @@ void EmitWaterPolys( glpoly_t *polys, qboolean noCull )
 	GL_SetupFogColorForSurfaces();
 }
 
-void EmitSkyPolys( msurface_t *fa )
+void __cdecl EmitSkyPolys( msurface_t *fa )
 {
 	glpoly_t	*p;
 	float	*v;
@@ -3074,7 +3018,7 @@ void __cdecl R_DrawSkyChain( msurface_t *s )
 	xW->glDisable( GL_BLEND );
 }
 
-void EmitSkyLayers( msurface_t *fa )
+void __cdecl EmitSkyLayers( msurface_t *fa )
 {
 	GL_SetRenderMode( kRenderNormal );
 	GL_Bind( 0, tr.solidskyTexture );
@@ -3095,13 +3039,13 @@ void EmitSkyLayers( msurface_t *fa )
 	xW->glDisable( GL_BLEND );
 }
 
-void VGUI_EnableTexture( qboolean enable )
+void __cdecl VGUI_EnableTexture( qboolean enable )
 {
 	if( enable ) xW->glEnable( GL_TEXTURE_2D );
 	else xW->glDisable( GL_TEXTURE_2D );
 }
 
-void VGUI_DrawQuad( const vpoint_t *ul, const vpoint_t *lr )
+void __cdecl VGUI_DrawQuad( const vpoint_t *ul, const vpoint_t *lr )
 {
 	ASSERT( ul != NULL && lr != NULL );
 
@@ -3121,7 +3065,7 @@ void VGUI_DrawQuad( const vpoint_t *ul, const vpoint_t *lr )
 }
 
 
-void VGUI_UploadTextureBlock( int id, int drawX, int drawY, const byte *rgba, int blockWidth, int blockHeight )
+void __cdecl VGUI_UploadTextureBlock( int id, int drawX, int drawY, const byte *rgba, int blockWidth, int blockHeight )
 {
 	if( id <= 0 || id >= VGUI_MAX_TEXTURES || g_textures[id] == 0 || g_textures[id] == cls.fillImage )
 	{
@@ -3133,7 +3077,7 @@ void VGUI_UploadTextureBlock( int id, int drawX, int drawY, const byte *rgba, in
 	g_iBoundTexture = id;
 }
 
-void VGUI_SetupDrawingRect( int *pColor )
+void __cdecl VGUI_SetupDrawingRect( int *pColor )
 {
 	xW->glEnable( GL_BLEND );
 	xW->glDisable( GL_ALPHA_TEST );
@@ -3141,7 +3085,7 @@ void VGUI_SetupDrawingRect( int *pColor )
 	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
-void VGUI_SetupDrawingText( int *pColor )
+void __cdecl VGUI_SetupDrawingText( int *pColor )
 {
 	xW->glEnable( GL_BLEND );
 	xW->glEnable( GL_ALPHA_TEST );
@@ -3151,7 +3095,7 @@ void VGUI_SetupDrawingText( int *pColor )
 	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
-void VGUI_SetupDrawingImage( int *pColor )
+void __cdecl VGUI_SetupDrawingImage( int *pColor )
 {
 	xW->glEnable( GL_BLEND );
 	xW->glEnable( GL_ALPHA_TEST );
@@ -3161,7 +3105,7 @@ void VGUI_SetupDrawingImage( int *pColor )
 	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
-void VGUI_BindTexture( int id )
+void __cdecl VGUI_BindTexture( int id )
 {
 	if( id > 0 && id < VGUI_MAX_TEXTURES && g_textures[id] )
 	{
@@ -3176,7 +3120,7 @@ void VGUI_BindTexture( int id )
 	}
 }
 
-void SetBeamRenderMode( int rendermode )
+void __cdecl SetBeamRenderMode( int rendermode )
 {
 	if( rendermode == kRenderTransAdd )
 	{
@@ -3190,7 +3134,7 @@ void SetBeamRenderMode( int rendermode )
 	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 }
 
-void R_DrawSpriteQuad( mspriteframe_t *frame, vec3_t org, vec3_t v_right, vec3_t v_up, float scale )
+void __cdecl R_DrawSpriteQuad( mspriteframe_t *frame, vec3_t org, vec3_t v_right, vec3_t v_up, float scale )
 {
 	vec3_t	point;
 
@@ -3216,7 +3160,7 @@ void R_DrawSpriteQuad( mspriteframe_t *frame, vec3_t org, vec3_t v_right, vec3_t
 	xW->glEnd();
 }
 
-void MakeSkyVec( float s, float t, int axis )
+void __cdecl MakeSkyVec( float s, float t, int axis )
 {
 	int	j, k, farclip;
 	vec3_t	v, b;
@@ -3254,7 +3198,7 @@ void MakeSkyVec( float s, float t, int axis )
 }
 
 
-void SPR_DrawGeneric( int frame, float x, float y, float width, float height, const wrect_t *prc )
+void __cdecl SPR_DrawGeneric( int frame, float x, float y, float width, float height, const wrect_t *prc )
 {
 	float	s1, s2, t1, t2;
 	int	texnum;
@@ -3307,7 +3251,7 @@ void SPR_DrawGeneric( int frame, float x, float y, float width, float height, co
 	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, texnum );
 }
 
-void CL_DrawScreenFade( void )
+void __cdecl CL_DrawScreenFade( void )
 {
 	screenfade_t	*sf = &clgame.fade;
 	int		iFadeAlpha, testFlags;
@@ -5308,23 +5252,23 @@ void R_StudioDrawBones( void )
 			//xW->glPointSize( 3.0f );
 			xW->glColor3f( 1, 0.7f, 0 );
 			xW->glBegin( GL_LINES );
-
-			Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
-			xW->glVertex3fv( point );
-			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			xW->glVertex3fv( point );
+	
+				Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
+				xW->glVertex3fv( point );
+				Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
+				xW->glVertex3fv( point );
 
 			xW->glEnd();
 
 			xW->glColor4f( 0, 0, 0.8f, 1.f );
 			xW->glBegin( GL_POINTS );
-			if( pbones[pbones[i].parent].parent != -1 )
-			{
-				Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
+				if( pbones[pbones[i].parent].parent != -1 )
+				{
+					Matrix3x4_OriginFromMatrix( g_bonestransform[pbones[i].parent], point );
+					xW->glVertex3fv( point );
+				}
+				Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
 				xW->glVertex3fv( point );
-			}
-			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			xW->glVertex3fv( point );
 			xW->glEnd();
 		}
 		else
@@ -5333,8 +5277,8 @@ void R_StudioDrawBones( void )
 			//xW->glPointSize( 5.0f );
 			xW->glColor4f( 0.8f, 0, 0, 1.f );
 			xW->glBegin( GL_POINTS );
-			Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
-			xW->glVertex3fv( point );
+				Matrix3x4_OriginFromMatrix( g_bonestransform[i], point );
+				xW->glVertex3fv( point );
 			xW->glEnd();
 		}
 	}
@@ -5362,24 +5306,25 @@ void R_StudioDrawAttachments( void )
 		Matrix3x4_VectorTransform( g_bonestransform[pattachments[i].bone], pattachments[i].vectors[2], v[3] );
 
 		xW->glBegin( GL_LINES );
-		xW->glColor3f( 1, 0, 0 );
-		xW->glVertex3fv( v[0] );
-		xW->glColor3f( 1, 1, 1 );
-		xW->glVertex3fv (v[1] );
-		xW->glColor3f( 1, 0, 0 );
-		xW->glVertex3fv (v[0] );
-		xW->glColor3f( 1, 1, 1 );
-		xW->glVertex3fv (v[2] );
-		xW->glColor3f( 1, 0, 0 );
-		xW->glVertex3fv (v[0] );
-		xW->glColor3f( 1, 1, 1 );
-		xW->glVertex3fv( v[3] );
+			xW->glColor3f( 1, 0, 0 );
+			xW->glVertex3fv( v[0] );
+			xW->glColor3f( 1, 1, 1 );
+			xW->glVertex3fv (v[1] );
+			xW->glColor3f( 1, 0, 0 );
+			xW->glVertex3fv (v[0] );
+			xW->glColor3f( 1, 1, 1 );
+			xW->glVertex3fv (v[2] );
+			xW->glColor3f( 1, 0, 0 );
+			xW->glVertex3fv (v[0] );
+			xW->glColor3f( 1, 1, 1 );
+			xW->glVertex3fv( v[3] );
 		xW->glEnd();
-
-		//xW->glPointSize( 5.0f );
-		xW->glColor3f( 0, 1, 0 );
+	
+			//xW->glPointSize( 5.0f );
+			
 		xW->glBegin( GL_POINTS );
-		xW->glVertex3fv( v[0] );
+			xW->glColor3f( 0, 1, 0 );
+			xW->glVertex3fv( v[0] );
 		xW->glEnd();
 		//xW->glPointSize( 1.0f );
 	}
@@ -5502,7 +5447,7 @@ void GL_StudioDrawShadow( void )
 	}
 }
 
-void R_DrawViewModel( void )
+void __cdecl R_DrawViewModel( void )
 {
 	if( RI.refdef.onlyClientDraw || r_drawviewmodel->integer == 0 )
 		return;
@@ -5543,7 +5488,7 @@ void R_DrawViewModel( void )
 	RI.currentmodel = NULL;
 }
 
-void GL_SetDefaults( void )
+void __cdecl GL_SetDefaults( void )
 {
 	int	i;
 
@@ -5774,7 +5719,7 @@ void __cdecl GL_InitExtensions( void )
 	tr.framecount = tr.visframecount = 1;
 }
 
-void GL_CheckForErrors_( const char *filename, const int fileline )
+void __cdecl GL_CheckForErrors_( const char *filename, const int fileline )
 {
 	int	err;
 	char	*str;
@@ -5814,7 +5759,7 @@ void GL_CheckForErrors_( const char *filename, const int fileline )
 }
 
 
-int Con_DrawGenericChar( int x, int y, int number, rgba_t color )
+int __cdecl Con_DrawGenericChar( int x, int y, int number, rgba_t color )
 {
 	int	width, height;
 	float	s1, t1, s2, t2;

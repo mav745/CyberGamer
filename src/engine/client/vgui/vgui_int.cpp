@@ -57,14 +57,14 @@ void CEngineApp :: getCursorPos( int &x,int &y )
 	y = pt.y;
 }
 
-void VGui_RunFrame( void )
+void __cdecl VGui_RunFrame( void )
 {
 	if( GetModuleHandle( "fraps32.dll" ) || GetModuleHandle( "fraps64.dll" ))
 		host.force_draw_version = true;
 	else host.force_draw_version = false;
 }
 
-void VGui_Startup( void )
+void __cdecl VGui_Startup( void )
 {
 	if( rootpanel )
 	{
@@ -91,7 +91,7 @@ void VGui_Startup( void )
 	VGUI_DrawInit ();
 }
 
-void VGui_Shutdown( void )
+void __cdecl VGui_Shutdown( void )
 {
 	if( pApp ) pApp->stop();
 
@@ -104,7 +104,7 @@ void VGui_Shutdown( void )
 	pApp = NULL;
 }
 
-void VGui_Paint( void )
+void __cdecl VGui_Paint( void )
 {
 	RECT	rect;
 
@@ -133,12 +133,12 @@ void VGui_Paint( void )
 	EnableScissor( false );
 }
 
-void VGui_ViewportPaintBackground( int extents[4] )
+void __cdecl VGui_ViewportPaintBackground( int extents[4] )
 {
 //	Msg( "Vgui_ViewportPaintBackground( %i, %i, %i, %i )\n", extents[0], extents[1], extents[2], extents[3] );
 }
 
-void *VGui_GetPanel( void )
+void *__cdecl VGui_GetPanel( void )
 {
 	return (void *)rootpanel;
 }

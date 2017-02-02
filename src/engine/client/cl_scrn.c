@@ -288,7 +288,10 @@ void SCR_BeginLoadingPlaque( qboolean is_background )
 	if( cls.key_dest == key_console ) return;
 
 	cls.draw_changelevel = is_background ? false : true;
-	SCR_UpdateScreen();
+	
+	updateWindow();
+	//SCR_UpdateScreen();
+	
 	cls.disable_screen = (float)host.realtime;
 	cls.disable_servercount = cl.servercount;
 	cl.background = is_background;		// set right state before svc_serverdata is came
@@ -448,7 +451,7 @@ void __cdecl SCR_UpdateScreen( void )
 	V_PostRender();
 }
 
-void SCR_LoadCreditsFont( void )
+void __cdecl SCR_LoadCreditsFont( void )
 {
 	int	fontWidth;
 
@@ -490,7 +493,7 @@ void SCR_LoadCreditsFont( void )
 	}
 }
 
-void SCR_InstallParticlePalette( void )
+void __cdecl SCR_InstallParticlePalette( void )
 {
 	rgbdata_t	*pic;
 	int	i;
@@ -524,7 +527,7 @@ void SCR_InstallParticlePalette( void )
 	}
 }
 
-void SCR_RegisterTextures( void )
+void __cdecl SCR_RegisterTextures( void )
 {
 	cls.fillImage = GL_LoadTexture( "*white", NULL, 0, TF_IMAGE, NULL ); // used for FillRGBA
 	cls.particleImage = GL_LoadTexture( "*particle", NULL, 0, TF_IMAGE, NULL );
@@ -545,7 +548,7 @@ SCR_SizeUp_f
 Keybinding command
 =================
 */
-void SCR_SizeUp_f( void )
+void __cdecl SCR_SizeUp_f( void )
 {
 	Cvar_SetFloat( "viewsize", min( scr_viewsize->value + 10, 120 ));
 }
@@ -558,7 +561,7 @@ SCR_SizeDown_f
 Keybinding command
 =================
 */
-void SCR_SizeDown_f( void )
+void __cdecl SCR_SizeDown_f( void )
 {
 	Cvar_SetFloat( "viewsize", max( scr_viewsize->value - 10, 30 ));
 }
@@ -568,7 +571,7 @@ void SCR_SizeDown_f( void )
 SCR_VidInit
 ==================
 */
-void SCR_VidInit( void )
+void __cdecl SCR_VidInit( void )
 {
 	Q_memset( &clgame.ds, 0, sizeof( clgame.ds )); // reset a draw state
 	Q_memset( &menu.ds, 0, sizeof( menu.ds )); // reset a draw state
@@ -596,7 +599,7 @@ void SCR_VidInit( void )
 SCR_Init
 ==================
 */
-void SCR_Init( void )
+void __cdecl SCR_Init( void )
 {
 	if( scr_init ) return;
 
@@ -640,7 +643,7 @@ void SCR_Init( void )
 	scr_init = true;
 }
 
-void SCR_Shutdown( void )
+void __cdecl SCR_Shutdown( void )
 {
 	if( !scr_init ) return;
 

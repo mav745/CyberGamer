@@ -1118,8 +1118,10 @@ void CL_PrepSound( void )
 	{
 		cl.sound_index[i+1] = S_RegisterSound( cl.sound_precache[i+1] );
 		Cvar_SetFloat( "scr_loading", scr_loading->value + 5.0f / sndcount );
-		if( cl_allow_levelshots->integer || host.developer > 3 || cl.background )
-			SCR_UpdateScreen();
+		if( cl_allow_levelshots->integer || host.developer > 3 || cl.background ) {
+//			SCR_UpdateScreen();
+			updateWindow();
+		}
 	}
 
 	S_EndRegistration();
@@ -1170,8 +1172,10 @@ void CL_PrepVideo( void )
 	Mod_LoadWorld( mapname, &map_checksum, false );
 	cl.worldmodel = Mod_Handle( 1 ); // get world pointer
 	Cvar_SetFloat( "scr_loading", 25.0f );
-
-	SCR_UpdateScreen();
+	
+	
+	updateWindow();
+//	SCR_UpdateScreen();
 
 	// make sure what map is valid
 	if( !cls.demoplayback && map_checksum != cl.checksum )
@@ -1185,8 +1189,10 @@ void CL_PrepVideo( void )
 		Q_strncpy( name, cl.model_precache[i+1], MAX_STRING );
 		Mod_RegisterModel( name, i+1 );
 		Cvar_SetFloat( "scr_loading", scr_loading->value + 75.0f / mdlcount );
-		if( cl_allow_levelshots->integer || host.developer > 3 || cl.background )
-			SCR_UpdateScreen();
+		if( cl_allow_levelshots->integer || host.developer > 3 || cl.background ) {
+//			SCR_UpdateScreen();
+			updateWindow();
+		}
 	}
 
 	// update right muzzleflash indexes
@@ -1257,7 +1263,8 @@ void CL_PrepVideo( void )
 	if( host.developer <= 2 )
 		Con_ClearNotify(); // clear any lines of console text
 
-	SCR_UpdateScreen ();
+	updateWindow();
+//	SCR_UpdateScreen ();
 
 	cl.video_prepped = true;
 	cl.force_refdef = true;

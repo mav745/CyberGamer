@@ -573,7 +573,7 @@ CL_DrawCenterPrint
 called each frame
 =============
 */
-void CL_DrawCenterPrint( void )
+void __cdecl CL_DrawCenterPrint( void )
 {
 	char	*pText;
 	int	i, j, x, y;

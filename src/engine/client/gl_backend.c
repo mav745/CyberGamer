@@ -13,7 +13,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#include "qt/c_gate.h"
+#include <qt/c_gate.h>
 
 #include "client.h"
 #include "mathlib.h"

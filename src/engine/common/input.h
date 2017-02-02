@@ -38,14 +38,14 @@ INPUT
 //
 // input.c
 //
-void IN_Init( void );
-void Host_InputFrame( void );
-void IN_Shutdown( void );
-void IN_MouseEvent( int mstate );
-void IN_ActivateMouse( qboolean force );
-void IN_DeactivateMouse( void );
-void IN_ToggleClientMouse( int newstate, int oldstate );
-long IN_WndProc( void *hWnd, uint uMsg, uint wParam, long lParam );
-void IN_SetCursor( HICON hCursor );
+void __cdecl IN_Init( void );
+void __cdecl Host_InputFrame( void );
+void __cdecl IN_Shutdown( void );
+void __cdecl IN_MouseEvent( int mstate );
+void __cdecl IN_ActivateMouse( qboolean force );
+void __cdecl IN_DeactivateMouse( void );
+void __cdecl IN_ToggleClientMouse( int newstate, int oldstate );
+long __cdecl IN_WndProc( void *hWnd, uint uMsg, uint wParam, long lParam );
+void __cdecl IN_SetCursor( HICON hCursor );
 
 #endif//INPUT_H

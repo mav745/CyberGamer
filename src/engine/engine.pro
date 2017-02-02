@@ -36,7 +36,7 @@ LIBS += -lvgui -lmpeg
 QMAKE_LFLAGS_DEBUG += /NODEFAULTLIB:libc
 QMAKE_LFLAGS_RELEASE += /NODEFAULTLIB:libc
 
-LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 -lopengl32 \
+LIBS += -luser32 -lgdi32 -lwinspool -lcomdlg32 \
 		-ladvapi32 -lshell32 -lole32 -loleaut32 \
 		-lwinmm -lwsock32 -luuid -lodbc32 -lodbccp32
 

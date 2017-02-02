@@ -68,47 +68,47 @@ typedef struct dll_info_s
 	void		*link;	// hinstance of loading library
 } dll_info_t;
 
-void Sys_Sleep( int msec );
-double Sys_DoubleTime( void );
-char *Sys_GetClipboardData( void );
-char *Sys_GetCurrentUser( void );
-int Sys_CheckParm( const char *parm );
-void Sys_Error( const char *error, ... );
-void Sys_Break( const char *error, ... );
-qboolean Sys_LoadLibrary( dll_info_t *dll );
-void* Sys_GetProcAddress( dll_info_t *dll, const char* name );
-qboolean Sys_FreeLibrary( dll_info_t *dll );
-void Sys_ParseCommandLine( LPSTR lpCmdLine );
-void Sys_MergeCommandLine( LPSTR lpCmdLine );
+void __cdecl Sys_Sleep( int msec );
+double __cdecl Sys_DoubleTime( void );
+char *__cdecl Sys_GetClipboardData( void );
+char *__cdecl Sys_GetCurrentUser( void );
+int __cdecl Sys_CheckParm( const char *parm );
+void __cdecl Sys_Error( const char *error, ... );
+void __cdecl Sys_Break( const char *error, ... );
+qboolean __cdecl Sys_LoadLibrary( dll_info_t *dll );
+void *__cdecl Sys_GetProcAddress( dll_info_t *dll, const char* name );
+qboolean __cdecl Sys_FreeLibrary( dll_info_t *dll );
+void __cdecl Sys_ParseCommandLine( LPSTR lpCmdLine );
+void __cdecl Sys_MergeCommandLine( LPSTR lpCmdLine );
 long _stdcall Sys_Crash( PEXCEPTION_POINTERS pInfo );
-void Sys_SetClipboardData( const byte *buffer, size_t size );
+void __cdecl Sys_SetClipboardData( const byte *buffer, size_t size );
 #define Sys_GetParmFromCmdLine( parm, out ) _Sys_GetParmFromCmdLine( parm, out, sizeof( out ))
-qboolean _Sys_GetParmFromCmdLine( char *parm, char *out, size_t size );
-void Sys_ShellExecute( const char *path, const char *parms, qboolean exit );
-void Sys_SendKeyEvents( void );
-qboolean Sys_CheckMMX( void );
-qboolean Sys_CheckSSE( void );
-void Sys_Print( const char *pMsg );
-void Sys_PrintLog( const char *pMsg );
-void Sys_InitLog( void );
-void Sys_CloseLog( void );
-void Sys_Quit( void );
+qboolean __cdecl _Sys_GetParmFromCmdLine( char *parm, char *out, size_t size );
+void __cdecl Sys_ShellExecute( const char *path, const char *parms, qboolean exit );
+void __cdecl Sys_SendKeyEvents( void );
+qboolean __cdecl Sys_CheckMMX( void );
+qboolean __cdecl Sys_CheckSSE( void );
+void __cdecl Sys_Print( const char *pMsg );
+void __cdecl Sys_PrintLog( const char *pMsg );
+void __cdecl Sys_InitLog( void );
+void __cdecl Sys_CloseLog( void );
+void __cdecl Sys_Quit( void );
 
 //
 // sys_con.c
 //
-void Con_ShowConsole( qboolean show );
-void Con_WinPrint( const char *pMsg );
-void Con_InitConsoleCommands( void );
-void Con_CreateConsole( void );
-void Con_DestroyConsole( void );
-void Con_RegisterHotkeys( void );
-void Con_DisableInput( void );
-char *Con_Input( void );
+void __cdecl Con_ShowConsole( qboolean show );
+void __cdecl Con_WinPrint( const char *pMsg );
+void __cdecl Con_InitConsoleCommands( void );
+void __cdecl Con_CreateConsole( void );
+void __cdecl Con_DestroyConsole( void );
+void __cdecl Con_RegisterHotkeys( void );
+void __cdecl Con_DisableInput( void );
+char *__cdecl Con_Input( void );
 
 // text messages
-void Msg( const char *pMsg, ... );
-void MsgDev( int level, const char *pMsg, ... );
+void __cdecl Msg( const char *pMsg, ... );
+void __cdecl MsgDev( int level, const char *pMsg, ... );
 
 #ifdef __cplusplus
 }

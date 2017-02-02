@@ -303,11 +303,12 @@ Con_CheckResize
 If the line width has changed, reformat the buffer.
 ================
 */
+short	tbuf[CON_TEXTSIZE];
 void __cdecl Con_CheckResize( void )
 {
 	int	i, j, width, numlines, numchars;
 	int	oldwidth, oldtotallines;
-	short	tbuf[CON_TEXTSIZE];
+	
 	int	charWidth = 8;
 
 	if( con.curFont && con.curFont->hFontTexture )
@@ -1401,7 +1402,9 @@ void Key_Console( int key )
 		if( cls.state == ca_disconnected )
 		{
 			// force an update, because the command may take some time
-			SCR_UpdateScreen ();
+//			SCR_UpdateScreen ();
+			
+			updateWindow();
 		}
 		return;
 	}
