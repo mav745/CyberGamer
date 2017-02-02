@@ -184,18 +184,71 @@ void Window::glEnd()
 	if (numVerts > 100000) {
 		qDebug() << "bleat";
 	}
-//	//QMatrix4x4 &curMat = matMode == GL_MODELVIEW? modelview:
-//	//					matMode == GL_PROJECTION? projection:
-//	//											  texmat;
-	program.setUniformValue("mat", projection*modelview);
+	
+	program.setUniformValue("mv"  , modelview);
+	program.setUniformValue("proj", projection);
 	program.setUniformValue("texture", 0);
-	program.setUniformValue("col", drawColor);
 
 	QOpenGLFunctions::glDrawArrays(drawMode, 0, numVerts);
 
 	drawVerts.release();
 	drawCoords.release();
 	program.release();
+}
+
+void Window::glShadeModel(GLenum mode)
+{
+	// TODO
+}
+
+void Window::glTexGeniv(GLenum coord, GLenum pname, const GLint *params)
+{
+	// TODO
+}
+
+void Window::glTexGenfv(GLenum coord, GLenum pname, const GLfloat *params)
+{
+	// TODO
+}
+
+void Window::glTexGendv(GLenum coord, GLenum pname, const GLdouble *params)
+{
+	// TODO
+}
+
+void Window::glClipPlane(GLenum plane, const GLdouble *equation)
+{
+	// TODO
+}
+
+void Window::glPolygonMode(GLenum face, GLenum mode)
+{
+	// TODO
+}
+
+void Window::glPointSize(GLfloat size)
+{
+	// TODO
+}
+
+void Window::_glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
+{
+	// TODO
+}
+
+void Window::_glDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices)
+{
+	// TODO
+}
+
+void Window::glDrawBuffer(GLenum buf)
+{
+	// TODO
+}
+
+void Window::glDepthRange(GLclampd nearVal, GLclampd farVal)
+{
+	// TODO
 }
 
 void Window::glVertex2f(float x, float y)
@@ -221,6 +274,26 @@ void Window::glVertex3fv(const float *v)
 	this->glVertex3f(v[0], v[1], v[2]);
 }
 
+void Window::glNormal3fv(const float *v)
+{
+	// TODO
+}
+
+void Window::glTexGeni(GLenum coord, GLenum pname, GLint param)
+{
+	// TODO
+}
+
+void Window::glTexGenf(GLenum coord, GLenum pname, GLfloat param)
+{
+	// TODO
+}
+
+void Window::glTexGend(GLenum coord, GLenum pname, GLdouble param)
+{
+	// TODO
+}
+
 void Window::glTexCoord2f(float u, float v)
 {
 	tempCoords[numCoords  ] = u;
@@ -228,9 +301,15 @@ void Window::glTexCoord2f(float u, float v)
 	numCoords += 2;
 }
 
+void Window::glMultiTexCoord2f(GLenum target, GLfloat s, GLfloat t)
+{
+	// TODO
+}
+
 void Window::glMatrixMode(GLenum mode)
 {
 	matMode = mode;
+//	qDebug() << "glMatrixMode" << mode;
 }
 
 void Window::glLoadIdentity()
@@ -243,6 +322,7 @@ void Window::glLoadIdentity()
 
 void Window::glLoadMatrixf(const float *m)
 {
+	
 	QMatrix4x4 &curMat = matMode == GL_MODELVIEW? modelview:
 						matMode == GL_PROJECTION? projection:
 												  texmat;
@@ -270,7 +350,6 @@ void Window::glColor4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
 
 void Window::glColor3ub(GLubyte r, GLubyte g, GLubyte b)
 {
-//	QOpenGLFunctions::glColor4ub(r,g,b,255);
 	drawColor = QVector4D(r, g, b, 255) * (1.f/255.f);
 }
 
@@ -282,6 +361,41 @@ void Window::glColor4ubv(GLubyte *v)
 void Window::glColor3f(float r, float g, float b)
 {
 	drawColor = QVector4D(r, g, b, 1);
+}
+
+void Window::glDeleteTextures(int n, const GLuint *ts)
+{
+	// TODO
+}
+
+void Window::glFogfv(int param, const float *v)
+{
+	// TODO
+}
+
+void Window::glFogi(int param, int v)
+{
+	// TODO
+}
+
+void Window::glFogf(int param, float v)
+{
+	// TODO
+}
+
+void Window::glTexEnvf(GLenum target, GLenum pname, GLfloat param)
+{
+	// TODO
+}
+
+void Window::glTexEnvi(GLenum target, GLenum pname, GLint param)
+{
+	// TODO
+}
+
+void Window::glAlphaFunc(GLenum func, GLclampf ref)
+{
+	// TODO
 }
 
 #include "vgui_main.h"

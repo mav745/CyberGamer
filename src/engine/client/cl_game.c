@@ -507,66 +507,6 @@ qboolean SPR_Scissor( float *x, float *y, float *width, float *height, float *u0
 }
 
 /*
-====================
-SPR_DrawGeneric
-
-draw hudsprite routine
-====================
-*/
-//static void SPR_DrawGeneric( int frame, float x, float y, float width, float height, const wrect_t *prc )
-//{
-//	float	s1, s2, t1, t2;
-//	int	texnum;
-
-//	if( width == -1 && height == -1 )
-//	{
-//		int	w, h;
-
-//		// assume we get sizes from image
-//		R_GetSpriteParms( &w, &h, NULL, frame, clgame.ds.pSprite );
-
-//		width = (float)w;
-//		height = (float)h;
-//	}
-
-//	if( prc )
-//	{
-//		wrect_t	rc;
-
-//		rc = *prc;
-
-//		// Sigh! some stupid modmakers set wrong rectangles in hud.txt
-//		if( rc.left <= 0 || rc.left >= width ) rc.left = 0;
-//		if( rc.top <= 0 || rc.top >= height ) rc.top = 0;
-//		if( rc.right <= 0 || rc.right > width ) rc.right = (int)width;
-//		if( rc.bottom <= 0 || rc.bottom > height ) rc.bottom = (int)height;
-
-//		// calc user-defined rectangle
-//		s1 = (float)rc.left / width;
-//		t1 = (float)rc.top / height;
-//		s2 = (float)rc.right / width;
-//		t2 = (float)rc.bottom / height;
-//		width = (float)(rc.right - rc.left);
-//		height = (float)(rc.bottom - rc.top);
-//	}
-//	else
-//	{
-//		s1 = t1 = 0.0f;
-//		s2 = t2 = 1.0f;
-//	}
-
-//	// pass scissor test if supposed
-//	if( clgame.ds.scissor_test && !SPR_Scissor( &x, &y, &width, &height, &s1, &t1, &s2, &t2 ))
-//		return;
-
-//	// scale for screen sizes
-//	SPR_AdjustSize( &x, &y, &width, &height );
-//	texnum = R_GetSpriteTexture( clgame.ds.pSprite, frame );
-//	glColor4ubv( clgame.ds.spriteColor );
-//	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, texnum );
-//}
-
-/*
 =============
 CL_DrawCenterPrint
 
@@ -624,56 +564,6 @@ void __cdecl CL_DrawCenterPrint( void )
 		y += charHeight;
 	}
 }
-
-/*
-=============
-CL_DrawScreenFade
-
-fill screen with specfied color
-can be modulated
-=============
-*/
-//void CL_DrawScreenFade( void )
-//{
-//	screenfade_t	*sf = &clgame.fade;
-//	int		iFadeAlpha, testFlags;
-
-//	// keep pushing reset time out indefinitely
-//	if( sf->fadeFlags & FFADE_STAYOUT )
-//		sf->fadeReset = (float)cl.time + 0.1f;
-
-//	if( sf->fadeReset == 0.0f && sf->fadeEnd == 0.0f )
-//		return;	// inactive
-
-//	// all done?
-//	if(( cl.time > sf->fadeReset ) && ( cl.time > sf->fadeEnd ))
-//	{
-//		Q_memset( &clgame.fade, 0, sizeof( clgame.fade ));
-//		return;
-//	}
-
-//	testFlags = (sf->fadeFlags & ~FFADE_MODULATE);
-
-//	// fading...
-//	if( testFlags == FFADE_STAYOUT )
-//	{
-//		iFadeAlpha = sf->fadealpha;
-//	}
-//	else
-//	{
-//		iFadeAlpha = (int)(sf->fadeSpeed * ( sf->fadeEnd - (float)cl.time ));
-//		if( sf->fadeFlags & FFADE_OUT ) iFadeAlpha += sf->fadealpha;
-//		iFadeAlpha = bound( 0, iFadeAlpha, sf->fadealpha );
-//	}
-
-//	glColor4ub( sf->fader, sf->fadeg, sf->fadeb, iFadeAlpha );
-
-//	if( sf->fadeFlags & FFADE_MODULATE )
-//		GL_SetRenderMode( kRenderTransAdd );
-//	else GL_SetRenderMode( kRenderTransTexture );
-//	R_DrawStretchPic( 0.f, 0.f, (float)scr_width->integer, (float)scr_height->integer, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-//	glColor4ub( 255, 255, 255, 255 );
-//}
 
 /*
 ====================
@@ -918,84 +808,7 @@ void CL_DrawCrosshair( void )
 	SPR_DisableScissor();
 }
 
-/*
-=============
-CL_DrawLoading
-
-draw loading progress bar
-=============
-*/
-//static void CL_DrawLoading( float percent )
-//{
-//	int	x, y, width, height, right;
-//	float	xscale, yscale, step, s2;
-
-//	R_GetTextureParms( &width, &height, cls.loadingBar );
-//	x = ( clgame.scrInfo.iWidth - width ) >> 1;
-//	y = ( clgame.scrInfo.iHeight - height) >> 1;
-
-//	xscale = (float)scr_width->integer / (float)clgame.scrInfo.iWidth;
-//	yscale = (float)scr_height->integer / (float)clgame.scrInfo.iHeight;
-
-//	x = (int)(x*xscale);
-//	y = (int)(y*yscale);
-//	width = (int)(width*xscale);
-//	height = (int)(height*yscale);
-
-//	if( cl_allow_levelshots->integer )
-//		  {
-//		glColor4ub( 128, 128, 128, 255 );
-//		GL_SetRenderMode( kRenderTransTexture );
-//		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
-
-//		step = (float)width / 100.0f;
-//		right = (int)ceil( percent * step );
-//		s2 = (float)right / width;
-//		width = right;
-
-//		glColor4ub( 208, 152, 0, 255 );
-//		GL_SetRenderMode( kRenderTransTexture );
-//		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, s2, 1.f, cls.loadingBar );
-//		glColor4ub( 255, 255, 255, 255 );
-//	}
-//	else
-//	{
-//		glColor4ub( 255, 255, 255, 255 );
-//		GL_SetRenderMode( kRenderTransTexture );
-//		R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.loadingBar );
-//	}
-//}
-
-/*
-=============
-CL_DrawPause
-
-draw pause sign
-=============
-*/
-//static void CL_DrawPause( void )
-//{
-//	int	x, y, width, height;
-//	float	xscale, yscale;
-
-//	R_GetTextureParms( &width, &height, cls.pauseIcon );
-//	x = ( clgame.scrInfo.iWidth - width ) >> 1;
-//	y = ( clgame.scrInfo.iHeight - height) >> 1;
-
-//	xscale = scr_width->integer / (float)clgame.scrInfo.iWidth;
-//	yscale = scr_height->integer / (float)clgame.scrInfo.iHeight;
-
-//	x = (int)(x*xscale);
-//	y = (int)(y*yscale);
-//	width = (int)(width*xscale);
-//	height = (int)(height*yscale);
-
-//	glColor4ub( 255, 255, 255, 255 );
-//	GL_SetRenderMode( kRenderTransTexture );
-//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.pauseIcon );
-//}
-
-void CL_DrawHUD( int state )
+void __cdecl CL_DrawHUD( int state )
 {
 	if( state == CL_ACTIVE && !cl.video_prepped )
 		state = CL_LOADING;
@@ -1031,7 +844,7 @@ void CL_DrawHUD( int state )
 	}
 }
 
-void CL_LinkUserMessage( char *pszName, const int svc_num, int iSize )
+void __cdecl CL_LinkUserMessage( char *pszName, const int svc_num, int iSize )
 {
 	int	i;
 
@@ -1065,14 +878,14 @@ void CL_LinkUserMessage( char *pszName, const int svc_num, int iSize )
 	clgame.msg[i].size = iSize;
 }
 
-void CL_FreeEntity( cl_entity_t *pEdict )
+void __cdecl CL_FreeEntity( cl_entity_t *pEdict )
 {
 	ASSERT( pEdict );
 	R_RemoveEfrags( pEdict );
 	CL_KillDeadBeams( pEdict );
 }
 
-void CL_ClearWorld( void )
+void __cdecl CL_ClearWorld( void )
 {
 	cl.world = clgame.entities;
 	cl.world->curstate.modelindex = 1;	// world model
@@ -1085,7 +898,7 @@ void CL_ClearWorld( void )
 	clgame.numStatics = 0;
 }
 
-void CL_InitEdicts( void )
+void __cdecl CL_InitEdicts( void )
 {
 	ASSERT( clgame.entities == NULL );
 
@@ -1104,7 +917,7 @@ void CL_InitEdicts( void )
 	}
 }
 
-void CL_FreeEdicts( void )
+void __cdecl CL_FreeEdicts( void )
 {
 	if( clgame.entities )
 		Mem_Free( clgame.entities );
@@ -1123,7 +936,7 @@ void CL_FreeEdicts( void )
 	clgame.numStatics = 0;
 }
 
-void CL_ClearEdicts( void )
+void __cdecl CL_ClearEdicts( void )
 {
 	if( clgame.entities != NULL )
 		return;
@@ -1139,7 +952,7 @@ void CL_ClearEdicts( void )
 
 ===============================================================================
 */
-static qboolean CL_LoadHudSprite( const char *szSpriteName, model_t *m_pSprite, qboolean mapSprite, uint texFlags )
+static qboolean __cdecl CL_LoadHudSprite( const char *szSpriteName, model_t *m_pSprite, qboolean mapSprite, uint texFlags )
 {
 	byte	*buf;
 	size_t	size;
@@ -1172,7 +985,7 @@ pfnSPR_LoadExt
 
 =========
 */
-VHSPRITE pfnSPR_LoadExt( const char *szPicName, uint texFlags )
+VHSPRITE __cdecl pfnSPR_LoadExt( const char *szPicName, uint texFlags )
 {
 	char	name[64];
 	int	i;
@@ -1225,7 +1038,7 @@ pfnSPR_Load
 
 =========
 */
-VHSPRITE pfnSPR_Load( const char *szPicName )
+VHSPRITE __cdecl pfnSPR_Load( const char *szPicName )
 {
 	return pfnSPR_LoadExt( szPicName, 0 );
 }
@@ -1236,7 +1049,7 @@ CL_GetSpritePointer
 
 =============
 */
-const model_t *CL_GetSpritePointer( VHSPRITE hSprite )
+const model_t *__cdecl CL_GetSpritePointer( VHSPRITE hSprite )
 {
 	if( hSprite <= 0 || hSprite > ( MAX_IMAGES - 1 ))
 		return NULL; // bad image
@@ -1249,7 +1062,7 @@ pfnSPR_Frames
 
 =========
 */
-static int pfnSPR_Frames( VHSPRITE hPic )
+static int __cdecl pfnSPR_Frames( VHSPRITE hPic )
 {
 	int	numFrames;
 
@@ -1264,7 +1077,7 @@ pfnSPR_Height
 
 =========
 */
-static int pfnSPR_Height( VHSPRITE hPic, int frame )
+static int __cdecl pfnSPR_Height( VHSPRITE hPic, int frame )
 {
 	int	sprHeight;
 
@@ -1279,7 +1092,7 @@ pfnSPR_Width
 
 =========
 */
-static int pfnSPR_Width( VHSPRITE hPic, int frame )
+static int __cdecl pfnSPR_Width( VHSPRITE hPic, int frame )
 {
 	int	sprWidth;
 
@@ -1290,43 +1103,11 @@ static int pfnSPR_Width( VHSPRITE hPic, int frame )
 
 /*
 =========
-pfnSPR_Set
-
-=========
-*/
-//static void pfnSPR_Set( VHSPRITE hPic, int r, int g, int b )
-//{
-//	clgame.ds.pSprite = CL_GetSpritePointer( hPic );
-//	clgame.ds.spriteColor[0] = bound( 0, r, 255 );
-//	clgame.ds.spriteColor[1] = bound( 0, g, 255 );
-//	clgame.ds.spriteColor[2] = bound( 0, b, 255 );
-//	clgame.ds.spriteColor[3] = 255;
-
-//	// set default state
-//	glDisable( GL_BLEND );
-//	glDisable( GL_ALPHA_TEST );
-//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-//}
-
-///*
-//=========
-//pfnSPR_Draw
-
-//=========
-//*/
-//static void pfnSPR_Draw( int frame, int x, int y, const wrect_t *prc )
-//{
-//	glEnable( GL_ALPHA_TEST );
-//	SPR_DrawGeneric( frame, (float)x, (float)y, -1.f, -1.f, prc );
-//}
-
-/*
-=========
 pfnSPR_DrawHoles
 
 =========
 */
-static void pfnSPR_DrawHoles( int frame, int x, int y, const wrect_t *prc )
+static void __cdecl pfnSPR_DrawHoles( int frame, int x, int y, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransAlpha );
 	SPR_DrawGeneric( frame, (float)x, (float)y, -1.f, -1.f, prc );
@@ -1338,7 +1119,7 @@ pfnSPR_DrawAdditive
 
 =========
 */
-static void pfnSPR_DrawAdditive( int frame, int x, int y, const wrect_t *prc )
+static void __cdecl pfnSPR_DrawAdditive( int frame, int x, int y, const wrect_t *prc )
 {
 	GL_SetRenderMode( kRenderTransAdd );
 	SPR_DrawGeneric( frame, (float)x, (float)y, -1.f, -1.f, prc );
@@ -1351,7 +1132,7 @@ pfnSPR_GetList
 for parsing half-life scripts - hud.txt etc
 =========
 */
-static client_sprite_t *pfnSPR_GetList( char *psz, int *piCount )
+static client_sprite_t *__cdecl pfnSPR_GetList( char *psz, int *piCount )
 {
 	client_sprite_t	*pList;
 	int		index, numSprites = 0;
@@ -1419,33 +1200,12 @@ static client_sprite_t *pfnSPR_GetList( char *psz, int *piCount )
 
 /*
 =============
-pfnFillRGBA
-
-=============
-*/
-//static void pfnFillRGBA( int x, int y, int width, int height, int r, int g, int b, int a )
-//{
-//	r = bound( 0, r, 255 );
-//	g = bound( 0, g, 255 );
-//	b = bound( 0, b, 255 );
-//	a = bound( 0, a, 255 );
-//	glColor4ub( r, g, b, a );
-
-//	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
-
-//	GL_SetRenderMode( kRenderTransAdd );
-//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-//	glColor4ub( 255, 255, 255, 255 );
-//}
-
-/*
-=============
 pfnGetScreenInfo
 
 get actual screen info
 =============
 */
-static int pfnGetScreenInfo( SCREENINFO *pscrinfo )
+static int __cdecl pfnGetScreenInfo( SCREENINFO *pscrinfo )
 {
 	// setup screen info
 	clgame.scrInfo.iSize = sizeof( clgame.scrInfo );
@@ -1491,7 +1251,7 @@ pfnSetCrosshair
 setup crosshair
 =============
 */
-static void pfnSetCrosshair( VHSPRITE hspr, wrect_t rc, int r, int g, int b )
+static void __cdecl pfnSetCrosshair( VHSPRITE hspr, wrect_t rc, int r, int g, int b )
 {
 	clgame.ds.rgbaCrosshair[0] = (byte)r;
 	clgame.ds.rgbaCrosshair[1] = (byte)g;
@@ -1507,7 +1267,7 @@ pfnHookUserMsg
 
 =============
 */
-static int pfnHookUserMsg( const char *pszName, pfnUserMsgHook pfn )
+static int __cdecl pfnHookUserMsg( const char *pszName, pfnUserMsgHook pfn )
 {
 	int	i;
 
@@ -1541,7 +1301,7 @@ pfnServerCmd
 
 =============
 */
-static int pfnServerCmd( const char *szCmdString )
+static int __cdecl pfnServerCmd( const char *szCmdString )
 {
 	string buf;
 
@@ -1561,7 +1321,7 @@ pfnClientCmd
 
 =============
 */
-static int pfnClientCmd( const char *szCmdString )
+static int __cdecl pfnClientCmd( const char *szCmdString )
 {
 	if( !szCmdString || !szCmdString[0] )
 		return 0;
@@ -1577,7 +1337,7 @@ pfnGetPlayerInfo
 
 =============
 */
-static void pfnGetPlayerInfo( int ent_num, hud_player_info_t *pinfo )
+static void __cdecl pfnGetPlayerInfo( int ent_num, hud_player_info_t *pinfo )
 {
 	player_info_t	*player;
 	cl_entity_t	*ent;
@@ -1612,7 +1372,7 @@ pfnPlaySoundByName
 
 =============
 */
-static void pfnPlaySoundByName( const char *szSound, float volume )
+static void __cdecl pfnPlaySoundByName( const char *szSound, float volume )
 {
 	int hSound = S_RegisterSound( szSound );
 	S_StartSound( NULL, cl.refdef.viewentity, CHAN_ITEM, hSound, volume, ATTN_NORM, PITCH_NORM, SND_STOP_LOOPING );
@@ -1624,7 +1384,7 @@ pfnPlaySoundByIndex
 
 =============
 */
-static void pfnPlaySoundByIndex( int iSound, float volume )
+static void __cdecl pfnPlaySoundByIndex( int iSound, float volume )
 {
 	int hSound;
 
@@ -1647,7 +1407,7 @@ pfnTextMessageGet
 returns specified message from titles.txt
 =============
 */
-client_textmessage_t *CL_TextMessageGet( const char *pName )
+client_textmessage_t *__cdecl CL_TextMessageGet( const char *pName )
 {
 	int	i;
 
@@ -1674,7 +1434,7 @@ pfnDrawCharacter
 returns drawed chachter width (in real screen pixels)
 =============
 */
-int pfnDrawCharacter( int x, int y, int number, int r, int g, int b )
+int __cdecl pfnDrawCharacter( int x, int y, int number, int r, int g, int b )
 {
 	if( !cls.creditsFont.valid )
 		return 0;
@@ -1700,7 +1460,7 @@ pfnDrawConsoleString
 drawing string like a console string
 =============
 */
-int pfnDrawConsoleString( int x, int y, char *string )
+int __cdecl pfnDrawConsoleString( int x, int y, char *string )
 {
 	int	drawLen;
 
@@ -1722,7 +1482,7 @@ pfnDrawSetTextColor
 set color for anything
 =============
 */
-void pfnDrawSetTextColor( float r, float g, float b )
+void __cdecl pfnDrawSetTextColor( float r, float g, float b )
 {
 	// bound color and convert to byte
 	clgame.ds.textColor[0] = (byte)bound( 0, r * 255, 255 );
@@ -1738,7 +1498,7 @@ pfnDrawConsoleStringLen
 compute string length in screen pixels
 =============
 */
-void pfnDrawConsoleStringLen( const char *pText, int *length, int *height )
+void __cdecl pfnDrawConsoleStringLen( const char *pText, int *length, int *height )
 {
 	Con_SetFont( con_fontsize->integer );
 	Con_DrawStringLen( pText, length, height );
@@ -1752,7 +1512,7 @@ pfnConsolePrint
 prints directly into console (can skip notify)
 =============
 */
-static void pfnConsolePrint( const char *string )
+static void __cdecl pfnConsolePrint( const char *string )
 {
 	if( !string || !*string ) return;
 	if( *string != 1 ) Con_Print( (char *)string ); // show notify
@@ -1767,7 +1527,7 @@ holds and fade message at center of screen
 like trigger_multiple message in q1
 =============
 */
-static void pfnCenterPrint( const char *string )
+static void __cdecl pfnCenterPrint( const char *string )
 {
 	if( !string || !*string ) return; // someone stupid joke
 	CL_CenterPrint( string, 0.25f );
@@ -1779,7 +1539,7 @@ GetWindowCenterX
 
 =========
 */
-static int pfnGetWindowCenterX( void )
+static int __cdecl pfnGetWindowCenterX( void )
 {
 	return host.window_center_x;
 }
@@ -1790,7 +1550,7 @@ GetWindowCenterY
 
 =========
 */
-static int pfnGetWindowCenterY( void )
+static int __cdecl pfnGetWindowCenterY( void )
 {
 	return host.window_center_y;
 }
@@ -1802,7 +1562,7 @@ pfnGetViewAngles
 return interpolated angles from previous frame
 =============
 */
-static void pfnGetViewAngles( float *angles )
+static void __cdecl pfnGetViewAngles( float *angles )
 {
 	if( angles ) VectorCopy( cl.refdef.cl_viewangles, angles );
 }
@@ -1814,7 +1574,7 @@ pfnSetViewAngles
 return interpolated angles from previous frame
 =============
 */
-static void pfnSetViewAngles( float *angles )
+static void __cdecl pfnSetViewAngles( float *angles )
 {
 	if( angles ) VectorCopy( angles, cl.refdef.cl_viewangles );
 }
@@ -1825,7 +1585,7 @@ pfnPhysInfo_ValueForKey
 
 =============
 */
-static const char* pfnPhysInfo_ValueForKey( const char *key )
+static const char* __cdecl pfnPhysInfo_ValueForKey( const char *key )
 {
 	return Info_ValueForKey( cl.frame.local.client.physinfo, key );
 }
@@ -1836,7 +1596,7 @@ pfnServerInfo_ValueForKey
 
 =============
 */
-static const char* pfnServerInfo_ValueForKey( const char *key )
+static const char* __cdecl pfnServerInfo_ValueForKey( const char *key )
 {
 	return Info_ValueForKey( cl.serverinfo, key );
 }
@@ -1848,7 +1608,7 @@ pfnGetClientMaxspeed
 value that come from server
 =============
 */
-static float pfnGetClientMaxspeed( void )
+static float __cdecl pfnGetClientMaxspeed( void )
 {
 	return cl.frame.local.client.maxspeed;
 }
@@ -1859,7 +1619,7 @@ pfnCheckParm
 
 =============
 */
-static int pfnCheckParm( char *parm, char **ppnext )
+static int __cdecl pfnCheckParm( char *parm, char **ppnext )
 {
 	static char	str[64];
 
@@ -1878,7 +1638,7 @@ pfnGetMousePosition
 
 =============
 */
-static void pfnGetMousePosition( int *mx, int *my )
+static void __cdecl pfnGetMousePosition( int *mx, int *my )
 {
 	POINT	curpos;
 
@@ -1895,7 +1655,7 @@ pfnIsNoClipping
 
 =============
 */
-int pfnIsNoClipping( void )
+int __cdecl pfnIsNoClipping( void )
 {
 	cl_entity_t *pl = CL_GetLocalPlayer();
 
@@ -1910,7 +1670,7 @@ pfnGetViewModel
 
 =============
 */
-static cl_entity_t* pfnGetViewModel( void )
+static cl_entity_t* __cdecl pfnGetViewModel( void )
 {
 	return &clgame.viewent;
 }
@@ -1921,7 +1681,7 @@ pfnGetClientTime
 
 =============
 */
-static float pfnGetClientTime( void )
+static float __cdecl pfnGetClientTime( void )
 {
 	return (float)cl.time;
 }
@@ -1932,7 +1692,7 @@ pfnCalcShake
 
 =============
 */
-void pfnCalcShake( void )
+void __cdecl pfnCalcShake( void )
 {
 	int	i;
 	float	fraction, freq;
@@ -1994,7 +1754,7 @@ pfnApplyShake
 
 =============
 */
-void pfnApplyShake( float *origin, float *angles, float factor )
+void __cdecl pfnApplyShake( float *origin, float *angles, float factor )
 {
 	if( origin ) VectorMA( origin, factor, clgame.shake.applied_offset, origin );
 	if( angles ) angles[ROLL] += clgame.shake.applied_angle * factor;
@@ -2006,7 +1766,7 @@ pfnIsSpectateOnly
 
 =============
 */
-static int pfnIsSpectateOnly( void )
+static int __cdecl pfnIsSpectateOnly( void )
 {
 	cl_entity_t *pPlayer = CL_GetLocalPlayer();
 	return pPlayer ? (pPlayer->curstate.spectator != 0) : 0;
@@ -2018,7 +1778,7 @@ pfnPointContents
 
 =============
 */
-static int pfnPointContents( const float *p, int *truecontents )
+static int __cdecl pfnPointContents( const float *p, int *truecontents )
 {
 	int	cont, truecont;
 
@@ -2036,7 +1796,7 @@ pfnTraceLine
 
 =============
 */
-static pmtrace_t *pfnTraceLine( float *start, float *end, int flags, int usehull, int ignore_pe )
+static pmtrace_t *__cdecl pfnTraceLine( float *start, float *end, int flags, int usehull, int ignore_pe )
 {
 	static pmtrace_t	tr;
 	int		old_usehull;
@@ -2059,7 +1819,7 @@ static pmtrace_t *pfnTraceLine( float *start, float *end, int flags, int usehull
 	return &tr;
 }
 
-static void pfnPlaySoundByNameAtLocation( char *szSound, float volume, float *origin )
+static void __cdecl pfnPlaySoundByNameAtLocation( char *szSound, float volume, float *origin )
 {
 	int hSound = S_RegisterSound( szSound );
 	S_StartSound( origin, 0, CHAN_AUTO, hSound, volume, ATTN_NORM, PITCH_NORM, 0 );
@@ -2071,7 +1831,7 @@ pfnPrecacheEvent
 
 =============
 */
-static word pfnPrecacheEvent( int type, const char* psz )
+static word __cdecl pfnPrecacheEvent( int type, const char* psz )
 {
 	return CL_EventIndex( psz );
 }
@@ -2082,7 +1842,7 @@ pfnHookEvent
 
 =============
 */
-static void pfnHookEvent( const char *filename, pfnEventHook pfn )
+static void __cdecl pfnHookEvent( const char *filename, pfnEventHook pfn )
 {
 	char		name[64];
 	cl_user_event_t	*ev;
@@ -2117,7 +1877,7 @@ pfnKillEvent
 
 =============
 */
-static void pfnKillEvents( int entnum, const char *eventname )
+static void __cdecl pfnKillEvents( int entnum, const char *eventname )
 {
 	int		i;
 	event_state_t	*es;
@@ -2151,7 +1911,7 @@ pfnPlaySound
 
 =============
 */
-void pfnPlaySound( int ent, float *org, int chan, const char *samp, float vol, float attn, int flags, int pitch )
+void __cdecl pfnPlaySound( int ent, float *org, int chan, const char *samp, float vol, float attn, int flags, int pitch )
 {
 	S_StartSound( org, ent, chan, S_RegisterSound( samp ), vol, attn, pitch, flags );
 }
@@ -2162,7 +1922,7 @@ CL_FindModelIndex
 
 =============
 */
-int CL_FindModelIndex( const char *m )
+int __cdecl CL_FindModelIndex( const char *m )
 {
 	int	i;
 
@@ -2189,7 +1949,7 @@ pfnIsLocal
 
 =============
 */
-int pfnIsLocal( int playernum )
+int __cdecl pfnIsLocal( int playernum )
 {
 	if( playernum == cl.playernum )
 		return true;
@@ -2202,7 +1962,7 @@ pfnLocalPlayerDucking
 
 =============
 */
-int pfnLocalPlayerDucking( void )
+int __cdecl pfnLocalPlayerDucking( void )
 {
 	return cl.frame.local.client.bInDuck;
 }
@@ -2213,7 +1973,7 @@ pfnLocalPlayerViewheight
 
 =============
 */
-void pfnLocalPlayerViewheight( float *view_ofs )
+void __cdecl pfnLocalPlayerViewheight( float *view_ofs )
 {
 	// predicted or smoothed
 	if( view_ofs ) VectorCopy( cl.frame.local.client.view_ofs, view_ofs );
@@ -2225,7 +1985,7 @@ pfnLocalPlayerBounds
 
 =============
 */
-void pfnLocalPlayerBounds( int hull, float *mins, float *maxs )
+void __cdecl pfnLocalPlayerBounds( int hull, float *mins, float *maxs )
 {
 	if( hull >= 0 && hull < 4 )
 	{
@@ -2240,7 +2000,7 @@ pfnIndexFromTrace
 
 =============
 */
-int pfnIndexFromTrace( struct pmtrace_s *pTrace )
+int __cdecl pfnIndexFromTrace( struct pmtrace_s *pTrace )
 {
 	if( pTrace->ent >= 0 && pTrace->ent < clgame.pmove->numphysent )
 	{
@@ -2256,7 +2016,7 @@ pfnGetPhysent
 
 =============
 */
-physent_t *pfnGetPhysent( int idx )
+physent_t *__cdecl pfnGetPhysent( int idx )
 {
 	if( idx >= 0 && idx < clgame.pmove->numphysent )
 	{
@@ -2272,7 +2032,7 @@ pfnSetUpPlayerPrediction
 
 =============
 */
-void pfnSetUpPlayerPrediction( int dopred, int bIncludeLocalClient )
+void __cdecl pfnSetUpPlayerPrediction( int dopred, int bIncludeLocalClient )
 {
 	// TODO: implement
 }
@@ -2283,7 +2043,7 @@ pfnPushPMStates
 
 =============
 */
-void pfnPushPMStates( void )
+void __cdecl pfnPushPMStates( void )
 {
 	clgame.oldcount = clgame.pmove->numphysent;
 }
@@ -2294,7 +2054,7 @@ pfnPopPMStates
 
 =============
 */
-void pfnPopPMStates( void )
+void __cdecl pfnPopPMStates( void )
 {
 	clgame.pmove->numphysent = clgame.oldcount;
 }
@@ -2305,7 +2065,7 @@ pfnSetTraceHull
 
 =============
 */
-void CL_SetTraceHull( int hull )
+void __cdecl CL_SetTraceHull( int hull )
 {
 	clgame.old_trace_hull = clgame.pmove->usehull;
 	clgame.pmove->usehull = bound( 0, hull, 3 );
@@ -2318,7 +2078,7 @@ pfnPlayerTrace
 
 =============
 */
-void CL_PlayerTrace( float *start, float *end, int traceFlags, int ignore_pe, pmtrace_t *tr )
+void __cdecl CL_PlayerTrace( float *start, float *end, int traceFlags, int ignore_pe, pmtrace_t *tr )
 {
 	if( !tr ) return;
 	*tr = PM_PlayerTraceExt( clgame.pmove, start, end, traceFlags, clgame.pmove->numphysent, clgame.pmove->physents, ignore_pe, NULL );
@@ -2331,7 +2091,7 @@ pfnPlayerTraceExt
 
 =============
 */
-void CL_PlayerTraceExt( float *start, float *end, int traceFlags, int (*pfnIgnore)( physent_t *pe ), pmtrace_t *tr )
+void __cdecl CL_PlayerTraceExt( float *start, float *end, int traceFlags, int (*pfnIgnore)( physent_t *pe ), pmtrace_t *tr )
 {
 	if( !tr ) return;
 	*tr = PM_PlayerTraceExt( clgame.pmove, start, end, traceFlags, clgame.pmove->numphysent, clgame.pmove->physents, -1, pfnIgnore );
@@ -2344,7 +2104,7 @@ pfnTraceTexture
 
 =============
 */
-static const char *pfnTraceTexture( int ground, float *vstart, float *vend )
+static const char *__cdecl pfnTraceTexture( int ground, float *vstart, float *vend )
 {
 	physent_t *pe;
 
@@ -2361,7 +2121,7 @@ pfnStopAllSounds
 
 =============
 */
-void pfnStopAllSounds( int ent, int entchannel )
+void __cdecl pfnStopAllSounds( int ent, int entchannel )
 {
 	S_StopSound( ent, entchannel, NULL );
 }
@@ -2372,7 +2132,7 @@ CL_LoadModel
 
 =============
 */
-model_t *CL_LoadModel( const char *modelname, int *index )
+model_t *__cdecl CL_LoadModel( const char *modelname, int *index )
 {
 	int	idx;
 
@@ -2383,7 +2143,7 @@ model_t *CL_LoadModel( const char *modelname, int *index )
 	return Mod_Handle( idx );
 }
 
-int CL_AddEntity( int entityType, cl_entity_t *pEnt )
+int __cdecl CL_AddEntity( int entityType, cl_entity_t *pEnt )
 {
 	if( !pEnt ) return false;
 
@@ -2400,7 +2160,7 @@ pfnGetGameDirectory
 
 =============
 */
-const char *pfnGetGameDirectory( void )
+const char *__cdecl pfnGetGameDirectory( void )
 {
 	static char	szGetGameDir[MAX_SYSPATH];
 
@@ -2414,7 +2174,7 @@ Key_LookupBinding
 
 =============
 */
-const char *Key_LookupBinding( const char *pBinding )
+const char *__cdecl Key_LookupBinding( const char *pBinding )
 {
 	return Key_KeynumToString( Key_GetKey( pBinding ));
 }
@@ -2425,7 +2185,7 @@ pfnGetLevelName
 
 =============
 */
-static const char *pfnGetLevelName( void )
+static const char *__cdecl pfnGetLevelName( void )
 {
 	static char	mapname[64];
 
@@ -2442,7 +2202,7 @@ pfnGetScreenFade
 
 =============
 */
-static void pfnGetScreenFade( struct screenfade_s *fade )
+static void __cdecl pfnGetScreenFade( struct screenfade_s *fade )
 {
 	if( fade ) *fade = clgame.fade;
 }
@@ -2717,19 +2477,6 @@ void pfnSetLightmapScale( float scale )
 
 /*
 =============
-pfnSPR_DrawGeneric
-
-=============
-*/
-//void pfnSPR_DrawGeneric( int frame, int x, int y, const wrect_t *prc, int blendsrc, int blenddst, int width, int height )
-//{
-//	glEnable( GL_BLEND );
-//	glBlendFunc( blendsrc, blenddst ); // g-cont. are params is valid?
-//	SPR_DrawGeneric( frame, (float)x, (float)y, (float)width, (float)height, prc );
-//}
-
-/*
-=============
 pfnDrawString
 
 TODO: implement
@@ -2849,31 +2596,6 @@ void pfnPlaySoundByNameAtPitch( char *filename, float volume, int pitch )
 
 /*
 =============
-pfnFillRGBABlend
-
-=============
-*/
-//void pfnFillRGBABlend( int x, int y, int width, int height, int r, int g, int b, int a )
-//{
-//	r = bound( 0, r, 255 );
-//	g = bound( 0, g, 255 );
-//	b = bound( 0, b, 255 );
-//	a = bound( 0, a, 255 );
-//	glColor4ub( r, g, b, a );
-
-//	SPR_AdjustSize( (float *)&x, (float *)&y, (float *)&width, (float *)&height );
-
-//	glEnable( GL_BLEND );
-//	glDisable( GL_ALPHA_TEST );
-//	glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_ONE );
-//	glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-//	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
-//	glColor4ub( 255, 255, 255, 255 );
-//}
-
-/*
-=============
 pfnGetAppID
 
 =============
@@ -2900,174 +2622,6 @@ TriApi implementation
 
 =================
 */
-/*
-=============
-TriRenderMode
-
-set rendermode
-=============
-*/
-//void TriRenderMode( int mode )
-//{
-//	switch( mode )
-//	{
-//	case kRenderNormal:
-//	default:	glDisable( GL_BLEND );
-//		glDisable( GL_ALPHA_TEST );
-//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-//		break;
-//	case kRenderTransColor:
-//	case kRenderTransAlpha:
-//	case kRenderTransTexture:
-//		// NOTE: TriAPI doesn't have 'solid' mode
-//		glEnable( GL_BLEND );
-//		glDisable( GL_ALPHA_TEST );
-//		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-//		break;
-//	case kRenderGlow:
-//	case kRenderTransAdd:
-//		glEnable( GL_BLEND );
-//		glDisable( GL_ALPHA_TEST );
-//		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-//		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-//		break;
-//	}
-//}
-
-///*
-//=============
-//TriBegin
-
-//begin triangle sequence
-//=============
-//*/
-//void TriBegin( int mode )
-//{
-//	switch( mode )
-//	{
-//	case TRI_POINTS:
-//		mode = GL_POINTS;
-//		break;
-//	case TRI_TRIANGLES:
-//		mode = GL_TRIANGLES;
-//		break;
-//	case TRI_TRIANGLE_FAN:
-//		mode = GL_TRIANGLE_FAN;
-//		break;
-//	case TRI_QUADS:
-//		mode = GL_QUADS;
-//		break;
-//	case TRI_LINES:
-//		mode = GL_LINES;
-//		break;
-//	case TRI_TRIANGLE_STRIP:
-//		mode = GL_TRIANGLE_STRIP;
-//		break;
-//	case TRI_QUAD_STRIP:
-//		mode = GL_QUAD_STRIP;
-//		break;
-//	case TRI_POLYGON:
-//	default:	mode = GL_POLYGON;
-//		break;
-//	}
-
-//	glBegin( mode );
-//}
-
-///*
-//=============
-//TriEnd
-
-//draw triangle sequence
-//=============
-//*/
-//void TriEnd( void )
-//{
-//	glEnd();
-//	glDisable( GL_ALPHA_TEST );
-//}
-
-///*
-//=============
-//TriColor4f
-
-//=============
-//*/
-//void TriColor4f( float r, float g, float b, float a )
-//{
-//	clgame.ds.triColor[0] = (byte)bound( 0, (r * 255.0f), 255 );
-//	clgame.ds.triColor[1] = (byte)bound( 0, (g * 255.0f), 255 );
-//	clgame.ds.triColor[2] = (byte)bound( 0, (b * 255.0f), 255 );
-//	clgame.ds.triColor[3] = (byte)bound( 0, (a * 255.0f), 255 );
-//	glColor4ub( clgame.ds.triColor[0], clgame.ds.triColor[1], clgame.ds.triColor[2], clgame.ds.triColor[3] );
-//}
-
-///*
-//=============
-//TriColor4ub
-
-//=============
-//*/
-//void TriColor4ub( byte r, byte g, byte b, byte a )
-//{
-//	clgame.ds.triColor[0] = r;
-//	clgame.ds.triColor[1] = g;
-//	clgame.ds.triColor[2] = b;
-//	clgame.ds.triColor[3] = a;
-//	glColor4ub( r, g, b, a );
-//}
-
-///*
-//=============
-//TriTexCoord2f
-
-//=============
-//*/
-//void TriTexCoord2f( float u, float v )
-//{
-//	glTexCoord2f( u, v );
-//}
-
-///*
-//=============
-//TriVertex3fv
-
-//=============
-//*/
-//void TriVertex3fv( const float *v )
-//{
-//	glVertex3fv( v );
-//}
-
-///*
-//=============
-//TriVertex3f
-
-//=============
-//*/
-//void TriVertex3f( float x, float y, float z )
-//{
-//	glVertex3f( x, y, z );
-//}
-
-///*
-//=============
-//TriBrightness
-
-//=============
-//*/
-//void TriBrightness( float brightness )
-//{
-//	rgba_t	rgba;
-
-//	brightness = max( 0.0f, brightness );
-//	rgba[0] = (byte)(clgame.ds.triColor[0] * brightness);
-//	rgba[1] = (byte)(clgame.ds.triColor[1] * brightness);
-//	rgba[2] = (byte)(clgame.ds.triColor[2] * brightness);
-
-//	glColor3ub( rgba[0], rgba[1], rgba[2] );
-//}
 
 /*
 =============
@@ -3091,39 +2645,6 @@ void TriCullFace( TRICULLSTYLE mode )
 
 /*
 =============
-TriSpriteTexture
-
-bind current texture
-=============
-*/
-//int TriSpriteTexture( model_t *pSpriteModel, int frame )
-//{
-//	int	gl_texturenum;
-//	msprite_t	*psprite;
-
-//	if(( gl_texturenum = R_GetSpriteTexture( pSpriteModel, frame )) == 0 )
-//		return 0;
-
-//	if( gl_texturenum <= 0 || gl_texturenum > MAX_TEXTURES )
-//	{
-//		MsgDev( D_ERROR, "TriSpriteTexture: bad index %i\n", gl_texturenum );
-//		gl_texturenum = tr.defaultTexture;
-//	}
-
-//	psprite = pSpriteModel->cache.data;
-//	if( psprite->texFormat == SPR_ALPHTEST )
-//	{
-//		glEnable( GL_ALPHA_TEST );
-//		glAlphaFunc( GL_GREATER, 0.0f );
-//	}
-
-//	GL_Bind( GL_TEXTURE0, gl_texturenum );
-
-//	return 1;
-//}
-
-/*
-=============
 TriWorldToScreen
 
 convert world coordinates (x,y,z) into screen (x, y)
@@ -3142,59 +2663,6 @@ int TriWorldToScreen( float *world, float *screen )
 
 	return retval;
 }
-
-/*
-=============
-TriFog
-
-enables global fog on the level
-=============
-*/
-//void TriFog( float flFogColor[3], float flStart, float flEnd, int bOn )
-//{
-//	if( RI.fogEnabled ) return;
-//	RI.fogCustom = true;
-
-//	if( !bOn )
-//	{
-//		glDisable( GL_FOG );
-//		RI.fogCustom = false;
-//		return;
-//	}
-
-//	// copy fog params
-//	RI.fogColor[0] = flFogColor[0] / 255.0f;
-//	RI.fogColor[1] = flFogColor[1] / 255.0f;
-//	RI.fogColor[2] = flFogColor[2] / 255.0f;
-//	RI.fogStart = flStart;
-//	RI.fogDensity = 0.0f;
-//	RI.fogEnd = flEnd;
-
-//	if( VectorIsNull( RI.fogColor ))
-//	{
-//		glDisable( GL_FOG );
-//		return;
-//	}
-
-//	glEnable( GL_FOG );
-//	glFogi( GL_FOG_MODE, GL_LINEAR );
-//	glFogf( GL_FOG_START, RI.fogStart );
-//	glFogf( GL_FOG_END, RI.fogEnd );
-//	glFogfv( GL_FOG_COLOR, RI.fogColor );
-//	glHint( GL_FOG_HINT, GL_NICEST );
-//}
-
-///*
-//=============
-//TriGetMatrix
-
-//very strange export
-//=============
-//*/
-//void TriGetMatrix( const int pname, float *matrix )
-//{
-//	glGetFloatv( pname, matrix );
-//}
 
 /*
 =============
@@ -3228,20 +2696,6 @@ void TriLightAtPoint( float *pos, float *value )
 	value[1] = (float)ambient.g * 255.0f;
 	value[2] = (float)ambient.b * 255.0f;
 }
-
-/*
-=============
-TriColor4fRendermode
-
-Heavy legacy of Quake...
-=============
-*/
-//void TriColor4fRendermode( float r, float g, float b, float a, int rendermode )
-//{
-//	if( rendermode == kRenderTransAlpha )
-//		glColor4f( r, g, b, a );
-//	else glColor4f( r * a, g * a, b * a, 1.0f );
-//}
 
 /*
 =============

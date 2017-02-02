@@ -13,6 +13,7 @@ extern "C" {
 #include "beamdef.h"
 #include "sprite.h"
 #include "client.h"
+#include "server.h"
 #include "cl_tent.h"
 #include "gl_local.h"
 #include "shake.h"

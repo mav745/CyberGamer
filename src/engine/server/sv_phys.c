@@ -1832,39 +1832,6 @@ int SV_ServerState( void )
 	return sv.state;
 }
 
-/*
-================
-SV_DrawDebugTriangles
-
-Called from renderer for debug purposes
-================
-*/
-void SV_DrawDebugTriangles( void )
-{
-	if( host.type != HOST_NORMAL )
-		return;
-
-	if( svgame.physFuncs.DrawNormalTriangles != NULL )
-	{
-		// draw solid overlay
-		svgame.physFuncs.DrawNormalTriangles ();
-	}
-
-	if( svgame.physFuncs.DrawDebugTriangles != NULL )
-	{
-		// debug draws only
-//		glDisable( GL_BLEND );
-//		glDepthMask( GL_FALSE );
-//		glDisable( GL_TEXTURE_2D );
-
-//		// draw wireframe overlay
-//		svgame.physFuncs.DrawDebugTriangles ();
-
-//		glEnable( GL_TEXTURE_2D );
-//		glDepthMask( GL_TRUE );
-//		glEnable( GL_BLEND );
-	}
-}
 
 /*
 ================

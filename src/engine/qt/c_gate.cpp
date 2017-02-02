@@ -172,26 +172,15 @@ void __cdecl GL_TexFilter( gltexture_t *tex, qboolean update )
 	// set texture wrap
 	if( tex->flags & TF_CLAMP )
 	{
-//		if( GL_Support( GL_CLAMPTOEDGE_EXT ))
-//		{
-			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 
-			if( tex->target != GL_TEXTURE_1D )
-				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 
-			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-//		}
-//		else
-//		{
-//			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_S, GL_CLAMP );
+		if( tex->target != GL_TEXTURE_1D )
+			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-//			if( tex->target != GL_TEXTURE_1D )
-//				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_T, GL_CLAMP );
+		if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
+			xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
 
-//			if( tex->target == GL_TEXTURE_3D || tex->target == GL_TEXTURE_CUBE_MAP_ARB )
-//				xW->glTexParameteri( tex->target, GL_TEXTURE_WRAP_R, GL_CLAMP );
-//		}
 	}
 	else if( tex->flags & ( TF_BORDER|TF_ALPHA_BORDER ))
 	{
@@ -326,26 +315,26 @@ void __cdecl GL_SetRenderMode( int mode )
 	default:
 		xW->glDisable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
-		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 		break;
 	case kRenderTransColor:
 	case kRenderTransTexture:
 		xW->glEnable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderTransAlpha:
 		xW->glDisable( GL_BLEND );
 		xW->glEnable( GL_ALPHA_TEST );
-		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderGlow:
 	case kRenderTransAdd:
 		xW->glEnable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-		////////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	}
 }
@@ -418,7 +407,7 @@ void __cdecl R_DrawStretchRaw( float x, float y, float w, float h, int cols, int
 
 	xW->glDisable( GL_BLEND );
 	xW->glDisable( GL_ALPHA_TEST );
-	//glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
 	tex = R_GetTexture( tr.cinTexture );
 	GL_Bind( 0, tr.cinTexture );
@@ -987,12 +976,12 @@ void __cdecl CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec
 
 			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
 			xW->glTexCoord2f( 0.0f, curSeg.texcoord );
-			//xW->glNormal3fv( vAveNormal );
+			xW->glNormal3fv( vAveNormal );
 			xW->glVertex3fv( vPoint1 );
 
 			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
 			xW->glTexCoord2f( 1.0f, curSeg.texcoord );
-			//xW->glNormal3fv( vAveNormal );
+			xW->glNormal3fv( vAveNormal );
 			xW->glVertex3fv( vPoint2 );
 		}
 
@@ -1008,12 +997,12 @@ void __cdecl CL_DrawSegs( int modelIndex, float frame, int rendermode, const vec
 			// specify the points.
 			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
 			xW->glTexCoord2f( 0.0f, curSeg.texcoord );
-			//xW->glNormal3fv( vLastNormal );
+			xW->glNormal3fv( vLastNormal );
 			xW->glVertex3fv( vPoint1 );
 
 			xW->glColor4f( curSeg.color[0], curSeg.color[1], curSeg.color[2], curSeg.alpha );
 			xW->glTexCoord2f( 1.0f, curSeg.texcoord );
-			//xW->glNormal3fv( vLastNormal );
+			xW->glNormal3fv( vLastNormal );
 			xW->glVertex3fv( vPoint2 );
 		}
 
@@ -1613,7 +1602,7 @@ void __cdecl R_BlendLightmaps( void )
 
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_ZERO, GL_SRC_COLOR );
-//		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	}
 
 	// render static lightmaps first
@@ -1723,7 +1712,7 @@ void __cdecl R_BlendLightmaps( void )
 		}
 
 		xW->glDisable( GL_ALPHA_TEST );
-//		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 	}
 
 	// restore fog here
@@ -1750,7 +1739,7 @@ void __cdecl R_RenderFullbrights()
 	xW->glDepthMask( GL_FALSE );
 	xW->glDisable( GL_ALPHA_TEST );
 	xW->glBlendFunc( GL_ONE, GL_ONE );
-//	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 	for( i = 1; i < MAX_TEXTURES; i++ )
 	{
@@ -1771,7 +1760,7 @@ void __cdecl R_RenderFullbrights()
 	xW->glDisable( GL_BLEND );
 	xW->glDepthMask( GL_TRUE );
 	xW->glDisable( GL_ALPHA_TEST );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
 	draw_fullbrights = false;
 
@@ -1799,7 +1788,7 @@ void __cdecl R_RenderDetails()
 
 	xW->glEnable( GL_BLEND );
 	xW->glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 
 	if( RI.currententity->curstate.rendermode == kRenderTransAlpha )
 		xW->glDepthFunc( GL_EQUAL );
@@ -1823,7 +1812,7 @@ void __cdecl R_RenderDetails()
 	}
 
 	xW->glDisable( GL_BLEND );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
 	if( RI.currententity->curstate.rendermode == kRenderTransAlpha )
 		xW->glDepthFunc( GL_LEQUAL );
@@ -1874,7 +1863,7 @@ void __cdecl R_RenderBrushPoly( msurface_t *fa )
 			{
 				R_BeginDrawMirror( fa );
 				GL_Bind( 1, t->gl_texturenum );
-				//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+				xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 			}
 		}
 		else GL_Bind( 0, t->gl_texturenum ); // dummy
@@ -2040,7 +2029,7 @@ void __cdecl R_DrawSpriteModel( cl_entity_t *e )
 	if( psprite->texFormat == SPR_ALPHTEST && e->curstate.rendermode != kRenderTransAdd )
 	{
 		xW->glEnable( GL_ALPHA_TEST );
-		////xW->glAlphaFunc( GL_GREATER, 0.0f );
+		xW->glAlphaFunc( GL_GREATER, 0.0f );
 	}
 
 	if( e->curstate.rendermode == kRenderGlow || e->curstate.rendermode == kRenderWorldGlow )
@@ -2074,7 +2063,7 @@ void __cdecl R_DrawSpriteModel( cl_entity_t *e )
 	}
 
 	// all sprites can have color
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 	// add basecolor (any rendermode can colored sprite)
 	color[0] = (float)e->curstate.rendercolor.r * ( 1.0f / 255.0f );
@@ -2096,7 +2085,7 @@ void __cdecl R_DrawSpriteModel( cl_entity_t *e )
 			xW->glDepthMask( GL_TRUE );
 
 		// NOTE: sprites with 'lightmap' looks ugly when alpha func is GL_GREATER 0.0
-		////xW->glAlphaFunc( GL_GEQUAL, 0.5f );
+		xW->glAlphaFunc( GL_GEQUAL, 0.5f );
 	}
 
 	if( e->curstate.rendermode == kRenderNormal || e->curstate.rendermode == kRenderTransAlpha )
@@ -2185,7 +2174,7 @@ void __cdecl R_DrawSpriteModel( cl_entity_t *e )
 		xW->glDepthFunc( GL_EQUAL );
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_ZERO, GL_SRC_COLOR );
-		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 		xW->glColor4f( color2[0], color2[1], color2[2], flAlpha );
 		GL_Bind( 0, tr.whiteTexture );
@@ -2206,7 +2195,7 @@ void __cdecl R_DrawSpriteModel( cl_entity_t *e )
 
 	xW->glDisable( GL_BLEND );
 	xW->glDepthFunc( GL_LEQUAL );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 	xW->glColor4ub( 255, 255, 255, 255 );
 
 	if( RI.fogCustom || ( RI.fogEnabled && !glState.drawTrans ))
@@ -2234,7 +2223,6 @@ void R_ShowTextures()
 	}
 
 	xW->glClear( GL_COLOR_BUFFER_BIT );
-	////xW->glFinish();
 
 	base_w = 8;
 	base_h = 6;
@@ -2314,7 +2302,6 @@ rebuild_page:
 	}
 
 	CL_DrawCenterPrint ();
-	//xW->glFinish();
 }
 
 int TriSpriteTexture( model_t *pSpriteModel, int frame )
@@ -2335,7 +2322,7 @@ int TriSpriteTexture( model_t *pSpriteModel, int frame )
 	if( psprite->texFormat == SPR_ALPHTEST )
 	{
 		xW->glEnable( GL_ALPHA_TEST );
-		////xW->glAlphaFunc( GL_GREATER, 0.0f );
+		xW->glAlphaFunc( GL_GREATER, 0.0f );
 	}
 
 	GL_Bind( 0, gl_texturenum );
@@ -2453,15 +2440,15 @@ void __cdecl DrawSurfaceDecals( msurface_t *fa )
 			if( glt->flags & TF_HAS_ALPHA )
 			{
 				// draw transparent decals with GL_MODULATE
-				//if( glt->fogParams[3] > DECAL_TRANSPARENT_THRESHOLD )
-					//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-				//else //////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+				if( glt->fogParams[3] > DECAL_TRANSPARENT_THRESHOLD )
+					xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+				else xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 				xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			}
 			else
 			{
 				// color decal like detail texture. Base color is 127 127 127
-				//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+				xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 				xW->glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
 			}
 
@@ -2620,7 +2607,7 @@ void __cdecl R_StudioDrawPoints(void)
 
 			if( g_iRenderMode == kRenderNormal )
 			{
-				//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+				xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 				alpha = 1.0f;
 			}
 			else alpha = RI.currententity->curstate.renderamt * (1.0f / 255.0f);
@@ -2777,7 +2764,7 @@ void __cdecl R_DrawWaterSurfaces()
 	xW->glDepthMask( GL_FALSE );
 	xW->glDisable( GL_ALPHA_TEST );
 	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	xW->glColor4f( 1.0f, 1.0f, 1.0f, cl.refdef.movevars->wateralpha );
 
 	for( i = 0; i < cl.worldmodel->numtextures; i++ )
@@ -2803,7 +2790,7 @@ void __cdecl R_DrawWaterSurfaces()
 	xW->glDisable( GL_BLEND );
 	xW->glDepthMask( GL_TRUE );
 	xW->glDisable( GL_ALPHA_TEST );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 	xW->glColor4ub( 255, 255, 255, 255 );
 }
 
@@ -2875,7 +2862,7 @@ void __cdecl R_DrawSkyBox()
 		xW->glDisable( GL_FOG );
 	xW->glDisable( GL_BLEND );
 	xW->glDisable( GL_ALPHA_TEST );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
 	if( clgame.movevars.skyangle && !VectorIsNull( (float *)&clgame.movevars.skydir_x ))
 	{
@@ -3089,9 +3076,9 @@ void __cdecl VGUI_SetupDrawingText( int *pColor )
 {
 	xW->glEnable( GL_BLEND );
 	xW->glEnable( GL_ALPHA_TEST );
-	//xW->glAlphaFunc( GL_GREATER, 0.0f );
+	xW->glAlphaFunc( GL_GREATER, 0.0f );
 	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
@@ -3099,9 +3086,9 @@ void __cdecl VGUI_SetupDrawingImage( int *pColor )
 {
 	xW->glEnable( GL_BLEND );
 	xW->glEnable( GL_ALPHA_TEST );
-	//xW->glAlphaFunc( GL_GREATER, 0.0f );
+	xW->glAlphaFunc( GL_GREATER, 0.0f );
 	xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	xW->glColor4ub( pColor[0], pColor[1], pColor[2], 255 - pColor[3] );
 }
 
@@ -3131,7 +3118,7 @@ void __cdecl SetBeamRenderMode( int rendermode )
 		xW->glDisable( GL_BLEND );	// solid mode
 
 	xW->glDisable( GL_ALPHA_TEST );
-	//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 }
 
 void __cdecl R_DrawSpriteQuad( mspriteframe_t *frame, vec3_t org, vec3_t v_right, vec3_t v_up, float scale )
@@ -3364,7 +3351,7 @@ void pfnSPR_Set( VHSPRITE hPic, int r, int g, int b )
 	// set default state
 	xW->glDisable( GL_BLEND );
 	xW->glDisable( GL_ALPHA_TEST );
-	////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 }
 
 /*
@@ -3411,7 +3398,7 @@ void pfnFillRGBABlend( int x, int y, int width, int height, int r, int g, int b,
 	xW->glEnable( GL_BLEND );
 	xW->glDisable( GL_ALPHA_TEST );
 	xW->glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_ONE );
-	////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
 	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
 	xW->glColor4ub( 255, 255, 255, 255 );
@@ -3424,7 +3411,7 @@ void TriRenderMode( int mode )
 	default:
 		xW->glDisable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
-		////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderTransColor:
 	case kRenderTransAlpha:
@@ -3433,14 +3420,14 @@ void TriRenderMode( int mode )
 		xW->glEnable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	case kRenderGlow:
 	case kRenderTransAdd:
 		xW->glEnable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-		////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		break;
 	}
 }
@@ -3605,10 +3592,10 @@ void TriFog( float flFogColor[3], float flStart, float flEnd, int bOn )
 	}
 
 	xW->glEnable( GL_FOG );
-	////xW->glFogi( GL_FOG_MODE, GL_LINEAR );
-	////xW->glFogf( GL_FOG_START, RI.fogStart );
-	////xW->glFogf( GL_FOG_END, RI.fogEnd );
-	////xW->glFogfv( GL_FOG_COLOR, RI.fogColor );
+	xW->glFogi( GL_FOG_MODE, GL_LINEAR );
+	xW->glFogf( GL_FOG_START, RI.fogStart );
+	xW->glFogf( GL_FOG_END, RI.fogEnd );
+	xW->glFogfv( GL_FOG_COLOR, RI.fogColor );
 	xW->glHint( GL_FOG_HINT, GL_NICEST );
 }
 
@@ -3623,13 +3610,13 @@ void TriGetMatrix( const int pname, float *matrix )
 {
 	xW->glGetFloatv( pname, matrix );
 }
-void TriColor4fRendermode( float r, float g, float b, float a, int rendermode )
+void __cdecl TriColor4fRendermode( float r, float g, float b, float a, int rendermode )
 {
 	if( rendermode == kRenderTransAlpha )
 		xW->glColor4f( r, g, b, a );
 	else xW->glColor4f( r * a, g * a, b * a, 1.0f );
 }
-void PIC_DrawGeneric( float x, float y, float width, float height, const wrect_t *prc )
+void __cdecl PIC_DrawGeneric( float x, float y, float width, float height, const wrect_t *prc )
 {
 	float	s1, s2, t1, t2;
 	int	w, h;
@@ -3671,7 +3658,7 @@ void PIC_DrawGeneric( float x, float y, float width, float height, const wrect_t
 	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, menu.ds.gl_texturenum );
 	xW->glColor4ub( 255, 255, 255, 255 );
 }
-void pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a )
+void __cdecl pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a )
 {
 	menu.ds.gl_texturenum = hPic;
 	r = bound( 0, r, 255 );
@@ -3680,7 +3667,7 @@ void pfnPIC_Set( HIMAGE hPic, int r, int g, int b, int a )
 	a = bound( 0, a, 255 );
 	xW->glColor4ub( r, g, b, a );
 }
-void pfnFillRGBA_menu( int x, int y, int width, int height, int r, int g, int b, int a )
+void __cdecl pfnFillRGBA_menu( int x, int y, int width, int height, int r, int g, int b, int a )
 {
 	r = bound( 0, r, 255 );
 	g = bound( 0, g, 255 );
@@ -3691,7 +3678,7 @@ void pfnFillRGBA_menu( int x, int y, int width, int height, int r, int g, int b,
 	R_DrawStretchPic( (float)x, (float)y, (float)width, (float)height, 0.f, 0.f, 1.f, 1.f, cls.fillImage );
 	xW->glColor4ub( 255, 255, 255, 255 );
 }
-void pfnDrawCharacterQ( int ix, int iy, int iwidth, int iheight, int ch, int ulRGBA, HIMAGE hFont )
+void __cdecl pfnDrawCharacterQ( int ix, int iy, int iwidth, int iheight, int ch, int ulRGBA, HIMAGE hFont )
 {
 	rgba_t	color;
 	float	row, col, size;
@@ -3728,7 +3715,7 @@ void pfnDrawCharacterQ( int ix, int iy, int iwidth, int iheight, int ch, int ulR
 	R_DrawStretchPic( x, y, width, height, s1, t1, s2, t2, hFont );
 	xW->glColor4ub( 255, 255, 255, 255 );
 }
-void GL_LoadTexMatrix( const matrix4x4 m )
+void __cdecl GL_LoadTexMatrix( const matrix4x4 m )
 {
 	xW->glMatrixMode( GL_TEXTURE );
 	GL_LoadMatrix( m );
@@ -3740,7 +3727,7 @@ void GL_LoadTexMatrix( const matrix4x4 m )
 GL_LoadTexMatrixExt
 =================
 */
-void GL_LoadTexMatrixExt( const float *glmatrix )
+void __cdecl GL_LoadTexMatrixExt( const float *glmatrix )
 {
 	ASSERT( glmatrix != NULL );
 	xW->glMatrixMode( GL_TEXTURE );
@@ -3753,7 +3740,7 @@ void GL_LoadTexMatrixExt( const float *glmatrix )
 GL_LoadMatrix
 =================
 */
-void GL_LoadMatrix( const matrix4x4 source )
+void __cdecl GL_LoadMatrix( const matrix4x4 source )
 {
 	GLfloat	dest[16];
 
@@ -3766,7 +3753,7 @@ void GL_LoadMatrix( const matrix4x4 source )
 GL_LoadIdentityTexMatrix
 =================
 */
-void GL_LoadIdentityTexMatrix( void )
+void __cdecl GL_LoadIdentityTexMatrix( void )
 {
 	if( glState.texIdentityMatrix[glState.activeTMU] )
 		return;
@@ -3776,7 +3763,7 @@ void GL_LoadIdentityTexMatrix( void )
 	glState.texIdentityMatrix[glState.activeTMU] = true;
 }
 
-void GL_CleanUpTextureUnits( int last )
+void __cdecl GL_CleanUpTextureUnits( int last )
 {
 	int	i;
 
@@ -3802,18 +3789,10 @@ void GL_CleanUpTextureUnits( int last )
 GL_MultiTexCoord2f
 =================
 */
-void GL_MultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t )
+void __cdecl GL_MultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t )
 {
-	////xW->glTexCoord2f( s, t );
-
-//	if( //xW->glMultiTexCoord2f )
-//	{
-//		//xW->glMultiTexCoord2f( texture + GL_TEXTURE0_ARB, s, t );
-//	}
-//	else if( //xW->glMTexCoord2fSGIS )
-//	{
-//		//xW->glMTexCoord2fSGIS( texture + GL_TEXTURE0_SGIS, s, t );
-//	}
+	xW->glTexCoord2f( s, t );
+	xW->glMultiTexCoord2f( texture + GL_TEXTURE0_ARB, s, t );
 }
 
 /*
@@ -3821,7 +3800,7 @@ void GL_MultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t )
 GL_TextureTarget
 =================
 */
-void GL_TextureTarget( uint target )
+void __cdecl GL_TextureTarget( uint target )
 {
 	if( glState.activeTMU < 0 || glState.activeTMU >= GL_MaxTextureUnits( ))
 	{
@@ -3844,7 +3823,7 @@ void GL_TextureTarget( uint target )
 GL_TexGen
 =================
 */
-void GL_TexGen( GLenum coord, GLenum mode )
+void __cdecl GL_TexGen( GLenum coord, GLenum mode )
 {
 	int	tmu = min( glConfig.max_texture_coords, glState.activeTMU );
 	int	bit, gen;
@@ -3877,7 +3856,7 @@ void GL_TexGen( GLenum coord, GLenum mode )
 			xW->glEnable( gen );
 			glState.genSTEnabled[tmu] |= bit;
 		}
-		//xW->glTexGeni( coord, GL_TEXTURE_GEN_MODE, mode );
+		xW->glTexGeni( coord, GL_TEXTURE_GEN_MODE, mode );
 	}
 	else
 	{
@@ -3894,7 +3873,7 @@ void GL_TexGen( GLenum coord, GLenum mode )
 GL_SetTexCoordArrayMode
 =================
 */
-void GL_SetTexCoordArrayMode( GLenum mode )
+void __cdecl GL_SetTexCoordArrayMode( GLenum mode )
 {
 	int	tmu = min( glConfig.max_texture_coords, glState.activeTMU );
 	int	bit, cmode = glState.texCoordArrayMode[tmu];
@@ -3917,7 +3896,7 @@ void GL_SetTexCoordArrayMode( GLenum mode )
 	}
 }
 
-qboolean VID_ScreenShot( const char *filename, int shot_type )
+qboolean __cdecl VID_ScreenShot( const char *filename, int shot_type )
 {
 	rgbdata_t *r_shot;
 	uint	flags = IMAGE_FLIP_Y;
@@ -3989,7 +3968,7 @@ qboolean VID_ScreenShot( const char *filename, int shot_type )
 VID_CubemapShot
 =================
 */
-qboolean VID_CubemapShot( const char *base, uint size, const float *vieworg, qboolean skyshot )
+qboolean __cdecl VID_CubemapShot( const char *base, uint size, const float *vieworg, qboolean skyshot )
 {
 	rgbdata_t		*r_shot, *r_side;
 	byte		*temp = NULL;
@@ -4120,7 +4099,7 @@ void CL_DrawBeam( BEAM *pbeam )
 	VectorScale( color, ( pbeam->brightness / 255.0f ), color );
 	VectorScale( color, ( 1.0f / 255.0f ), color );
 
-	//xW->glShadeModel( GL_SMOOTH );
+	xW->glShadeModel( GL_SMOOTH );
 
 	switch( pbeam->type )
 	{
@@ -4151,7 +4130,7 @@ void CL_DrawBeam( BEAM *pbeam )
 		MsgDev( D_ERROR, "CL_DrawBeam:  Unknown beam type %i\n", pbeam->type );
 		break;
 	}
-	////xW->glShadeModel( GL_FLAT );
+	xW->glShadeModel( GL_FLAT );
 }
 
 void GL_GenerateMipmaps( byte *buffer, rgbdata_t *pic, gltexture_t *tex, GLenum glTarget, GLenum inFormat, int side, qboolean subImage )
@@ -4318,10 +4297,10 @@ void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImage, imgf
 		if(!( tex->flags & TF_NOMIPMAP ) && !( tex->flags & TF_SKYSIDE ) && !( tex->flags & TF_TEXTURE_3D ))
 			data = GL_ApplyGamma( data, tex->width * tex->height, ( tex->flags & TF_NORMALMAP ));
 
-//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		xW->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 		if( subImage )
 			xW->glTexSubImage2D( tex->target, 0, 0, 0, tex->width, tex->height, inFormat, dataType, data );
@@ -4405,10 +4384,10 @@ void __cdecl R_BeginDrawMirror( msurface_t *fa )
 	GL_TexGen( GL_R, GL_OBJECT_LINEAR );
 	GL_TexGen( GL_Q, GL_OBJECT_LINEAR );
 
-	////xW->glTexGenfv( GL_S, GL_OBJECT_PLANE, genVector[0] );
-	////xW->glTexGenfv( GL_T, GL_OBJECT_PLANE, genVector[1] );
-	////xW->glTexGenfv( GL_R, GL_OBJECT_PLANE, genVector[2] );
-	////xW->glTexGenfv( GL_Q, GL_OBJECT_PLANE, genVector[3] );
+	xW->glTexGenfv( GL_S, GL_OBJECT_PLANE, genVector[0] );
+	xW->glTexGenfv( GL_T, GL_OBJECT_PLANE, genVector[1] );
+	xW->glTexGenfv( GL_R, GL_OBJECT_PLANE, genVector[2] );
+	xW->glTexGenfv( GL_Q, GL_OBJECT_PLANE, genVector[3] );
 
 	GL_LoadTexMatrix( matrix );
 }
@@ -4478,7 +4457,7 @@ void __cdecl R_LoadIdentity( void )
 R_RotateForEntity
 =============
 */
-void R_RotateForEntity( cl_entity_t *e )
+void __cdecl R_RotateForEntity( cl_entity_t *e )
 {
 	float	scale = 1.0f;
 
@@ -4504,7 +4483,7 @@ void R_RotateForEntity( cl_entity_t *e )
 R_TranslateForEntity
 =============
 */
-void R_TranslateForEntity( cl_entity_t *e )
+void __cdecl R_TranslateForEntity( cl_entity_t *e )
 {
 	float	scale = 1.0f;
 
@@ -4525,7 +4504,7 @@ void R_TranslateForEntity( cl_entity_t *e )
 	tr.modelviewIdentity = false;
 }
 
-void R_SetupGL( void )
+void __cdecl R_SetupGL( void )
 {
 	if( RI.refdef.waterlevel >= 3 )
 	{
@@ -4575,8 +4554,8 @@ void R_SetupGL( void )
 		clip[2] = p->normal[2];
 		clip[3] = -p->dist;
 
-		//xW->glClipPlane( GL_CLIP_PLANE0, clip );
-		//xW->glEnable( GL_CLIP_PLANE0 );
+		xW->glClipPlane( GL_CLIP_PLANE0, clip );
+		xW->glEnable( GL_CLIP_PLANE0 );
 	}
 
 	if( RI.params & RP_FLIPFRONTFACE )
@@ -4594,25 +4573,25 @@ void R_SetupGL( void )
 R_EndGL
 =============
 */
-void R_EndGL( void )
+void __cdecl R_EndGL( void )
 {
 	if( RI.params & RP_FLIPFRONTFACE )
 		GL_FrontFace( !glState.frontFace );
 
-	//if( RI.params & RP_CLIPPLANE )
-		//xW->glDisable( GL_CLIP_PLANE0 );
+	if( RI.params & RP_CLIPPLANE )
+		xW->glDisable( GL_CLIP_PLANE0 );
 }
 
-void R_DrawFog( void )
+void __cdecl R_DrawFog( void )
 {
 	if( !RI.fogEnabled || RI.refdef.onlyClientDraw )
 		return;
 
-	//xW->glEnable( GL_FOG );
-	////xW->glFogi( GL_FOG_MODE, GL_EXP );
-	////xW->glFogf( GL_FOG_DENSITY, RI.fogDensity );
-	////xW->glFogfv( GL_FOG_COLOR, RI.fogColor );
-	//xW->glHint( GL_FOG_HINT, GL_NICEST );
+	xW->glEnable( GL_FOG );
+	xW->glFogi( GL_FOG_MODE, GL_EXP );
+	xW->glFogf( GL_FOG_DENSITY, RI.fogDensity );
+	xW->glFogfv( GL_FOG_COLOR, RI.fogColor );
+	xW->glHint( GL_FOG_HINT, GL_NICEST );
 }
 
 /*
@@ -4751,7 +4730,7 @@ void __cdecl R_BeginFrame( qboolean clearScene )
 	R_Set2DMode( true );
 
 	// draw buffer stuff
-	//xW->glDrawBuffer( GL_BACK );
+	xW->glDrawBuffer( GL_BACK );
 
 	// texturemode stuff
 	// update texture parameters
@@ -4810,9 +4789,6 @@ void __cdecl R_RenderFrame( const ref_params_t *fd, qboolean drawWorld )
 	RI.viewport[1] = fd->viewport[1];
 	RI.viewport[2] = fd->viewport[2];
 	RI.viewport[3] = fd->viewport[3];
-
-	if( gl_finish->integer && drawWorld )
-		//xW->glFinish();
 
 	if( gl_allow_mirrors->integer )
 	{
@@ -4965,7 +4941,7 @@ void __cdecl R_DrawBrushModel( cl_entity_t *e )
 		break;
 	case kRenderTransAlpha:
 		// NOTE: brushes can't change renderamt for 'Solid' mode
-		////xW->glAlphaFunc( GL_GEQUAL, 0.5f );
+		xW->glAlphaFunc( GL_GEQUAL, 0.5f );
 	default:
 		xW->glColor4ub( 255, 255, 255, 255 );
 		break;
@@ -5030,7 +5006,7 @@ void R_DrawTriangleOutlines( void )
 	xW->glDisable( GL_TEXTURE_2D );
 	xW->glDisable( GL_DEPTH_TEST );
 	xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	//xW->glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	xW->glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 	// render static surfaces first
 	for( i = 0; i < MAX_LIGHTMAPS; i++ )
@@ -5064,7 +5040,7 @@ void R_DrawTriangleOutlines( void )
 		}
 	}
 
-	//xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	xW->glEnable( GL_DEPTH_TEST );
 	xW->glEnable( GL_TEXTURE_2D );
 }
@@ -5079,7 +5055,7 @@ void R_StudioRenderShadow( int iSprite, float *p1, float *p2, float *p3, float *
 		xW->glEnable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		xW->glColor4f( 0.0f, 0.0f, 0.0f, 1.0f ); // render only alpha
 
 		xW->glBegin( GL_QUADS );
@@ -5249,7 +5225,7 @@ void R_StudioDrawBones( void )
 	{
 		if( pbones[i].parent >= 0 )
 		{
-			//xW->glPointSize( 3.0f );
+			xW->glPointSize( 3.0f );
 			xW->glColor3f( 1, 0.7f, 0 );
 			xW->glBegin( GL_LINES );
 	
@@ -5283,7 +5259,7 @@ void R_StudioDrawBones( void )
 		}
 	}
 
-	////xW->glPointSize( 1.0f );
+	xW->glPointSize( 1.0f );
 	xW->glEnable( GL_TEXTURE_2D );
 }
 
@@ -5320,13 +5296,14 @@ void R_StudioDrawAttachments( void )
 			xW->glVertex3fv( v[3] );
 		xW->glEnd();
 	
-			//xW->glPointSize( 5.0f );
+		xW->glPointSize( 5.0f );
 			
 		xW->glBegin( GL_POINTS );
 			xW->glColor3f( 0, 1, 0 );
 			xW->glVertex3fv( v[0] );
 		xW->glEnd();
-		//xW->glPointSize( 1.0f );
+		
+		xW->glPointSize( 1.0f );
 	}
 
 	xW->glEnable( GL_TEXTURE_2D );
@@ -5336,14 +5313,14 @@ void R_StudioDrawAttachments( void )
 void R_StudioSetupRenderer( int rendermode )
 {
 	g_iRenderMode = bound( 0, rendermode, kRenderTransAdd );
-	//xW->glShadeModel( GL_SMOOTH );	// enable gouraud shading
+	xW->glShadeModel( GL_SMOOTH );	// enable gouraud shading
 	if( clgame.ds.cullMode != GL_NONE ) GL_Cull( GL_FRONT );
 
 	// enable depthmask on studiomodels
 	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
 		xW->glDepthMask( GL_TRUE );
 
-	////xW->glAlphaFunc( GL_GREATER, 0.0f );
+	xW->glAlphaFunc( GL_GREATER, 0.0f );
 
 	if( g_iBackFaceCull )
 		GL_FrontFace( true );
@@ -5357,8 +5334,8 @@ R_StudioRestoreRenderer
 */
 void R_StudioRestoreRenderer( void )
 {
-	////xW->glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-	////xW->glShadeModel( GL_FLAT );
+	xW->glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
+	xW->glShadeModel( GL_FLAT );
 
 	// restore depthmask state for sprites etc
 	if( glState.drawTrans && g_iRenderMode != kRenderTransAdd )
@@ -5382,17 +5359,12 @@ void R_StudioDrawPlanarShadow( void )
 	if( glState.stencilEnabled )
 		xW->glEnable( GL_STENCIL_TEST );
 
-	//xW->glEnableClientState( GL_VERTEX_ARRAY );
-	////xW->glVertexPointer( 3, GL_FLOAT, 12, g_xarrayverts );
-
-	/*if( GL_Support( GL_DRAW_RANGEELEMENTS_EXT ))
-		//xW->glDrawRangeElementsEXT( GL_TRIANGLES, 0, g_nNumArrayVerts, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
-	else *///xW->glDrawElements( GL_TRIANGLES, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
+	
+	xW->_glVertexPointer( 3, GL_FLOAT, 12, g_xarrayverts );
+	xW->_glDrawElements( GL_TRIANGLES, g_nNumArrayElems, GL_UNSIGNED_INT, g_xarrayelems );
 
 	if( glState.stencilEnabled )
 		xW->glDisable( GL_STENCIL_TEST );
-
-	////xW->glDisableClientState( GL_VERTEX_ARRAY );
 }
 
 /*
@@ -5410,7 +5382,7 @@ void GL_StudioDrawShadow( void )
 	GLenum	depthmode;
 	GLenum	depthmode2;
 
-	//xW->glDepthMask( GL_TRUE );
+	xW->glDepthMask( GL_TRUE );
 
 	if( r_shadows.value != 0.0f )
 	{
@@ -5424,7 +5396,7 @@ void GL_StudioDrawShadow( void )
 				xW->glDisable( GL_TEXTURE_2D );
 				xW->glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				xW->glEnable( GL_BLEND );
-				////xW->glShadeModel( GL_FLAT );
+				xW->glShadeModel( GL_FLAT );
 				shadow_alpha2 = 1.0f - shadow_alpha;
 
 				xW->glColor4f( 0.0f, 0.0f, 0.0f, shadow_alpha2 );
@@ -5441,7 +5413,7 @@ void GL_StudioDrawShadow( void )
 				xW->glDisable( GL_BLEND );
 
 				xW->glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-				////xW->glShadeModel( GL_SMOOTH );
+				xW->glShadeModel( GL_SMOOTH );
 			}
 		}
 	}
@@ -5469,7 +5441,7 @@ void __cdecl R_DrawViewModel( void )
 	RI.currententity->curstate.renderamt = R_ComputeFxBlend( RI.currententity );
 
 	// hack the depth range to prevent view model from poking into walls
-	////xW->glDepthRange( gldepthmin, gldepthmin + 0.3f * ( gldepthmax - gldepthmin ));
+	xW->glDepthRange( gldepthmin, gldepthmin + 0.3f * ( gldepthmax - gldepthmin ));
 
 	// backface culling for left-handed weapons
 	if( r_lefthand->integer == 1 || g_iBackFaceCull )
@@ -5478,7 +5450,7 @@ void __cdecl R_DrawViewModel( void )
 	pStudioDraw->StudioDrawModel( STUDIO_RENDER );
 
 	// restore depth range
-	////xW->glDepthRange( gldepthmin, gldepthmax );
+	xW->glDepthRange( gldepthmin, gldepthmax );
 
 	// backface culling for left-handed weapons
 	if( r_lefthand->integer == 1 || g_iBackFaceCull )
@@ -5491,8 +5463,6 @@ void __cdecl R_DrawViewModel( void )
 void __cdecl GL_SetDefaults( void )
 {
 	int	i;
-
-	////xW->glFinish();
 
 	xW->glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
 
@@ -5512,7 +5482,7 @@ void __cdecl GL_SetDefaults( void )
 		xW->glStencilOp( GL_KEEP, GL_INCR, GL_INCR );
 	}
 
-	//xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	xW->glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	xW->glPolygonOffset( -1.0f, -2.0f );
 
 	// properly disable multitexturing at startup
@@ -5522,7 +5492,7 @@ void __cdecl GL_SetDefaults( void )
 			continue;
 
 		GL_SelectTexture( i );
-		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		xW->glDisable( GL_BLEND );
 		xW->glDisable( GL_TEXTURE_2D );
 	}
@@ -5531,11 +5501,11 @@ void __cdecl GL_SetDefaults( void )
 	xW->glDisable( GL_BLEND );
 	xW->glDisable( GL_ALPHA_TEST );
 	xW->glDisable( GL_POLYGON_OFFSET_FILL );
-	////xW->glAlphaFunc( GL_GREATER, 0.0f );
+	xW->glAlphaFunc( GL_GREATER, 0.0f );
 	xW->glEnable( GL_TEXTURE_2D );
-	////xW->glShadeModel( GL_FLAT );
+	xW->glShadeModel( GL_FLAT );
 
-	//xW->glPointSize( 1.2f );
+	xW->glPointSize( 1.2f );
 	xW->glLineWidth( 1.2f );
 
 	GL_Cull( 0 );
@@ -5853,7 +5823,7 @@ void Field_DrawInputLine( int x, int y, field_t *edit )
 		xW->glEnable( GL_BLEND );
 		xW->glDisable( GL_ALPHA_TEST );
 		xW->glBlendFunc( GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA );
-		//////xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+		xW->glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 		Con_DrawGenericChar( x + curPos, y, cursorChar, colorDefault );
 	}
 	else Con_DrawCharacter( x + curPos, y, '_', colorDefault );
@@ -6031,6 +6001,172 @@ void raiseWindow()
 //{
 //	return xW->winId();
 //}
+
+/*
+================
+R_FreeImage
+================
+*/
+void __cdecl R_FreeImage( gltexture_t *image )
+{
+	uint		hash;
+	gltexture_t	*cur;
+	gltexture_t	**prev;
+
+	ASSERT( image != NULL );
+
+	if( !image->name[0] )
+	{
+		if( image->texnum != 0 )
+			MsgDev( D_ERROR, "trying to free unnamed texture with texnum %i\n", image->texnum );
+		return;
+	}
+
+	// remove from hash table
+	hash = Com_HashKey( image->name, TEXTURES_HASH_SIZE );
+	prev = &r_texturesHashTable[hash];
+
+	while( 1 )
+	{
+		cur = *prev;
+		if( !cur ) break;
+
+		if( cur == image )
+		{
+			*prev = cur->nextHash;
+			break;
+		}
+		prev = &cur->nextHash;
+	}
+
+	// release source
+	if( image->flags & (TF_KEEP_RGBDATA|TF_KEEP_8BIT) && image->original )
+		FS_FreeImage( image->original );
+
+	xW->glDeleteTextures( 1, &image->texnum );
+	Q_memset( image, 0, sizeof( *image ));
+}
+
+void __cdecl GL_SetupFogColorForSurfaces( void )
+{
+	vec3_t	fogColor;
+	float	factor, div;
+
+	if(( !RI.fogEnabled && !RI.fogCustom ) || RI.refdef.onlyClientDraw || !RI.currententity )
+		return;
+
+	if( RI.currententity->curstate.rendermode == kRenderTransTexture )
+		  {
+		xW->glFogfv( GL_FOG_COLOR, RI.fogColor );
+		return;
+	}
+
+	div = (r_detailtextures->integer) ? 2.0f : 1.0f;
+	factor = (r_detailtextures->integer) ? 3.0f : 2.0f;
+	fogColor[0] = powf( RI.fogColor[0] / div, ( 1.0f / factor ));
+	fogColor[1] = powf( RI.fogColor[1] / div, ( 1.0f / factor ));
+	fogColor[2] = powf( RI.fogColor[2] / div, ( 1.0f / factor ));
+	xW->glFogfv( GL_FOG_COLOR, fogColor );
+}
+
+void __cdecl GL_ResetFogColor( void )
+{
+	// restore fog here
+	if(( RI.fogEnabled || RI.fogCustom ) && !RI.refdef.onlyClientDraw )
+		xW->glFogfv( GL_FOG_COLOR, RI.fogColor );
+}
+
+/*
+==================
+Con_DrawString
+
+Draws a multi-colored string, optionally forcing
+to a fixed color.
+==================
+*/
+int __cdecl Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qboolean forceColor, int hideChar )
+{
+	rgba_t		color;
+	int		drawLen = 0;
+	int		numDraws = 0;
+	const char	*s;
+
+	if( !con.curFont ) return 0; // no font set
+
+	// draw the colored text
+	s = string;
+	*(uint *)color = *(uint *)setColor;
+
+	while ( *s )
+	{
+		if( *s == '\n' )
+		{
+			s++;
+			if( !*s ) break; // at end the string
+			drawLen = 0; // begin new row
+			y += con.curFont->charHeight;
+		}
+
+		if( IsColorString( s ))
+		{
+			if( !forceColor )
+			{
+				Q_memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ));
+				color[3] = setColor[3];
+			}
+
+			s += 2;
+			numDraws++;
+			continue;
+		}
+
+		// hide char for overstrike mode
+		if( hideChar == numDraws )
+			drawLen += con.curFont->charWidths[*s];
+		else drawLen += Con_DrawCharacter( x + drawLen, y, *s, color );
+
+		numDraws++;
+		s++;
+	}
+
+	xW->glColor4ub( 255, 255, 255, 255 );
+	return drawLen;
+}
+
+
+/*
+================
+SV_DrawDebugTriangles
+
+Called from renderer for debug purposes
+================
+*/
+void SV_DrawDebugTriangles( void )
+{
+	if( host.type != HOST_NORMAL )
+		return;
+
+	if( svgame.physFuncs.DrawNormalTriangles != NULL )
+	{
+		// draw solid overlay
+		svgame.physFuncs.DrawNormalTriangles ();
+	}
+
+	if( svgame.physFuncs.DrawDebugTriangles != NULL )
+	{
+		// debug draws only
+		xW->glDisable( GL_BLEND );
+		xW->glDepthMask( GL_FALSE );
+		xW->glDisable( GL_TEXTURE_2D );
+
+		// draw wireframe overlay
+		svgame.physFuncs.DrawDebugTriangles();
+
+		xW->glEnable( GL_TEXTURE_2D );
+		xW->glDepthMask( GL_TRUE );
+		xW->glEnable( GL_BLEND );
+	}
+}
 
 
 int mouseInWindow()

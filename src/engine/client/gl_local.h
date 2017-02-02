@@ -69,7 +69,7 @@ typedef struct gltexture_s
 
 	uint		cacheframe;	// worldmodel->load_sequence
 
-	GLuint		target;		// glTarget
+	GLuint		target;		// gl target
 	GLuint		texnum;		// gl texture binding
 	GLuint		texid;		// gl texture binding
 	GLint		format;		// uploaded format
